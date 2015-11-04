@@ -1,0 +1,62 @@
+<h1>Gerät</h1>
+	<h3>{{editDevice.title}}</h3>
+		
+	<script type="text/javascript">
+
+		it('should check ng-submit', function() {
+			expect(element(by.binding('list')).getText()).toBe('list=[]');
+			element(by.css('#submit')).click();
+			expect(element(by.binding('list')).getText()).toContain('hello');
+			expect(element(by.model('text')).getAttribute('value')).toBe('');
+		});
+		it('should ignore empty strings', function() {
+			expect(element(by.binding('list')).getText()).toBe('list=[]');
+			element(by.css('#submit')).click();
+			element(by.css('#submit')).click();
+			expect(element(by.binding('list')).getText()).toContain('hello');
+		});
+	</script>
+
+	<ul>
+			<li>
+				{{editDevice.device.name}}
+				<ul>
+					<form ng-controller="saveDeviceController">
+					<input type="hidden" id="deviceid" value="{{editDevice.device.deviceid}}">
+					<li>
+						<label for="name">Name</label>
+						<input type="text" placeholder="Name" ng-model="editDevice.device.name" id="name" value="{{editDevice.device.name}}"/>
+					</li>
+					<li>
+						<label for="buttonLabelOn">Buttontitel an</label>
+						<input type="text" placeholder="Name/Anschaltbutton" ng-model="editDevice.device.buttonLabelOn" id="buttonLabelOn" value="{{editDevice.device.buttonLabelOn}}"/>
+					</li>
+					<li>
+						<label for="buttonLabelOff">Buttontitel aus</label>
+						<input type="text" placeholder="Name/Ausschaltbutton" ng-model="editDevice.device.buttonLabelOff" id="buttonLabelOff" value="{{editDevice.device.buttonLabelOff}}"/>
+					</li>
+					<li>
+						<label for="CodeOn">Einschaltcode</label>
+						<input type="text" placeholder="On-Code/Masterdip" ng-model="editDevice.device.CodeOn" id="CodeOn" value="{{editDevice.device.CodeOn}}"/>
+					</li>
+					<li>
+						<label for="CodeOff">Ausschaltcode</label>
+						<input type="text" placeholder="Off-Code/Slavedip" ng-model="editDevice.device.CodeOff" id="CodeOff" value="{{editDevice.device.CodeOff}}"/>
+					</li>
+					<li>
+						<label for="room">Raum</label>
+						<select ng-model="editDevice.device.room" ng-options="obj.id as obj.name for obj in rooms"></select>
+					</li>
+					<li>
+						<label for="protocol">Protocol</label>
+						<select ng-model="editDevice.device.protocol" ng-options="obj.id as obj.name for obj in options"></select>
+					</li>
+					<li>
+						<button ng-click="submitnew()">Speichern</button>
+						<button ng-click="abort('/devices')">Abbrechen</button>
+					</li>
+					</form>
+				</ul>
+		</li>
+	</ul>
+</div>

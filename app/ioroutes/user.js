@@ -25,7 +25,7 @@ module.exports = function(app, db){
 			};
 			userFunctions.saveNewUser(data, req, res, function(response){
 				req.io.emit('savedUser', response);
-				getUsers(req, res, function(user){
+				userFunctions.getUsers(req, res, function(user){
 					app.io.broadcast('newuser', user);
 				});
 			});
@@ -37,7 +37,7 @@ module.exports = function(app, db){
 					"favoritDevices": req.data.favoritDevices
 				};
 			userFunctions.saveEditUser(data, req, res, function(response){
-				getUsers(req, res, function(user){
+				userFunctions.getUsers(req, res, function(user){
 					app.io.broadcast('newuser', user);
 				});
 			});

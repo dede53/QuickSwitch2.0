@@ -1,4 +1,4 @@
-var sqlite3 		= require('sqlite3').verbose();
+/* var sqlite3 		= require('sqlite3').verbose();
 var db 				= new sqlite3.Database('abc.db');
 
 // Tabelle für Geräte anlegen
@@ -36,3 +36,71 @@ db.run("CREATE TABLE if not exists [countdowntypen] ([id] INTEGER  NOT NULL PRIM
 
 
 module.exports = db;
+
+*/
+var mysql		=	require('mysql');
+
+var pool      =    mysql.createPool({
+    connectionLimit : 100,
+    host     : 'localhost',
+    user     : 'root',
+    password : 'daniel',
+    database : 'SmartHome',
+    debug    :  false
+});
+
+require('events').EventEmitter.prototype._maxListeners = 100;
+
+
+module.exports = {
+	all : function(query, callback) {
+		pool.getConnection(function(err,connection){
+			if (err) {
+				connection.release();
+				console.log({"code" : 100, "status" : "Error in connection database"});
+				callback(err);
+				// return;
+			}
+
+			console.log('connected as id ' + connection.threadId);
+
+			connection.query(query, function(err,rows){
+				connection.release();
+				if(!err) {
+					callback(err, rows);
+				}else{
+					console.log(err);
+				}
+			});
+
+			connection.on('error', function(err) {
+				console.log({"code" : 100, "status" : "Error in connection database"});
+				callback(err);
+				// return;
+			});
+		});
+	},
+	run: function(query){
+		pool.getConnection(function(err,connection){
+			if (err) {
+				connection.release();
+				console.log({"code" : 100, "status" : "Error in connection database"});
+				return;
+			}
+
+			console.log('connected as id ' + connection.threadId);
+
+			connection.query(query, function(err,rows){
+				connection.release();
+			});
+
+			connection.on('error', function(err) {
+				console.log({"code" : 100, "status" : "Error in connection database"});
+				return;
+			});
+		});
+	}
+}
+
+
+

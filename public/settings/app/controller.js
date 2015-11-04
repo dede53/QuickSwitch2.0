@@ -4,9 +4,9 @@ var app = 	angular.module('jsbin',[
 				'ngAnimate',
 				'ngRoute',
 				'ngTouch',
-				'highcharts-ng'
+				'highcharts-ng',
+				'as.sortable'
 			]);
-
 
 app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.
@@ -18,13 +18,32 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/devices/index.html',
 		controller: 'devicesController'
 	}).
+	when('/editDevice/:id', {
+		templateUrl: './app/devices/editDevice.html',
+		controller: 'editDeviceController'
+	}).
+
+	when('/user/', {
+		templateUrl: './app/user/index.html',
+		controller: 'userController'
+	}).
+	when('/editUser/:id', {
+		templateUrl: './app/user/editUser.html',
+		controller: 'editUserController'
+	}).
+
+
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
 		controller: 'groupsController'
 	}).
 	when('/rooms', {
 		templateUrl: './app/rooms/index.html',
-		controller: 'roomsController'
+		controller: 'roomController'
+	}).
+	when('/editRoom/:id', {
+		templateUrl: './app/rooms/editRoom.html',
+		controller: 'editRoomController'
 	}).
 	when('/temperature', {
 		templateUrl: './app/temperature/index.html',
@@ -36,22 +55,14 @@ app.config(['$routeProvider', function($routeProvider) {
 }]);
 
 app.controller('appController', function($rootScope, $scope, $location){
-	$scope.storedUser = getCookie("username");
-
-	if ($scope.storedUser != "") {
-		$rootScope.activeUser = JSON.parse($scope.storedUser);
-	}else{
-		$rootScope.activeUser = {};
-		$rootScope.activeUser.favoritDevices = "[1, 16, 3, 7, 14, 8, 17]";
-		$rootScope.activeUser.name = "Besucher";
-	}
-
-	$scope.showmenu=false;
 	$scope.switchPage = function(data){
 		$scope.showmenu=!($scope.showmenu);
 		if(data != ""){
 			$location.url(data);
 		}
 	}
-
+	$scope.abort = function(data) {
+		console.log(data);
+		$location.url(data);
+	};
 });

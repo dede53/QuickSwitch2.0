@@ -1,0 +1,33 @@
+<div class="tile">
+		<h1>Einstellungen</h1>
+		<ul>
+		<li ng-repeat="(key, rooms) in devicelist">
+				<h3>{{key}}</h3>
+			<div ng-repeat="devices in rooms">
+				<!-- <div ng-repeat="devices in room"> -->
+					<div class="ui-grid-a">
+						<div class="ui-block-a" style="text-align:left">
+						{{devices.name}}
+						</div>
+						
+						<div class="ui-block-b" style="text-align:right">
+							<div class="box-btn-switch">
+								<a href="#/editDevice/{{devices.deviceid}}" id="btnOn{{devices.deviceid}}" >Bearbeiten</a>
+								<button  id="btnOn{{devices.deviceid}}" ng-click='deleteDevice({"id":devices.deviceid,"status":"1"})' >Löschen</button>
+							</div>
+						</div>
+					</div>
+				<!-- </div> -->
+			</div>
+		</li>
+		<li>
+			<div class="ui-grid-a">
+				<div class="ui-block-a" style="text-align:left">
+				</div>
+				<div class="ui-block-b" style="text-align:right">
+					<a href="#/editDevice/" >Neues Gerät anlegen</a>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

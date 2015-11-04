@@ -40,7 +40,7 @@ module.exports = function(app, db){
 				"room": req.data.room
 			};
 			deviceFunctions.saveNewDevice(data, req, res, function(data){
-				getDevices('object', req, res, function(data){
+				deviceFunctions.getDevices('object', req, res, function(data){
 					app.io.broadcast('devices', data);
 				});
 			});
@@ -57,7 +57,7 @@ module.exports = function(app, db){
 					"room": req.data.room
 				};
 			deviceFunctions.saveEditDevice(data, req, res, function(data){
-				getDevices('object',req, res, function(data){
+				deviceFunctions.getDevices('object',req, res, function(data){
 					app.io.broadcast('devices', data);
 				});
 			});
@@ -71,7 +71,7 @@ module.exports = function(app, db){
 		var id = req.data.id;
 		deviceFunctions.deleteDevice(id, req, res, function(data){
 			req.io.emit('deletedDevice', data);
-			getDevices('object',req, res, function(data){
+			deviceFunctions.getDevices('object',req, res, function(data){
 				app.io.broadcast('devices', data);
 			});
 		});
