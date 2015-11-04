@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+
+		<script src="assets/libs/snap.min.js"></script>
+		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
+
+		<meta charset="utf-8">
+		<link rel="shortcut icon" href="assets/favicon.ico"/> 
+		<meta http-equiv="x-ua-compatible" content="IE=edge" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="theme-color" content="#fff" />
+		<title>SmartHome</title>
+	</head>
+	<body ng-app="jsbin" ng-controller="appController">
+
+
+
+
+		<snap-content snap-options="snapOptions">
+			<div ng-view role="main">
+			</div>
+		</snap-content>
+
+		<snap-drawers>
+			<snap-drawer id="snap-drawer left" >
+				<ul>
+					<li><a ng-click="toggleMenu('/favoriten')">Home</a></li>
+					<li><a ng-click="toggleMenu('/devices')">Geräte</a></li>
+					<li><a ng-click="toggleMenu('/groups')">Gruppen</a></li>
+					<li><a ng-click="toggleMenu('/rooms')">Räume</a></li>
+					<li><a ng-click="toggleMenu('/temperature')">Temperaturen</a></li>
+				</ul>
+			</snap-drawer>
+			<div snap-drawer="right" id="snap-drawer-right" style="width:300px;">
+					<h3>
+						<div class="left">Favoriten</div>
+						<div active-user-directive class="right"></div>
+					</h3>
+					
+				<div favoriten-directive></div>
+				<h3>Aktive Geräte</h3>
+				<div active-devices-directive></div>
+			</div>
+		</snap-drawers>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+		<script src='/socket.io/socket.io.js'></script>
+
+		<script src="http://code.angularjs.org/1.2.0rc1/angular-route.min.js"></script>
+		<script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>
+
+		<script src="./assets/libs/highcharts-ng.js"></script>
+		<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
+		<script src="http://code.highcharts.com/stock/highstock.src.js"></script>
+
+		<script src="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.min.js"></script>
+
+		<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.2.js"></script>
+
+		
+		<link rel="stylesheet" href="http://rawgit.com/jtrussell/Snap.js/master/snap.css">
+		<link rel="stylesheet" href="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.css">
+
+		<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+		
+
+		<script type="text/javascript" src="./assets/js/helper.js"></script>
+		<script type="text/javascript" src="./app/controller.js"></script>
+		<script type="text/javascript" src="./app/factory.js"></script>
+		
+		<script type="text/javascript" src="./app/chat/controller.js"></script>
+		<script type="text/javascript" src="./app/home/controller.js"></script>
+		<script type="text/javascript" src="./app/home/directive.js"></script>
+		<script type="text/javascript" src="./app/devices/controller.js"></script>
+		<script type="text/javascript" src="./app/groups/controller.js"></script>
+		<script type="text/javascript" src="./app/rooms/controller.js"></script>
+		<script type="text/javascript" src="./app/temperature/controller.js"></script>
+
+
+	</body>
+</html>

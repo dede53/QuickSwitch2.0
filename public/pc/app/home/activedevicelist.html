@@ -1,0 +1,6 @@
+<div class="picker"></div>
+<ul>
+	<li ng-repeat="device in activedeviceslist">{{device.name}}</li>
+</ul>
+<button class="btnOn" ng-click='switchalldevices({"status":"1"})'>Alle ein</button>
+<button class="btnOff" ng-click='switchalldevices({"status":"0"})'>Alle aus</button>

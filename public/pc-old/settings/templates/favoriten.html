@@ -1,0 +1,142 @@
+﻿<div jqm>
+		<h1>Einstellungen</h1>
+        		<div class="jqm-block-content">
+        			<h3>Ideen</h3>
+					<ul id="favoritlist">
+					</ul>
+<style type="text/css">
+	#settings{
+		border-bottom: 1px solid #DDD;
+		padding-bottom: 3px;
+		margin-bottom: 10px;
+		padding-top: 5px;
+	}
+	h4{
+		padding-top: 5px;
+	}
+
+input[type="checkbox"] {
+    display:none;
+}
+input[type="checkbox"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    background: #f00;
+    cursor:pointer;
+}
+input[type="checkbox"]:checked + label span {
+    background:#0ff;
+}
+
+.block-b{
+	max-weight: 100px;
+	<!-- padding-right:50px; -->
+}
+p{
+	height: 10px;
+	<!-- padding-right:50px; -->
+}
+</style>
+					
+					
+ 					<ul>
+						<li>
+							<div class="ui-grid-a" id="settings">
+								<div class="ui-block-a" style="text-align:left">
+									<h4>Einstellung</h4>
+								</div>
+<!-- 
+-->
+														<div class="ui-block-b" style="text-align:right">
+															<div class="box-btn-edit hide">
+																<button data-theme="b" data-iconpos="notext" data-icon="edit" data-mini="true" data-inline="true" onClick="window.location.href = 'index.php?mode=editgroup&id=<?php echo $group[$i]->id; ?>#newgroup'">Bearbeiten</button>
+																<button data-theme="r" data-iconpos="notext" data-icon="delete" data-mini="true" data-inline="true" onclick="delete_group('<?php# echo $group[$i]->id; ?>')">Löschen</button>
+															 </div>
+														</div>
+							</div>
+							<div class="ui-grid-a" id="settings">
+								<div class="ui-block-a" style="text-align:left">
+									<h4>Zeige Menu bei start</h4>
+								</div>
+<!-- 
+-->
+								<div class="ui-block-b" style="	 ">
+										<input type="checkbox" id="c1" name="cc" />
+										<label for="c1"><span></span>Check Box 1</label>
+								</div>
+							</div>
+							<div class="ui-grid-a" id="settings">
+								<div class="ui-block-a" style="text-align:left">
+									<h4>Zeige Menu bei start</h4>
+								</div>
+<!-- 
+-->
+								<div class="ui-block-b" style="	 ">
+										<input	 type="checkbox" id="switch2" />
+										<label for="switch2"></label>
+								</div>
+							</div>
+							<div class="ui-grid-a" id="settings">
+								<div class="ui-block-a" style="text-align:left">
+									<h4>Zeige Menu bei start</h4>
+								</div>
+<!-- 
+-->
+								<div class="ui-block-b" style="	 ">
+										<input	 type="checkbox" id="switch3" />
+										<label for="switch3"></label>
+								</div>
+							</div>
+						</li>
+					</ul>
+<!-- 						<form>
+						  <input type="text" ng-model="search">
+						  <p>Du suchst gerade nach: {{search}}</p>
+						</form>
+						<table class="table">
+						  <tr ng-repeat="article in ['Pizza Margherita', 'Pizza Tonno']">
+							<td>{{article}}</td>
+						  </tr>
+						</table> -->
+						
+<!-- 					<button id="btnOn" data-mini="true" data-inline="true" data-icon="check" onclick="socket.emit('switchdevice', {id: '2',status: 'on'})">Ein</button>
+					<button id="btnOff" data-mini="true" data-inline="true" onclick="">Aus</button> -->
+        		</div>
+        	<!-- </div> -->
+<!--         	<div class="ui-block-b">
+        		<div class="jqm-block-content">
+        			<h3>Aktive Geräte</h3>
+					<ul data-role="listview" data-inset="false">
+						<li ng-repeat="device in activedevices">
+							<p>{{device.name}}</p>
+						</li>
+					</ul>
+					<button ng-click='switchalldevices({"status":"0"})'>Alle aus</button>
+					<button ng-click='switchalldevices({"status":"1"})'>Alle ein</button>
+        		</div>
+        	</div>        	
+        	<div class="ui-block-a">
+        		<div class="jqm-block-content">
+        			<h3>Wer ist Zuhause?</h3>
+					<ul data-role="listview" data-inset="false">
+						<li ng-repeat="person in activedevices">
+							<p>{{person.name}}</p>
+						</li>
+					</ul>
+        		</div>
+        	</div>
+        	<div class="ui-block-b">
+        		<div class="jqm-block-content">
+        			<h3>Temperaturen</h3>
+					<ul data-role="listview" data-inset="false">
+						<li ng-repeat="temp in temperature">
+							<p>{{temp.place}}: {{temp.temp}}°C</p>
+						</li>
+					</ul>
+        		</div>
+        	</div> -->
+        <!-- </div> -->
+</div>

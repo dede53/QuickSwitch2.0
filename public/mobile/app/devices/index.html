@@ -1,0 +1,38 @@
+<h1>Geräte</h1>
+<ul>
+	<li ng-repeat="(key, rooms) in devicelist">
+		<h3>{{key}}</h3>
+		<ul>
+			<li ng-repeat="device in rooms">
+				<ul>
+					<li>
+						<div class="left">{{device.name}}</div>
+						<div class="right">
+							<button class="btnOn" id="btnOn{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"1"})' >
+								<div ng-if = "device.status == 0 ">
+									<input type="checkbox"></input>
+									{{device.buttonLabelOn}}
+								</div>
+								<div ng-if = "device.status == 1 ">
+									<input type="checkbox" checked="checked"></input>
+									{{device.buttonLabelOn}}
+								</div>
+							</button>
+							<button class="btnOff" id="btnOff{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"0"})'>
+								<div ng-if = "device.status != 0 ">
+									<input type="checkbox"></input>
+									{{device.buttonLabelOff}}
+								</div>
+								<div ng-if = "device.status != 1 ">
+									<input type="checkbox" checked="checked" ></input>
+									{{device.buttonLabelOff}}
+								</div>
+							</button>
+
+						</div>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>

@@ -1,0 +1,9 @@
+<div class="picker"></div>
+<uib-accordion close-others="true">
+	<uib-accordion-group ng-repeat="group in grouplist">
+		<uib-accordion-heading>
+			{{group.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		</uib-accordion-heading>
+		<div><mydir></mydir></div>
+	</uib-accordion-group>
+</uib-accordion>

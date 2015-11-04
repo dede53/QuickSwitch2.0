@@ -1,0 +1,58 @@
+
+<div class="tile">
+	<h1>Geräte</h1>
+	<ul>
+		<li ng-repeat="(key, rooms) in devicelist">
+			<h3>{{key}}</h3>
+			<ul>
+				<li ng-repeat="device in rooms">
+					<ul>
+						<li>
+							<div class="left">{{device.name}}</div>
+							<div class="right">
+								<div ng-if="device.protocol == 8" class="ui-block-b" style="text-align:right">
+									<div class="box-btn-switch">
+										{{device.status}}
+										<input 
+											type="range" 
+											min="{{device.buttonLabelOn}}" 
+											max="{{device.buttonLabelOff}}" 
+											ng-model="device.status" 
+											ng-change='switchdevicelider({"id":device.deviceid})'
+											ng-model-options="{ updateOn: 'blur' }"
+										>
+										</input>
+									</div>
+								</div>
+								<div ng-if="device.protocol != 8 " class="ui-block-b" style="text-align:right">
+									<div class="box-btn-switch">
+										<button class="btnOn" id="btnOn{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"1"})' >
+											<div ng-if = "device.status == 0 ">
+												<input type="checkbox"></input>
+												{{device.buttonLabelOn}}
+											</div>
+											<div ng-if = "device.status == 1 ">
+												<input type="checkbox" checked="checked"></input>
+												{{device.buttonLabelOn}}
+											</div>
+										</button>
+										<button class="btnOff" id="btnOff{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"0"})'>
+											<div ng-if = "device.status != 0 ">
+												<input type="checkbox"></input>
+												{{device.buttonLabelOff}}
+											</div>
+											<div ng-if = "device.status != 1 ">
+												<input type="checkbox" checked="checked" ></input>
+												{{device.buttonLabelOff}}
+											</div>
+										</button>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
