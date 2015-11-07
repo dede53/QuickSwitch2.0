@@ -1,15 +1,14 @@
 <div class="tile">
-	<h1>SmartHome</h1>
 	<ul>
 		<li ng-repeat="room in roomlist track by $index">
-			<div class="ui-grid-a">
+			<div>
 				<div style="text-align:left">
 				{{room.name}}
 				</div>
 				<div style="text-align:right">
 					<div class="box-btn-switch">
 						<a href="#/editRoom/{{room.id}}" id="btnOn{{room.id}}" >Bearbeiten</a>
-						<button  id="btnOn{{room.id}}" ng-click='deleteRoom({"id":room.id})' >Löschen</button>
+						<button ng-click='deleteRoom({"id":room.id})' id="btnOn{{room.id}}">Löschen</button>
 					</div>
 				</div>
 			</div>

@@ -1,30 +1,41 @@
-var connair = {
-	port:"49880",
-	ip:"192.168.2.27"
-}
+/*
+var connair     =   {
+                    port:"49880",
+                        ip:"192.168.2.27"
+                    }
+var homematicIP = "192.168.2.47";
+*/
 
-var express = require('express');
-var app = express();
-var request = require('request');
-var exec = require('exec');
-var dgram = require('dgram');  
-var http = require('http'); 
-var util = require('util');
-var exec = require('child_process').exec;
-var sleep = require('sleep');
-var bodyParser = require('body-parser');
-var multer = require('multer'); 
-var fritz = require('smartfritz');
-var piblaster = require('pi-blaster.js');
- 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-app.use(multer()); // for parsing multipart/form-data
+var express     = require('express');
+var app         = express();
+var request     = require('request');
+var exec        = require('exec');
+var dgram       = require('dgram');  
+var http        = require('http'); 
+var util        = require('util');
+var exec        = require('child_process').exec;
+var sleep       = require('sleep');
+var bodyParser  = require('body-parser');
+var multer      = require('multer'); 
+var fritz       = require('smartfritz');
+var piblaster   = require('pi-blaster.js');
+var conf        = require('./config.json');
+var connair     = conf.connair;
+var homematicIP = conf.homematicIP;
+
+console.log(connair);
+console.log(homematicIP);
+
+app.use(bodyParser.json());                             // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }));     // for parsing application/x-www-form-urlencoded
+app.use(multer());                                      // for parsing multipart/form-data
 
 app.post('/switch', function (req, res) {
   switchdevice(req.body.status, req.body.device);
   res.json(200);
 });
+
+
 
 function switchdevice( status, data){
 	switch(data.protocol){
@@ -47,6 +58,12 @@ function switchdevice( status, data){
 			break;
         case "8":
             setGPIO(status, data);
+            break;
+        case "9":
+            CCUSetDatapoint(status, data);
+            break;
+        case "10":
+            CCUrunProgram(status, data);
             break;
 		default:
 			console.log('FEHLER!!');
@@ -93,12 +110,12 @@ function sendUDP(status, data){
 			break;
 	}
 	
-	// dgram Klasse f�r UDP-Verbindungen
+	// dgram Klasse für UDP-Verbindungen
 	var client = dgram.createSocket('udp4'); // Neuen Socket zum Client aufbauen
 	client.send(msg, 0, msg.length, connair.port, connair.ip, function(err, bytes) 
 	{
 		console.log('UDP message sent to ' + connair.ip +':'+ connair.port +'; \nFolgendes wurde gesendet:' + msg); // Ausgabe der Nachricht
-		client.close(); // Bei erfolgreichen Senden, die Verbindung zum CLient schlie�en
+		client.close(); // Bei erfolgreichen Senden, die Verbindung zum CLient schließen
 	});
 }
 
@@ -119,7 +136,7 @@ function sendURL(status, data){
 			if(response.statusCode == 200){
 				console.log( "Erfolgreich die URL aufgerufen" );
 			}else{
-				console.log( "Die URL meldet keinen g�ltigen status:" + response.statusCode );
+				console.log( "Die URL meldet keinen gültigen status:" + response.statusCode );
 			}
 		}
 	});
@@ -387,5 +404,43 @@ function connair_create_msg_intertechno(status, data) {
     }
 }
 
+function CCUSetDatapoint(status, data){
+    
+    var url = "http://" + homematicIP + "/config/xmlapi/statechange.cgi?ise_id=" + data.CodeOn + "&new_value=" + status;
+	request({
+		url: url,
+		qs: '',
+		method: 'GET'
+	}, function(error, response, body){
+		if(error) {
+			console.log(error);
+		} else {
+			if(response.statusCode == 200){
+				console.log( "Erfolgreich an die CCU übermittelt!" );
+			}else{
+				console.log( "Die CCU meldet keinen gültigen status:" + response.statusCode );
+			}
+		}
+	});
+}
+
+function CCUrunProgram(status, data) {
+    var url = "http://" + homematicIP + "/config/xmlapi/runprogram.cgi?program_id=" + data.CodeOn;
+	request({
+		url: url,
+		qs: '',
+		method: 'GET'
+	}, function(error, response, body){
+		if(error) {
+			console.log(error);
+		} else {
+			if(response.statusCode == 200){
+				console.log( "Erfolgreich an die CCU übermittelt!" );
+			}else{
+				console.log( "Die CCU meldet keinen gültigen status:" + response.statusCode );
+			}
+		}
+	});
+};
 app.listen(4040);
 console.log("Server running at http://127.0.0.1:4040");

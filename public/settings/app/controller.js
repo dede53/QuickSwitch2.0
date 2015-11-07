@@ -14,6 +14,8 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/home/index.html',
 		controller: 'homeController'
 	}).
+
+
 	when('/devices', {
 		templateUrl: './app/devices/index.html',
 		controller: 'devicesController'
@@ -22,6 +24,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/devices/editDevice.html',
 		controller: 'editDeviceController'
 	}).
+
 
 	when('/user/', {
 		templateUrl: './app/user/index.html',
@@ -35,8 +38,13 @@ app.config(['$routeProvider', function($routeProvider) {
 
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
-		controller: 'groupsController'
+		controller: 'groupController'
 	}).
+	when('/editGroup/:id', {
+		templateUrl: './app/groups/editGroup.html',
+		controller: 'editGroupController'
+	}).
+
 	when('/rooms', {
 		templateUrl: './app/rooms/index.html',
 		controller: 'roomController'
@@ -45,9 +53,15 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/rooms/editRoom.html',
 		controller: 'editRoomController'
 	}).
+
+	
 	when('/temperature', {
 		templateUrl: './app/temperature/index.html',
 		controller: 'temperatureController'
+	}).	
+	when('/editSensor/:id', {
+		templateUrl: './app/temperature/editSensor.html',
+		controller: 'editSensorController'
 	}).
 	otherwise({
 		redirectTo: '/home'

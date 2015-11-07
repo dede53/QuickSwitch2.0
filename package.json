@@ -1,6 +1,6 @@
 {
-  "name": "nodetest2b",
-  "version": "0.0.0",
+  "name": "quickswitch",
+  "version": "0.2.9",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -16,10 +16,25 @@
     "express.io": "1.1.*",
     "jade": "~1.9.2",
     "multer": "0.1.8",
+    "mysql": "^2.9.0",
     "request": "2.58.0",
     "sleep": "1.1.0",
     "smartfritz": "0.1.7",
-    "socket.io": "~0.9.6",
-	"sqlite3": "~3.1.0"
-  }
+    "socket.io": "~0.9.6"
+  },
+  "description": "SmartHome",
+  "main": "SwitchServer.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dede53/QuickSwitch.git"
+  },
+  "keywords": [
+    "Homeautomation"
+  ],
+  "author": "dede 53",
+  "bugs": {
+    "url": "https://github.com/dede53/QuickSwitch/issues"
+  },
+  "homepage": "https://github.com/dede53/QuickSwitch#readme"
 }

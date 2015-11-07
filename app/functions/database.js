@@ -99,7 +99,36 @@ module.exports = {
 				return;
 			});
 		});
-	}
+	},
+	each : function(query, callback) {
+		pool.getConnection(function(err,connection){
+			if (err) {
+				connection.release();
+				console.log({"code" : 100, "status" : "Error in connection database"});
+				callback(err);
+				// return;
+			}
+
+			console.log('connected as id ' + connection.threadId);
+
+			connection.query(query, function(err,rows){
+				connection.release();
+				if(!err) {
+					rows.forEach(function(row){
+						callback(err, row);
+					});
+				}else{
+					console.log(err);
+				}
+			});
+
+			connection.on('error', function(err) {
+				console.log({"code" : 100, "status" : "Error in connection database"});
+				callback(err);
+				// return;
+			});
+		});
+	},
 }
 
 

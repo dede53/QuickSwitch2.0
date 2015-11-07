@@ -126,17 +126,8 @@ module.exports = function(app, db){
 		});
 	});
 	app.get('/sensor/:id/:date', function (req, res) {
-		var id = req.params.id;
-		var date = req.params.date;
-		temperatureFunctions.getSensorvalues(id,date, req, res, function(data){
-			var bla = new Array;
-			data.forEach(function(data){
-				var asd = new Array;
-				asd.push(data.time * 1000);
-				asd.push(parseFloat(data.temp));
-				bla.push(asd);
-			});
-			res.send(bla);
+		temperatureFunctions.getSensorvalues(req, res, function(data){
+			res.send(data);
 		});
 	});
 	app.get('/getUsers', function(req,res){

@@ -1,12 +1,12 @@
 var helper 			= require('../functions/helper.js');
 var request 		= require('request');
-
+var conf 			= require('./../../config.json');
 module.exports = {
 	sendto: function (app, req, action, data, callback){
 		app.io.broadcast('switchDevice', {"device":data,"status":action});
 		
 		request.post({
-			url:'http://192.168.2.47:4040/switch/',
+			url:'http://' + conf.switchserver.ip + ':' + conf.switchserver.port + '/switch/',
 			form:
 				{
 					status: action,

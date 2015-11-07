@@ -1,4 +1,6 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){
+
+    socket.emit('getSensorvalues', {"date":"all"});
 	$scope.chartConfig = "";
 	$scope.chartConfig = {
         options: {
@@ -155,6 +157,5 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 	
     $scope.getData = function(hours){
         console.log(hours);
-        socket.emit('getSensorvalues', {"date":hours});
     }
 });

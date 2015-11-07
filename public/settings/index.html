@@ -8,7 +8,7 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="theme-color" content="#fff" />
-		<title>SmartHome</title>
+		<title>SmartHome - Einstellungen</title>
 		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
 	</head>
 	<body ng-app="jsbin" ng-controller="appController">
@@ -17,10 +17,11 @@
 
 		<div class="menu">
 			<div class="container">
-				<h3>
-					Einstellungen
-				</h3>
+				
 				<ul  class="nav nav-tabs nav-justified">
+					<li>
+					Einstellungen
+				</li>
 					<li role="presentation">
 						<a ng-click="switchPage('/home')">Home</a>
 					</li>
@@ -93,6 +94,10 @@
 		<script type="text/javascript" src="./app/rooms/controller.js"></script>
 
 		<script type="text/javascript" src="./app/user/controller.js"></script>
+
+		<script type="text/javascript" src="./app/groups/controller.js"></script>
+
+		<script type="text/javascript" src="./app/temperature/controller.js"></script>
 		
 		<!--
 

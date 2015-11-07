@@ -1,18 +1,19 @@
 <div class="tile">
-	<h3>{{editUser.title}}</h3>
+	<h1>SmartHome</h1>
+	<h3>{{editGroup.title}}</h3>
 	<ul>
 		<li>
 				<div class="ui-grid-a">
 					<div class="ui-block-a" style="text-align:left">
-						{{editUser.userlist.name}}
+						{{editGroup.grouplist.name}}
 					</div>
 					<div class="ui-block-b" style="text-align:right">
-						<form ng-controller="saveUserController">
+						<form ng-controller="saveGroupController">
 							<ul >
-								<input type="hidden" id="id" value="{{editUser.userlist.id}}">
+								<input type="hidden" id="id" value="{{editGroup.grouplist.id}}">
 								<li>
 									<label for="name">Name</label>
-									<input type="text" placeholder="Name" ng-model="editUser.userlist.name" id="name" value="{{editUser.userlist.name}}"/>
+									<input type="text" placeholder="Name" ng-model="editGroup.grouplist.name" id="name" value="{{editGroup.grouplist.name}}"/>
 								</li>
 							<!--
 								<li>
@@ -34,8 +35,8 @@
 									</li>
 								</div>
 								<li>
-									<button ng-click="saveUser()">Speichern</button>
-									<button ng-click='abort("/user")'>Abbrechen</button>
+									<button ng-click="saveGroup()">Speichern</button>
+									<button ng-click='abort("/groups")'>Abbrechen</button>
 								</li>
 							</ul>
 						</form>

@@ -1,34 +1,28 @@
-#!/usr/local/bin/node
-process.env.TZ 		= 'Europe/Amsterdam';
+process.env.TZ		=	'Europe/Amsterdam';
 
-var express 		= require('express.io');
-var app 			= express().http().io();
-//var sqlite3 		= require('sqlite3').verbose();
-//var db 				= new sqlite3.Database('abc.db');
-var db 				= require('./app/functions/database.js');
-var port 			= process.argv[2] || 8080;
- 
+var conf 			=	require('./config.json');
+var express			=	require('express.io');
+var app				=	express().http().io();
+var db				=	require('./app/functions/database.js');
+var port			=	process.argv[2] || conf.port;
 
-var exec 			= require('exec');
-var dgram 			= require('dgram');  
-var http 			= require('http'); 
-var util 			= require('util');
-var exec 			= require('child_process').exec;
-var sleep 			= require('sleep');
-var bodyParser 		= require('body-parser');
-var cookieParser 	= require('cookie-parser');
-var multer 			= require('multer');
-var cookies 		= new Object;
 
-var switchserver 	= {
-						ip: "192.168.2.47",
-						port: "4040"
-					}
+var exec				=	require('exec');
+var dgram				=	require('dgram');
+var http				=	require('http');
+var util				=	require('util');
+var exec				=	require('child_process').exec;
+var sleep				=	require('sleep');
+var bodyParser			=	require('body-parser');
+var cookieParser		=	require('cookie-parser');
+var multer				=	require('multer');
+var cookies				=	{};
+
 
 
 
 app.use(bodyParser.json()); 						// for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
 app.use(multer()); 									// for parsing multipart/form-data
 app.use(cookieParser());							// for parsing cookies
 app.use(express.static(__dirname + '/public'));		// provides static html
@@ -42,16 +36,16 @@ app.use(express.static(__dirname + '/public'));		// provides static html
 
 
 
-function getSensorvalues(id,date, req, res, callback) {
+function getSensorvalues(id, date, req, res, callback) {
 	var query = "SELECT time, temp / 100  as temp FROM      sensor_data WHERE     strftime('%M', time / 1000, 'unixepoch') == '00' AND       strftime('%S', time / 1000, 'unixepoch') < '04' AND       strftime('%S', time / 1000, 'unixepoch') >= '00';";
-	db.all(query , function(err, row) {
+	db.all(query, function(err, row) {
 		if (err) {
 			console.log(err);
 			callback(404);
-		}else if(row == ""){
+		} else if (row === "") {
 			callback("Keine Daten für den Sensor mit der ID" + id);
 			console.log("Keine Daten für den Sensor mit der ID" + id);
-		}else{
+		} else {
 			callback(row);
 		}
 	});
@@ -78,8 +72,8 @@ require('./app/ioroutes/group.js')(app, db);
 require('./app/ioroutes/message.js')(app, db);
 require('./app/ioroutes/room.js')(app, db);
 require('./app/ioroutes/user.js')(app, db);
-require('./app/ioroutes.js')(app, db);
+require('./app/ioroutes/temperature.js')(app, db);
 
 // Start server
 app.listen(port);
-helper.log("Server running at http://127.0.0.1:"+ port +"/", "info");
+helper.log("Server running at http://127.0.0.1:" + port + "/", "info");

@@ -77,6 +77,10 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				{ 
 					name: "GPIO Fade",
 					id: 8
+				},
+				{ 
+					name: "CCU-Gerät",
+					id: 9
 				}
 			];
 	/***********************************************

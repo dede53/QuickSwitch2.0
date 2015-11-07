@@ -24,7 +24,7 @@ module.exports = function(app, db){
 		});
 	});
 	/*****************************************
-	* Speichert die Gruppe der vom CLienten geliefert wurde
+	* Speichert die Gruppe der vom Clienten geliefert wurde
 	*****************************************/
 	app.io.route('saveGroup', function(req, res){
 		if( !req.data.id){
@@ -74,7 +74,7 @@ module.exports = function(app, db){
 		var status = req.data.status;
 		groupFunctions.switchGroup(app, group, status, req, res, function(err){
 			if(err != 200){
-				console.log("Raum konnte nicht geschaltet werden");
+				console.log("Gruppe konnte nicht geschaltet werden");
 			}
 		});
 	});

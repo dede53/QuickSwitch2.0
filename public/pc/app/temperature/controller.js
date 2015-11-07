@@ -58,7 +58,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                 },
                 tooltip: {
                     headerFormat: '<div class="header">{point.key}</div>',
-                    pointFormat: '<div class="line"><div class="circle" ></div><p class="country" style="float:left;">{series.name}</p><p>{point.y}</p></div>',
+                    pointFormat: '<div class="line"><p style="float:left;">{series.name} {point.y}</p></div>',
                     borderWidth: 1,
                     borderRadius: 5,
                     borderColor: '#a4a4a4',
@@ -67,7 +67,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                     percentageDecimals: 2,
                     backgroundColor: "rgba(255,255,255,.7)",
                     style: {
-                        padding: 0
+                        padding: 5
                     },
                     shared: true
                 },
@@ -103,7 +103,8 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
     }
 	*/
 	
-       $rootScope.chartConfig = chartConfig;
+    $rootScope.chartConfig = chartConfig;
+    
     socket.on('Sensorvalues', function(data) {
 
 		var sensor = {
@@ -116,7 +117,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			tooltip: {
 				valueSuffix: ' °C'
 			},
-			color: '#' + data.farbe
+			color:  data.farbe
 		};
 		var navigator = {
 			data: data.data
