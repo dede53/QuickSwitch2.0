@@ -76,42 +76,17 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
             series: [],
             loading: true
         }
-    
-
-    /*
-    function afterSetExtremes(e) {
-			
-			
-			if(e.trigger == 'zoom' || e.trigger == 'rangeSelectorButton' || e.trigger == 'navigator'){
-				console.log(e);
-				var chart = $rootScope.chartConfig.getHighcharts();
-				socket.emit('getSensorvaluesByMinutes', {"id":"all","min":e.min, "max":e.max});
-				chart.showLoading('Loading...' + e.trigger);
-			}else{
-				console.log("kein Zoom!");
-				console.log(e);
-			}
-
-			socket.on('SensorvaluesByMinutes', function(data) {
-				console.log(data.nodeID);
-				var chart = $rootScope.chartConfig.getHighcharts();
-		        chart.series[0].setData(data.data);
-		        chart.hideLoading();
-			    
-		        // chart.series[0].addPoint([1438039000000,25]);
-			});
-    }
-	*/
 	
     $rootScope.chartConfig = chartConfig;
-    
+
     socket.on('Sensorvalues', function(data) {
 
 		var sensor = {
 			id: data.nodeID,
 			name: data.name,
 			data: data.data,
-			type: data.linetyp,
+			type: data.charttype,
+            dashStyle: data.linetype,
 			yAxis: 0,
 			connectNulls:false,
 			tooltip: {
@@ -124,7 +99,6 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 		};
 		
 		$rootScope.chartConfig.options.navigator.series.push(navigator);
-
 		$rootScope.chartConfig.series.push(sensor);
 		$rootScope.chartConfig.loading = false;
 	});
@@ -138,10 +112,4 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			rangeSelectorZoom: ""
 		}
 	});
-		
-	
-    $scope.getData = function(hours){
-        console.log(hours);
-        socket.emit('getSensorvalues', {"date":hours});
-    }
 });

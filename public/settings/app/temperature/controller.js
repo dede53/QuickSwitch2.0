@@ -2,51 +2,50 @@ app.controller('temperatureController', function($scope, $rootScope, socket){
 	console.log("Temperaturen!");
     socket.emit('getSensors');
     socket.on('sensors', function(data){
-    	console.log(data);
-    	$scope.sensorlist = data;
-		var rnd = []
-		for (var i = 0; i < 10; i++) {
-			rnd.push(Math.floor(Math.random() * 20) + 1)
-		}
-		$rootScope.chartConfig.series.push({
-			id: data[0].id,
-			name: data[0].name,
-			nodeid: data[0].nodeid,
-			
-			dashStyle: data[0].line,
-			linetype: data[0].linetype,
+		$scope.sensorlist = data;
+		$rootScope.chartConfig.series = [];
+    	data.forEach(function(sensor){
+			var rnd = []
+			for (var i = 0; i < 10; i++) {
+				rnd.push(Math.floor(Math.random() * 20) + 1)
+			}
+			$rootScope.chartConfig.series.push({
+				id: sensor.id,
+				name: sensor.name,
+				nodeid: sensor.nodeid,
+				
+				dashStyle: sensor.linetype,
+				type: sensor.charttype,
+				color: sensor.linecolor,
+				data: rnd
+			});
 
-			type: data[0].chart,
-			charttype: data[0].charttype,
-			
-			color: data[0].linecolor,
-			data: rnd
-		});
+    	});
     });
 
-  $scope.chartTypes = [
-		{"id": "line", "title": "Line"},
-		{"id": "spline", "title": "Smooth line"},
-		{"id": "area", "title": "Area"},
-		{"id": "areaspline", "title": "Smooth area"},
-		{"id": "column", "title": "Column"},
-		{"id": "bar", "title": "Bar"},
-		{"id": "scatter", "title": "Scatter"}
-  ];
+$scope.chartTypes = [
+	{"chart": "line",		"title": "Line"},
+	{"chart": "spline", 	"title": "Smooth line"},
+	{"chart": "area",		"title": "Area"},
+	{"chart": "areaspline",	"title": "Smooth area"},
+	{"chart": "column",		"title": "Column"},
+	{"chart": "bar",		"title": "Bar"},
+	{"chart": "scatter",	"title": "Scatter"}
+];
 
-  $scope.dashStyles = [
-    {"id": "Solid", "title": "Solid"},
-    {"id": "ShortDash", "title": "ShortDash"},
-    {"id": "ShortDot", "title": "ShortDot"},
-    {"id": "ShortDashDot", "title": "ShortDashDot"},
-    {"id": "ShortDashDotDot", "title": "ShortDashDotDot"},
-    {"id": "Dot", "title": "Dot"},
-    {"id": "Dash", "title": "Dash"},
-    {"id": "LongDash", "title": "LongDash"},
-    {"id": "DashDot", "title": "DashDot"},
-    {"id": "LongDashDot", "title": "LongDashDot"},
-    {"id": "LongDashDotDot", "title": "LongDashDotDot"}
-  ];
+$scope.dashStyles = [
+	{"line": "Solid",			"title": "Solid"},
+	{"line": "ShortDash",		"title": "ShortDash"},
+	{"line": "ShortDot",		"title": "ShortDot"},
+	{"line": "ShortDashDot",	"title": "ShortDashDot"},
+	{"line": "ShortDashDotDot",	"title": "ShortDashDotDot"},
+	{"line": "Dot",				"title": "Dot"},
+	{"line": "Dash",			"title": "Dash"},
+	{"line": "LongDash",		"title": "LongDash"},
+	{"line": "DashDot",			"title": "DashDot"},
+	{"line": "LongDashDot",		"title": "LongDashDot"},
+	{"line": "LongDashDotDot",	"title": "LongDashDotDot"}
+];
 
 
 
@@ -63,13 +62,14 @@ app.controller('temperatureController', function($scope, $rootScope, socket){
   }
 
 	$scope.removeSensor = function (id) {
+		console.log(id);
 		var seriesArray = $rootScope.chartConfig.series;
-		seriesArray.splice(id, 1)
+		socket.emit('deleteSensor', id);
 	}
 	$scope.saveSensor = function (id) {
 		var sensor = $rootScope.chartConfig.series[id];
-		socket.emit('saveSensor', sensor);
 		console.log(sensor);
+		socket.emit('saveSensor', sensor);
 	}
 
   $rootScope.chartConfig = {
@@ -94,7 +94,7 @@ app.controller('temperatureController', function($scope, $rootScope, socket){
 					}
 				},
 			},
-                exporting: false,
+            exporting: false,
 			xAxis: [{
 				type: 'datetime',
 				labels:{

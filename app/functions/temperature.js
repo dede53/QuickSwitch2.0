@@ -28,7 +28,7 @@ module.exports = {
 		});
 	},
 	getSensor: function (id, req, res, callback){
-		var query = "SELECT sensors.id, sensors.name, sensors.nodeid, charttypen.name as charttypen, sensors.linetype, sensors.linecolor FROM sensors, charttypen WHERE sensors.charttype = charttypen.id AND id = " + id + ";";
+		var query = "SELECT sensors.id, sensors.name, sensors.nodeid, sensors.linetype, sensors.linecolor FROM sensors AND id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -38,7 +38,7 @@ module.exports = {
 		});
 	},
 	getSensors: function (req, res, callback){
-		var query = "SELECT sensors.id, sensors.name, sensors.nodeid,sensors.charttype, charttypen.chart as chart, sensors.linetype, linetypen.line, sensors.linecolor FROM sensors, charttypen, linetypen WHERE sensors.charttype = charttypen.id AND sensors.linetype = linetypen.id;";
+		var query = "SELECT sensors.id, sensors.name, sensors.nodeid,sensors.charttype, sensors.linetype, sensors.linecolor FROM sensors;";
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -49,9 +49,9 @@ module.exports = {
 	},
 	saveSensor: function(data, req, res, callback){
 		if(typeof data.id == 'number'){
-			var query = "UPDATE sensors SET name = '" + data.name + "', nodeid = " + data.nodeid + ", charttype = " + data.charttype + ", linetype = " + data.linetype + ", linecolor = '" + data.linecolor + "' WHERE id = " + data.id + ";";
+			var query = "UPDATE sensors SET name = '" + data.name + "', nodeid = " + data.nodeid + ", charttype = '" + data.charttype + "', linetype = '" + data.linetype + "', linecolor = '" + data.linecolor + "' WHERE id = " + data.id + ";";
 		}else{
-			var query = "INSERT INTO sensors (name, nodeid, charttype, linetype, linecolor) VALUES ('" + data.name + "', " + data.nodeid + ", " + data.charttype + ", " + data.linetype + ", '" + data.linecolor + "');";
+			var query = "INSERT INTO sensors (name, nodeid, charttype, linetype, linecolor) VALUES ('" + data.name + "', " + data.nodeid + ", '" + data.charttype + "', '" + data.linetype + "', '" + data.linecolor + "');";
 		}
 		console.log(query);
 		//callback(data);
@@ -65,13 +65,15 @@ module.exports = {
 		});
 	
 	},
-	getCharttypen: function(){
-		var query = "SELECT id, name FROM charttypen;";
-		db.all(query, function(err, data){
+	deleteSensor: function(id, req, res, callback){
+		var query = "DELETE FROM `sensors` WHERE `sensors`.`id` = " + id + ";";
+		console.log(query);
+		db.all(query, function(err, rows){
 			if(err){
-				console.log(err);
+				console.log('Error: ' + err);
+				callback('Error: ' + err);
 			}else{
-				callback(data)
+				callback("200");
 			}
 		});
 	},
@@ -80,7 +82,7 @@ module.exports = {
 		console.log("lese Temperaturdaten...");
 
 
-		var query ="SELECT sensors.nodeID 	AS nodeID, sensors.name 		AS name, sensors.linecolor 	AS farbe, linetypen.line	AS linetype, charttypen.chart	AS charttype FROM sensors, linetypen, charttypen WHERE sensors.linetype	= linetypen.id AND sensors.charttype	= charttypen.id AND sensors.nodeID	= sensors.nodeID;";
+		var query ="SELECT sensors.nodeID 	AS nodeID, sensors.name AS name, sensors.linecolor 	AS farbe, charttype, linetype FROM sensors;";
 		db.each(query, function(err, sensor){
 			if(err){
 				console.log(err);
