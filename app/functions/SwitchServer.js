@@ -24,18 +24,18 @@ module.exports = {
 		});
 	},
 	sendActiveDevices: function (app, db, callback){
-	var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0;";
-	db.all(query , function(err, activedevices) {
-		if (err) {
-			console.log(err);
-			callback(404);
-		}else{
-			app.io.broadcast('activedevices', {
-				"activedevices": activedevices
-			});
-			callback(200);
-		}
-	});
-}
+		var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0;";
+		db.all(query , function(err, activedevices) {
+			if (err) {
+				console.log(err);
+				callback(404);
+			}else{
+				app.io.broadcast('activedevices', {
+					"activedevices": activedevices
+				});
+				callback(200);
+			}
+		});
+	}
 
 }

@@ -4,7 +4,7 @@ var conf 			=	require('./config.json');
 var express			=	require('express.io');
 var app				=	express().http().io();
 var db				=	require('./app/functions/database.js');
-var port			=	process.argv[2] || conf.port;
+var port			=	process.argv[2] || conf.QuickSwitch.port;
 
 
 var exec				=	require('exec');

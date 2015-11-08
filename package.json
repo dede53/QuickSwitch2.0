@@ -17,10 +17,12 @@
     "jade": "~1.9.2",
     "multer": "0.1.8",
     "mysql": "^2.9.0",
-    "request": "2.58.0",
     "sleep": "1.1.0",
     "smartfritz": "0.1.7",
-    "socket.io": "~0.9.6"
+    "socket.io": "~0.9.6",
+    "later": "^1.2.0",
+    "node-w1bus": "^0.1.2",
+    "request": "^2.65.0"
   },
   "description": "SmartHome",
   "main": "SwitchServer.js",

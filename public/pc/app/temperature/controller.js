@@ -13,7 +13,34 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                     series: []
                 },
                 rangeSelector: {
-                    enabled: true
+                    enabled: true,
+                    buttons: [{
+                        type: 'day',
+                        text: 'Day'
+                    }, {
+                        type: 'day',
+                        count: '2',
+                        text: '2Day'
+                    }, {
+                        type: 'day',
+                        count: '3',
+                        text: '3Day'
+                    }, {
+                        type: 'week',
+                        count: '1',
+                        text: 'Week'
+                    },{
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }]
                 },
                 plotOptions: {
                     series: {
@@ -79,29 +106,32 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 	
     $rootScope.chartConfig = chartConfig;
 
-    socket.on('Sensorvalues', function(data) {
+    socket.on('Sensorvalues', function(alldata) {
+        alldata.forEach(function(data){
 
-		var sensor = {
-			id: data.nodeID,
-			name: data.name,
-			data: data.data,
-			type: data.charttype,
-            dashStyle: data.linetype,
-			yAxis: 0,
-			connectNulls:false,
-			tooltip: {
-				valueSuffix: ' °C'
-			},
-			color:  data.farbe
-		};
-		var navigator = {
-			data: data.data
-		};
-		
-		$rootScope.chartConfig.options.navigator.series.push(navigator);
-		$rootScope.chartConfig.series.push(sensor);
-		$rootScope.chartConfig.loading = false;
-	});
+            console.log("Neue Daten");
+            var sensor = {
+                id: data.nodeID,
+                name: data.name,
+                data: data.data,
+                type: data.charttype,
+                dashStyle: data.linetype,
+                yAxis: 0,
+                connectNulls:false,
+                tooltip: {
+                    valueSuffix: ' °C'
+                },
+                color: data.farbe
+            };
+            var navigator = {
+                data: data.data
+            };
+            
+            $scope.chartConfig.options.navigator.series.push(navigator);
+            $scope.chartConfig.series.push(sensor);
+            $scope.chartConfig.loading = false;
+        });
+    });
 		
 	Highcharts.setOptions({
 		global : {
