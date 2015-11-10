@@ -12,6 +12,7 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('newLinkMessage', function(req){
 		req.data.time = Math.floor(Date.parse(new Date));
+		console.log(req.data);
 		app.io.broadcast('newLinkMessage', req.data);
 		messageFunctions.saveMessage(req.data, function(data){
 			if(data != "200"){

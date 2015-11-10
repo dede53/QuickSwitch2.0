@@ -9,11 +9,13 @@ ul, ol{
 }
 .drittel {
 	width: 30%;
-	border-style: none;
-	border-radius: 0px;
+	border-style: solid;
+	border-radius: 3px;
+	border-width:1px;
 	background-color: #ff7;
 	padding:5px;
 	margin:10px;
+	float:left;
 	/*
 	-moz-transform: rotate(2deg);
 	-ms-transform: rotate(2deg);
@@ -29,12 +31,14 @@ ul, ol{
 	padding:10px;
 
 	width:80%;
-	height: auto;
+	height: 700px;
 	
+	background-color: #fff;
+
 	/*
 	background-image: url('../img/cork.png');
-	*/
 	background-repeat: repeat-x repeat-y;
+	*/
 }
 
 .menu {

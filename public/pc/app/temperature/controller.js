@@ -8,8 +8,8 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                     backgroundColor: 'transparent'
                 },
                 navigator: {
-                    adaptToUpdatedData: false,
                     enabled: true,
+                    adaptToUpdatedData: true,
                     series: []
                 },
                 rangeSelector: {
@@ -124,6 +124,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                 color: data.farbe
             };
             var navigator = {
+                id: data.nodeID,
                 data: data.data
             };
             

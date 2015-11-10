@@ -13,8 +13,7 @@ module.exports = {
 		});
 	},
 	sendMessages: function (callback){
-		// var query = "SELECT time(time/1000, 'unixepoch', 'localtime') AS time, type, author, message FROM messages WHERE time >=  (strftime('%s', datetime( 'now','-24 hour'))* 1000) AND time <=  strftime('%s','now') * 1000;";
-		var query = "SELECT time, type, author, message FROM messages WHERE time >=  (strftime('%s', datetime( 'now','-24 hour'))* 1000) AND time <=  strftime('%s','now') * 1000;";
+		var query = "SELECT time, type, author, message FROM messages WHERE time >= ( " + data + " - 86400 ) AND time <=  UNIX_TIMESTAMP(NOW()) * 1000;";
 		db.all(query , function(err, messages) {
 			if (err) {
 				console.log(err);
@@ -32,7 +31,7 @@ module.exports = {
 				console.log(latest);
 				console.log(err);
 			}else{
-				var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" AND time >=  (strftime('%s', datetime(("+ data +" /1000), 'unixepoch' ,'-24 hour'))* 1000) ORDER BY time DESC;";
+				var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" AND time >= ( " + data + " - 86400000 ) ORDER BY time DESC;";
 				db.all(query , function(err, messages) {
 					if (err) {
 						console.log(err);
@@ -41,17 +40,13 @@ module.exports = {
 						var messagesToSend = new Object;
 						messagesToSend.messages = messages;
 						messagesToSend.timestamp = data;
+
 						if(data <= latest[0].time){
 							messagesToSend.moreMessagesAvible = false;
 						}else{
 							messagesToSend.moreMessagesAvible = true;
 						}
 						callback(messagesToSend);
-						// if(messages == ""){							
-							
-						// }else{
-							
-						// }
 					}
 				});
 			}
