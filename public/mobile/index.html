@@ -32,6 +32,7 @@
 					<li><a ng-click="toggleMenu('/groups')">Gruppen</a></li>
 					<li><a ng-click="toggleMenu('/rooms')">Räume</a></li>
 					<li><a ng-click="toggleMenu('/temperature')">Temperaturen</a></li>
+					<li ng-show="activeUser.admin"><a href="../settings">Einstellungen</a></li>
 				</ul>
 			</snap-drawer>
 			<div snap-drawer="right" id="snap-drawer-right" style="width:300px;">

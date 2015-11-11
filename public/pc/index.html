@@ -33,6 +33,9 @@
 					<li role="presentation">
 						<a ng-click="switchPage('/rooms')">Räume</a>
 					</li>
+					<li role="presentation" ng-show="activeUser.admin">
+						<a href="../settings">Einstellungen</a>
+					</li>
 					<li role="presentation">
 						<div active-user-directive></div>
 					</li>
@@ -43,8 +46,9 @@
 		<div ng-view role="main">
 		</div>
 
-
-
+<!--
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+-->
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
 		<script src='/socket.io/socket.io.js'></script>

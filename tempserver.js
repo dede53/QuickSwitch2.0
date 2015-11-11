@@ -1,3 +1,9 @@
+/************************************************************
+
+	Wird später in den Timerserver gegliedert!!!
+
+************************************************************/
+
 var conf 			=	require('./config.json');
 
 var w1bus			= require('node-w1bus');

@@ -38,12 +38,14 @@ app.controller('activeUser', function($rootScope, $scope, socket){
 	socket.emit('newuser');
 	socket.on('newuser', function(data) {
 		$scope.values = data;
+		var admin = {name:"Admin", admin:"true"};
+		$scope.values.push(admin);
 	});
 	$scope.setUser = function() {
-		console.log($rootScope.activeUser);
-		console.log($scope.activeUser);
-		socket.emit('favoritDevices', $rootScope.activeUser);
-		setCookie("username", JSON.stringify($rootScope.activeUser), 365);
+		if($rootScope.activeUser.admin != 'true'){
+			socket.emit('favoritDevices', $rootScope.activeUser);
+			setCookie("username", JSON.stringify($rootScope.activeUser), 365);
+		}
 	}
 });
 
