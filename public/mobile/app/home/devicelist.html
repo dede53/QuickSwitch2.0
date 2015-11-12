@@ -46,21 +46,6 @@
 			{{devices.name}}
 			</div>
 			<div class="right">
-				<div ng-if="devices.protocol == 8" class="ui-block-b" style="text-align:right" data-snap-ignore="true">
-					<div class="box-btn-switch">
-						{{devices.status}}
-						<input 
-							type="range" 
-							min="{{devices.buttonLabelOn}}" 
-							max="{{devices.buttonLabelOff}}" 
-							ng-model="devices.status"
-							ng-model-options="{ debounce: 1000 }"
-							ng-change='switchdeviceSlider({"id":devices.deviceid})'
-							ng-model-options="{ updateOn: 'blur' }"
-						>
-						</input>
-					</div>
-				</div>
 				<div ng-if="devices.protocol != 8 " class="ui-block-b" style="text-align:right">
 					<div class="box-btn-switch">
 						<button class="btnOn" id="btnOn{{devices.deviceid}}" ng-click='switchdevice({"id":devices.deviceid,"status":"1"})' >
