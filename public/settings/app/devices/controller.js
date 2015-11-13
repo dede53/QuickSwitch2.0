@@ -29,6 +29,7 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 					name: "URL/WGET",
 					id: 2
 				},
+				/*
 				{ 
 					name: "Fritz!Dect 200",
 					id: 3
@@ -37,6 +38,7 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 					name: "Milight",
 					id: 4
 				},
+				*/
 				{ 
 					name: "Connair - Brennenstuhl",
 					id: 5
