@@ -97,14 +97,18 @@ module.exports = {
 				var alldata = new Array;
 				async.each(sensor,
 					function(sensor, callback){
-						//var query ="SELECT nodeid, time, temp / 100 as temp, time / 1000 as timestamp FROM sensor_data WHERE nodeid = " + sensor.nodeID + " AND time >= (UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 1 DAY)) * 1000) AND time <= (UNIX_TIMESTAMP() * 1000) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC";
+						// var query = "SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND (time/1000) <= UNIX_TIMESTAMP() AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 hour)) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC;";
 						var query ="SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC";
 						/*
-						SELECT nodeid ,time,temp FROM sensor_data
-							WHERE nodeid = " + sensor.nodeid + "
-							AND time >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 1 HOUR)) 
-							AND time <= UNIX_TIMESTAMP() 
+							
+							SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp 
+							FROM sensor_data 
+							WHERE nodeid = '" + sensor.nodeID + "' 
+							AND (time/1000) <= UNIX_TIMESTAMP() 
+							AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 hour)) 
+							GROUP BY (ROUND(timestamp/3600)*3600)
 							ORDER BY time ASC;
+SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND (time/1000) <= UNIX_TIMESTAMP() AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 hour)) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC;
 						*/
 						
 						db.all(query , function(err, data) {

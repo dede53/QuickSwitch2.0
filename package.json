@@ -38,5 +38,6 @@
   "bugs": {
     "url": "https://github.com/dede53/QuickSwitch/issues"
   },
-  "homepage": "https://github.com/dede53/QuickSwitch#readme"
+  "homepage": "https://github.com/dede53/QuickSwitch#readme",
+  "license": "ISC"
 }
