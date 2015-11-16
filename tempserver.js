@@ -58,4 +58,25 @@ function readSensors(){
 		}
 	});
 }
+/*
+switch(timer.type){
+	case"timer":
+		break;
+	case"interval":
+		switch(timer.action){
+			case"device":
+				var function = function(timer.actionid){
 
+				}
+				break;
+			case"room":
+				break;
+			case"group":
+				break;
+		}
+		var temp = later.parse.text('every ' + timer.time.interval_number + ' ' + timer.time.interval_unit);
+		var timerlist = later.setInterval(, temp);
+		break;
+
+}
+*/

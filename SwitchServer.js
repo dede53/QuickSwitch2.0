@@ -1,10 +1,3 @@
-/*
-var connair     =   {
-                    port:"49880",
-                        ip:"192.168.2.27"
-                    }
-var homematicIP = "192.168.2.47";
-*/
 
 var express     = require('express');
 var app         = express();
@@ -143,9 +136,9 @@ function sendURL(status, data){
 }
 
 function fritzdect(status, data){
-	var moreParam = { url:"192.168.2.1" };
+	var moreParam = { url: conf.fritzbox.ip };
 	// fritz.getSessionID("user", "password", function(sid){
-	fritz.getSessionID("daniel", "hallomarcel", function(sid){
+	fritz.getSessionID(conf.fritzbox.user, conf.fritzbox.password, function(sid){
 		console.log(sid);
 		if(status == 1){
 			fritz.setSwitchOn(sid, data.CodeOn, function(sid){
