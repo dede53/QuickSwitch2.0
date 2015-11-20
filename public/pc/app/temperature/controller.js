@@ -15,6 +15,20 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                 rangeSelector: {
                     enabled: true,
                     buttons: [{
+                        type: 'hour',
+                        count: '12',
+                        text: '12H'
+                    }, {
+                        type: 'hour',
+                        count: '24',
+                        text: '24H'
+                    },{
+                        type: 'all',
+                        count: 'all',
+                        text: 'Alle'
+                    }]
+                    /*
+                    buttons: [{
                         type: 'day',
                         text: 'Day'
                     }, {
@@ -41,6 +55,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
                         type: 'all',
                         text: 'All'
                     }]
+                    */
                 },
                 plotOptions: {
                     series: {

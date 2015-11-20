@@ -16,8 +16,7 @@ var conf        = require('./config.json');
 var connair     = conf.connair;
 var homematicIP = conf.homematicIP;
 
-console.log(connair);
-console.log(homematicIP);
+
 
 app.use(bodyParser.json());                             // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));     // for parsing application/x-www-form-urlencoded
@@ -66,8 +65,8 @@ function switchdevice( status, data){
 }
 
 function setGPIO(status, data){
-    console.log(status);
-    piblaster.setPwm(data.CodeOn, status );
+    console.log(status / 100);
+    piblaster.setPwm(data.CodeOn, status / 100 );
 }
 
 function sendEXEC(status, data){

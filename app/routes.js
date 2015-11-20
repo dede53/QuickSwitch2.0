@@ -6,6 +6,9 @@ var userFunctions 			= require('./functions/user.js');
 
 module.exports = function(app, db){
 	// Initial web request.
+	app.get('/', function(req, res) {
+		res.sendfile(__dirname + '/public/index.html');
+	});
 	app.get('/mobile', function(req, res) {
 		res.sendfile(__dirname + '/public/mobile');
 	});

@@ -6,7 +6,7 @@ module.exports = {
 		app.io.broadcast('switchDevice', {"device":data,"status":action});
 		
 		request.post({
-			url:'http://' + conf.switchserver.ip + ':' + conf.switchserver.port + '/switch/',
+			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/switch/',
 			form:
 				{
 					status: action,

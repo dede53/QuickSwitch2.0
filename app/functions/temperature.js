@@ -97,8 +97,8 @@ module.exports = {
 				var alldata = new Array;
 				async.each(sensor,
 					function(sensor, callback){
-						// var query = "SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND (time/1000) <= UNIX_TIMESTAMP() AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 hour)) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC;";
-						var query ="SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC";
+						var query = "SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND (time/1000) <= UNIX_TIMESTAMP() AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 36 hour)) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC;";
+						//var query ="SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC";
 						/*
 							
 							SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp 

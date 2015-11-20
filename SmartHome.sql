@@ -74,7 +74,8 @@ CREATE TABLE IF NOT EXISTS `devices` (
   `buttonLabelOff` varchar(20) NOT NULL,
   `CodeOn` varchar(200) NOT NULL,
   `CodeOff` varchar(200) NOT NULL,
-  `roomid` int(11) NOT NULL
+  `roomid` int(11) NOT NULL,
+  `switchserver` INT(11) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
 
 -- --------------------------------------------------------

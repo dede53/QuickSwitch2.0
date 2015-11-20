@@ -63,12 +63,12 @@ module.exports = {
 		});
 	},
 	saveNewDevice: function (data, req, res, callback) {
-		var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"');";
+		var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
 		db.run(query);
 		callback(201);
 	},
 	saveEditDevice: function (data, req, res, callback) {
-		var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"' WHERE deviceid = '"+ data.deviceid +"';";
+		var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
 		db.run(query);
 		callback(201);
 	},
@@ -96,7 +96,7 @@ module.exports = {
 		});
 	},
 	switchDevice: function (app, id, status, req, res, callback) {
-		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE deviceid = '" + id + "' AND devices.roomid = rooms.id;";
+		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE deviceid = '" + id + "' AND devices.roomid = rooms.id;";
 		db.all(query , function(err, row) {
 			if (err) {
 				console.log(err);
@@ -118,7 +118,7 @@ module.exports = {
 		});
 	},
 	switchDevices: function (app, status, req, res, callback) {
-		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND status != " + status + ";";
+		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND status != " + status + ";";
 		db.all(query , function(err, row) {
 			if (err) {
 				log(err, "error");

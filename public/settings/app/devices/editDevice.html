@@ -52,6 +52,10 @@
 						<select ng-model="editDevice.device.protocol" ng-options="obj.id as obj.name for obj in options"></select>
 					</li>
 					<li>
+						<label for="switchserver">Switchserver</label>
+						<input ng-model="editDevice.device.switchserver"></input>
+					</li>
+					<li>
 						<button ng-click="submitnew()">Speichern</button>
 						<button ng-click="abort('/devices')">Abbrechen</button>
 					</li>

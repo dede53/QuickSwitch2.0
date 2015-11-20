@@ -4,6 +4,7 @@ var onewire			= require('./app/functions/onewire.js');
 var later 			= require('later');
 var fs 				= require('fs');
 var async 			= require("async");
+var gpio 			= require('rpi-gpio');
 var intervals		= {};
 						later.date.localTime();
 // var sched			=	later.parse.text('every 10 sec');
@@ -148,6 +149,12 @@ function checkTimer(){
 									switchtimer = false;
 									break;
 							}
+							break;
+						case "gpio":
+							gpio.setup(7, gpio.DIR_IN);
+							gpio.read(condition.gpiopin , function(err, value) {
+        						console.log('The value is ' + value);
+    						});
 							break;
 					}
 				});

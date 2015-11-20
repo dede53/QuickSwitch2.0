@@ -37,7 +37,8 @@ module.exports = function(app, db){
 				"CodeOn": req.data.CodeOn,
 				"CodeOff": req.data.CodeOff,
 				"protocol": req.data.protocol,
-				"room": req.data.room
+				"room": req.data.room,
+				"switchserver": req.data.switchserver
 			};
 			deviceFunctions.saveNewDevice(data, req, res, function(data){
 				deviceFunctions.getDevices('object', req, res, function(data){
@@ -54,7 +55,8 @@ module.exports = function(app, db){
 					"CodeOn": req.data.CodeOn,
 					"CodeOff": req.data.CodeOff,
 					"protocol": req.data.protocol,
-					"room": req.data.room
+					"room": req.data.room,
+					"switchserver": req.data.switchserver
 				};
 			deviceFunctions.saveEditDevice(data, req, res, function(data){
 				deviceFunctions.getDevices('object',req, res, function(data){

@@ -18,8 +18,8 @@
 											min="{{device.buttonLabelOn}}" 
 											max="{{device.buttonLabelOff}}" 
 											ng-model="device.status" 
-											ng-change='switchdevicelider({"id":device.deviceid})'
-											ng-model-options="{ updateOn: 'blur' }"
+											ng-change='switchdevicelider({"device":device})'
+											ng-model-options="{ debounce: 50 }"
 										>
 										</input>
 									</div>
