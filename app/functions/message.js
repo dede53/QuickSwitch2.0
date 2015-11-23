@@ -32,6 +32,7 @@ module.exports = {
 				console.log(err);
 			}else{
 				var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" AND time >= ( " + data + " - 86400000 ) ORDER BY time DESC;";
+				console.log(query);
 				db.all(query , function(err, messages) {
 					if (err) {
 						console.log(err);

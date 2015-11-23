@@ -1,12 +1,13 @@
 app.controller('chatController', function($scope, socket){
 	
-	$scope.sharedMessages = new Array;
-	$scope.moreMessagesAvible = true;
+
 	$scope.link = {};
 	$scope.link.type = "1";
 
 	var now = Math.floor(Date.parse(new Date));
-	socket.emit('loadOldMessages', now );
+	if($scope.sharedMessages == ""){
+		socket.emit('loadOldMessages', now );
+	}
 	socket.on('oldMessages', function(data){
 		$scope.moreMessagesAvible = data.moreMessagesAvible;
 		if(data.moreMessagesAvible == true){

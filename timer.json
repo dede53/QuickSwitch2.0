@@ -1,5 +1,26 @@
 [
 	{
+		"id": 1,
+		"name": "Checke Heizung",
+		"condition":[
+			{
+				"type":"sensor",
+				"sensorid":"28-00044ea0e5ff",
+				"condition":"größergleich",
+				"value": "30"
+			}
+		],
+		"action": [
+		/*
+			{
+				"type": "device",
+				"actionid":18,
+				"status": "off"
+			}
+			*/
+		]
+	},
+	{
 		"id": 2,
 		"name": "Sensoren Speichern",
 		"condition":[

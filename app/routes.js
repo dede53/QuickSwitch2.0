@@ -130,7 +130,11 @@ module.exports = function(app, db){
 	});
 	app.get('/sensor/:id/:date', function (req, res) {
 		temperatureFunctions.getSensorvalues(req, res, function(data){
-			console.log(data);
+			res.send(data);
+		});
+	});
+	app.get('/sensors', function (req, res) {
+		temperatureFunctions.getSensors(req, res, function(data){
 			res.send(data);
 		});
 	});

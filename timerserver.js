@@ -5,6 +5,7 @@ var later 			= require('later');
 var fs 				= require('fs');
 var async 			= require("async");
 var gpio 			= require('rpi-gpio');
+var request 		= require('request');
 var intervals		= {};
 						later.date.localTime();
 // var sched			=	later.parse.text('every 10 sec');
@@ -186,7 +187,10 @@ function checkTimer(){
 							case "device":
 							case "group":
 							case "room":
-								switchaction(action.type, action.actionid, status);	
+								console.log(status);
+									status = action.status;
+									switchaction(action.type, action.actionid, status);	
+									
 								break;
 							case "saveSensors":
 								onewire.saveSensors();
@@ -228,4 +232,5 @@ function switchaction(type, id, action){
 				console.log("Erfolgreich an den SwitchServer gesendet");
 			}
 		});
+		console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
 }

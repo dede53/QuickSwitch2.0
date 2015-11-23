@@ -1,16 +1,22 @@
 app.controller('chatController', function($scope, socket){
-	
-	$scope.sharedMessages = new Array;
-	$scope.moreMessagesAvible = true;
 	$scope.link = {};
 	$scope.link.type = "1";
+	$scope.moreMessagesAvible = true;
+	$scope.sharedMessages = new Array;
 
-	var now = Math.floor(Date.parse(new Date));
-	socket.emit('loadOldMessages', now );
+	//if($scope.sharedMessages === undefined){
+		console.log("undefined");
+		console.log($scope.sharedMessages);
+		
+		var now = Math.floor(Date.parse(new Date));
+		socket.emit('loadOldMessages', now );
+	//}
 	socket.on('oldMessages', function(data){
 		$scope.moreMessagesAvible = data.moreMessagesAvible;
 		if(data.moreMessagesAvible == true){
+			console.log(data);
 			if(data.messages == ""){
+				console.log(data.timestamp -(1000 * 60 * 60 * 24));
 				socket.emit('loadOldMessages', data.timestamp - (1000 * 60 * 60 * 24));
 			}else{
 				data.messages.forEach(function(message){
