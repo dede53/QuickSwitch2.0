@@ -10,14 +10,7 @@
 				"value": "30"
 			}
 		],
-		"action": [
-		/*
-			{
-				"type": "device",
-				"actionid":18,
-				"status": "off"
-			}
-			*/
+		"action": [	
 		]
 	},
 	{
@@ -44,14 +37,14 @@
 			{
 				"type":"time",
 				"start": {
-					"time": "17:07",
+					"time": "sunrise",
 					"offset": {
-						"number": "",
-						"unit": ""
+						"number": "90",
+						"unit": "+"
 					}
 				},
 				"stop": {
-					"time": "17:09",
+					"time": "sunrise",
 					"offset": {
 						"number": "",
 						"unit": ""
@@ -75,6 +68,10 @@
 				"sensorid":1,
 				"condition":"größergleich",
 				"value": "12"
+			},
+			{
+				"type":"gpio",
+				"gpiopin": "7"
 			}
 		],
 		"action": [

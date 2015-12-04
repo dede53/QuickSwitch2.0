@@ -143,7 +143,7 @@ module.exports = {
 	},
 	favoritDevices: function (data, req, res, callback){
 		var favoritDevices = JSON.parse(data.favoritDevices);
-		console.log(favoritDevices);
+		// console.log(favoritDevices);
 		if(favoritDevices == ""){
 			console.log("Keine Geräte gewählt!");
 		}else{

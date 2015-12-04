@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `SmartHome`
 --
-CREATE DATABASE IF NOT EXISTS `SmartHomeee` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE IF NOT EXISTS `SmartHome` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `SmartHomeee`;
 
 -- --------------------------------------------------------
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `charttypen` (
 --
 
 CREATE TABLE IF NOT EXISTS `countdowns` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   `switchid` int(11) NOT NULL,

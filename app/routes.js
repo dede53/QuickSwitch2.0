@@ -3,9 +3,9 @@ var roomFunctions 			= require('./functions/room.js');
 var groupFunctions 			= require('./functions/group.js');
 var temperatureFunctions 	= require('./functions/temperature.js');
 var userFunctions 			= require('./functions/user.js');
+var messageFunctions 		= require('./functions/message.js');
 
 module.exports = function(app, db){
-	// Initial web request.
 	app.get('/', function(req, res) {
 		res.sendfile(__dirname + '/public/index.html');
 	});
@@ -22,11 +22,7 @@ module.exports = function(app, db){
 	});
 
 	// REST JSON API
-	app.get('/room', function (req, res) {
-		deviceFunctions.getRoomlist(req, res, function(data){
-			res.json(data);
-		});
-	});
+
 	app.get('/switches', function (req, res) {
 		deviceFunctions.getDevices('object',req, res, function(data){
 			res.json(data);
@@ -43,18 +39,31 @@ module.exports = function(app, db){
 			res.json(data);
 		});
 	});
-
-	app.get('/groups', function (req, res) {
-		groupFunctions.getGroups(req, res, function(data){
+	app.put('/switches/:id', function (req, res) {
+		id = req.params.id;
+		status = req.body.status;
+		deviceFunctions.switchDevice(app, id, status, req, res, function(data){
+			if(data == 200){
+				console.log('Successful: Switch Device with id: ' + id + " to " + status);
+				res.json(200);
+			}
+		});
+	});
+	app.put('/switches', function (req, res) {
+		status = req.body.status;
+		deviceFunctions.switchDevices(app, status, req, res, function(data){
+			if(data == 200){
+				console.log('Successful: Switch Devices ' + status);
+				res.json(200);
+			}
+		});
+	});
+	app.delete('/switches/:id', function (req, res) {
+		var id = req.params.id;
+		deviceFunctions.deleteDevice(id, req, res, function(data){
 			res.json(data);
 		});
 	});
-	app.get('/rooms', function (req, res) {
-		roomFunctions.getRooms(req, res, function(data){
-			res.json(data);
-		});
-	});
-
 	app.get('/switch/:type/:id/:status', function (req, res) {
 		var id = req.params.id;
 		var status = req.params.status;
@@ -102,32 +111,24 @@ module.exports = function(app, db){
 		}
 	});
 
-
-
-	app.put('/switches/:id', function (req, res) {
-		id = req.params.id;
-		status = req.body.status;
-		deviceFunctions.switchDevice(app, id, status, req, res, function(data){
-			if(data == 200){
-				console.log('Successful: Switch Device with id: ' + id + " to " + status);
-				res.json(200);
-			}
-		});
-	});
-	app.put('/switches', function (req, res) {
-		status = req.body.status;
-		deviceFunctions.switchDevices( status, req, res, function(data){
-			if(data == 200){
-				console.log('Successful: Switch Devices ' + status);
-				res.json(200);
-			}
-		});
-	});
-	app.delete('/switches/:id', function (req, res) {
-		deviceFunctions.deleteDevice(req, res, function(data){
+	app.get('/rooms', function (req, res) {
+		roomFunctions.getRooms(req, res, function(data){
 			res.json(data);
 		});
 	});
+	app.get('/rooms/:id', function (req, res) {
+		var id = req.params.id;
+		deviceFunctions.getRoom(id, req, res, function(data){
+			res.json(data);
+		});
+	});
+	app.get('/groups', function (req, res) {
+		groupFunctions.getGroups(req, res, function(data){
+			res.json(data);
+		});
+	});
+
+
 	app.get('/sensor/:id/:date', function (req, res) {
 		temperatureFunctions.getSensorvalues(req, res, function(data){
 			res.send(data);
@@ -140,6 +141,13 @@ module.exports = function(app, db){
 	});
 	app.get('/getUsers', function(req,res){
 		userFunctions.getUsers( req, res, function(data){
+			res.json(data);
+		});
+	});
+
+	app.get('/getMessages/:data', function(req,res){
+		var data = req.params.data;
+		messageFunctions.loadOldMessages(data, function(data){
 			res.json(data);
 		});
 	});

@@ -37,7 +37,7 @@ app.config(['$routeProvider', function($routeProvider) {
 
 app.controller('appController', function($rootScope, $scope, $location){
 
-	
+
 	$scope.storedUser = getCookie("username");
 
 	if ($scope.storedUser != "") {

@@ -24,6 +24,24 @@ module.exports = {
 		});
 	},
 	loadOldMessages: function (data, callback){
+				var query = "SELECT time, type, author, message FROM messages WHERE time < '" + data + "' ORDER BY time DESC LIMIT 1;";
+				db.all(query, function(err, messages){
+					if (err) {
+						console.log(err);
+					}else{
+						console.log(messages);
+						var messagesToSend = new Object;
+						messagesToSend.messages = messages;
+
+						if(messages == ""){
+							messagesToSend.moreMessagesAvible = false;
+						}else{
+							messagesToSend.moreMessagesAvible = true;
+						}
+						callback(messagesToSend);
+					}
+				});
+				/*
 		var query = "SELECT * FROM messages LIMIT 1;";
 		db.all(query , function(err, latest) {
 			if (err || latest == "") {
@@ -31,12 +49,12 @@ module.exports = {
 				console.log(latest);
 				console.log(err);
 			}else{
-				var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" AND time >= ( " + data + " - 86400000 ) ORDER BY time DESC;";
-				console.log(query);
+				// var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" AND time >= ( " + data + " - 86400000 ) ORDER BY time DESC;";
+				var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" ORDER BY time DESC LIMIT 1 ";
+				//console.log(query);
 				db.all(query , function(err, messages) {
 					if (err) {
 						console.log(err);
-						// callback(404);
 					}else{
 						var messagesToSend = new Object;
 						messagesToSend.messages = messages;
@@ -51,6 +69,6 @@ module.exports = {
 					}
 				});
 			}
-		});
+		});*/
 	}
 }

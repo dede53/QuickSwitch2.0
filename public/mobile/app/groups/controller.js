@@ -17,5 +17,4 @@ app.controller('groupsController',  function($scope, $rootScope, socket) {
 	$scope.switchgroup = function(data) {
 		socket.emit('switchGroup', data);
 	}
-	
 });

@@ -1,15 +1,15 @@
-<ul style="height:300px; overflow:auto">				
-	<li ng-show="moreMessagesAvible">
-		<button ng-click = "loadOldMessages()">ältere Laden</button>
-		<p>{{sharedMessages[0].time | date:'d. MMMM yyyy'}}</p>
-	</li>
+<ul style="height:300px; overflow:auto">
 	<li ng-hide="moreMessagesAvible">
 		<p id="italic">Keine weiteren Nachrichten Verfügbar!</p>
 	</li>
-	<li ng-repeat="message in sharedMessages">
+	<li ng-show="moreMessagesAvible">
+		<button ng-click = "loadOldMessages()">ältere Laden</button>
+		<!--<p>{{sharedMessages[0].time | date:'d. MMMM yyyy'}}</p>-->
+	</li>
+	<li ng-repeat="message in sharedMessages track by $index">
 		<div ng-if="message.type == '1'">
 			<p id="message{{message.time}}">
-				<span id="italic">{{message.time | date:'HH:mm'}}</span>  {{message.author}}: {{message.message}}
+				<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>  {{message.author}}: {{message.message}}
 			</p>
 		</div>
 		<div ng-if="message.type == '2'">
@@ -27,11 +27,5 @@
 	<input type="text" 		id="message" 	ng-model="link.message" placeholder="Neue Nachricht eingeben" ></input>
 			<input type="radio" ng-model="link.type" value="1" >Text</radio>
 			<input type="radio" ng-model="link.type" value="2" >Link</radio>
-	<!--
-	<select id="type" ng-model="link.type">
-		<option value="1" >Text</option>
-		<option value="2" >Link</option>
-	</select>
-	-->	
 	<button ng-click="sendMessage()">Senden!</button>
 </form>
