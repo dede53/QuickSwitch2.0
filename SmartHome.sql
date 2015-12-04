@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 -- Datenbank: `SmartHome`
 --
 CREATE DATABASE IF NOT EXISTS `SmartHome` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `SmartHomeee`;
+USE `SmartHome`;
 
 -- --------------------------------------------------------
 
