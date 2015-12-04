@@ -3,7 +3,7 @@ var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
 
 module.exports = {
-	 switchGroup: function(app, group, status, req, res, callback) {
+	switchGroup: function(app, group, status, req, res, callback){
 		var groupDevices = JSON.parse(group.groupDevices);
 		var devices = new Object;
 		var string = "";

@@ -21,11 +21,3 @@ app.directive('activeUserDirective', function ($rootScope) {
 		controller: 'activeUser' //Embed a custom controller in the directive
     };
 });
-
-app.directive('chatListDirective', function ($rootScope) {
-    return {
-        restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-        templateUrl: './app/chat/index.html',
-        controller: 'chatController' //Embed a custom controller in the directive
-    };
-});

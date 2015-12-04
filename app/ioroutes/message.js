@@ -26,7 +26,8 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('loadOldMessages', function(req){
 		messageFunctions.loadOldMessages(req.data, function(data){
-			req.io.emit('oldMessages', data);
+			console.log("Daten Abfragen!!!!");
+			req.io.emit('1234', data);
 		});
 	});
 }

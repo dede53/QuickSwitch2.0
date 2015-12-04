@@ -37,7 +37,7 @@ make
 sudo make install
 sudo ./pi-blaster
 
-
+cd
 echo "Lade QuickSwitch2.0..."
 git clone https://github.com/dede53/QuickSwitch2.0
 

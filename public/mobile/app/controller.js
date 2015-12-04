@@ -38,6 +38,10 @@ app.config(['$routeProvider', function($routeProvider) {
 }]);
 
 app.controller('appController', function($rootScope, $scope, $location){
+
+	$rootScope.moreMessagesAvible = true;
+	$rootScope.sharedMessages = new Array;
+	
 	$scope.storedUser = getCookie("username");
 
 	if ($scope.storedUser != "") {

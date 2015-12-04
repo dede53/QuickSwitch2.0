@@ -5,8 +5,8 @@ html, body {
 
 ul, ol{
 	list-style-type: none;
-	padding: 0px;
-	margin:0px;
+	padding: 0px !important;
+	margin:0px !important;
 }
 
 .snap-content {
@@ -61,18 +61,16 @@ button{
 	
 	border:0px;
 	border-radius:0px;
-	margin:2px 0px;
+	margin:1px 0px;
 }
 .btnOn{
+	margin:1px 0px;
 	background-color:#c0ffc0;
-	/*
-*/
 	width: 85px;
 }
 .btnOff{
+	margin:1px 0px;
 	background-color:#ffc0c0;
-/*
-*/
 	width: 85px;
 }
 .left{

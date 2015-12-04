@@ -1,5 +1,19 @@
 [
 	{
+		"id": 1,
+		"name": "Checke Heizung",
+		"condition":[
+			{
+				"type":"sensor",
+				"sensorid":"28-00044ea0e5ff",
+				"condition":"größergleich",
+				"value": "30"
+			}
+		],
+		"action": [	
+		]
+	},
+	{
 		"id": 2,
 		"name": "Sensoren Speichern",
 		"condition":[
@@ -23,14 +37,14 @@
 			{
 				"type":"time",
 				"start": {
-					"time": "17:07",
+					"time": "sunrise",
 					"offset": {
-						"number": "",
-						"unit": ""
+						"number": "90",
+						"unit": "+"
 					}
 				},
 				"stop": {
-					"time": "17:09",
+					"time": "sunrise",
 					"offset": {
 						"number": "",
 						"unit": ""
@@ -54,6 +68,10 @@
 				"sensorid":1,
 				"condition":"größergleich",
 				"value": "12"
+			},
+			{
+				"type":"gpio",
+				"gpiopin": "7"
 			}
 		],
 		"action": [

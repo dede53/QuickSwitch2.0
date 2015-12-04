@@ -1,17 +1,24 @@
-var conf 			= require('./config.json');
-var db 				= require('./app/functions/database.js');
+var conf			= require('./config.json');
+var db				= require('./app/functions/database.js');
 var onewire			= require('./app/functions/onewire.js');
-var later 			= require('later');
-var fs 				= require('fs');
-var async 			= require("async");
-var gpio 			= require('rpi-gpio');
+var later			= require('later');
+var fs				= require('fs');
+var async			= require("async");
+var gpio			= require('rpi-gpio');
+var request			= require('request');
+
+var SunCalc			= require('suncalc');
+var suntimes		= SunCalc.getTimes(new Date(), 51.5, -0.1);
+
 var intervals		= {};
-						later.date.localTime();
+
+later.date.localTime();
+
 // var sched			=	later.parse.text('every 10 sec');
 var sched			=	later.parse.text('every 1 min');
 var tim				=	later.setInterval(checkTimer, sched);
-onewire.saveSensors();
 
+checkTimer();
 
 function checkTimer(){
 	var timers = JSON.parse(fs.readFileSync('timer.json', 'utf8'));
@@ -50,29 +57,69 @@ function checkTimer(){
 					switch(condition.type){
 						case "time":
 							console.log("	Prüfe Zeit...");
-							console.log("	Startzeit..." + condition.start.time);
 							switch(condition.start.time){
 								case "sunset":
+									console.log("	Sonnenuntergang:");
+									var sunset = getSuntime("sunset", condition.start.offset);
+									console.log("		Schaltzeit: 	" + sunset);
+									if(condition.start.time == sunset){
+										console.log("		Ergebnis: 	stimmt \n");
+										var switchon = true;
+									}else{
+										console.log("		Ergebnis: 	stimmt nicht \n");
+										var switchon = false;
+									}
 									break;
 								case "sunrise":
+									console.log("	Sonnenaufgang:");
+									var sunrise = getSuntime("sunrise", condition.start.offset);
+									console.log("		Schaltzeit: 	" + sunrise);
+									if(condition.start.time == sunrise){
+										console.log("		Ergebnis: 	stimmt \n");
+										var switchon = true;
+									}else{
+										console.log("		Ergebnis: 	stimmt nicht \n");
+										var switchon = false;
+									}
 									break;
 								default:
+									console.log("	Startzeit..." + condition.start.time);
 									if(condition.start.time == now){
 										console.log("	Ergebnis: 	stimmt \n");
 										var switchon = true;
 									}else{
-										var switchon = false;
 										console.log("	Ergebnis: 	stimmt nicht \n");
+										var switchon = false;
 									}
 									break;
 							}
-							console.log("	Stopzeit..." + condition.stop.time);
 							switch(condition.stop.time){
 								case "sunset":
+									console.log("	Sonnenuntergang:");
+									var sunset = getSuntime("sunset", condition.stop.offset);
+									console.log("		Schaltzeit: 	" + sunset);
+									if(condition.stop.time == sunset){
+										console.log("		Ergebnis: 	stimmt \n");
+										var switchoff = true;
+									}else{
+										console.log("		Ergebnis: 	stimmt nicht \n");
+										var switchoff = false;
+									}
 									break;
 								case "sunrise":
+									console.log("	Sonnenaufgang:");
+									var sunrise = getSuntime("sunrise", condition.stop.offset);
+									console.log("		Schaltzeit: 	" + sunrise);
+									if(condition.stop.time == sunrise){
+										console.log("		Ergebnis: 	stimmt \n");
+										var switchoff = true;
+									}else{
+										console.log("		Ergebnis: 	stimmt nicht \n");
+										var switchoff = false;
+									}
 									break;
 								default:
+									console.log("	Stopzeit..." + condition.stop.time);
 									if(condition.stop.time == now){
 										console.log("	Ergebnis: 	stimmt \n");
 										switchoff = true;
@@ -82,23 +129,23 @@ function checkTimer(){
 									}
 									break;
 							}
-								if(switchon == true && switchoff == true){
-									console.log("error: Beide schaltzeiten sind gleich!");
-									switchtimer = false;
-								}else if(switchon == true){
-									switchtimer = "on";
-								}else if(switchoff == true){
-									switchtimer = "off";
-								}else{
-									switchtimer = false;
-								}
+							if(switchon == true && switchoff == true){
+								console.log("error: Beide schaltzeiten sind gleich!");
+								switchtimer = false;
+							}else if(switchon == true){
+								switchtimer = "on";
+							}else if(switchoff == true){
+								switchtimer = "off";
+							}else{
+								switchtimer = false;
+							}
 							break;
 						case "weekdays":
 							console.log("	Prüfe Wochentag...");
 							if(condition.weekdays[tag] == 1){
-								console.log("	Ergebnis: 	stimmt \n");
+								console.log("		Ergebnis: 	stimmt \n");
 							} else{
-								console.log("	Ergebnis: 	stimmt nicht \n");
+								console.log("		Ergebnis: 	stimmt nicht \n");
 								switchtimer = false;
 							}
 							break;
@@ -107,41 +154,41 @@ function checkTimer(){
 							switch(condition.condition){
 								case"größer":
 									if(sensorvalues[condition.sensorid].temp > condition.value){
-										console.log("	Ergebnis: 	stimmt \n");
+										console.log("		Ergebnis: 	stimmt \n");
 									}else{
-										console.log("	Ergebnis: 	stimmt nicht \n");
+										console.log("		Ergebnis: 	stimmt nicht \n");
 										switchtimer = false;
 									}
 									break;
 								case"kleiner":
 									if(sensorvalues[condition.sensorid].temp < condition.value){
-										console.log("	Ergebnis: 	stimmt \n");
+										console.log("		Ergebnis: 	stimmt \n");
 									}else{
-										console.log("	Ergebnis: 	stimmt nicht \n");
+										console.log("		Ergebnis: 	stimmt nicht \n");
 										switchtimer = false;
 									}
 									break;
 								case"gleich":
 									if(sensorvalues[condition.sensorid].temp = condition.value){
-										console.log("	Ergebnis: 	stimmt \n");
+										console.log("		Ergebnis: 	stimmt \n");
 									}else{
-										console.log("	Ergebnis: 	stimmt nicht \n");
+										console.log("		Ergebnis: 	stimmt nicht \n");
 										switchtimer = false;
 									}
 									break;
 								case"größergleich":
 									if(sensorvalues[condition.sensorid].temp >= condition.value){
-										console.log("	Ergebnis: 	stimmt \n");
+										console.log("		Ergebnis: 	stimmt \n");
 									}else{
-										console.log("	Ergebnis: 	stimmt nicht \n");
+										console.log("		Ergebnis: 	stimmt nicht \n");
 										switchtimer = false;
 									}
 									break;
 								case"kleinergleich":
 									if(sensorvalues[condition.sensorid].temp <= condition.value){
-										console.log("	Ergebnis: 	stimmt \n");
+										console.log("		Ergebnis: 	stimmt \n");
 									}else{
-										console.log("	Ergebnis: 	stimmt nicht \n");
+										console.log("		Ergebnis: 	stimmt nicht \n");
 										switchtimer = false;
 									}
 									break;
@@ -151,26 +198,21 @@ function checkTimer(){
 							}
 							break;
 						case "gpio":
-							gpio.setup(7, gpio.DIR_IN);
-							gpio.read(condition.gpiopin , function(err, value) {
-        						console.log('The value is ' + value);
-    						});
 							break;
 					}
 				});
 				if(switchtimer){
-					console.log("Bedingungen erfüllt! Schalte " + switchtimer + " \n");
+					console.log("	Bedingungen erfüllt! Schalte " + switchtimer + " \n");
 				}else{
-					console.log("Bedingungen nicht erfüllt! \n");
+					console.log("	Bedingungen nicht erfüllt! \n");
 				}
 				if(switchtimer != false){
 					var status = switchtimer;
 					timer.action.forEach(function(action){
 						switch(action.type){
 							case "interval":
-								console.log("Setze ein Interval!");
+								console.log("	Setze ein Interval!");
 								var sched			=	later.parse.text('every ' + action.interval.number + ' ' + action.interval.unit);
-								//var sched			=	later.parse.text('every 1 min');
 								var id = action.interval.id;
 								if(intervals[id] == undefined){
 									switch(action.interval.action){
@@ -178,15 +220,18 @@ function checkTimer(){
 											intervals[id] = later.setInterval(onewire.saveSensors , sched);
 										break;
 									}
-									console.log("Neues Interval mit der id: " + id + " angelegt!");
+									console.log("	Neues Interval mit der id: " + id + " angelegt!\n");
 								}else{
-									console.log("Interval wurde schon gesetzt!");
+									console.log("	Interval wurde schon gesetzt!\n");
 								}
 								break;
 							case "device":
 							case "group":
 							case "room":
-								switchaction(action.type, action.actionid, status);	
+								console.log(status);
+									status = action.status;
+									switchaction(action.type, action.actionid, status);	
+									
 								break;
 							case "saveSensors":
 								onewire.saveSensors();
@@ -228,4 +273,43 @@ function switchaction(type, id, action){
 				console.log("Erfolgreich an den SwitchServer gesendet");
 			}
 		});
+		console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
+}
+function getSuntime(type, offset){
+	if(type == "sunrise"){
+		var suntime 		= new Date(suntimes.sunrise);
+	}else{
+		var suntime 		= new Date(suntimes.sunset);
+	}
+	var hours 		= suntime.getHours();
+	var minutes 	= suntime.getMinutes();
+
+	if(offset.number != ""){
+		if(type == "sunrise"){
+			console.log("		Sonnenaufgang:	" + hours + ':' + minutes);
+		}else{
+			console.log("		Sonnenuntergang:	" + hours + ':' + minutes);
+		}
+		console.log("		Offset:		" + offset.number);
+		var allInMin = hours * 60 + minutes;
+
+		if(offset.unit == "+"){
+			var newTime = allInMin + parseInt(offset.number);
+		}else{
+			var newTime = allInMin - parseInt(offset.number);
+		}
+
+		var hours = Math.round(newTime / 60);
+		var minutes = newTime % 60;
+	}
+
+	if(minutes <= 9){
+		minutes = "0" + minutes;
+	}
+	if(hours <= 9){
+		hours = "0" + hours;
+	}
+
+	var now = hours + ':' + minutes;
+	return now;
 }

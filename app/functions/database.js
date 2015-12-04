@@ -41,12 +41,12 @@ module.exports = db;
 var mysql		=	require('mysql');
 
 var pool      =    mysql.createPool({
-    connectionLimit : 100,
-    host     : 'localhost',
-    user     : 'root',
-    password : 'daniel',
-    database : 'SmartHome',
-    debug    :  false
+	connectionLimit : 100,
+	host     : 'localhost',
+	user     : 'root',
+	password : 'daniel',
+	database : 'SmartHome',
+	debug    :  false
 });
 
 require('events').EventEmitter.prototype._maxListeners = 100;
@@ -56,13 +56,14 @@ module.exports = {
 	all : function(query, callback) {
 		pool.getConnection(function(err,connection){
 			if (err) {
-				connection.release();
 				console.log({"code" : 100, "status" : "Error in connection database"});
+				console.log(err);
 				callback(err);
+				connection.release();
 				// return;
 			}
 
-			console.log('connected as id ' + connection.threadId);
+			// console.log('connected as id ' + connection.threadId);
 
 			connection.query(query, function(err,rows){
 				connection.release();
@@ -128,7 +129,7 @@ module.exports = {
 				// return;
 			});
 		});
-	},
+	}
 }
 
 
