@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 app.directive('roomdevicesDirective', function($rootScope){
 	return {
 		restrict: 'EA',
@@ -35,17 +34,4 @@ app.directive('activeDevicesDirective', function ($rootScope) {
 		templateUrl: './app/devices/template-active.html',
 		controller: 'activeDevices'
 	};
-=======
-app.directive('buttonDirective', function ($rootScope) {
-    return {
-        restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-        templateUrl: './app/devices/button.html'
-    };
-});
-app.directive('sliderDirective', function ($rootScope) {
-    return {
-        restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-        templateUrl: './app/devices/slider.html'
-    };
->>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 });
