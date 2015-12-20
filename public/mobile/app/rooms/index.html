@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <h1>Räume</h1>
 <ul ng-repeat="room in roomlist">
 	<li>
@@ -10,17 +9,4 @@
 			<button class="btnOff" id="btnOff{{room.id}}" ng-click='switchroom({"room":room,"status":"0"})' >Aus</button>
 		</div>
 	</li>
-=======
-<h1>Räume</h1>
-<ul ng-repeat="room in roomlist">
-	<li>
-		<div class="left">
-			{{room.name}}
-		</div>
-		<div class="right">
-			<button class="btnOn" id="btnOn{{room.id}}" ng-click='switchroom({"room":room,"status":"1"})' >An</button>
-			<button class="btnOff" id="btnOff{{room.id}}" ng-click='switchroom({"room":room,"status":"0"})' >Aus</button>
-		</div>
-	</li>
->>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 </ul>
