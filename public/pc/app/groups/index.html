@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <ul class="panel-group">
 	<li ng-repeat="group in grouplist" class="panel panel-default">
 		<div class="panel-heading">
@@ -12,17 +11,3 @@
 		</div>
 	</li>
 </ul>
-=======
-<div class="tile">
-	<h1>Gruppen</h1>
-	<ul ng-repeat="group in grouplist">
-		<li>
-			<div class="left">{{group.name}}</div>
-			<div class="right">
-				<button class="btnOn" id="btnOn{{group.id}}" ng-click='switchgroup({"group":group,"status":"1"})' >An</button>
-				<button class="btnOff" id="btnOff{{group.id}}" ng-click='switchgroup({"group":group,"status":"0"})' >Aus</button>
-			</div>
-		</li>
-	</ul>
-</div>
->>>>>>> af97e501eae31491992417dd0f792413c9d64b8f

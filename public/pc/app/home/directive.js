@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 app.directive('activeUserDirective', function ($rootScope){
 	return {
 		restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
@@ -16,48 +15,4 @@ app.directive('myBackgroundImage', function ($rootScope) {
 			'background-position': 'center center'
 		});
 	};
-=======
-app.directive('favoritenDirective', function ($rootScope) {
-    return {
-        restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-        templateUrl: './app/home/devicelist.html',
-        controller: 'favoritDevices',
-        link: function($scope, element, attrs){
-            element.css({
-                'background-image': 'url(' + $rootScope.activeUser.background + ')',
-                'background-size': 'cover',
-                'background-repeat': 'no-repeat',
-                'background-position': 'center center',
-            });
-        }
-    };
-});
-
-app.directive('activeDevicesDirective', function ($rootScope) {
-    return {
-        restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-        templateUrl: './app/home/activedevicelist.html',
-        controller: 'activeDevices' //Embed a custom controller in the directive
-    };
-});
-
-app.directive('activeUserDirective', function ($rootScope){
-    return {
-    	restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-    	templateUrl: './app/home/user.html',
-    	controller: 'activeUser' //Embed a custom controller in the directive
-    };
-});
-
-app.directive('myBackgroundImage', function ($rootScope) {
-    return function ($scope, element, attrs) {
-        console.log($rootScope.activeUser);
-        element.css({
-            'background-image': 'url(' + $rootScope.activeUser.background + ')',
-            'background-size': 'cover',
-            'background-repeat': 'no-repeat',
-            'background-position': 'center center'
-        });
-    };
->>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 });
