@@ -20,7 +20,6 @@ app.controller('devicesController', function($scope, socket){
 		$scope.devicelist[data.device.Raum][data.device.deviceid].status = data.status;
 	});
 	$scope.switchRoom = function(data){
-		console.log(data);
 		socket.emit('switchRoom', {"status": data.status, "id": data.id});
 	}
 });
