@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <ul>
 	<li ng-repeat="device in favoritDevices">
 		<div class="ui-grid-a">
@@ -13,3 +14,81 @@
 </ul>
 <!--
  -->
+=======
+<!--
+<table id="container" class="table table-condensed">
+	<tr ng-repeat="devices in favoritDevices">
+		<td>{{ devices.name }}</td>
+		<td ng-if="devices.protocol == 8" class="ui-block-b box-btn-switch">
+			{{devices.status}}
+			<input 
+				type="range" 
+				min="{{devices.buttonLabelOn}}" 
+				max="{{devices.buttonLabelOff}}" 
+				ng-model="devices.status" 
+				ng-change='switchdeviceSlider({"id":devices.deviceid})'
+				ng-model-options="{ updateOn: 'blur' }"
+			>
+			</input>
+		</td>
+		<td ng-if="devices.protocol != 8 " class="ui-block-b box-btn-switch" style="text-align:right">
+			<button class="btnOn" id="btnOn{{devices.deviceid}}" ng-click='switchdevice({"id":devices.deviceid,"status":"1"})' >
+				<div ng-if = "devices.status == 0 ">
+					<input type="checkbox"></input>
+					{{devices.buttonLabelOn}}
+				</div>
+				<div ng-if = "devices.status == 1 ">
+					<input type="checkbox" checked="checked"></input>
+					{{devices.buttonLabelOn}}
+				</div>
+			</button>
+			<button class="btnOff" id="btnOff{{devices.deviceid}}" ng-click='switchdevice({"id":devices.deviceid,"status":"0"})'>
+				<div ng-if = "devices.status != 0 ">
+					<input type="checkbox"></input>
+					{{devices.buttonLabelOff}}
+				</div>
+				<div ng-if = "devices.status != 1 ">
+					<input type="checkbox" checked="checked" ></input>
+					{{devices.buttonLabelOff}}
+				</div>
+			</button>
+		</td>
+	</tr>
+</table>
+-->
+<ul>
+	<li ng-repeat="devices in favoritDevices">
+		<div class="ui-grid-a">
+			<div class="left">
+			{{devices.name}}
+			</div>
+			<div class="right">
+				<div ng-if="devices.protocol != 8 " class="ui-block-b" style="text-align:right">
+					<div class="box-btn-switch">
+						<button class="btnOn" id="btnOn{{devices.deviceid}}" ng-click='switchdevice({"id":devices.deviceid,"status":"1"})' >
+							<div ng-if = "devices.status == 0 ">
+								<input type="checkbox"></input>
+								{{devices.buttonLabelOn}}
+							</div>
+							<div ng-if = "devices.status == 1 ">
+								<input type="checkbox" checked="checked"></input>
+								{{devices.buttonLabelOn}}
+							</div>
+						</button>
+						<button class="btnOff" id="btnOff{{devices.deviceid}}" ng-click='switchdevice({"id":devices.deviceid,"status":"0"})'>
+							<div ng-if = "devices.status != 0 ">
+								<input type="checkbox"></input>
+								{{devices.buttonLabelOff}}
+							</div>
+							<div ng-if = "devices.status != 1 ">
+								<input type="checkbox" checked="checked" ></input>
+								{{devices.buttonLabelOff}}
+							</div>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</li>
+</ul>
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f

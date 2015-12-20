@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="de">
 	<head>
@@ -147,4 +148,113 @@
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
 
 	</body>
+=======
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8">
+		<link rel="shortcut icon" href="assets/favicon.ico"/> 
+		<meta http-equiv="x-ua-compatible" content="IE=edge" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="theme-color" content="#fff" />
+		<title>SmartHome</title>
+		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
+	</head>
+	<body ng-app="jsbin" ng-controller="appController">
+
+
+
+		<div class="menu">
+			<div class="container">
+				<ul  class="nav nav-tabs nav-justified">
+					<li role="presentation">
+						<a  href="" ng-click="switchPage('/home')">Home</a>
+					</li>
+					<li role="presentation">
+						<a  href="" ng-click="switchPage('/devices')">Geräte</a>
+					</li>
+					<li role="presentation">
+						<a  href="" ng-click="switchPage('/temperature')">Temperaturen</a>
+					</li>
+					<li role="presentation">
+						<a  href="" ng-click="switchPage('/groups')">Gruppen</a>
+					</li>
+					<li role="presentation">
+						<a  href="" ng-click="switchPage('/rooms')">Räume</a>
+					</li>
+					<li role="presentation" ng-show="activeUser.admin">
+						<a href="../settings">Einstellungen</a>
+					</li>
+					<li role="presentation">
+						<div active-user-directive></div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div ng-view role="main">
+		</div>
+
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>-->
+		<script src="assets/libs/angular.js"></script>
+
+
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>-->
+		<script src="assets/libs/angular-animate.js"></script>
+
+		<script src='/socket.io/socket.io.js'></script>
+
+		<!--<script src="http://code.angularjs.org/1.2.0rc1/angular-route.min.js"></script>-->
+		<script src="assets/libs/angular-route.min.js"></script>
+
+		<!--<script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>-->
+		<script src="assets/libs/angular-touch.min.js"></script>
+
+		<script src="./assets/libs/highcharts-ng.js"></script>
+
+		<!--<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>-->
+		<script src="assets/libs/standalone-framework.js"></script>
+
+		<!--<script src="http://code.highcharts.com/stock/highstock.src.js"></script>-->
+		<script src="assets/libs/highstock.src.js"></script>
+
+		<!--<script src="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.min.js"></script>-->
+		<script src="assets/libs/angular-snap.min.js"></script>
+
+		<!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.2.js"></script>-->
+		<script src="assets/libs/ui-bootstrap-tpls-0.14.2.js"></script>
+
+		
+		<!--<link rel="stylesheet" href="http://rawgit.com/jtrussell/Snap.js/master/snap.css">-->
+		<link rel="stylesheet" href="snap.css">
+
+		<!--<link rel="stylesheet" href="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.css">-->
+		<link rel="stylesheet" href="assets/libs/angular-snap.css">
+
+		<!--<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">-->
+		<link href="assets/libs/bootstrap.min.css" rel="stylesheet">
+		
+		<script type="text/javascript" src="./assets/js/helper.js"></script>
+		<script type="text/javascript" src="./app/controller.js"></script>
+		<script type="text/javascript" src="./app/factory.js"></script>
+
+		<script type="text/javascript" src="./app/home/controller.js"></script>
+		<script type="text/javascript" src="./app/home/directive.js"></script>
+
+		<script type="text/javascript" src="./app/devices/controller.js"></script>
+
+		<script type="text/javascript" src="./app/groups/controller.js"></script>
+<!--
+	-->
+		<script type="text/javascript" src="./app/chat/controller.js"></script>
+		<script type="text/javascript" src="./app/chat/directive.js"></script>
+		
+		<script type="text/javascript" src="./app/rooms/controller.js"></script>
+
+		<script type="text/javascript" src="./app/temperature/controller.js"></script>
+		<script type="text/javascript" src="./app/temperature/directive.js"></script>
+	</body>
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 </html>

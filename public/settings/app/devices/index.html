@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="tile">
 	<ul>
 		<li ng-repeat="(key, rooms) in devicelist">
@@ -20,4 +21,28 @@
 			<a href="#/editDevice/" >Neues Gerät anlegen</a>
 		</li>
 	</ul>
+=======
+<div class="tile">
+	<ul>
+		<li ng-repeat="(key, rooms) in devicelist">
+			<h3>{{key}}</h3>
+			<div ng-repeat="devices in rooms">
+				<div>
+					<div style="text-align:left">
+						{{devices.name}}
+					</div>
+					<div class="ui-block-b" style="text-align:right">
+						<div class="box-btn-switch">
+							<a href="#/editDevice/{{devices.deviceid}}" id="btnOn{{devices.deviceid}}" >Bearbeiten</a>
+							<button ng-click='deleteDevice({"id":devices.deviceid,"status":"1"})' id="btnOn{{devices.deviceid}}" >Löschen</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li>
+			<a href="#/editDevice/" >Neues Gerät anlegen</a>
+		</li>
+	</ul>
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 </div>

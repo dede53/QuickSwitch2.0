@@ -11,7 +11,10 @@
     "express": "^3.21.2",
     "express.io": "^1.1.13",
     "jade": "^1.9.2",
+<<<<<<< HEAD
     "jsonpath": "^0.2.2",
+=======
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
     "later": "^1.2.0",
     "multer": "^0.1.8",
     "mysql": "^2.9.0",
@@ -31,8 +34,12 @@
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-ng-annotate": "^1.1.0",
+<<<<<<< HEAD
     "gulp-uglify": "^1.5.1",
     "node-inspector": "^0.12.5"
+=======
+    "gulp-uglify": "^1.5.1"
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
   },
   "repository": {
     "type": "git",

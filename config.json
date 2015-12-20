@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
 	"connair": {
 		"ip": "192.168.2.27",
@@ -25,4 +26,33 @@
 		"user": "daniel",
 		"password": "hallomarcel"
 	}
+=======
+{
+	"connair": {
+		"ip": "192.168.2.27",
+		"port": 49880
+	},
+	"switchserver": [
+		{
+			"id":1,
+			"ip": "192.168.2.47",
+			"port":4040
+		},
+		{
+			"id":2,
+			"ip": "192.168.2.185",
+			"port":4040
+		}
+	],
+	"QuickSwitch": {
+		"ip": "192.168.2.47",	
+		"port": 1230
+	},
+	"homematicIP": "192.168.2.3",
+	"fritzbox":{
+		"ip":"192.168.2.1",
+		"user": "daniel",
+		"password": "hallomarcel"
+	}
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 }

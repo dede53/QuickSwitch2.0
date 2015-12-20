@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="tile">
 	<ul>
 		<li ng-repeat="room in roomlist track by $index">
@@ -17,4 +18,25 @@
 			<a href="#/editRoom/" >Neuen Raum anlegen</a>
 		</li>
 	</ul>
+=======
+<div class="tile">
+	<ul>
+		<li ng-repeat="room in roomlist track by $index">
+			<div>
+				<div style="text-align:left">
+				{{room.name}}
+				</div>
+				<div style="text-align:right">
+					<div class="box-btn-switch">
+						<a href="#/editRoom/{{room.id}}" id="btnOn{{room.id}}" >Bearbeiten</a>
+						<button ng-click='deleteRoom({"id":room.id})' id="btnOn{{room.id}}">Löschen</button>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li>
+			<a href="#/editRoom/" >Neuen Raum anlegen</a>
+		</li>
+	</ul>
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
 </div>

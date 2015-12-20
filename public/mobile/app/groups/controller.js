@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 app.controller('groupsController',  function($scope, $rootScope, socket) {
 	/***********************************************
 	*	Daten anfordern
@@ -131,3 +132,25 @@ app.controller('saveGroupController', function($scope, socket, $location){
 			$location.url("/groups");
 		});
 });
+=======
+app.controller('groupsController',  function($scope, $rootScope, socket) {
+	/***********************************************
+	*	Daten anfordern
+	***********************************************/
+	socket.emit('groups');
+
+	/***********************************************
+	*	Daten empfangen, Scope zuordnen
+	***********************************************/
+	socket.on('groups', function(data) {
+		$rootScope.grouplist = data;
+	});
+	
+	/***********************************************
+	*	Gruppe schalten
+	***********************************************/
+	$scope.switchgroup = function(data) {
+		socket.emit('switchGroup', data);
+	}
+});
+>>>>>>> af97e501eae31491992417dd0f792413c9d64b8f
