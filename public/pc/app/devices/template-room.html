@@ -1,0 +1,22 @@
+<uib-accordion close-others="true">
+	<uib-accordion-group ng-repeat="(index, group) in devicelist">
+		<uib-accordion-heading>
+			<p class="left">
+				{{index}}
+			</p>
+			<div class="right">
+				<button class="btnOn" id="btnOn{{room.id}}" ng-click='switchroom({"room":room,"status":"1"})' >An</button>
+				<button class="btnOff" id="btnOff{{room.id}}" ng-click='switchroom({"room":room,"status":"0"})' >Aus</button>
+			</div>
+		</uib-accordion-heading>
+		<ul ng-repeat="device in group">
+			<li>
+				<div class="left">{{device.name}}</div>
+				<div class="right">
+					<div slider-directive></div>
+					<div button-directive></div>
+				</div>
+			</li>
+		</ul>
+	</uib-accordion-group>
+</uib-accordion>

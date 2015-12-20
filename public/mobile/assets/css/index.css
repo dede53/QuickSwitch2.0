@@ -1,0 +1,90 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+ul, ol{
+	list-style-type: none;
+	padding: 0px !important;
+	margin:0px !important;
+}
+
+.snap-content {
+	background-color: white;
+	box-shadow: 0 0 10px #aaa;
+	font-size: 18px;
+	padding:0 15px;
+}
+/*
+*/
+.snap-drawer {
+	text-decoration:none;
+	padding: 0 15px;
+	background-color: #f0f0f0;
+}
+.snap-drawer-left a{
+	font-weight: bold;
+	text-decoration:none;
+	color:#424242;
+	display:block;
+	padding:12px 0px;
+	border-bottom:1px solid #ddd;
+}
+.snap-drawer-right{
+	width:300px;
+}
+.snap-drawer ul{
+	padding: 0px;
+}
+
+.snap-drawer h3 {
+	font-size: 14px;
+	font-weight: bold;
+	color: #3eb249;
+	padding:12px 0px;
+	margin:0px 0px;
+}
+
+.snap-content h3 {
+	font-size: 14px;
+	font-weight: bold;
+	color: #3eb249;
+	padding:12px 0px;
+	margin:0px 0px;
+}
+
+button{
+	cursor:pointer;
+	min-width:60px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	
+	border:0px;
+	border-radius:0px;
+	margin:1px 0px;
+}
+.btnOn{
+	margin:1px 0px;
+	background-color:#c0ffc0;
+	width: 85px;
+}
+.btnOff{
+	margin:1px 0px;
+	background-color:#ffc0c0;
+	width: 85px;
+}
+.left{
+	float:left;
+}
+.right{
+	text-align: right;
+}
+.alert-sm {
+	padding: 5px;
+	margin-bottom: 5px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+input[type="range"]{
+	border-radius: 4px;
+}

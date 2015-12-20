@@ -1,0 +1,98 @@
+<h3>Timer</h3>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div ng-if="timers.length == 0" class="alert alert-info" role="alert">Keine Timer gesetzt!</div>
+		<div ng-if="timers.length != 0">
+			<div>
+				<ul style="">
+					<li style="float:none;" ng-repeat="timer in timers">
+						<h3>{{timer.name}}
+							<button class="btn btn-xs btn-danger" ng-click='deleteTimer({"id":timer.id})' >Löschen</button>
+						</h3>
+						<ul class="list-group" style="width:50%;padding:5px!important;float:left;">
+							<h4 class="list-group-item">
+								Bedingungen
+							</h4>
+							<li class="list-group-item" ng-repeat="condition in timer.conditions">
+								<div ng-switch on="condition.type">
+									<div ng-switch-when="weekdays">
+										<div timer-weekdays-directive></div>
+									</div>
+									<div ng-switch-when="time">
+										<div timer-time-directive></div>
+									</div>
+								</div>
+							</li>
+						</ul>
+						<ul class="list-group"  style="width:50%;padding:5px!important;float:right;">
+							<h4 class="list-group-item">
+								Aktionen
+							</h4>
+							<li class="list-group-item" ng-repeat="action in timer.actions">
+								<div ng-switch on="action.type">
+									<div ng-switch-when="device">
+										<div timer-device-directive></div>
+									</div>
+									<div ng-switch-when="group">
+										<div timer-group-directive></div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<ul>
+	<li class="panel panel-default" ng-repeat="timer in timers">
+		<ul class="list-group">
+			<li class="list-group-item">
+				{{timer.name}}
+			</li>
+			<uib-accordion close-others="true" class="list-group-item">
+				<uib-accordion-group>
+					<uib-accordion-heading>
+						<h4>
+							Bedingungen
+						</h4>
+					</uib-accordion-heading>
+					<ul class="list-group">
+						<li class="list-group-item" ng-repeat="condition in timer.conditions">
+							<div ng-switch on="condition.type">
+								<div ng-switch-when="weekdays">
+									<div timer-weekdays-directive></div>
+								</div>
+								<div ng-switch-when="time">
+									<div timer-time-directive></div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</uib-accordion-group>
+			</uib-accordion>
+			<uib-accordion close-others="true" class="list-group-item">
+				<uib-accordion-group>
+					<uib-accordion-heading>
+						<h4>
+							Actionen
+						</h4>
+					</uib-accordion-heading>
+					<ul class="list-group">
+							<li class="list-group-item" ng-repeat="action in timer.actions">
+								<div ng-switch on="action.type">
+									<div ng-switch-when="device">
+										<div timer-device-directive></div>
+									</div>
+									<div ng-switch-when="group">
+										<div timer-group-directive></div>
+									</div>
+								</div>
+							</li>
+					</ul>
+				</uib-accordion-group>
+			</uib-accordion>
+		</ul>
+	</li>
+</ul>

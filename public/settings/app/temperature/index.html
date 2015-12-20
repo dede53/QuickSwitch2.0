@@ -1,0 +1,40 @@
+<div class="tile">
+    <div class="span9">
+        <div class="row">
+            <highchart id="chart1" config="chartConfig" class="span9" ></highchart>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="row-fluid">Title <input ng-model="chartConfig.title.text"></div>
+        <div class="row-fluid">Subtitle <input ng-model="chartConfig.subtitle.text"></div>
+        <div class="row-fluid">Default Type <select ng-model="chartConfig.options.chart.type" ng-options="t.id as t.title for t in chartTypes"></select></div>
+        <div class="row-fluid"><label><input type="checkbox" ng-model="chartConfig.credits.enabled"> credits</label></div>
+        <h4>Series</h4>
+        <div class="row-fluid" ng-repeat="ser in chartConfig.series">
+            <div class="span12 well">
+                <input type="hidden" value="ser.id">
+                <div class="row-fluid">Title <input ng-model="ser.name"></div>
+                <div class="row-fluid">Sensorid <input ng-model="ser.nodeid"></div>
+                <div class="row-fluid">Type <select ng-model="ser.type" ng-options="t.chart as t.title for t in chartTypes"></select></div>
+                <div class="row-fluid">Color <input ng-model="ser.color"></div>
+                <div class="row-fluid">Dash Style <select ng-model="ser.dashStyle" ng-options="ds.line as ds.title for ds in dashStyles"></select></div>
+                <div class="row-fluid"><button ng-click="removeSensor(ser.id)">Löschen</button></div>
+                <div class="row-fluid"><button ng-click="saveSensor($index)">Speichern</button></div>
+            </div>
+        </div>
+        <div class="row-fluid"><button ng-click="addSeries()">Add Series</button></div>
+<!--
+        <div class="row-fluid">
+            <label for="prettyJSON"><input id="prettyJSON" type="checkbox" ng-model="prettyJSON"> Pretty JSON</label>
+        </div>
+        <div class="row-fluid">
+            <pre ng-show="prettyJSON">
+                {{ chartConfig | json }}
+            </pre>
+            <pre ng-show="!prettyJSON">
+                {{ chartConfig }}
+            </pre>
+        </div>
+-->
+    </div>
+</div>

@@ -1,0 +1,129 @@
+html body{
+	background-image: url('../img/purty_wood.png');
+	background-repeat: repeat-y repeat-x;
+	background-attachment: fixed;
+	overflow-y: scroll;
+	font-family: "Open Sans",sans-serif !important;
+}
+ul, ol{
+	list-style-type: none;
+	padding: 0px !important;
+	margin:0px !important;
+}
+.tile{
+	padding:5px;
+	margin:5px;
+	/*
+		background-color: #fff;
+	*/
+}
+.favorittile{
+
+	overflow-y: auto;
+	float:left;
+	margin-left: 0;
+	margin-right: auto;
+	margin-top: 0px;
+	padding:10px;
+
+	width:20%;
+	height: calc(100% - 80px);
+	background: linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	background: -moz-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%); 
+	background: -webkit-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	background: -ms-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	background: -o-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddf, endColorstr=#ffffff,GradientType=1);
+
+	background-color: #fff;
+	position:fixed;
+	top:80px;
+}
+.chart{
+	min-height: 500px;
+	padding:0px;
+	margin:10px;
+}
+.menu {
+	background-color: #ddf;
+	padding:20px;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index:200;
+
+}
+.menu li a {
+	cursor:pointer;
+	border:0 !important;
+}
+a:hover{
+	background-color: #ddf;
+}
+
+.clear {
+	clear: both;
+}
+.float_left{
+	float:left;
+	width:50%;
+}
+.left{
+	float:left;
+}
+.right{
+	text-align: right;
+}
+
+button{
+	cursor:pointer;
+	min-width:60px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	
+	border:0px;
+	border-radius:0px;
+	margin:2px 0px;
+}
+.btnOn{
+	margin:1px;
+	background-color:#c0ffc0;
+	width: 85px;
+}
+.btnOff{
+	margin:1px;
+	background-color:#ffc0c0;
+	width: 85px;
+}
+.favoritmenu{
+	margin-left:20%;
+}
+.alert-sm {
+	padding: 5px;
+	margin-bottom: 5px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+/*
+.logo {
+	position:absolute;
+	top:5px;
+	left:70px;
+	height: 64px;
+	width: 64px;
+	background-image: url("../favicon.ico");
+    background-repeat: no-repeat;
+}
+*/
+input[type="range"]{
+	border-radius: 4px;
+}
+.grey{
+	color:#bbb;
+}
+.green{
+	color:green;
+}
+.label{
+	margin:0px 5px;
+}

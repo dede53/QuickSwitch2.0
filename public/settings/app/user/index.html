@@ -1,0 +1,20 @@
+<div class="tile">
+	<ul>
+		<li ng-repeat="user in users">
+			<div>
+				<div style="text-align:left">
+				{{user.name}}
+				</div>
+				<div style="text-align:right">
+					<div class="box-btn-switch">
+						<a href="#/editUser/{{user.id}}" id="btnOn{{user.id}}" >Bearbeiten</a>
+						<button ng-click='deleteUser({"id":user.id})' id="btnOn{{user.id}}" >Löschen</button>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li>
+			<a href="#/editUser/" >Neuen Benutzer anlegen</a>
+		</li>
+	</ul>
+</div>
