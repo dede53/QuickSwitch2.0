@@ -12,8 +12,8 @@
 clear
 echo "Dieses Skript installiert:"
 echo "QuickSwitch"
-echo "node.js/npm"
-echo "mysql"
+echo "| -- node.js/npm"
+echo "| -- mysql"
 echo
 echo "update die Packetquellen"
 sudo apt-get update
@@ -27,7 +27,7 @@ wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 echo "installieren node"
 sudo dpkg -i node_latest_armhf.deb
 
-
+cd ../
 echo "Installiere pi-blaster-deamon zum dimmer der GPIO-Ports"
 git clone https://github.com/sarfata/pi-blaster.git
 cd pi-blaster
@@ -37,11 +37,8 @@ make
 sudo make install
 sudo ./pi-blaster
 
-cd
-echo "Lade QuickSwitch2.0..."
-git clone https://github.com/dede53/QuickSwitch2.0
-
-cd ../QuickSwitch2.0
+cd ../
+cd QuickSwitch2.0
 echo "Installiere abhängigkeiten"
 sudo npm install
 sudo npm install forever -g
