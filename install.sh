@@ -27,6 +27,7 @@ wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 echo "installieren node"
 sudo dpkg -i node_latest_armhf.deb
 
+pwd
 cd ../
 echo "Installiere pi-blaster-deamon zum dimmer der GPIO-Ports"
 git clone https://github.com/sarfata/pi-blaster.git
@@ -37,6 +38,7 @@ make
 sudo make install
 sudo ./pi-blaster
 
+pwd
 cd ../
 cd QuickSwitch2.0
 echo "Installiere abhängigkeiten"
