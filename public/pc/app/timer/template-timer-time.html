@@ -1,9 +1,7 @@
 <div>
 	<h5>
 		Uhrzeit:
-	</h5>
-	<h5>
-		Von<div class="label label-default">
+		Von 
 			<span ng-if="condition.start.time == 'sunset'">
 				Sonnenuntergang
 			</span>
@@ -11,9 +9,7 @@
 				Sonnenaufgang
 			</span>
 			{{condition.start.offset.unit}} {{condition.start.offset.number}}
-		</div>
-		bis
-		<div class="label label-default">
+		 bis 
 			<span ng-if="condition.stop.time == 'sunset'">
 				Sonnenuntergang
 			</span>
@@ -21,6 +17,5 @@
 				Sonnenaufgang
 			</span>
 			{{condition.stop.offset.unit}} {{condition.stop.offset.number}}
-		</div>
 	</h5>
 </div>

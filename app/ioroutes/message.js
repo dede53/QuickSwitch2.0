@@ -12,7 +12,6 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('newLinkMessage', function(req){
 		req.data.time = Math.floor(Date.parse(new Date));
-		console.log(req.data);
 		app.io.broadcast('newLinkMessage', req.data);
 		messageFunctions.saveMessage(req.data, function(data){
 			if(data != "200"){
@@ -26,8 +25,7 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('loadOldMessages', function(req){
 		messageFunctions.loadOldMessages(req.data, function(data){
-			console.log("Daten Abfragen!!!!");
-			req.io.emit('1234', data);
+			req.io.emit('linkMessage', data);
 		});
 	});
 }

@@ -40,5 +40,6 @@ app.controller('sendNewMessage', function($scope, socket) {
 		$scope.link.message = "";
 		$scope.link.type = "1";
 		socket.emit('newLinkMessage', $scope.linkMessage);
-	}
+		
+	};
 });

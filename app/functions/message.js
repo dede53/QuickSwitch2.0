@@ -24,51 +24,21 @@ module.exports = {
 		});
 	},
 	loadOldMessages: function (data, callback){
-				var query = "SELECT time, type, author, message FROM messages WHERE time < '" + data + "' ORDER BY time DESC LIMIT 1;";
-				db.all(query, function(err, messages){
-					if (err) {
-						console.log(err);
-					}else{
-						console.log(messages);
-						var messagesToSend = new Object;
-						messagesToSend.messages = messages;
-
-						if(messages == ""){
-							messagesToSend.moreMessagesAvible = false;
-						}else{
-							messagesToSend.moreMessagesAvible = true;
-						}
-						callback(messagesToSend);
-					}
-				});
-				/*
-		var query = "SELECT * FROM messages LIMIT 1;";
-		db.all(query , function(err, latest) {
-			if (err || latest == "") {
-				console.log("Fehler beim auslesen der letzten Nachricht, oder keine Nachricht in der Datenbank");
-				console.log(latest);
+		var query = "SELECT time, type, author, message FROM messages WHERE time < '" + data + "' ORDER BY time DESC LIMIT 6;";
+		db.all(query, function(err, messages){
+			if (err) {
 				console.log(err);
 			}else{
-				// var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" AND time >= ( " + data + " - 86400000 ) ORDER BY time DESC;";
-				var query = "SELECT time, type, author, message FROM messages WHERE time < "+ data +" ORDER BY time DESC LIMIT 1 ";
-				//console.log(query);
-				db.all(query , function(err, messages) {
-					if (err) {
-						console.log(err);
-					}else{
-						var messagesToSend = new Object;
-						messagesToSend.messages = messages;
-						messagesToSend.timestamp = data;
+				var messagesToSend = new Object;
+				messagesToSend.messages = messages;
 
-						if(data <= latest[0].time){
-							messagesToSend.moreMessagesAvible = false;
-						}else{
-							messagesToSend.moreMessagesAvible = true;
-						}
-						callback(messagesToSend);
-					}
-				});
+				if(messages == ""){
+					messagesToSend.moreMessagesAvible = false;
+				}else{
+					messagesToSend.moreMessagesAvible = true;
+				}
+				callback(messagesToSend);
 			}
-		});*/
+		});
 	}
 }

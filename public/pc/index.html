@@ -2,13 +2,15 @@
 <html lang="de">
 	<head>
 		<meta charset="utf-8">
-		<link rel="shortcut icon" href="assets/favicon.ico"/> 
 		<meta http-equiv="x-ua-compatible" content="IE=edge" />
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="theme-color" content="#fff" />
+		<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon"/>
+
 		<title>SmartHome</title>
+		
 		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
 	</head>
 	<body ng-app="jsbin" ng-controller="appController">
@@ -33,14 +35,9 @@
 					<li role="presentation">
 						<a  href="" ng-click="switchPage('/temperature')">Temperaturen</a>
 					</li>
-<!--
 					<li role="presentation">
-						<a  href="" ng-click="switchPage('/groups')">Gruppen</a>
+						<a  href="" ng-click="switchPage('/timer')">Timer</a>
 					</li>
-					<li role="presentation">
-						<a  href="" ng-click="switchPage('/rooms')">Räume</a>
-					</li>
--->
 					<li role="presentation" ng-show="activeUser.admin">
 						<a href="../settings">Einstellungen</a>
 					</li>
@@ -77,38 +74,45 @@
 
 		<script src='/socket.io/socket.io.js'></script>
 
+	<!--
 		<script src="http://code.angularjs.org/1.2.0rc1/angular-route.min.js"></script>
-	<!--
+	-->
 		<script src="assets/libs/angular-route.min.js"></script>
-	-->
 
-		<script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>
 	<!--
-		<script src="assets/libs/angular-touch.min.js"></script>
+		<script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>
 	-->
+		<script src="assets/libs/angular-touch.min.js"></script>
 
 		<script src="./assets/libs/highcharts-ng.js"></script>
 
+	<!--
 		<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
-	<!--
+	-->
 		<script src="assets/libs/standalone-framework.js"></script>
-	-->
 
-		<script src="http://code.highcharts.com/stock/highstock.src.js"></script>
 	<!--
-		<script src="assets/libs/highstock.src.js"></script>
+		<script src="http://code.highcharts.com/stock/highstock.src.js"></script>
 	-->
+		<script src="assets/libs/highstock.src.js"></script>
 
 	<!--
 		<script src="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.min.js"></script>
 		<script src="assets/libs/angular-snap.min.js"></script>
 	-->
 
-		<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.2.js"></script>
 	<!--
-		<script src="assets/libs/ui-bootstrap-tpls-0.14.2.js"></script>
+		<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.2.js"></script>
 	-->
+		<script src="assets/libs/ui-bootstrap-tpls-0.14.2.js"></script>
 
+	<!--
+  		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  	-->
+		<link href="assets/libs/bootstrap.min.css" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		
 
 		<link href="assets/libs/bootstrap.min.css" rel="stylesheet">
@@ -117,8 +121,6 @@
 		<script type="text/javascript" src="./app/controller.js"></script>
 		<script type="text/javascript" src="./app/factory.js"></script>
 		<script type="text/javascript" src="./app/filter.js"></script>
-<!--
-	-->
 
 		<script type="text/javascript" src="./app/home/controller.js"></script>
 		<script type="text/javascript" src="./app/home/directive.js"></script>
@@ -135,6 +137,9 @@
 		<script type="text/javascript" src="./app/chat/controller.js"></script>
 		<script type="text/javascript" src="./app/chat/directive.js"></script>
 
+		<script type="text/javascript" src="./app/user/controller.js"></script>
+		<script type="text/javascript" src="./app/user/directive.js"></script>
+
 		<script type="text/javascript" src="./app/countdown/controller.js"></script>
 		<script type="text/javascript" src="./app/countdown/directive.js"></script>
 		
@@ -143,8 +148,10 @@
 		<script type="text/javascript" src="./app/temperature/controller.js"></script>
 		<script type="text/javascript" src="./app/temperature/directive.js"></script>
 
+		<script type="text/javascript" src="./app/phone/controller.js"></script>
+		<script type="text/javascript" src="./app/phone/directive.js"></script>
+
 		
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-
 	</body>
 </html>

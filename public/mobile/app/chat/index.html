@@ -2,7 +2,7 @@
 	<h3>Chat</h3>
 	<div class="panel panel-default">
 		<div class="panel-body">
-		<ul class="" style="max-height:300px; overflow:auto;">
+		<ul class="" style="max-height:230px; overflow:auto;">
 			<li class="" ng-hide="moreMessagesAvible">
 				<div class="alert-sm alert-info" role="alert">Keine weiteren Nachrichten verfügbar!</div>
 			</li>
@@ -32,13 +32,16 @@
 		</div>
 	</div>
 	<br>
-	<form ng-controller="sendNewMessage">
-		<input type="text" class="form-control"		id="message" 	ng-model="link.message" placeholder="Neue Nachricht eingeben" ></input>
-		<br>
-	    <div class="btn-group">
-	        <label class="btn btn-default" ng-model="link.type" uib-btn-radio="'1'" >Text</label>
-	        <label class="btn btn-default" ng-model="link.type" uib-btn-radio="'2'" >Link</label>
-	    </div>
-		<button class="btn btn-default" ng-click="sendMessage()">Senden!</button>
+	<form ng-controller="sendNewMessage" style="text-align:right;">
+		<fieldset class="form-group">
+			<input type="text" class="form-control"		id="message" 	ng-model="link.message" placeholder="Neue Nachricht eingeben" ></input>
+		</fieldset>
+		<fieldset class="form-group">
+			<div class="btn-group">
+				<label class="btn btn-default" ng-model="link.type" uib-btn-radio="'1'" >Text</label>
+				<label class="btn btn-default" ng-model="link.type" uib-btn-radio="'2'" >Link</label>
+			</div>
+			<button class="btn btn-default" ng-click="sendMessage()">Senden!</button>
+		</fieldset>
 	</form>
 </div>

@@ -15,9 +15,6 @@ app.controller('devicesController',  function($scope, $rootScope, socket) {
 
 app.controller('editDeviceController',  function($scope, $rootScope, socket, $routeParams) {
 	socket.emit('rooms');
-	socket.on('rooms', function(rooms) {
-		$scope.rooms = rooms;
-	});
 
 	// Maybe in die Datenbank auslagern??
 	$scope.options = 	[
@@ -62,44 +59,42 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				{ 
 					name: "CCU-Programm",
 					id: 10
+				},
+				{ 
+					name: "UDP-Arduino",
+					id: 11
 				}
 			];
 
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
-
-	if(!$routeParams.id){
-			$scope.editDevice = {
-				title: "Hinzufügen",
-				device: {
-					buttonLabelOn: "An",
-					buttonLabelOff: "Aus",
-					status: "0"
+	socket.on('rooms', function(rooms) {
+		$scope.rooms = rooms;
+		if(!$routeParams.id){
+				$scope.editDevice = {
+					title: "Hinzufügen",
+					device: {
+						buttonLabelOn: "An",
+						buttonLabelOff: "Aus",
+						status: "0"
+					}
 				}
-			}
-	}else{
-		socket.emit('device', {"id":  $routeParams.id});
+		}else{
+			socket.emit('device', {"id":  $routeParams.id});
 
-		/***********************************************
-		*	Daten empfangen, Scope zuordnen
-		***********************************************/
+			/***********************************************
+			*	Daten empfangen, Scope zuordnen
+			***********************************************/
 
-		socket.on('device', function(data) {
-			$scope.editDevice = {
-				title: "Bearbeiten",
-				device: data
-			}
-			// Array fängt bei 0 an, Protocolle erst bei 1
-			var protocolid = data.protocol - 1;
-			var protocolOptions = $scope.options[protocolid];
-			$scope.editDevice.device.protocol = protocolOptions.id;
-
-			var roomid = data.roomid - 1;
-			var roomOptions = $scope.rooms[roomid];
-			$scope.editDevice.device.room = roomOptions.id;
-		});
-	}
+			socket.on('device', function(data) {
+				$scope.editDevice = {
+					title: "Bearbeiten",
+					device: data
+				}
+			});
+		}
+	});
 });
 
 app.controller('saveDeviceController', function($scope, socket, $location) {

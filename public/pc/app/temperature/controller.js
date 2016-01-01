@@ -6,72 +6,70 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 				options:{
 					chart: {
 						backgroundColor: 'transparent',
-						renderTo:"container"
+						renderTo:"container",
+						zoomType:"x"
 					},
 					navigator: {
-						enabled: true,
+						enabled: false,
 						adaptToUpdatedData: true,
 						series: []
 					},
 					rangeSelector: {
-						enabled: true,
+						enabled: false,
+						inputStyle: {
+							fontSize: "16px"
+						},
+			            buttonTheme: {
+							style: {
+								fontSize: "16px"
+							},
+						},
+						labelStyle: {
+							fontSize: "16px"
+						},
 						buttons: [{
 							type: 'hour',
 							count: '12',
-							text: '12H'
+							text: '12h'
 						}, {
 							type: 'hour',
 							count: '24',
-							text: '24H'
+							text: '24h'
 						},{
 							type: 'all',
 							count: 'all',
 							text: 'Alle'
-						}]
-						/*
-						buttons: [{
-							type: 'day',
-							text: 'Day'
-						}, {
-							type: 'day',
-							count: '2',
-							text: '2Day'
-						}, {
-							type: 'day',
-							count: '3',
-							text: '3Day'
-						}, {
-							type: 'week',
-							count: '1',
-							text: 'Week'
-						},{
-							type: 'month',
-							count: 1,
-							text: '1m'
-						}, {
-							type: 'year',
-							count: 1,
-							text: '1y'
-						}, {
-							type: 'all',
-							text: 'All'
-						}]
-						*/
+						}],
+						selected: 2,
+            			inputDateFormat: '%e %b %Y',
+            			inputEditDateFormat: '%e %b %Y'
 					},
 					plotOptions: {
 						series: {
-							lineWidth: 1,
-							fillOpacity: 0.5,
 							marker:{
-								enable: true
-							}
-						},
+								enabled: false
+							},
+			                animation: false
+						}
 					},
 					exporting: false,
 					xAxis: [{
 						type: 'datetime',
 						labels:{
-							rotation: -45
+							rotation: 0,
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						dateTimeLabelFormats: {
+							second: '%Y-%m-%d<br/>%H:%M:%S',
+							minute: '%Y-%m-%d<br/>%H:%M',
+							hour: '%d.%m<br/>%H:%M',
+							day: '%d.%m<br/>%H:%M',
+							week: '%d.%m.%Y',
+							month: '%m.%Y',
+							year: '%Y'
 						}
 					}],
 					yAxis: [{
@@ -79,22 +77,54 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 						title: {
 							text: 'Temperatur',
 							style: {
-								color: '#80a3ca'
+								"color": '#80a3ca',
+								"fontSize": "16px"
 							}
 						},
 						labels: {
 							format: '{value}',
 							style: {
-								color: '#80a3ca'
+								"color": '#80a3ca',
+								"fontSize": "16px"
 							}
-						}
+						},
+						plotLines: [/*{
+							value: 5,
+							color: '#444488',
+							dashStyle: 'shortdash',
+							width: 2,
+							label: {
+								text: '5°C'
+							}
+						}*/]
+					},
+					{
+						allowDecimals: true,
+						title: {
+							text: 'Luftfeuchtigkeit',
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						labels: {
+							format: '{value}',
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						opposite: true
 					}],
 
 					legend: {
-						enabled: true
+						enabled: true,
+						itemStyle: {
+							"fontSize": "16px"
+						}
 					},
 					title: {
-						text: 'Temperaturen'
+						text: ''
 					},
 					credits: {
 						enabled: false
@@ -107,12 +137,12 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 						borderColor: '#a4a4a4',
 						shadow: false,
 						useHTML: true,
-						percentageDecimals: 2,
-						backgroundColor: "rgba(255,255,255,.7)",
+						backgroundColor: "rgba(255,255,255,1)",
 						style: {
-							padding: 5
+							padding: 5,
+							zIndex: 100
 						},
-						shared: true
+						shared: false
 					},
 					useHighStocks: true
 				},
@@ -124,33 +154,12 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 	}
 
 	socket.on('Sensorvalues', function(alldata) {
-		console.log("Neue Daten");
 		alldata.forEach(function(data){
-
-			var sensor = {
-				id: data.nodeID,
-				name: data.name,
-				data: data.data,
-				type: data.charttype,
-				dashStyle: data.linetype,
-				yAxis: 0,
-				connectNulls:false,
-				tooltip: {
-					valueSuffix: ' °C'
-				},
-				color: data.farbe
-			};
-			var navigator = {
-				id: data.nodeID,
-				data: data.data
-			};
-			
-			$rootScope.chartConfig.options.navigator.series.push(navigator);
-			$rootScope.chartConfig.series.push(sensor);
-		   $rootScope.chartConfig.loading = false;
+			$rootScope.chartConfig.series.push(data);
+			$rootScope.chartConfig.loading = false;
 		});
 	});
-		
+
 	Highcharts.setOptions({
 		global : {
 			useUTC : false

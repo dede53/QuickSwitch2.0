@@ -13,6 +13,16 @@ app.directive('buttonDirective', function ($rootScope) {
 	};
 });
 
+app.directive('button2Directive', function ($rootScope) {
+	return {
+		restrict: 'EA',
+		templateUrl: './app/devices/template-button2.html',
+		link: function(){
+			
+		}
+	};
+});
+
 app.directive('sliderDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',

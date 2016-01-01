@@ -1,4 +1,4 @@
-var helper = require('../functions/helper.js');
+var helper 			= require('../functions/helper.js');
 var db 				= require('./database.js');
 var async 			= require("async");
 
@@ -13,18 +13,19 @@ module.exports = {
 		"timestamp":141234123412
 		}
 		**************************/
+		helper.log("Temperaturdaten geliefert", "info");
 		if(!data.timestamp){	
 			var now = Math.floor(Date.parse(new Date));
 		}else{
 			var now = data.timestamp;
-			console.log("Timestamp geliefert..");
 		}
 
 		if(data.hum != ""){
-			var query = "INSERT INTO sensor_data ( nodeID, supplyV, temp, hum, time) VALUES ('"+ data.nodeID +"', '"+ data.supplyV +"', '"+ data.temp +"', '"+ data.hum +"', '"+ now +"');";
+			var hum = 0;
 		}else{
-			var query = "INSERT INTO sensor_data ( nodeID, supplyV, temp, time) VALUES ('"+ data.nodeID +"', '"+ data.supplyV +"', '"+ data.temp +"', '"+ now +"');";
+			var hum = data.hum;
 		}
+		var query = "INSERT INTO sensor_data ( nodeID, supplyV, temp, hum, time) VALUES ('"+ data.nodeID +"', '"+ data.supplyV +"', '"+ data.temp +"', '"+ hum +"', '"+ now +"');";
 
 		db.all(query, function(err, row){
 			if(err){
@@ -60,8 +61,6 @@ module.exports = {
 		}else{
 			var query = "INSERT INTO sensors (name, nodeid, charttype, linetype, linecolor) VALUES ('" + data.name + "', '" + data.nodeid + "', '" + data.charttype + "', '" + data.linetype + "', '" + data.linecolor + "');";
 		}
-		console.log(query);
-		//callback(data);
 	
 		db.all(query, function(err, row){
 			if(err){
@@ -87,7 +86,7 @@ module.exports = {
 	getSensorvalues: function (req, res, callback) {
 		// var hour = req.data.date;
 		console.log("lese Temperaturdaten...");
-
+		var hours = 36;
 
 		var query ="SELECT sensors.nodeID 	AS nodeID, sensors.name AS name, sensors.linecolor 	AS farbe, charttype, linetype FROM sensors;";
 		db.all(query, function(err, sensor){
@@ -97,41 +96,54 @@ module.exports = {
 				var alldata = new Array;
 				async.each(sensor,
 					function(sensor, callback){
-						var query = "SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND (time/1000) <= UNIX_TIMESTAMP() AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 36 hour)) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC;";
-						//var query ="SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC";
+							var query = "SELECT nodeid, temp / 100 as temp, time, hum FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND ROUND(time / 1000) <= UNIX_TIMESTAMP() AND ROUND(time / 1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + hours + " hour)) GROUP BY HOUR( FROM_UNIXTIME(ROUND(time / 1000)) ) , DATE( FROM_UNIXTIME(ROUND(time / 1000)) ) ORDER BY time ASC;";
 						/*
-							
-							SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp 
-							FROM sensor_data 
-							WHERE nodeid = '" + sensor.nodeID + "' 
-							AND (time/1000) <= UNIX_TIMESTAMP() 
-							AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 hour)) 
-							GROUP BY (ROUND(timestamp/3600)*3600)
+							SELECT
+								nodeid,
+							    temp / 100 as temp,
+							    time
+							FROM 
+								sensor_data
+							WHERE 
+								nodeid =  '" + sensor.nodeID + "' 
+								AND ROUND(time / 1000) <= UNIX_TIMESTAMP() 
+								AND ROUND(time / 1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 36 hour)) 
+							GROUP BY 
+								HOUR( FROM_UNIXTIME(ROUND(time / 1000)) ), 
+								DATE( FROM_UNIXTIME(ROUND(time / 1000)) )
+								# Nur wenn halbstündlich werte!
+								#,(ROUND(timestamp/3600)*3600)
 							ORDER BY time ASC;
-SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM sensor_data WHERE nodeid = '" + sensor.nodeID + "' AND (time/1000) <= UNIX_TIMESTAMP() AND (time/1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 hour)) GROUP BY (ROUND(timestamp/3600)*3600) ORDER BY time ASC;
 						*/
-						
-						db.all(query , function(err, data) {
+						db.all(query , function(err, sensordata) {
 							if (err) {
 								console.log(err);
 							}else{
 								var bla = new Array;
-								data.forEach(function(uff){
+								sensordata.forEach(function(uff){
 									var asd = new Array;
 									asd.push(Math.floor(uff.time));
 									asd.push(parseFloat(uff.temp));
 									bla.push(asd);
 								});
-								
-								var data		= new Object;
-								data.data		= bla;
-								data.name		= sensor.name;
-								data.farbe		= sensor.farbe;
-								data.nodeID		= sensor.nodeID;
-								data.linetype	= sensor.linetype;
-								data.charttype	= sensor.charttype;
-								
+						
+								var data = new helper.Sensor(sensor.nodeID, sensor.name, bla, sensor.charttype, sensor.linetype, sensor.farbe, " °C", 0);
+
 								alldata.push(data);
+
+								if(sensordata[sensordata.length - 1].hum != 0){
+									var hum = new Array;
+									sensordata.forEach(function(ind){
+										var asd1 = new Array;
+										asd1.push(Math.floor(ind.time));
+										asd1.push(parseFloat(ind.hum));
+										hum.push(asd1);
+									});
+
+									var humsensor = new helper.Sensor(sensor.nodeID + "hum", sensor.name + " (Feuchte)", hum, sensor.charttype, sensor.linetype, sensor.farbe, " %", 1);
+
+									alldata.push(humsensor);
+								}
 								callback();
 							}
 						});
@@ -145,8 +157,6 @@ SELECT nodeid, time, temp / 100 as temp, ROUND(time / 1000) as timestamp FROM se
 						}
 					}
 				);
-
-
 			}
 		});
 	}

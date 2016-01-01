@@ -4,12 +4,12 @@ var async 			= require("async");
 
 module.exports = {
 	getDevices: function (type, req, res, callback) {
-		var query = "SELECT * FROM rooms;";
 		if(type == "object"){
 			var uff = new Object;
 		}else{
 			var uff = new Array;
 		}
+		var query = "SELECT * FROM rooms;";
 		db.all(query, function(err, row){
 			if(err){
 				console.log(err);
@@ -23,10 +23,15 @@ module.exports = {
 								console.log(err);
 							}else{
 								if(type == "object"){
-									uff[row.name] = new Object;
+									var bla = new Object;
+									bla.room = row;
+
+									bla.roomdevices = new Object;
 									data.forEach(function(dat){
-										uff[row.name][dat.deviceid] = dat;								
+										bla.roomdevices[dat.deviceid] = dat;								
 									});
+
+									uff[row.name] = bla;
 								}else{
 									// uff[row.name] = new Array;
 									data.forEach(function(dat){
@@ -101,18 +106,13 @@ module.exports = {
 			if (err) {
 				console.log(err);
 				callback(404);
-			} else {
+			}else if(row == ""){
+				callback("Kein Gerät mit der ID " + id);
+			}else{
 				SwitchServer.sendto(app, req, status, row[0],function(status){
 					if(status == 200){
-						SwitchServer.sendActiveDevices(app, db, function(err){
-							if(err != 200){
-								console.log("Error: Liste der aktiven Geräte konnte nicht gesendet werden" + err);
-							}
-						});
 					}
 				});
-				var query = "UPDATE devices SET status = '"+ status +"' WHERE deviceid = "+ id +";";
-				db.run(query);
 				callback(200);
 			}
 		});
@@ -127,15 +127,8 @@ module.exports = {
 				row.forEach(function(device){
 					SwitchServer.sendto(app, req, status, device,function(status){
 						if(status == 200){
-							SwitchServer.sendActiveDevices(app, db, function(err){
-								if(err != 200){
-									console.log("Error: Liste der aktiven Geräte konnte nicht gesendet werden" + err);
-								}
-							});
 						}
 					});
-					var query = "UPDATE devices SET status = '"+ status +"' WHERE deviceid = "+ device.deviceid +";";
-					db.run(query);
 				});
 				callback(200);
 			}

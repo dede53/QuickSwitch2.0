@@ -72,7 +72,6 @@ module.exports = function(app, db){
 			case "device":
 				deviceFunctions.switchDevice(app, id, status, req, res, function(data){
 					if(data == 200){
-						console.log('Successful: Switch Device with id: ' + id + " to " + status);
 						res.json(200);
 					}else{
 						res.json(data);
@@ -81,13 +80,11 @@ module.exports = function(app, db){
 				break;
 			case "group":
 				groupFunctions.getGroup(id, req, res, function(group){
-					console.log(group);
 					if(group == "404"){
 						res.json(404);
 					}else{
 						groupFunctions.switchGroup(app, group[0], status, req, res, function(data){
 							if(data == 200){
-								console.log('Successful: Switch Device with id: ' + id + " to " + status);
 								res.json(200);
 							}else{
 								res.json(data);
@@ -100,7 +97,6 @@ module.exports = function(app, db){
 				roomFunctions.getRoom(id, req, res, function(room){
 					roomFunctions.switchRoom(room, status, req, res, function(data){
 						if(data == 200){
-							console.log('Successful: Switch Device with id: ' + id + " to " + status);
 							res.json(200);
 						}else{
 							res.json(data);
@@ -156,6 +152,14 @@ module.exports = function(app, db){
 		var data = req.body;
 		temperatureFunctions.saveSensorValues(data, req, res, function(request){
 			res.json(request);
+		});
+	});
+
+	app.get('/temperature/reloadTempData', function(req, res){
+		// res.send("Lade Daten...");
+		temperatureFunctions.getSensorvalues(req, res, function(data){
+			app.io.broadcast('Sensorvalues', data);
+			res.status(200).end();
 		});
 	});
 }

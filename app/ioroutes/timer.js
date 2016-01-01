@@ -11,7 +11,6 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('timers', function(req, res){
 		timerFunctions.getTimers(req, res, function(data){
-			console.log(data);
 			req.io.emit('timers', data);
 		});
 	});

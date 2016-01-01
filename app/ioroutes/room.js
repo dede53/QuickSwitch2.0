@@ -11,7 +11,7 @@ module.exports = function(app, db){
 	* Liefert alle Räume mit Name, ID...
 	*****************************************/
 	app.io.route('rooms', function(req, res){
-		roomFunctions.getRooms(req, res, function(data){
+		roomFunctions.getRooms("object", req, res, function(data){
 			req.io.emit('rooms', data);
 		});
 	});
@@ -34,7 +34,7 @@ module.exports = function(app, db){
 			};
 			roomFunctions.saveNewRoom(data, req, res, function(data){
 				req.io.emit('savedRoom', data);
-				roomFunctions.getRooms(req, res, function(data){
+				roomFunctions.getRooms("Array", req, res, function(data){
 					app.io.broadcast('rooms', data);
 				});
 			});
@@ -45,7 +45,7 @@ module.exports = function(app, db){
 					"name": req.data.name
 				};
 			roomFunctions.saveEditRoom(data, req, res, function(data){
-				roomFunctions.getRooms(req, res, function(data){
+				roomFunctions.getRooms("Array", req, res, function(data){
 					app.io.broadcast('rooms', data);
 				});
 			});
@@ -58,7 +58,7 @@ module.exports = function(app, db){
 		var id = req.data.id;
 		roomFunctions.deleteRoom(id, req, res, function(data){
 			req.io.emit('deletedRoom', data);
-			roomFunctions.getRooms(req, res, function(data){
+			roomFunctions.getRooms("Array", req, res, function(data){
 				app.io.broadcast('rooms', data);
 			});
 		});
@@ -66,7 +66,7 @@ module.exports = function(app, db){
 	app.io.route('switchRoom', function(req, res){
 		var room = req.data.room;
 		var status = req.data.status;
-		roomFunctions.switchRoom(room, status, req, res, function(err){
+		roomFunctions.switchRoom(room, status, app, req, res, function(err){
 			if(err != 200){
 				console.log("Raum konnte nicht geschaltet werden");
 			}

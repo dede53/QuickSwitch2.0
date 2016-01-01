@@ -1,25 +1,23 @@
 var app = 	angular.module('jsbin',[
 				'ui.bootstrap',
-				
-				'snap'
-				
-				,
+				'snap',
 				'ngAnimate',
 				'ngRoute',
 				'ngTouch',
 				'highcharts-ng'
 			]);
 
+
 app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.
-	when('/favoriten', {
+	when('/home', {
 		templateUrl: './app/home/index.html',
 		controller: 'homeController'
 	}).
 	when('/devices', {
 		templateUrl: './app/devices/index.html',
 		controller: 'devicesController'
-	}).
+	})/*.
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
 		controller: 'groupsController'
@@ -27,21 +25,24 @@ app.config(['$routeProvider', function($routeProvider) {
 	when('/rooms', {
 		templateUrl: './app/rooms/index.html',
 		controller: 'roomsController'
-	}).
+	})*/.
 	when('/temperature', {
 		templateUrl: './app/temperature/index.html',
 		controller: 'temperatureController'
 	}).
+	when('/timer', {
+		templateUrl: './app/timer/index.html',
+		controller: 'timerController'
+	}).
 	otherwise({
-		redirectTo: '/favoriten'
+		redirectTo: '/home'
 	});
 }]);
 
 app.controller('appController', function($rootScope, $scope, $location){
 
-	$rootScope.moreMessagesAvible = true;
-	$rootScope.sharedMessages = new Array;
-	
+	$scope.favorit = true;
+
 	$scope.storedUser = getCookie("username");
 
 	if ($scope.storedUser != "") {
@@ -52,8 +53,6 @@ app.controller('appController', function($rootScope, $scope, $location){
 		$rootScope.activeUser.name = "Besucher";
 	}
 
-
-
 	$scope.showmenu=false;
 	$scope.toggleMenu = function(data){
 		$scope.showmenu=!($scope.showmenu);
@@ -62,6 +61,7 @@ app.controller('appController', function($rootScope, $scope, $location){
 		}
 	}
 
+	
 	$scope.snapOptions = {
 		disable: 'none',
 		addBodyClasses: true,
@@ -77,4 +77,27 @@ app.controller('appController', function($rootScope, $scope, $location){
 		slideIntent: 40,
 		minDragDistance: 5
 	}
+
 });
+
+app.controller('favoritmenucontroller', function($scope){
+
+});
+/*
+app.directive('rotate', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            scope.$watch(attrs.degrees, function (rotateDegrees) {
+                var r = 'rotate(' + rotateDegrees + 'deg)';
+                element.css({
+                    '-moz-transform': r,
+                    '-webkit-transform': r,
+                    '-o-transform': r,
+                    '-ms-transform': r
+                });
+            });
+        }
+    }
+});
+*/

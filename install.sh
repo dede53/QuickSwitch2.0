@@ -28,7 +28,7 @@ echo "installieren node"
 sudo dpkg -i node_latest_armhf.deb
 
 
-echo "Installiere pi-blaster-deamon"
+echo "Installiere pi-blaster-deamon zum dimmer der GPIO-Ports"
 git clone https://github.com/sarfata/pi-blaster.git
 cd pi-blaster
 ./autogen.sh
@@ -56,8 +56,13 @@ forever start SwitchServer.js
 echo "starte den Timerserver"
 forever start timerserver.js
 
+echo "starte den Countdownserver"
+forever start countdownserver.js
+
 echo "starte den Datenbankserver"
 forever start server.js
 
 echo "Alles Fertig!!"
+echo 
+echo "Die Weboberfläche ist jetzt auf Port 1230 diesen Raspberrys zu erreichen"
 echo

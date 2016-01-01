@@ -1,8 +1,8 @@
 <div class="tile">
 	<ul>
-		<li ng-repeat="(key, rooms) in devicelist">
-			<h3>{{key}}</h3>
-			<div ng-repeat="devices in rooms">
+		<li ng-repeat="room in devicelist">
+			<h3>{{room.room.name}}</h3>
+			<div ng-repeat="devices in room.roomdevices">
 				<div>
 					<div style="text-align:left">
 						{{devices.name}}

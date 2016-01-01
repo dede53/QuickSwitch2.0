@@ -1,10 +1,11 @@
 <div ng-if="device.protocol == 8" class="ui-block-b" style="text-align:right" data-snap-ignore="true">
 	<div class="box-btn-switch">
-		{{device.status}}
+		{{ formatNumber(device.status) }}
 		<input
 			type="range" 
 			min="0" 
-			max="100" 
+			max="1"
+			step="0.01"
 			ng-model="device.status"
 			ng-model-options="{ debounce: 50 }"
 			ng-change='switchdeviceSlider({"device":device})'

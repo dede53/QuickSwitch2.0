@@ -75,30 +75,40 @@ $scope.dashStyles = [
   $rootScope.chartConfig = {
 		options:{
 			chart: {
-				backgroundColor: 'transparent'
-			},
-			navigator: {
-				adaptToUpdatedData: false,
-				enabled: true,
-				series: []
+				backgroundColor: 'transparent',
+				zoomType:"x"
 			},
 			rangeSelector: {
-				enabled: true
+				enabled: false
+			},
+			navigator: {
+				enabled: false
 			},
 			plotOptions: {
 				series: {
-					lineWidth: 1,
-					fillOpacity: 0.5,
 					marker:{
 						enable: true
 					}
-				},
+				}
 			},
             exporting: false,
 			xAxis: [{
 				type: 'datetime',
 				labels:{
-					rotation: 0
+					rotation: 0,
+					style: {
+						"color": '#80a3ca',
+						"fontSize": "16px"
+					}
+				},
+				dateTimeLabelFormats: {
+					second: '%Y-%m-%d<br/>%H:%M:%S',
+					minute: '%Y-%m-%d<br/>%H:%M',
+					hour: '%d.%m<br/>%H:%M',
+					day: '%d.%m<br/>%H:%M',
+					week: '%d.%m.%Y',
+					month: '%m.%Y',
+					year: '%Y'
 				}
 			}],
 			yAxis: [{
@@ -106,13 +116,31 @@ $scope.dashStyles = [
 				title: {
 					text: 'Temperatur',
 					style: {
-						color: '#80a3ca'
+						"color": '#80a3ca',
+						"fontSize": "16px"
 					}
 				},
 				labels: {
 					format: '{value}',
 					style: {
-						color: '#80a3ca'
+						"color": '#80a3ca',
+						"fontSize": "16px"
+					}
+				}
+			},{
+				allowDecimals: true,
+				title: {
+					text: 'Luftfeuchte',
+					style: {
+						"color": '#80a3ca',
+						"fontSize": "16px"
+					}
+				},
+				labels: {
+					format: '{value}',
+					style: {
+						"color": '#80a3ca',
+						"fontSize": "16px"
 					}
 				}
 			}],
@@ -135,12 +163,12 @@ $scope.dashStyles = [
 			borderColor: '#a4a4a4',
 			shadow: false,
 			useHTML: true,
-			percentageDecimals: 2,
-			backgroundColor: "rgba(255,255,255,.7)",
+			backgroundColor: "rgba(255,255,255,1)",
 			style: {
-				padding: 5
+				padding: 5,
+				zIndex: 100
 			},
-			shared: true
+			shared: false
 		},
 		useHighStocks: true,
         series: [],

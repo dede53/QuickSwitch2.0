@@ -14,18 +14,17 @@ module.exports = {
 				string = string + " OR  deviceid = " + dev;
 			}
 		});
-		var query = "SELECT * FROM devices WHERE "+ string +";";
+		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE rooms.id = devices.roomid AND ("+ string +");";
 		db.all(query , function(err, data) {
 			if(err){
 				console.log(err);
 				callback(404);
 			}else{
 				data.forEach(function(device){
-					SwitchServer.sendto(app, req, status, device, function(data){
-						console.log(data);
+					SwitchServer.sendto(app, req, status, device, function(status){
+						if(status == 200){
+						}
 					});
-					var query = "UPDATE devices SET status = '"+ status +"' WHERE deviceid = "+ device.deviceid +";";
-					db.run(query);
 				});
 				callback(200);
 			}

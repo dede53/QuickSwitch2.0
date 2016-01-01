@@ -1,12 +1,13 @@
 var db 				= require('./database.js');
 var async 			= require("async");
+var deviceFunctions = require('./device.js');
 
 module.exports = {
 	/*****************************************
 	* Liefert alle Countdowns
 	*****************************************/
 	getCountdowns: function(req,res,callback){
-		var query = "SELECT countdowns.id, countdowntypen.type, countdowns.switchid, countdowns.time, countdowns.status AS switchstatus FROM countdowns, countdowntypen;";
+		var query = "SELECT countdowns.id, countdowntypen.type, countdowns.switchid, countdowns.time, countdowns.status AS switchstatus FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id;";
 		db.all(query, function(err, row){
 			if(err){
 				console.log(err);
@@ -14,7 +15,7 @@ module.exports = {
 				var bla = new Array;
 				async.each(row,
 					function(row, callback){
-						getDevice(row.switchid, req, res, function(device){
+						deviceFunctions.getDevice(row.switchid, req, res, function(device){
 							row.device = device;
 							bla.push(row);
 							callback();
@@ -68,8 +69,8 @@ module.exports = {
 	* Callback: 200 bei erfolg
 				error bei fehler
 	*****************************************/
-	setNewCountdown: function (data, callback){	
-		var query = "INSERT INTO countdowns (type, time, switchid, status) VALUES ('1','"+ data.time +"','"+ data.device.deviceid +"','"+ data.switchstatus +"');";
+	setNewCountdown: function (data, callback){
+		var query = "INSERT INTO countdowns (type, time, switchid, status) VALUES ('1','"+ data.time +"','"+ data.device +"','"+ data.switchstatus +"');";
 		db.all(query, function(err, data){
 			if(err){
 				callback(err);

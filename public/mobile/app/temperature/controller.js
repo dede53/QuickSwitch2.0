@@ -1,155 +1,157 @@
-app.controller('temperatureController', function($scope,$rootScope, socket){
+app.controller('temperatureController', function($scope,$rootScope, socket){	
+	if($rootScope.chartConfig === undefined){
+		socket.emit('getSensorvalues', {"date":"all"});
 
-	socket.emit('getSensorvalues', {"date":"all"});
-	$scope.chartConfig = "";
-	$scope.chartConfig = {
-		options: {
-			chart: {
-				backgroundColor: 'transparent'
-			},
-			navigator: {
-				adaptToUpdatedData: false,
-				enabled: false,
-				series: []
-			},
-			rangeSelector: {
-					enabled: true,
-					buttons: [{
-						type: 'day',
-						text: 'Day'
-					}, {
-						type: 'day',
-						count: '2',
-						text: '2Day'
-					}, {
-						type: 'day',
-						count: '3',
-						text: '3Day'
-					}, {
-						type: 'week',
-						count: '1',
-						text: 'Week'
-					},{
-						type: 'month',
-						count: 1,
-						text: '1m'
-					}, {
-						type: 'year',
-						count: 1,
-						text: '1y'
-					}, {
-						type: 'all',
-						text: 'All'
-					}]
-				},
-			plotOptions: {
-				series: {
-					lineWidth: 1,
-					fillOpacity: 0.5,
-					marker:{
-						enable: true
-					}
-				},
-				column: {
-					stacking: 'normal'
-				},
-				area: {
-					stacking: 'normal',
-					marker: {
-						enabled: false
-					}
-				}
+		var chartConfig = {
+				options:{
+					chart: {
+						backgroundColor: 'transparent',
+						renderTo:"container",
+						zoomType:"x"
+					},
+					navigator: {
+						enabled: false,
+						adaptToUpdatedData: true,
+						series: []
+					},
+					rangeSelector: {
+						enabled: false,
+						inputStyle: {
+							fontSize: "16px"
+						},
+			            buttonTheme: {
+							style: {
+								fontSize: "16px"
+							},
+						},
+						labelStyle: {
+							fontSize: "16px"
+						},
+						buttons: [{
+							type: 'hour',
+							count: '12',
+							text: '12h'
+						}, {
+							type: 'hour',
+							count: '24',
+							text: '24h'
+						},{
+							type: 'all',
+							count: 'all',
+							text: 'Alle'
+						}],
+						selected: 2,
+            			inputDateFormat: '%e %b %Y',
+            			inputEditDateFormat: '%e %b %Y'
+					},
+					plotOptions: {
+						series: {
+							marker:{
+								enabled: false
+							},
+			                animation: false
+						},
+					},
+					exporting: false,
+					xAxis: [{
+						type: 'datetime',
+						labels:{
+							rotation: 0,
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						dateTimeLabelFormats: {
+							second: '%Y-%m-%d<br/>%H:%M:%S',
+							minute: '%Y-%m-%d<br/>%H:%M',
+							hour: '%d.%m<br/>%H:%M',
+							day: '%d.%m<br/>%H:%M',
+							week: '%d.%m.%Y',
+							month: '%m.%Y',
+							year: '%Y'
+						}
+					}],
+					yAxis: [{
+						allowDecimals: true,
+						title: {
+							text: 'Temperatur',
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						labels: {
+							format: '{value}',
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						plotLines: []
+					},
+					{
+						allowDecimals: true,
+						title: {
+							text: 'Luftfeuchtigkeit',
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						labels: {
+							format: '{value}',
+							style: {
+								"color": '#80a3ca',
+								"fontSize": "16px"
+							}
+						},
+						opposite: true
+					}],
 
-			},
-			exporting: false,
-			xAxis: [{
-				type: 'datetime',
-				labels:{
-					rotation: -45
-				}
-			}],
-			yAxis: [
-
-				{ // Primary yAxis
-
-					allowDecimals: true,
-					title: {
-						text: 'Temperatur',
-						style: {
-							color: '#80a3ca'
+					legend: {
+						enabled: true,
+						itemStyle: {
+							"fontSize": "16px"
 						}
 					},
-					labels: {
-						format: '{value}',
+					title: {
+						text: ''
+					},
+					credits: {
+						enabled: false
+					},
+					tooltip: {
+						headerFormat: '<div class="header">{point.key}</div>',
+						pointFormat: '<div class="line"><p style="float:left;">{series.name} {point.y}</p></div>',
+						borderWidth: 1,
+						borderRadius: 5,
+						borderColor: '#a4a4a4',
+						shadow: false,
+						useHTML: true,
+						backgroundColor: "rgba(255,255,255,1)",
 						style: {
-							color: '#80a3ca'
-						}
-					}
-
-
-				}
-			],
-
-			legend: {
-				enabled: true
-			},
-			title: {
-				text: ''
-			},
-			credits: {
-				enabled: false
-			},
-			tooltip: {
-				headerFormat: '<div class="header">{point.key}</div>',
-				pointFormat: '<div class="line"><div class="circle" ></div><p class="country" style="float:left;">{series.name} {point.y}</p></div>',
-				borderWidth: 1,
-				borderRadius: 5,
-				borderColor: '#a4a4a4',
-				shadow: false,
-				useHTML: true,
-				percentageDecimals: 2,
-				backgroundColor: "rgba(255,255,255,.7)",
-				style: {
-					padding: 5
+							padding: 5,
+							zIndex: 100
+						},
+						shared: false
+					},
+					useHighStocks: true
 				},
-				shared: true
-			},
-			useHighStocks: false
-		},
-		series: [],
-		loading: true
+				series: [],
+				loading: true
+			}
+		
+		$rootScope.chartConfig = chartConfig;
 	}
-	
-	
-	
+
 	socket.on('Sensorvalues', function(alldata) {
 		alldata.forEach(function(data){
-
-			console.log("Neue Daten");
-			var sensor = {
-				id: data.nodeID,
-				name: data.name,
-				data: data.data,
-				type: data.charttype,
-				dashStyle: data.linetype,
-				yAxis: 0,
-				connectNulls:false,
-				tooltip: {
-					valueSuffix: ' °C'
-				},
-				color: data.farbe
-			};
-			var navigator = {
-				data: data.data
-			};
-			
-			$scope.chartConfig.options.navigator.series.push(navigator);
-
-			$scope.chartConfig.series.push(sensor);
-			$scope.chartConfig.loading = false;
+			$rootScope.chartConfig.series.push(data);
+			$rootScope.chartConfig.loading = false;
 		});
 	});
-		
+
 	Highcharts.setOptions({
 		global : {
 			useUTC : false
@@ -159,9 +161,4 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			rangeSelectorZoom: ""
 		}
 	});
-		
-	
-	$scope.getData = function(hours){
-		console.log(hours);
-	}
 });

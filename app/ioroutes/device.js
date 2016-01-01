@@ -8,16 +8,14 @@ module.exports = function(app, db){
 	* Sendet die Gerätefavoriten zu dem neuen Benutzer
 	*********************************************************/
 	app.io.route('favoritDevices', function( req, res){
-		var data = req.data;
-		//log(data.name + " hat QuickSwitch geöffnet", "debug");
-		
+		var data = req.data;		
 		deviceFunctions.favoritDevices(data, req,res,function(data){
 			req.io.emit('favoritDevices', data);
 		});
 	});
 
 	app.io.route('sendActiveDevices',function(req, res){
-		SwitchServerFunctions.sendActiveDevices(app, db, function(err){
+		SwitchServerFunctions.sendActiveDevices(app, function(err){
 			if(err != 200){
 				console.log("Error: Liste der aktiven Geräte konnte nicht gesendet werden" + err);
 			}
@@ -37,7 +35,7 @@ module.exports = function(app, db){
 				"CodeOn": req.data.CodeOn,
 				"CodeOff": req.data.CodeOff,
 				"protocol": req.data.protocol,
-				"room": req.data.room,
+				"room": req.data.roomid,
 				"switchserver": req.data.switchserver
 			};
 			deviceFunctions.saveNewDevice(data, req, res, function(data){
@@ -55,7 +53,7 @@ module.exports = function(app, db){
 					"CodeOn": req.data.CodeOn,
 					"CodeOff": req.data.CodeOff,
 					"protocol": req.data.protocol,
-					"room": req.data.room,
+					"room": req.data.roomid,
 					"switchserver": req.data.switchserver
 				};
 			deviceFunctions.saveEditDevice(data, req, res, function(data){

@@ -29,6 +29,10 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/temperature/index.html',
 		controller: 'temperatureController'
 	}).
+	when('/timer', {
+		templateUrl: './app/timer/index.html',
+		controller: 'timerController'
+	}).
 	otherwise({
 		redirectTo: '/home'
 	});

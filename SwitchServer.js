@@ -46,6 +46,7 @@ function switchdevice( status, data){
 		case "5":
 		case "6":
 		case "7":
+		case "11":
 			sendUDP(status, data);
 			break;
 		case "8":
@@ -86,17 +87,22 @@ function sendEXEC(status, data){
 function sendUDP(status, data){
 	switch(data.protocol){
 		case "5":
+			// var msg = "send433:" + status + ":" + data.CodeOn + ":" + data.CodeOff;
 			var msg = connair_create_msg_brennenstuhl(status, data);
 			break;
 		case "6":
 			var msg = connair_create_msg_elro(status, data);
 			break;
 		case "7":
+			// var msg = "send433:" + status + ":" + data.CodeOn + ":" + data.CodeOff;
 			if(status == 1){
 				var msg = data.CodeOn;
 			}else{
 				var msg = data.CodeOff;
 			}
+			break;
+		case "11":
+			var msg = "send433:" + status + ":" + data.CodeOn + ":" + data.CodeOff;
 			break;
 		default:
 			break;
@@ -230,10 +236,10 @@ function connair_create_msg_elro(status, data) {
 	sRepeat=10;
 	sPause=5600;
 	sTune=350;
-	sSpeed=14;
+	sSpeed=16;
 	uSleep=800000;
 	HEAD = "TXP:"+ sA +","+ sG +","+ sRepeat +","+ sPause +","+ sTune +",25,";
-	TAIL = "1,"+ sSpeed +",;";
+	TAIL = "1,"+ sSpeed +";";
 	
 	AN="1,3,1,3,1,3,3,1,";
 	AUS="1,3,3,1,1,3,1,3,";

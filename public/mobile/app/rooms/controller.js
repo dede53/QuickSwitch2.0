@@ -1,4 +1,4 @@
-app.controller('roomsController',  function($scope, socket) {
+app.controller('roomsController',  function($scope, $rootScope, socket) {
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
@@ -8,7 +8,7 @@ app.controller('roomsController',  function($scope, socket) {
 	*	Daten empfangen, Scope zuordnen
 	***********************************************/
 	socket.on('rooms', function(data) {
-		$scope.roomlist = data;
+		$rootScope.roomlist = data;
 	});
 	
 	/***********************************************
@@ -17,4 +17,5 @@ app.controller('roomsController',  function($scope, socket) {
 	$scope.switchroom = function(data) {
 		socket.emit('switchRoom', data);
 	}
+	
 });

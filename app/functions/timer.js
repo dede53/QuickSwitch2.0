@@ -3,14 +3,11 @@ var db 				= require('./database.js');
 module.exports = {
 	getTimers: function(req, res, callback){
 		var query = "SELECT id, name, conditions, actions FROM timer;";
-		console.log(query);
 		db.all(query, function(err, data){
 			if(err){
 				callback(404);
 				console.log(err);
-			}else{
-				console.log(data);
-				
+			}else{				
 				for(var i = 0; i< data.length; i++){
 					data[i].conditions = JSON.parse(data[i].conditions);
 					data[i].actions = JSON.parse(data[i].actions);
