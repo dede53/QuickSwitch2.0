@@ -1,13 +1,16 @@
 #! /bin/bash
 
-
-
-# apt-get update
-# apt-get upgrade -y
-## Dieses Script ausführbar machen:
-## chmod +x /home/pi/install.sh
+#######################################################
+## QuickSwitch2.0
+## Smarthomesystem auf Basis von Node.js Angular.js und vielen weiteren npm-Packeten
 ##
-## Script mit 'sudo ./install.sh' ausführen
+## Weitere Informationen:
+## https://github.com/dede53/QuickSwitch2.0
+##
+## Installation:
+## Dieses Script ausführbar machen und im Anschluss mit sudo starten:
+## chmod +x /home/pi/install.sh
+## sudo ./install.sh
 #######################################################
 clear
 echo "Dieses Skript installiert:"
@@ -16,20 +19,23 @@ echo "| -- node.js/npm"
 echo "| -- mysql"
 echo
 echo "update die Packetquellen"
-# sudo apt-get update
+sudo apt-get update
 echo "Upgrade das system"
-# sudo apt-get -y upgrade
+sudo apt-get -y upgrade
 echo "Installieren git und mysql"
-# sudo apt-get -y install git mysql-server mysql-client autoconf
+sudo apt-get -y install git mysql-server mysql-client autoconf
 
 echo "Lade node-latest herrunter"
-# wget http://node-arm.herokuapp.com/node_latest_armhf.deb
+wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 echo "installieren node"
-# sudo dpkg -i node_latest_armhf.deb
+sudo dpkg -i node_latest_armhf.deb
 
+echo
 pwd
 cd ../
-echo "Installiere pi-blaster-deamon zum dimmer der GPIO-Ports"
+pwd
+echo
+echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
 git clone https://github.com/sarfata/pi-blaster.git
 cd pi-blaster
 ./autogen.sh
@@ -38,8 +44,12 @@ make
 sudo make install
 sudo ./pi-blaster
 
+echo
 pwd
 cd ../
+pwd
+echo
+
 cd QuickSwitch2.0
 echo "Installiere abhängigkeiten"
 sudo npm install
