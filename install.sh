@@ -16,16 +16,16 @@ echo "| -- node.js/npm"
 echo "| -- mysql"
 echo
 echo "update die Packetquellen"
-sudo apt-get update
+# sudo apt-get update
 echo "Upgrade das system"
-sudo apt-get -y upgrade
+# sudo apt-get -y upgrade
 echo "Installieren git und mysql"
-sudo apt-get -y install git mysql-server mysql-client autoconf
+# sudo apt-get -y install git mysql-server mysql-client autoconf
 
 echo "Lade node-latest herrunter"
-wget http://node-arm.herokuapp.com/node_latest_armhf.deb
+# wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 echo "installieren node"
-sudo dpkg -i node_latest_armhf.deb
+# sudo dpkg -i node_latest_armhf.deb
 
 pwd
 cd ../
