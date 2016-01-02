@@ -1,18 +1,20 @@
-<h3>Telefonanrufe</h3>
-<ul class="panel panel-default">
-	<div class="panel-body">
-		<li ng-repeat="call in phonelist" class="">
-			<p id="">
-				<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
-					
-				{{	call.date | date:'d. MMM | HH:mm'}}
-				<span class="pull-right">
-					{{call.remotenumber}}
-					<span class="right grey">
-						{{call.duration}} {{call.durationminutes}} Minuten
+<div ng-hide="phonelist">
+	<h3>Telefonanrufe</h3>
+	<ul class="panel panel-default">
+		<div class="panel-body">
+			<li ng-repeat="call in phonelist" class="">
+				<p id="">
+					<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
+						
+					{{	call.date | date:'d. MMM | HH:mm'}}
+					<span class="pull-right">
+						{{call.remotenumber}}
+						<span class="right grey">
+							{{call.duration}} {{call.durationminutes}} Minuten
+						</span>
 					</span>
-				</span>
-			</p>
-		</li>
-	</div>
-</ul>
+				</p>
+			</li>
+		</div>
+	</ul>
+</div>
