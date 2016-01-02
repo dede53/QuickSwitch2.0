@@ -120,7 +120,11 @@ module.exports = {
 						db.all(query , function(err, sensordata) {
 							if (err) {
 								console.log(err);
-							}else{
+							}else if(sensordata.length == 0){
+								console.log("Keine Daten für den Sonsor mit der ID: " + sensor.nodeID);
+								callback();
+							}
+							else{
 								var bla = new Array;
 								sensordata.forEach(function(uff){
 									var asd = new Array;
