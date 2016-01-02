@@ -1,5 +1,5 @@
-<div ng-hide="phonelist">
-	<h3>Telefonanrufe</h3>
+<h3>Telefonanrufe</h3>
+<div ng-show="phonelist">
 	<ul class="panel panel-default">
 		<div class="panel-body">
 			<li ng-repeat="call in phonelist" class="">
@@ -18,3 +18,4 @@
 		</div>
 	</ul>
 </div>
+<div ng-hide="phonelist" class="alert alert-info" role="alert">Keine Verbindung zur Fritzbox!</div>
