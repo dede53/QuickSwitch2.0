@@ -56,22 +56,32 @@ sudo npm install
 sudo npm install forever -g
 
 echo "lege die Datenbank an..."
+echo "Dazu gebe bitte das Passwort der MySQL Installation ein:"
 mysql -u root -p < SmartHome.sql
 
 
-echo "starte den Switchserver"
-forever start SwitchServer.js
+#echo "starte den Switchserver"
+#forever start SwitchServer.js
 
-echo "starte den Timerserver"
-forever start timerserver.js
+#echo "starte den Timerserver"
+#forever start timerserver.js
 
-echo "starte den Countdownserver"
-forever start countdownserver.js
+#echo "starte den Countdownserver"
+#forever start countdownserver.js
 
-echo "starte den Datenbankserver"
-forever start server.js
-
+#echo "starte den Datenbankserver"
+#forever start server.js
+clear
 echo "Alles Fertig!!"
 echo 
-echo "Die Weboberfläche ist jetzt auf Port 1230 diesen Raspberrys zu erreichen"
+#echo "Die Weboberfläche ist jetzt auf Port 1230 diesen Raspberrys zu erreichen"
+echo "Jetzt nur noch die Konfiguration in der Config.json anpassen und die Server starten:"
 echo
+echo "nano config.js"
+echo "Speichern mit Strg + X und dann y"
+echo 
+echo "server starten mit forever:"
+echo "forever start SwitchServer.js"
+echo "forever start countdownserver.js"
+echo "forever start timerserver.js"
+echo "forever start server.js"
