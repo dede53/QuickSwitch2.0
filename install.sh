@@ -17,6 +17,8 @@ echo "Dieses Skript installiert:"
 echo "QuickSwitch"
 echo "| -- node.js/npm"
 echo "| -- mysql"
+echo "| -- git"
+echo "| -- pi-blaster"
 echo
 echo "update die Packetquellen"
 sudo apt-get update
@@ -58,30 +60,95 @@ sudo npm install forever -g
 echo "lege die Datenbank an..."
 echo "Dazu gebe bitte das Passwort der MySQL Installation ein:"
 mysql -u root -p < SmartHome.sql
-
-
-#echo "starte den Switchserver"
-#forever start SwitchServer.js
-
-#echo "starte den Timerserver"
-#forever start timerserver.js
-
-#echo "starte den Countdownserver"
-#forever start countdownserver.js
-
-#echo "starte den Datenbankserver"
-#forever start server.js
+echo "Datenbank angelegt"
+sleep(3)
 clear
-echo "Alles Fertig!!"
-echo 
-#echo "Die Weboberfläche ist jetzt auf Port 1230 diesen Raspberrys zu erreichen"
-echo "Jetzt nur noch die Konfiguration in der Config.json anpassen und die Server starten:"
+quickswitchport="1230"
+localip=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+
+
+echo "QuickSwitch-Konfiguration"
 echo
-echo "nano config.js"
-echo "Speichern mit Strg + X und dann y"
+echo "Soll ein Connairgateway eingerichtet werden? (y / n)"
+read connairanswer
+if [ $connairanswer == 'y' ]
+then
+	echo "Geben Sie die IP-Adresse ihres Connairgateways ein:"
+	read connairip
+	echo "Geben Sie den Port ihres Connairgateways ein (default: 49880):"
+	read connairport
+	echo "Das Connairgateway ist fertig konfiguriert!"
+fi
+echo
 echo 
-echo "server starten mit forever:"
-echo "forever start SwitchServer.js"
-echo "forever start countdownserver.js"
-echo "forever start timerserver.js"
-echo "forever start server.js"
+echo "Soll eine Fritzbox eingerichtet werden? (y / n)"
+read fritzboxanswer
+if [ $fritzboxanswer == 'y' ]
+then
+	echo "Geben sie die IP-Adresse der Fritzbox ein:"
+	read fritzboxip
+	echo "Geben Sie den Benutzername der Fritzbox ein:"
+	read fritzboxuser
+	echo "Geben Sie das Passwort für den Fritzboxbenutzer ein:"
+	read fritzboxpassword
+	echo "Die Fritzbox ist fertig konfiguriert!"
+fi
+echo 
+echo "Wollen sie den SwitchServer manuell einrichten? (y / n) (default: n)"
+read switchserveranswer
+if [ $switchserveranswer == 'y' ]
+then
+	echo "Geben Sie die IP-Adresse des SwitchServers ein:"
+	read switchserverip
+	echo "Geben Sie den Port des Switchservers ein (default: 4040):"
+	read switchserverport
+	echo "Der SwitchServer ist fertig konfiguriert!"
+else
+	switchserverport="4040"
+	switchserverip=$localip
+fi
+echo
+echo
+echo "Ermittle die IP-Adresse des Servers..."
+echo "Folgende IP gefunden:"
+echo $localip
+echo "Der aktuelle Port für die Weboberfläche ist:" 
+echo $quickswitchport
+echo
+
+echo "Die Koniguration wurde erfolgreich abgeschlossen!"
+echo
+echo '{
+	"connair": {
+		"ip":"'$connairip'",
+		"port":"'$connairport'"
+	},
+	"switchserver": [{
+		"id": "1",
+		"ip": "'$switchserverip'",
+		"port": "'$switchserverport'"
+	}],
+	"QuickSwitch": {
+		"ip": "'$localip'",
+		"port" "'$quickswitchport'"
+	},
+	"fritzbox": {
+		"ip": "'$fritzboxip'",
+		"user": "'$fritzboxuser'",
+		"password": "'$fritzboxpassword'"
+	} 
+}' > config.json
+
+pwd
+echo
+echo "starte den Switchserver"
+forever start SwitchServer.js
+
+echo "starte den Timerserver"
+forever start timerserver.js
+
+echo "starte den Countdownserver"
+forever start countdownserver.js
+
+echo "starte den Datenbankserver"
+forever start server.js
