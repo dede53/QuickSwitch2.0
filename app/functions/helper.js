@@ -63,7 +63,12 @@ module.exports = {
 	fritzboxConnect: function(callback){
 		var moreParam = { url: conf.fritzbox.ip };
 		fritz.getSessionID(conf.fritzbox.user , conf.fritzbox.password, function(sid){
-			callback(fritz, sid);
+			console.log("Fritzbox Session ID: " + sid);
+			if(sid == "0000000000000000"){
+				console.log("Kann keine Verbindung zur Fritzbox herstellen!");
+			}else{
+				callback(fritz, sid);
+			}
 		}, moreParam);
 	},
 	/*
