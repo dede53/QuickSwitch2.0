@@ -2,7 +2,9 @@ app.controller('phoneController',  function($scope, $rootScope, socket) {
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
-	socket.emit('phonelist');
+	if($rootScope.phonelist.length == 0){
+		socket.emit('phonelist');
+	}
 
 	/***********************************************
 	*	Daten empfangen, Scope zuordnen
