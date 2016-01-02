@@ -61,7 +61,7 @@ echo "lege die Datenbank an..."
 echo "Dazu gebe bitte das Passwort der MySQL Installation ein:"
 mysql -u root -p < SmartHome.sql
 echo "Datenbank angelegt"
-sleep(3)
+sleep 3
 clear
 quickswitchport="1230"
 localip=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
