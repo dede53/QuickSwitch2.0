@@ -130,7 +130,7 @@ echo '{
 	}],
 	"QuickSwitch": {
 		"ip": "'$localip'",
-		"port" "'$quickswitchport'"
+		"port": "'$quickswitchport'"
 	},
 	"fritzbox": {
 		"ip": "'$fritzboxip'",
