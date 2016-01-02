@@ -92,6 +92,8 @@ module.exports = {
 		db.all(query, function(err, sensor){
 			if(err){
 				console.log(err);
+			}else if(sensor == ""){
+				console.log("Keine Temperatursensoren gespeichert!");
 			}else{
 				var alldata = new Array;
 				async.each(sensor,
