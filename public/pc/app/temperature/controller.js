@@ -149,7 +149,6 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 				series: [],
 				loading: true
 			}
-		
 		$rootScope.chartConfig = chartConfig;
 	}
 
