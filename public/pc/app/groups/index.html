@@ -1,5 +1,5 @@
 <ul class="panel-group">
-	<li ng-if="timers.length != 0" ng-repeat="group in grouplist" class="panel panel-default">
+	<li ng-if="grouplist.length != 0" ng-repeat="group in grouplist" class="panel panel-default">
 		<div class="panel-heading">
 			<h4 class="panel-title ">
 				<div class="left">{{group.name}}</div>
@@ -10,7 +10,7 @@
 			</h4>
 		</div>
 	</li>
-	<li ng-if="timers.length == 0" class="panel panel-default">
+	<li ng-if="grouplist.length == 0" class="panel panel-default">
 		<div class="panel-heading panel-title">
 			Keine Timer gesetzt!
 		</div>
