@@ -12,6 +12,16 @@
 ## chmod +x /home/pi/install.sh
 ## sudo ./install.sh
 #######################################################
+
+#######################################################
+#	git clone https://github.com/dede53/QuickSwitch2.0
+#	cd QuickSwitch2.0
+#	sudo chmod +x install.sh
+#	sudo ./install.sh
+#######################################################
+
+
+
 clear
 echo "Dieses Skript installiert:"
 echo "QuickSwitch"
@@ -141,14 +151,12 @@ echo '{
 
 pwd
 echo
-echo "starte den Switchserver"
-forever start SwitchServer.js
-
-echo "starte den Timerserver"
-forever start timerserver.js
-
-echo "starte den Countdownserver"
-forever start countdownserver.js
-
 echo "starte den Datenbankserver"
 forever start server.js
+
+echo
+echo
+echo
+echo "Zum stoppen von QuickSwitch"
+echo "forever stopall"
+echo "verwenden"
