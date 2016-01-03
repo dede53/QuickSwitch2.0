@@ -40,14 +40,14 @@ var messageFunctions 		= require('./functions/message.js');
 +	/devices 				(GET)		liefert object der Geräte
 +		/id 				(GET)		liefert ein Gerät anhand der ID
 +	/devices/id 			(DELETE)	löscht ein Gerät anhand der ID
--	/devices/id				(PUT)		speichert geändertes Gerät anhand der ID
++	/devices/id				(PUT)		speichert geändertes Gerät anhand der ID
 +	/devices 				(POST)		speichert neues Gerät
 
-	/groups 				(GET)		liefert object der Gruppen
-		/id 				(GET)		liefert eine Gruppe anhand der ID
-	/groups/id  			(DELETE)	löscht ein Gerät anhand der ID
-	/groups/id 				(PUT)		speichert geänderte Gruppe anhand der ID
-	/groups 				(POST)		speichert neue Gruppe
++	/groups 				(GET)		liefert object der Gruppen
++		/id 				(GET)		liefert eine Gruppe anhand der ID
++	/groups/id  			(DELETE)	löscht ein Gerät anhand der ID
++	/groups/id 				(PUT)		speichert geänderte Gruppe anhand der ID
++	/groups 				(POST)		speichert neue Gruppe
 
 	/rooms 					(GET)		liefert object der Räume
 		/id 				(GET)		liefert einen Raum anhand der ID
@@ -182,7 +182,7 @@ module.exports = function(app, db){
 	});
 	
 	/*******************************************************************************
-	**	Geräte anhand der ID	****************************************************
+	**	Gerät anhand der ID	********************************************************
 	*******************************************************************************/
 	app.get('/devices/:id', function (req, res) {
 		var id = req.params.id;
@@ -203,14 +203,37 @@ module.exports = function(app, db){
 	
 	/*******************************************************************************
 	**	bearbeitetes Gerät speichern	********************************************
+	********************************************************************************
+		data = {
+			"deviceid":2,
+			"name": "Devicename",
+			"protocol": "protocolID",
+			"buttonLabelOn": "ButtonTextAn",
+			"buttonLabelOff": "ButtonTextAus",
+			"CodeOn":"Einschaltcode",
+			"CodeOff":"Ausschaltcode",
+			"room":"(int) roomid",
+			"switchserver": "(int) switchserverid"
+		}
 	*******************************************************************************/
-	app.put('devices', function(req, res){
+	app.put('/devices', function(req, res){
 		deviceFunctions.saveEditDevice(data, req, res, function(data){
 			res.json(data);
 		})
 	});
 	/*******************************************************************************
 	**	neues Gerät	****************************************************************
+	********************************************************************************
+		data = {
+			"name": "Devicename",
+			"protocol": "protocolID",
+			"buttonLabelOn": "ButtonTextAn",
+			"buttonLabelOff": "ButtonTextAus",
+			"CodeOn":"Einschaltcode",
+			"CodeOff":"Ausschaltcode",
+			"room":"(int) roomid",
+			"switchserver": "(int) switchserverid"
+		}
 	*******************************************************************************/
 	app.post('/devices', function (req, res) {
 		deviceFunctions.saveNewDevice(data, req, res, function(data){
@@ -218,8 +241,65 @@ module.exports = function(app, db){
 		});
 	});
 
+	/*******************************************************************************
+	**	alle Gruppen	************************************************************
+	*******************************************************************************/
+	app.get('/groups', function(req, res){
+		groupFunctions.getGroups(req, res, function(data){
+			res.json(data);
+		});
+	});
 
+	/*******************************************************************************
+	**	Gruppe anhand der ID	****************************************************
+	*******************************************************************************/
+	app.get('/groups/:id', function(req, res){
+		var id = req.params.id;
+		groupFunctions.getGroup(id, req, res, function(data){
+			res.json(data);
+		})
+	});
 
+	/*******************************************************************************
+	**	Gruppe löschen	************************************************************
+	*******************************************************************************/
+	app.delete('/groups/:id', function(req, res){
+		var id = req.params.id;
+		groupFunctions.deleteGroup(id, req, res, function(data){
+			res.json(data);
+		});
+	});
+
+	/*******************************************************************************
+	**	bearbeitete Gruppe speichern	********************************************
+	********************************************************************************
+		data = {
+			"id":2,
+			"name": "Gruppenname",
+			"devices": "[1,2,3,4,5]" // Deviceids
+		}
+	*******************************************************************************/
+	app.put('/groups', function(req, res){
+		groupFunctions.saveEditGroup(data, req, res, function(data){
+			res.json(data);
+		});
+	});
+
+	/*******************************************************************************
+	**	neue Gruppe speichern	****************************************************
+	********************************************************************************
+		data = {
+			"name": "Gruppenname",
+			"devices": "[1,2,3,4,5]" // Deviceids
+		}
+	*******************************************************************************/
+	app.post('/groups', function(req, res){
+		groupFunctions.saveNewGroup(data, req, res, function(data){
+			res.json(data);
+		});
+	});
+
+	
 
 	app.get('/rooms', function (req, res) {
 		roomFunctions.getRooms(req, res, function(data){
@@ -232,12 +312,6 @@ module.exports = function(app, db){
 			res.json(data);
 		});
 	});
-	app.get('/groups', function (req, res) {
-		groupFunctions.getGroups(req, res, function(data){
-			res.json(data);
-		});
-	});
-
 
 	app.get('/sensor/:id/:date', function (req, res) {
 		temperatureFunctions.getSensorvalues(req, res, function(data){
@@ -270,7 +344,6 @@ module.exports = function(app, db){
 	});
 
 	app.get('/temperature/reloadTempData', function(req, res){
-		// res.send("Lade Daten...");
 		temperatureFunctions.getSensorvalues(req, res, function(data){
 			app.io.broadcast('Sensorvalues', data);
 			res.status(200).end();

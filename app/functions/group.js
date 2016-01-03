@@ -61,7 +61,6 @@ module.exports = {
 		callback(201);
 	},
 	saveEditGroup: function(data, req ,res, callback){
-		console.log(data);
 		var query = "UPDATE groups SET name = '" + data.name + "', devices = '["+ data.devices +"]' WHERE id = '" + data.id + "';";
 		db.run(query);
 		callback(201);
