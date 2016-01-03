@@ -61,6 +61,7 @@ module.exports = {
 		return null;
 	},
 	fritzboxConnect: function(callback){
+		console.log("Fritzboxnutzer: " + conf.fritzbox);
 		var moreParam = { url: conf.fritzbox.ip };
 		fritz.getSessionID(conf.fritzbox.user , conf.fritzbox.password, function(sid){
 			console.log("Fritzbox Session ID: " + sid);
@@ -71,25 +72,6 @@ module.exports = {
 			}
 		}, moreParam);
 	},
-	/*
-									var data					= new Object;
-								data.id						= sensor.nodeID;
-								data.name					= sensor.name;
-								data.data					= bla;
-								data.type					= sensor.charttype;
-								data.dashStyle				= sensor.linetype;
-								data.lineColor 				= sensor.farbe;
-								data.connectNulls			= true;
-
-								data.marker					= new Object;
-								data.marker.symbol 			= "diamond";
-								data.marker.radius 			= 3;
-								data.marker.fillColor 		= sensor.farbe;
-
-								data.tooltip 				= new Object;
-								data.tooltip.valueSuffix 	= " °C";
-								*/
-
 	Sensor: function(nodeid, name, data, charttype, linetype, farbe, valueSuffix, yAxis){
 		this.id = nodeid;
 		this.name = name;

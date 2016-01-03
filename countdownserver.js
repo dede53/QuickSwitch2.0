@@ -1,7 +1,18 @@
 var db				= require('./app/functions/database.js');
+var helper			= require('./app/functions/helper.js');
 var request			= require('request');
 var conf			= require('./config.json');
 var later			= require('later');
+
+var fs 					=	require('fs');
+var util				=	require('util');
+var log_file 			=	fs.createWriteStream(__dirname + '/debug-countdownserver.log', {flags : 'w'});
+var log_stdout			=	process.stdout;
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
 
 checkCountdowns();
 

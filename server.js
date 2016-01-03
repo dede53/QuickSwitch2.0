@@ -14,6 +14,51 @@ var dgram				=	require('dgram');
 var http				=	require('http');
 var util				=	require('util');
 var exec				=	require('child_process').exec;
+var fs 					=	require('fs');
+
+var log_file 			=	fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+var log_stdout			=	process.stdout;
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
+/*
+*/
+
+var countdownserver = exec('forever start ./countdownserver.js');
+countdownserver.stdout.on('data', function(data) {
+    console.log(data);
+});
+countdownserver.stderr.on('data', function(data) {
+    console.log(data);
+});
+countdownserver.on('close', function(code) {
+    console.log(code);
+});
+
+var timerserver = exec('forever start ./timerserver.js');
+timerserver.stdout.on('data', function(data) {
+	console.log("timerserver Daten!!");
+    console.log(data );
+});
+timerserver.stderr.on('data', function(data) {
+    console.log(data);
+});
+timerserver.on('close', function(code) {
+    console.log(code);
+});
+
+var SwitchServer = exec('forever start ./SwitchServer.js');
+SwitchServer.stdout.on('data', function(data) {
+    console.log(data );
+});
+SwitchServer.stderr.on('data', function(data) {
+    console.log(data);
+});
+SwitchServer.on('close', function(code) {
+    console.log(code);
+});
 
 var bodyParser			=	require('body-parser');
 var cookieParser		=	require('cookie-parser');

@@ -16,6 +16,10 @@ var conf        = require('./config.json');
 var connair     = conf.connair;
 var homematicIP = conf.homematicIP;
 
+var fs 					=	require('fs');
+
+var log_file 			=	fs.createWriteStream(__dirname + '/debug-SwitchServer.log', {flags : 'w'});
+var log_stdout			=	process.stdout;
 
 
 app.use(bodyParser.json());                             // for parsing application/json
@@ -27,6 +31,13 @@ app.post('/switch', function (req, res) {
   res.json(200);
 });
 
+
+
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
 
 
 function switchdevice( status, data){
@@ -441,4 +452,4 @@ function CCUrunProgram(status, data) {
 	});
 };
 app.listen(4040);
-console.log("Server running at http://127.0.0.1:4040");
+console.log("SwitchServer running at http://127.0.0.1:4040");
