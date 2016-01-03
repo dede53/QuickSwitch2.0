@@ -4,79 +4,143 @@ var groupFunctions 			= require('./functions/group.js');
 var temperatureFunctions 	= require('./functions/temperature.js');
 var userFunctions 			= require('./functions/user.js');
 var messageFunctions 		= require('./functions/message.js');
+/***********************************************************************************
 
++	/						(GET)		auswahl zwischen PC/Mobile
+
++	/mobile 				(GET)		Mobile-Oberfläche
+
++	/pc 					(GET)		PC-Oberfläche
+
++	/settings				(GET)		Einstellungen
+
++	/switch
++		/device
++			/id 	 		(GET)		schalte Gerät anhand der ID
++				/on
++				/off
++				/toggle
+
++			/all 			(GET)		schalte alle Geräte
++				/on
++				/off
++				/toggle
+
++		/group/id 			(GET)		schalte Gruppe anhand der ID
++				/on
++				/off
++				/toggle
+
++		/room/id 			(GET)		schalte Raum anhand der ID
++				/on
++				/off
++				/toggle
+			
+
++	/devices 				(GET)		liefert object der Geräte
++		/id 				(GET)		liefert ein Gerät anhand der ID
++	/devices/id 			(DELETE)	löscht ein Gerät anhand der ID
+-	/devices/id				(PUT)		speichert geändertes Gerät anhand der ID
++	/devices 				(POST)		speichert neues Gerät
+
+	/groups 				(GET)		liefert object der Gruppen
+		/id 				(GET)		liefert eine Gruppe anhand der ID
+	/groups/id  			(DELETE)	löscht ein Gerät anhand der ID
+	/groups/id 				(PUT)		speichert geänderte Gruppe anhand der ID
+	/groups 				(POST)		speichert neue Gruppe
+
+	/rooms 					(GET)		liefert object der Räume
+		/id 				(GET)		liefert einen Raum anhand der ID
+	/rooms/id 				(DELETE)	löscht ein Gerät anhand der ID
+	/rooms/id 				(PUT)		speichert geänderten Raum anhand der ID
+	/rooms 					(POST)		speichert neuen Raum
+
+	/sensors 				(GET)		liefert object der Sensoren
+		/id 				(GET)		liefert einen Sensor anhand der ID
+	/sensors/id 			(DELETE)	löscht ein Gerät anhand der ID
+	/sensors/id 			(PUT)		speichert geänderten Sensor anhand der ID
+	/sensors 				(POST)		speichert neuen Sensor
+
+	/users 					(GET)		liefert object der Benutzer
+		/id 				(GET)		liefert einen Benutzer anhand der ID
+	/users/id 				(DELETE)	löscht ein Gerät anhand der ID
+	/users/id 				(PUT)		speichert geänderten User anhand der ID
+	/users 					(POST)		speichert neuen Benutzer
+
+	/temperature
+		/new 				(POST)		speichert neue Temperaturwerte
+										{
+											"nodeID": 15,
+											"supplyV": 2.2,
+											"temp":12.3,
+											"hum":59,
+											"timestamp":141234123412
+										}
+
+		/reloadTempData		(GET)		lädt die Daten neu in die Graphen aller aktiven QuickSwitch instanzen
+
+		/getValues
+			/hours
+				/interval
+
+
+***********************************************************************************/
 module.exports = function(app, db){
+
+	/*******************************************************************************
+	**	Auswahl zwischen Mobile und PC	********************************************
+	*******************************************************************************/
 	app.get('/', function(req, res) {
 		res.sendfile(__dirname + '/public/index.html');
 	});
+
+	/*******************************************************************************
+	**	Mobile-Oberfläche	********************************************************
+	*******************************************************************************/
 	app.get('/mobile', function(req, res) {
 		res.sendfile(__dirname + '/public/mobile');
 	});
 
+	/*******************************************************************************
+	**	PC-Oberfläche	************************************************************
+	*******************************************************************************/
 	app.get('/pc', function(req, res) {
 		res.sendfile(__dirname + '/public/pc');
 	});
 
+	/*******************************************************************************
+	**	Einstellungen	************************************************************
+	*******************************************************************************/
 	app.get('/settings', function(req, res) {
 	    res.sendfile(__dirname + '/public/settings');
 	});
 
-	// REST JSON API
-
-	app.get('/switches', function (req, res) {
-		deviceFunctions.getDevices('object',req, res, function(data){
-			res.json(data);
-		});
-	});
-	app.get('/switches/:id', function (req, res) {
-		var id = req.params.id;
-		deviceFunctions.getDevice(id, req, res, function(data){
-			res.json(data);
-		});
-	});
-	app.post('/switches', function (req, res) {
-		deviceFunctions.saveNewDevice(req, res, function(data){
-			res.json(data);
-		});
-	});
-	app.put('/switches/:id', function (req, res) {
-		id = req.params.id;
-		status = req.body.status;
-		deviceFunctions.switchDevice(app, id, status, req, res, function(data){
-			if(data == 200){
-				console.log('Successful: Switch Device with id: ' + id + " to " + status);
-				res.json(200);
-			}
-		});
-	});
-	app.put('/switches', function (req, res) {
-		status = req.body.status;
-		deviceFunctions.switchDevices(app, status, req, res, function(data){
-			if(data == 200){
-				console.log('Successful: Switch Devices ' + status);
-				res.json(200);
-			}
-		});
-	});
-	app.delete('/switches/:id', function (req, res) {
-		var id = req.params.id;
-		deviceFunctions.deleteDevice(id, req, res, function(data){
-			res.json(data);
-		});
-	});
+	/*******************************************************************************
+	**	Schaltfunktionen	********************************************************
+	*******************************************************************************/
 	app.get('/switch/:type/:id/:status', function (req, res) {
 		var id = req.params.id;
 		var status = req.params.status;
 		var type = req.params.type;
 		switch(type){
 			case "device":
-				deviceFunctions.switchDevice(app, id, status, req, res, function(data){
-					if(data == 200){
-						res.json(200);
-					}else{
-						res.json(data);
-					}
-				});
+				if(id == "all"){
+					deviceFunctions.switchDevices(app, status, req, res, function(data){
+						if(data == 200){
+							res.json(200);
+						}else{
+							res.json(data);
+						}
+					});
+				}else{
+					deviceFunctions.switchDevice(app, id, status, req, res, function(data){
+						if(data == 200){
+							res.json(200);
+						}else{
+							res.json(data);
+						}
+					});
+				}
 				break;
 			case "group":
 				groupFunctions.getGroup(id, req, res, function(group){
@@ -106,6 +170,56 @@ module.exports = function(app, db){
 				break;
 		}
 	});
+
+
+	/*******************************************************************************
+	**	alle Geräte	****************************************************************
+	*******************************************************************************/
+	app.get('/devices', function (req, res) {
+		deviceFunctions.getDevices('object',req, res, function(data){
+			res.json(data);
+		});
+	});
+	
+	/*******************************************************************************
+	**	Geräte anhand der ID	****************************************************
+	*******************************************************************************/
+	app.get('/devices/:id', function (req, res) {
+		var id = req.params.id;
+		deviceFunctions.getDevice(id, req, res, function(data){
+			res.json(data);
+		});
+	});
+	
+	/*******************************************************************************
+	**	Gerät löschen	************************************************************
+	*******************************************************************************/
+	app.delete('/devices/:id', function (req, res) {
+		var id = req.params.id;
+		deviceFunctions.deleteDevice(id, req, res, function(data){
+			res.json(data);
+		});
+	});
+	
+	/*******************************************************************************
+	**	bearbeitetes Gerät speichern	********************************************
+	*******************************************************************************/
+	app.put('devices', function(req, res){
+		deviceFunctions.saveEditDevice(data, req, res, function(data){
+			res.json(data);
+		})
+	});
+	/*******************************************************************************
+	**	neues Gerät	****************************************************************
+	*******************************************************************************/
+	app.post('/devices', function (req, res) {
+		deviceFunctions.saveNewDevice(data, req, res, function(data){
+			res.json(data);
+		});
+	});
+
+
+
 
 	app.get('/rooms', function (req, res) {
 		roomFunctions.getRooms(req, res, function(data){
