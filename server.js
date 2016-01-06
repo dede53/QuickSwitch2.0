@@ -17,10 +17,6 @@ var util			=	require('util');
 var exec			=	require('child_process').exec;
 var fs 				=	require('fs');
 
-var log_file 		=	fs.createWriteStream(__dirname + '/log/debug.log', {flags : 'w'});
-var log_stdout		=	process.stdout;
-
-
 if(!fs.existsSync("./log")){
 	fs.mkdirSync("./log", 0766, function(err){
 		if(err){
@@ -28,6 +24,11 @@ if(!fs.existsSync("./log")){
 		}
 	});
 }
+
+var log_file 		=	fs.createWriteStream(__dirname + '/log/debug.log', {flags : 'w'});
+var log_stdout		=	process.stdout;
+
+
 
 
 process.on('SIGINT', function () {
