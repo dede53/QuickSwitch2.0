@@ -1,0 +1,6 @@
+<div class="alerts">
+	<uib-alert class="alert-xl" ng-repeat="alert in alerts" type="{{alert.type}}" ng-click="closeAlert($index)">
+			<strong>{{alert.name}} </strong>
+			{{alert.message}}
+	</uib-alert>
+</div>

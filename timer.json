@@ -2,15 +2,20 @@
 	{
 		"id": 1,
 		"name": "Checke Heizung",
-		"condition":[
+		"variable":{
+			"name":"festnetz",
+			"status":"klingelt"
+		},
+		"condition":[],
+		"action": [
 			{
-				"type":"sensor",
-				"sensorid":"28-00044ea0e5ff",
-				"condition":"größergleich",
-				"value": "30"
+				"type": "alert",
+				"alert":{
+					"name": "Haustelefon",
+					"message":"Das Telefon klingelt!",
+					"type": "info"
+				}
 			}
-		],
-		"action": [	
 		]
 	},
 	{

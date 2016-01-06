@@ -54,6 +54,23 @@ ul, ol{
 .menu li a {
 	border:0 !important;
 }
+.alerts{
+	z-index:202;
+	padding: 10px;
+	position: fixed;
+	top: 0px;
+	min-width: 45%;
+	text-align: center;
+	/*
+	width:100%;
+	left:90%;
+	*/
+	right:10px;
+}
+.alert-xl{
+	padding:60px!important; 
+	background-color: #ffffff;
+}
 a{
 	cursor:pointer;
 	text-decoration: none !important;
@@ -140,6 +157,15 @@ input[type="range"]:hover{
 .label{
 	padding:5px;
 	margin:0 5px;
+}
+.loader {
+	position: fixed;
+	top:0;
+	opacity: .7;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	z-index:201;
 }
 /*
 */

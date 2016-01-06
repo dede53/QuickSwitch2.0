@@ -6,7 +6,7 @@ var later			= require('later');
 
 var fs 					=	require('fs');
 var util				=	require('util');
-var log_file 			=	fs.createWriteStream(__dirname + '/debug-countdownserver.log', {flags : 'w'});
+var log_file 			=	fs.createWriteStream(__dirname + '/log/debug-countdownserver.log', {flags : 'w'});
 var log_stdout			=	process.stdout;
 
 console.log = function(d) { //

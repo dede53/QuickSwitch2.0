@@ -4,6 +4,8 @@ var groupFunctions 			= require('./functions/group.js');
 var temperatureFunctions 	= require('./functions/temperature.js');
 var userFunctions 			= require('./functions/user.js');
 var messageFunctions 		= require('./functions/message.js');
+var variableFunctions 		= require('./functions/variable.js');
+var timerFunctions 			= require('./functions/timer.js');
 /***********************************************************************************
 
 +	/						(GET)		auswahl zwischen PC/Mobile
@@ -299,7 +301,22 @@ module.exports = function(app, db){
 		});
 	});
 
-	
+	app.get('/setVariable/:name/:status/:data?/:error?', function(req, res){
+		var name = req.params.name;
+		var status = req.params.status;
+		var error = req.params.error;
+		var data = req.params.data;
+		var variable = {
+			"name": name,
+			"status": status,
+			"data": data,
+			"error": error
+		}
+		variableFunctions.saveEditVariable(variable, req, res, function(data){
+			res.json(data);
+		});
+		timerFunctions.checkTimer(variable);
+	});
 
 	app.get('/rooms', function (req, res) {
 		roomFunctions.getRooms(req, res, function(data){
@@ -348,5 +365,15 @@ module.exports = function(app, db){
 			app.io.broadcast('Sensorvalues', data);
 			res.status(200).end();
 		});
+	});
+
+	app.get('/alert/:name/:message/:type?', function(req, res){
+		var alert = {
+			"name": req.params.name,
+			"message": req.params.message,
+			"type": req.params.type
+		}
+		app.io.broadcast('alert', alert);
+		res.status(200).end();
 	});
 }

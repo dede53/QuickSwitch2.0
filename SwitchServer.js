@@ -18,7 +18,7 @@ var homematicIP = conf.homematicIP;
 
 var fs 					=	require('fs');
 
-var log_file 			=	fs.createWriteStream(__dirname + '/debug-SwitchServer.log', {flags : 'w'});
+var log_file 			=	fs.createWriteStream(__dirname + '/log/debug-SwitchServer.log', {flags : 'w'});
 var log_stdout			=	process.stdout;
 
 

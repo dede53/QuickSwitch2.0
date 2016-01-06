@@ -2,6 +2,9 @@ var colors			= require('colors/safe');
 var fritz 			= require('smartfritz');
 var conf 			= require('./../../config.json');
 
+var SunCalc			= require('suncalc');
+var suntimes		= SunCalc.getTimes(new Date(), 51.5, -0.1);
+
 module.exports = {
 	array_key_exists: function(key, search) {
 		if (!search || (search.constructor !== Array && search.constructor !== Object)) {
@@ -61,7 +64,8 @@ module.exports = {
 		return null;
 	},
 	fritzboxConnect: function(callback){
-		console.log("Fritzboxnutzer: " + conf.fritzbox);
+		console.log("Fritzboxnutzer: " + conf.fritzbox.user);
+		console.log("FritzboxIP: " + conf.fritzbox.ip);
 		var moreParam = { url: conf.fritzbox.ip };
 		fritz.getSessionID(conf.fritzbox.user , conf.fritzbox.password, function(sid){
 			console.log("Fritzbox Session ID: " + sid);
@@ -86,5 +90,69 @@ module.exports = {
 		this.marker.radius = 3;
 		this.tooltip = new Object;
 		this.tooltip.valueSuffix = valueSuffix;
+	},
+	wochentag: function(i){
+		var tag = (typeof(i) == 'object') ? i.getDay() : i ;
+		return tag;
+	},
+	switchaction: function (type, id, action){
+		if(action == "on"){
+			action = 1;
+		}else{
+			action = 0;
+		}
+		request.get({
+			url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
+			form:
+				{
+				}
+		},function( err, httpResponse, body){
+			if(err){
+				console.log( err , "error");
+			}else{
+				console.log("Erfolgreich an den SwitchServer gesendet");
+			}
+		});
+		console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
+	},
+	getSuntime: function (type, offset){
+		if(type == "sunrise"){
+			var suntime 		= new Date(suntimes.sunrise);
+		}else{
+			var suntime 		= new Date(suntimes.sunset);
+		}
+		var hours 		= suntime.getHours();
+		var minutes 	= suntime.getMinutes();
+
+		if(type == "sunrise"){
+			console.log("		Sonnenaufgang:	" + hours + ':' + minutes);
+		}else{
+			console.log("		Sonnenuntergang:	" + hours + ':' + minutes);
+		}
+
+		if(offset.number != ""){
+
+			console.log("		Offset:		" + offset.number);
+			var allInMin = hours * 60 + minutes;
+
+			if(offset.unit == "+"){
+				var newTime = allInMin + parseInt(offset.number);
+			}else{
+				var newTime = allInMin - parseInt(offset.number);
+			}
+
+			var hours = Math.round(newTime / 60);
+			var minutes = newTime % 60;
+		}
+
+		if(minutes <= 9){
+			minutes = "0" + minutes;
+		}
+		if(hours <= 9){
+			hours = "0" + hours;
+		}
+
+		var now = hours + ':' + minutes;
+		return now;
 	}
 }

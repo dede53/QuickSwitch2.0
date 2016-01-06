@@ -8,7 +8,6 @@ app.controller('devicesController',  function($scope, $rootScope, socket) {
 		socket.emit('deleteDevice', {"id":data.id});	
 	}
 	socket.on('deletedDevice', function(data) {
-		console.log(data);
 		$scope.devicelist = data;
 	});
 });
@@ -98,9 +97,8 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 });
 
 app.controller('saveDeviceController', function($scope, socket, $location) {
-		$scope.submitnew = function() {
-			// Validierung!!
-			socket.emit('saveDevice', $scope.editDevice.device);
-			$location.url("/devices");
-		};
+	$scope.submitnew = function() {
+		socket.emit('saveDevice', $scope.editDevice.device);
+		$location.url("/devices");
+	};
 });

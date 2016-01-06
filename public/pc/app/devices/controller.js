@@ -59,7 +59,9 @@ app.controller('favoritDevices', function($rootScope, $scope, socket){
 	}
 
 	socket.on('switchDevice', function(data) {
-		$scope.favoritDevices[data.device.deviceid].status = data.status;
+		if($scope.favoritDevices[data.device.deviceid] != undefined){
+			$scope.favoritDevices[data.device.deviceid].status = data.status;	
+		}
 	});
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
