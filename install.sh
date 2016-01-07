@@ -68,8 +68,9 @@ sudo npm install
 sudo npm install forever -g
 
 echo "lege die Datenbank an..."
-mysqluser = 'root'
-mysqlhost = 'localhost'
+
+mysqluser='root'
+mysqlhost='localhost'
 echo "Als Datenbank Benutzer wird "$mysqluser" verwendet."
 
 echo "Geben Sie bitte das root-password ihrer Datenbank( MySQL - Das von eben :P ) ein:"
@@ -163,4 +164,4 @@ echo '{
 
 pwd
 echo
-echo "Du kannst jetzt QuickSwitch starten indem du 'node server.js' ausführst."
+echo "Sie können jetzt QuickSwitch starten indem sie 'node server.js' auf der konsole ausführen."
