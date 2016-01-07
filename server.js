@@ -45,7 +45,7 @@ console.log = function(d) {
 var countdownserver 	=	exec('forever start ./countdownserver.js');
 var timerserver 		=	exec('forever start ./timerserver.js');
 var SwitchServer 		=	exec('forever start ./SwitchServer.js');
-// var SwitchServer 		=	exec('forever start ./eventLoader.js');
+var eventLoader 		=	exec('forever start ./eventLoader.js');
 
 var bodyParser			=	require('body-parser');
 var cookieParser		=	require('cookie-parser');
