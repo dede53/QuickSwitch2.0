@@ -59,8 +59,10 @@ app.controller('favoritDevices', function($rootScope, $scope, socket){
 	}
 
 	socket.on('switchDevice', function(data) {
-		if($scope.favoritDevices[data.device.deviceid] != undefined){
-			$scope.favoritDevices[data.device.deviceid].status = data.status;	
+		for(var i = 0; i < $scope.favoritDevices.length; i++){
+			if($scope.favoritDevices[i].deviceid == data.device.deviceid){
+				$scope.favoritDevices[i].status = data.status;
+			}
 		}
 	});
 	$scope.switchdevice = function(data) {
