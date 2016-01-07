@@ -74,6 +74,5 @@ require('./app/ioroutes/phone.js')(app, db);
 require('./app/ioroutes/variable.js')(app, db);
 
 
-app.listen(port, function(){
-	helper.log("Server running at http://127.0.0.1:" + port + "/", "info");
-});
+app.listen(port);
+helper.log("Server running at http://127.0.0.1:" + port + "/", "info");
