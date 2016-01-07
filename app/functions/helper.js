@@ -64,17 +64,19 @@ module.exports = {
 		return null;
 	},
 	fritzboxConnect: function(callback){
-		console.log("Fritzboxnutzer: " + conf.fritzbox.user);
-		console.log("FritzboxIP: " + conf.fritzbox.ip);
-		var moreParam = { url: conf.fritzbox.ip };
-		fritz.getSessionID(conf.fritzbox.user , conf.fritzbox.password, function(sid){
-			console.log("Fritzbox Session ID: " + sid);
-			if(sid == "0000000000000000"){
-				console.log("Kann keine Verbindung zur Fritzbox herstellen!");
-			}else{
-				callback(fritz, sid);
-			}
-		}, moreParam);
+		if(conf.fritzbox.user != false){
+			console.log("Fritzboxnutzer: " + conf.fritzbox.user);
+			console.log("FritzboxIP: " + conf.fritzbox.ip);
+			var moreParam = { url: conf.fritzbox.ip };
+			fritz.getSessionID(conf.fritzbox.user , conf.fritzbox.password, function(sid){
+				console.log("Fritzbox Session ID: " + sid);
+				if(sid == "0000000000000000"){
+					console.log("Kann keine Verbindung zur Fritzbox herstellen!");
+				}else{
+					callback(fritz, sid);
+				}
+			}, moreParam);
+		}
 	},
 	Sensor: function(nodeid, name, data, charttype, linetype, farbe, valueSuffix, yAxis){
 		this.id = nodeid;

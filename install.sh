@@ -99,6 +99,8 @@ then
 fi
 echo
 echo 
+fritzboxuser="false"
+fritzboxpassword="false"
 echo "Soll eine Fritzbox eingerichtet werden? (y / n)"
 read fritzboxanswer
 if [ $fritzboxanswer == 'y' ]
