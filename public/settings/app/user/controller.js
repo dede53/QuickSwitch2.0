@@ -32,7 +32,6 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 			}
 	}else{
 		socket.emit('user', {"id":  $routeParams.id});
-
 	}
 		/***********************************************
 		*	Daten empfangen, Scope zuordnen
@@ -57,11 +56,12 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 			}
 		});
 		socket.on('devices', function(data) {
+			console.log(data);
 			var devices = new Array;
 			
 			var arr = Object.keys(data).map(function(k) { return data[k] });
 			arr.forEach(function(arr){
-				var ar = Object.keys(arr).map(function(k) { return arr[k] });
+				var ar = Object.keys(arr.roomdevices).map(function(k) { return arr.roomdevices[k] });
 				ar.forEach(function(arr){
 					if( $routeParams.id && inArray(arr.deviceid , JSON.parse($scope.editUser.userlist.favoritDevices)) ){
 						var haystack = JSON.parse($scope.editUser.userlist.favoritDevices);

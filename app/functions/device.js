@@ -136,28 +136,24 @@ module.exports = {
 	},
 	favoritDevices: function (data, req, res, callback){
 		var favoritDevices = JSON.parse(data.favoritDevices);
-		// console.log(favoritDevices);
+
 		if(favoritDevices == ""){
 			console.log("Keine Geräte gewählt!");
 		}else{
-			var devices = new Object;
-			var string = "";
-			favoritDevices.forEach(function(dev){
-				if(string == ""){
-					string = " deviceid = " + dev;
-				}else{
-					string = string + " OR  deviceid = " + dev;
-				}
-			});
-			var query = "SELECT devices.*, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND ("+ string +");";
+			var favorits	= new Array;
+			var bla 		= new Object;
+			var query 		= "SELECT rooms.name AS Raum, devices.* FROM devices, rooms WHERE devices.roomid = rooms.id;";
 			db.all(query , function(err, data) {
 				if(err){
 					console.log(err);
 				}else{
-					data.forEach(function(device){
-						devices[device.deviceid] = device;
+					data.forEach(function(dat){
+						bla[dat.deviceid] = dat;								
 					});
-					callback(devices);
+					favoritDevices.forEach(function(deviceid){
+						favorits.push(bla[deviceid]);
+					});
+					callback(favorits);
 				}
 			});
 		}
