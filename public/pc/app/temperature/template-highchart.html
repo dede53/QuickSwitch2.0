@@ -3,7 +3,10 @@
 		Temperaturen
 	</a>
 </h3>
-<div class="panel-group">
+<div ng-show="$root.tempNoData == true">
+     		<p class="alert alert-warning">Keine Daten in der Datenbank</p>
+</div>
+<div ng-hide="$root.tempNoData == true" class="panel-group">
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<highchart class="chart" config="chartConfig" ></highchart>

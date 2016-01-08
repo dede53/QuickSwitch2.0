@@ -1,7 +1,7 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){	
 	if($rootScope.chartConfig === undefined){
 		socket.emit('getSensorvalues', {"date":"all"});
-
+		$rootScope.tempNoData = false;
 		var chartConfig = {
 				options:{
 					chart: {
@@ -153,10 +153,14 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 	}
 
 	socket.on('Sensorvalues', function(alldata) {
-		alldata.forEach(function(data){
-			$rootScope.chartConfig.series.push(data);
-			$rootScope.chartConfig.loading = false;
-		});
+		if(alldata != false){
+			alldata.forEach(function(data){
+				$rootScope.chartConfig.series.push(data);
+				$rootScope.chartConfig.loading = false;
+			});
+		}else{
+			$rootScope.tempNoData = true;
+		}
 	});
 
 	Highcharts.setOptions({
@@ -164,7 +168,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			useUTC : false
 		},
 		lang : {
-			loading: "Lade Daten...",
+			loading: "Lade Daten..",
 			rangeSelectorZoom: ""
 		}
 	});
