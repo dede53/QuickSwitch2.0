@@ -64,7 +64,7 @@ module.exports = {
 		return null;
 	},
 	fritzboxConnect: function(callback){
-		if(conf.fritzbox.user != false){
+		if(conf.fritzbox.user != 'false'){
 			console.log("Fritzboxnutzer: " + conf.fritzbox.user);
 			console.log("FritzboxIP: " + conf.fritzbox.ip);
 			var moreParam = { url: conf.fritzbox.ip };

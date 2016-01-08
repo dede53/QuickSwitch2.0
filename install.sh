@@ -76,7 +76,6 @@ echo "Als Datenbank Benutzer wird "$mysqluser" verwendet."
 echo "Geben Sie bitte das root-password ihrer Datenbank( MySQL - Das von eben :P ) ein:"
 read mysqlpassword
 echo "Danke!"
-echo "Dazu gebe bitte das Passwort der MySQL Installation ein:"
 mysql -u root -p$mysqlpassword < SmartHome.sql
 echo "Datenbank angelegt"
 sleep 3
