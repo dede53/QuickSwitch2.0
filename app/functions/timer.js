@@ -256,7 +256,7 @@ module.exports = {
 									console.log("		Ergebnis:	stimmt");
 									console.log("				"+ variable.name +" hat den Status: "+ variable.status +"\n");
 								}else{
-									console.log("		Ergebnis:	stimmt");
+									console.log("		Ergebnis:	stimmt nicht");
 									console.log("				"+ variable.name +" hat den Status: "+ variable.status +"\n");
 									switchtimer = false;
 								}
@@ -283,7 +283,12 @@ module.exports = {
 										switch(action.interval.action){
 											case "saveSensors":
 												intervals[id] = later.setInterval(onewire.saveSensors , sched);
-											break;
+												break;
+											case "device":
+											case "group":
+											case "room":
+												intervals[id] = later.setInterval(function() { helper.switchaction(action.interval.action, action.interval.actionid, "on");} , sched);
+												break;
 										}
 										console.log("	Neues Interval mit der id: " + id + " angelegt!\n");
 									}else{
@@ -295,7 +300,7 @@ module.exports = {
 								case "room":
 									console.log(status);
 									status = action.status;
-									switchaction(action.type, action.actionid, status);	
+									helper.switchaction(action.type, action.actionid, status);	
 										
 									break;
 								case "saveSensors":

@@ -1,4 +1,3 @@
-
 var timerFunctions	= require('./app/functions/timer.js');
 
 var later			= require('later');

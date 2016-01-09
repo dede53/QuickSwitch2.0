@@ -1,6 +1,7 @@
 var colors			= require('colors/safe');
 var fritz 			= require('smartfritz');
 var conf 			= require('./../../config.json');
+var request 		= require('request');
 
 var SunCalc			= require('suncalc');
 var suntimes		= SunCalc.getTimes(new Date(), 51.5, -0.1);
