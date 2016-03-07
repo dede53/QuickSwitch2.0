@@ -15,7 +15,7 @@ app.controller('editGroupController', function($scope, $rootScope, socket, $rout
 	socket.emit('devices', {"type":"object"});
 	if(!$routeParams.id){
 			$scope.editGroup = {
-				title: "Hinzufügen",
+				title: "hinzufügen",
 				grouplist: {
 					name: "",
 					groupDevices: []
@@ -32,7 +32,7 @@ app.controller('editGroupController', function($scope, $rootScope, socket, $rout
 			if(data.constructor === Array){
 				
 				$scope.editGroup = {
-					title: "Bearbeiten",
+					title: "bearbeiten",
 					grouplist: data[0]
 				}
 
@@ -50,19 +50,18 @@ app.controller('editGroupController', function($scope, $rootScope, socket, $rout
 			
 			var arr = Object.keys(data).map(function(k) { return data[k] });
 			arr.forEach(function(arr){
-				var ar = Object.keys(arr).map(function(k) { return arr[k] });
+				var ar = Object.keys(arr.roomdevices).map(function(k) { return arr.roomdevices[k] });
 				ar.forEach(function(arr){
 					if( $routeParams.id && inArray(arr.deviceid , JSON.parse($scope.editGroup.grouplist.groupDevices)) ){
 						var haystack = JSON.parse($scope.editGroup.grouplist.groupDevices);
 						var length = haystack.length;
 						for(var i = 0; i < length; i++) {
 							if(haystack[i] == arr.deviceid){
-								console.log(arr.name);
-								//console.log(i);
 								arr.selected = true;
 								devices.splice(i,0,arr);
 							};
 						}
+						
 					}else{
 						arr.selected = false;
 						devices.push(arr);
@@ -73,7 +72,7 @@ app.controller('editGroupController', function($scope, $rootScope, socket, $rout
 
 			// helper method to get selected fruits
 			$scope.selectedFruits = function selectedFruits() {
-				return filterFilter($scope.grouplist, { selected: true });
+				return filterFilter($scope.devicelist, { selected: true });
 			};
 			
 			// watch fruits for changes

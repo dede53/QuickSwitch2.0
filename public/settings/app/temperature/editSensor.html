@@ -1,40 +1,46 @@
-<h3>{{editSensor.title}}</h3>
-	<ul>
-		<li>
-			<div class="ui-block-a" style="text-align:left">
-				{{editSensor.sensorlist.name}}
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Sensor {{editSensor.title}}</h3>
+	</div>
+	<div >
+		<form ng-controller="saveSensorController">
+			<input type="hidden" id="id" value="{{editSensor.sensorlist.id}}">
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="name">Name</span>
+					<input class="form-control" type="text" placeholder="Name" ng-model="editSensor.sensorlist.name" id="name" aria-describedby="name"/>
+				</div>
 			</div>
-			<div style="text-align:right">
-				<form ng-controller="saveSensorController">
-					<ul>
-						<input type="hidden" id="id" value="{{editSensor.sensorlist.id}}">
-						<li>
-							<label for="name">Name</label>
-							<input type="text" placeholder="Name" ng-model="editSensor.sensorlist.name" id="name" value="{{editSensor.sensorlist.name}}"/>
-						</li>
-						<li>
-							<label for="nodeid">Sensorid</label>
-							<input type="text" placeholder="Sensorid" ng-model="editSensor.sensorlist.nodeid" id="nodeid" value="{{editSensor.sensorlist.nodeid}}"/>
-						</li>
-						<li>
-							<label for="name">Charttype</label>
-							<input type="text" placeholder="Name" ng-model="editSensor.sensorlist.charttype" id="name" value="{{editSensor.sensorlist.charttype}}"/>
-						</li>
-						<li>
-							<label for="name">Linetype</label>
-							<input type="text" placeholder="Name" ng-model="editSensor.sensorlist.linetype" id="name" value="{{editSensor.sensorlist.linetype}}"/>
-						</li>
-						<li>
-							<label for="name">Linecolor</label>
-							<input type="text" placeholder="Name" ng-model="editSensor.sensorlist.linecolor" id="name" value="{{editSensor.sensorlist.linecolor}}"/>
-						</li>
-						<li>
-							<button ng-click="saveSensor()">Speichern</button>
-							<button ng-click="abort('/temperature')">Abbrechen</button>
-						</li>
-					</ul>
-				</form>
-				{{charttypen}}
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="nodeid">Sensorid</span>
+					<input type="text" class="form-control" placeholder="Sensorid" ng-model="editSensor.sensorlist.nodeid" id="nodeid" aria-describedby="nodeid">
+				</div>
 			</div>
-		</li>
-	</ul>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="charttype">Diagramtyp</span>
+					<select class="form-control" ng-model="editSensor.sensorlist.charttype" ng-options="t.chart as t.title for t in chartTypes" id="charttype" aria-describedby="charttype"></select>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="charttype">Linientype</span>
+					<select class="form-control" ng-model="editSensor.sensorlist.linetype" ng-options="ds.line as ds.title for ds in dashStyles" id="linetype" aria-describedby="linetype"></select>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="charttype">Linienfarbe</span>
+					<input class="form-control" type="color" ng-model="editSensor.sensorlist.linecolor" id="color"/>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="pull-right">
+					<button class="btn btn-success" ng-click="saveSensor()">Speichern</button>
+					<button class="btn btn-danger" ng-click="abort('/temperature')">Abbrechen</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

@@ -85,6 +85,17 @@ var timerFunctions 			= require('./functions/timer.js');
 			/hours
 				/interval
 
+	/setVariable 			(GET)		setzt den Status einer Variablen 
+		/name 							Name der Variablen (z.b.: festnetz)
+			/status 					Status der Variablen (z.b.: klingelt)
+				/data 					Daten zu Variablen (nicht zwingend anzugeben!)(z.b.: Telefonnummer)
+					/error 				Error (nicht zwingend anzugeben!)(true|false)
+
+	/alert 					(GET)		erzeugt Popup
+		/name 							Name des Popups
+			/message 					Nachricht
+				/type 					Type der Nachricht: success(grün), info(blau), warning (orange?), danger (rot), nicht Angegeben (weiß);  (nicht zwingend anzugeben!)
+
 
 ***********************************************************************************/
 module.exports = function(app, db){
@@ -301,23 +312,6 @@ module.exports = function(app, db){
 		});
 	});
 
-	app.get('/setVariable/:name/:status/:data?/:error?', function(req, res){
-		var name = req.params.name;
-		var status = req.params.status;
-		var error = req.params.error;
-		var data = req.params.data;
-		var variable = {
-			"name": name,
-			"status": status,
-			"data": data,
-			"error": error
-		}
-		variableFunctions.saveEditVariable(variable, req, res, function(data){
-			res.json(data);
-		});
-		timerFunctions.checkTimer(variable);
-	});
-
 	app.get('/rooms', function (req, res) {
 		roomFunctions.getRooms(req, res, function(data){
 			res.json(data);
@@ -367,6 +361,23 @@ module.exports = function(app, db){
 		});
 	});
 
+	app.get('/setVariable/:name/:status/:data?/:error?', function(req, res){
+		var name = req.params.name;
+		var status = req.params.status;
+		var error = req.params.error;
+		var data = req.params.data;
+		var variable = {
+			"name": name,
+			"status": status,
+			"data": data,
+			"error": error
+		}
+		variableFunctions.saveEditVariable(variable, req, res, function(data){
+			res.json(data);
+		});
+		timerFunctions.checkTimer(variable);
+	});
+	
 	app.get('/alert/:name/:message/:type?', function(req, res){
 		var alert = {
 			"name": req.params.name,

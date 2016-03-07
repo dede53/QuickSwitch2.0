@@ -14,65 +14,35 @@
 		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
 	</head>
 	<body ng-app="jsbin" ng-controller="appController">
-
+<!--
 		<div class="" ng-class="{'loader': alerts.length != 0 && alerts != undefined}"></div>
+-->
 
-		<!-- Menuleiste -->
-		<div class="menu">
-			<div class="logo">
-			</div>
-			<div class="container">
-				<ul  class="nav nav-tabs nav-justified">
-					<li role="presentation">
-						<a ng-click="toggleMenu()">
-							<span class="glyphicon " ng-class="favorit ? 'glyphicon-chevron-left' : ' glyphicon-chevron-right'" ></span>
-						</a>	
-					</li>
-					<li role="presentation">
-						<a  href="" ng-click="switchPage('/home')">Home</a>
-					</li>
-					<li role="presentation">
-						<a  href="" ng-click="switchPage('/devices')">Geräte</a>
-					</li>
-					<li role="presentation">
-						<a  href="" ng-click="switchPage('/temperature')">Temperaturen</a>
-					</li>
-					<li role="presentation">
-						<a  href="" ng-click="switchPage('/timer')">Timer</a>
-					</li>
-					<li role="presentation" ng-show="activeUser.admin">
-						<a href="../settings">Einstellungen</a>
-					</li>
-					<li role="presentation">
-						<div active-user-directive></div>
-					</li>
-				</ul>
-			</div>
-		</div>
+
+
+
+		<div menu-directive></div>
+
 		<div alerts-directive></div>
 
 		<!-- Favoritenliste -->
-		<div class="favorittile" ng-show="favorit" controller="favoritmenucontroller">
-			<h3>Favoriten</h3>
-				<div favoriten-directive></div>
-			<h3>Aktive Geräte</h3>
-				<div active-devices-directive></div>
-		</div>
+		<div fav-directive></div>
+
 
 		<!-- Hauptinhalt -->
 		<div ng-view role="main" ng-class="{'favoritmenu': favorit}" style="margin-top:82px; padding:20px;">
 		</div>
 
+	<!--
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
-	<!--
+	-->
 		<script src="assets/libs/angular.js"></script>
-	-->
 
 
-		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
 	<!--
-		<script src="assets/libs/angular-animate.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
 	-->
+		<script src="assets/libs/angular-animate.js"></script>
 
 		<script src='/socket.io/socket.io.js'></script>
 
@@ -86,7 +56,7 @@
 	-->
 		<script src="assets/libs/angular-touch.min.js"></script>
 
-		<script src="./assets/libs/highcharts-ng.js"></script>
+		<script src="assets/libs/highcharts-ng.js"></script>
 
 	<!--
 		<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
@@ -113,8 +83,15 @@
   	-->
 		<link href="assets/libs/bootstrap.min.css" rel="stylesheet">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<!--
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	-->
+		<script src="assets/libs/jquery.min.js"></script>
+
+	<!--
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	-->
+		<script src="assets/libs/bootstrap.min.js"></script>
 		
 
 		<link href="assets/libs/bootstrap.min.css" rel="stylesheet">
@@ -123,6 +100,8 @@
 		<script type="text/javascript" src="./app/controller.js"></script>
 		<script type="text/javascript" src="./app/factory.js"></script>
 		<script type="text/javascript" src="./app/filter.js"></script>
+
+		<script type="text/javascript" src="./app/menu/directive.js"></script>
 
 		<script type="text/javascript" src="./app/home/controller.js"></script>
 		<script type="text/javascript" src="./app/home/directive.js"></script>
@@ -156,7 +135,8 @@
 		<script type="text/javascript" src="./app/alerts/controller.js"></script>
 		<script type="text/javascript" src="./app/alerts/directive.js"></script>
 
-		
+	<!--
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	-->
 	</body>
 </html>

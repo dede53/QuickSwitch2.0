@@ -1,20 +1,46 @@
-<div class="tile">
-	<ul>
-		<li ng-repeat="room in roomlist track by $index">
-			<div>
-				<div style="text-align:left">
-				{{room.name}}
-				</div>
-				<div style="text-align:right">
-					<div class="box-btn-switch">
-						<a href="#/editRoom/{{room.id}}" id="btnOn{{room.id}}" >Bearbeiten</a>
-						<button ng-click='deleteRoom({"id":room.id})' id="btnOn{{room.id}}">Löschen</button>
-					</div>
-				</div>
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Räume</h3>
+	</div>
+	<div class="panel-body" ng-repeat="room in roomlist track by $index">
+		<div class="pull-left">
+			{{room.name}}
+		</div>
+		<div class="pull-right">
+			<div class="box-btn-switch">
+				<a type="button" class="btn btn-info" href="#/editRoom/{{room.id}}" >Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteRoom({"id":room.id})' >Löschen</button>
 			</div>
-		</li>
-		<li>
-			<a href="#/editRoom/" >Neuen Raum anlegen</a>
-		</li>
-	</ul>
+		</div>
+	</div>
+</div>
+
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Neuen Raum anlegen:</h3>
+	</div>
+	<div class="panel-body">
+		<ul>
+			<li>
+				<div style="text-align:right">
+					<form ng-controller="saveRoomController">
+						<ul>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="name">Name</span>
+										<input type="text" class="form-control" ng-model="editRoom.roomlist.name" id="name" aria-describedby="name" />
+									</div>
+								</div>
+							</li>
+							<li>
+								<button class="btn btn-success" ng-click="saveRoom()">Hinzufügen</button>
+								<button class="btn btn-danger" ng-click="abortNewRoom()">Abbrechen</button>
+							</li>
+						</ul>
+					</form>
+				</div>
+			</li>
+		</ul>
+	</div>
 </div>

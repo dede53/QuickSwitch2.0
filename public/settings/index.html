@@ -9,7 +9,9 @@
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="theme-color" content="#fff" />
 		<title>SmartHome - Einstellungen</title>
+	<!--
 		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
+	-->
 	</head>
 	<body ng-app="jsbin" ng-controller="appController">
 
@@ -41,13 +43,16 @@
 						<a href="" ng-click="switchPage('/user')">Benutzer</a>
 					</li>
 					<li role="presentation">
+						<a href="" ng-click="switchPage('/variables')">Variablen</a>
+					</li>
+					<li role="presentation">
 						<div active-user-directive></div>
 					</li>
 				</ul>
 			</div>
 		</div>
 		
-		<div ng-view role="main">
+		<div ng-view role="main" style="margin-top:82px; padding:20px;">
 		</div>
 
 
@@ -98,6 +103,8 @@
 		<script type="text/javascript" src="./app/groups/controller.js"></script>
 
 		<script type="text/javascript" src="./app/temperature/controller.js"></script>
+
+		<script type="text/javascript" src="./app/variables/controller.js"></script>
 		
 		<!--
 
@@ -108,5 +115,6 @@
 	-->
 
 
+		<link rel='stylesheet' type='text/css' href='assets/css/index.css' />
 	</body>
 </html>

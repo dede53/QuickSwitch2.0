@@ -5,11 +5,6 @@ app.controller('userController', function($scope, $rootScope, socket){
 		$scope.users = data;
 	});
 	
-	// socket.emit('getUser');
-	// socket.on('User',function(data){
-		// $rootScope.users = data;
-	// });
-	
 	$scope.deleteUser = function(data) {
 		socket.emit('deleteUser', {"id":data.id});	
 	}
@@ -24,7 +19,7 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 	socket.emit('devices', {"type":"object"});
 	if(!$routeParams.id){
 			$scope.editUser = {
-				title: "Hinzufügen",
+				title: "hinzufügen",
 				userlist: {
 					name: "",
 					favoritDevices: []
@@ -42,7 +37,7 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 			if(data.constructor === Array){
 				
 				$scope.editUser = {
-					title: "Bearbeiten",
+					title: "bearbeiten",
 					userlist: data[0]
 				}
 
@@ -56,7 +51,6 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 			}
 		});
 		socket.on('devices', function(data) {
-			console.log(data);
 			var devices = new Array;
 			
 			var arr = Object.keys(data).map(function(k) { return data[k] });
@@ -68,8 +62,6 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 						var length = haystack.length;
 						for(var i = 0; i < length; i++) {
 							if(haystack[i] == arr.deviceid){
-								console.log(arr.name);
-								console.log(i);
 								arr.selected = true;
 								devices.splice(i,0,arr);
 							};

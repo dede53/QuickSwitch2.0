@@ -72,7 +72,7 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 		$scope.rooms = rooms;
 		if(!$routeParams.id){
 				$scope.editDevice = {
-					title: "Hinzufügen",
+					title: "hinzufügen",
 					device: {
 						buttonLabelOn: "An",
 						buttonLabelOff: "Aus",
@@ -88,7 +88,7 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 
 			socket.on('device', function(data) {
 				$scope.editDevice = {
-					title: "Bearbeiten",
+					title: "bearbeiten",
 					device: data
 				}
 			});

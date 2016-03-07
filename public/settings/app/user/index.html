@@ -1,20 +1,24 @@
-<div class="tile">
-	<ul>
-		<li ng-repeat="user in users">
-			<div>
-				<div style="text-align:left">
-				{{user.name}}
-				</div>
-				<div style="text-align:right">
-					<div class="box-btn-switch">
-						<a href="#/editUser/{{user.id}}" id="btnOn{{user.id}}" >Bearbeiten</a>
-						<button ng-click='deleteUser({"id":user.id})' id="btnOn{{user.id}}" >Löschen</button>
-					</div>
-				</div>
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Benutzer</h3>
+	</div>
+	<div class="panel-body" ng-repeat="user in users">
+		<div class="pull-left">
+			{{user.name}}
+		</div>
+		<div class="pull-right">
+			<div class="box-btn-switch">
+				<a type="button" class="btn btn-info" href="#/editUser/{{user.id}}">Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteUser({"id":user.id})'>Löschen</button>
 			</div>
-		</li>
-		<li>
-			<a href="#/editUser/" >Neuen Benutzer anlegen</a>
-		</li>
-	</ul>
+		</div>
+	</div>
+</div>
+
+<div class="panel panel-default" style="position: fixed;bottom:0;margin:0;width: 20%;z-index:200;">
+	<div class="panel-body" style="text-align: center;">
+		<a href="#/editUser/" class="btn btn-success" >
+			Neuen Benutzer anlegen
+		</a>
+	</div>  
 </div>

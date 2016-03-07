@@ -15,7 +15,7 @@ module.exports = {
 		});
 	},
 	getVariable: function(id, req, res, callback){
-		var query = "SELECT id, name, status, eror FROM variable WHERE id = " + id + ";";
+		var query = "SELECT id, name, status, error FROM variable WHERE id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -29,7 +29,7 @@ module.exports = {
 		});
 	},
 	saveNewVariable: function(data, req, res, callback){
-		var query = "INSERT INTO variable (name, devices) VALUES ('" + data.name + "', '["+ data.devices +"]');";
+		var query = "INSERT INTO variable (name) VALUES ('" + data.name + "');";
 		db.run(query);
 		callback(201);
 	},

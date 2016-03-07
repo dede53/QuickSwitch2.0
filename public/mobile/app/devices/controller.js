@@ -16,7 +16,7 @@ app.controller('devicesController', function($scope, socket){
 	}
 
 	$scope.switchdeviceSlider = function(data) {
-		socket.emit('switchdevice', {"id":data.device.deviceid,"status": $scope.devicelist[data.device.Raum].roomdevices[data.device.deviceid].status});
+		socket.emit('switchdevice', {"id":data.device.deviceid,"status": data.device.status});
 	}
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
@@ -59,12 +59,16 @@ app.controller('favoritDevices', function($rootScope, $scope, socket){
 	}
 
 	socket.on('switchDevice', function(data) {
-		$scope.favoritDevices[data.device.deviceid].status = data.status;
+		for(var i = 0; i < $scope.favoritDevices.length; i++){
+			if($scope.favoritDevices[i].deviceid == data.device.deviceid){
+				$scope.favoritDevices[i].status = data.status;
+			}
+		}
 	});
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
 	}
 	$scope.switchdeviceSlider = function(data) {
-		socket.emit('switchdevice', {"id":data.device.deviceid,"status":$scope.favoritDevices[data.device.deviceid].status});
+		socket.emit('switchdevice', {"id":data.device.deviceid,"status":data.device.status});
 	}
 });

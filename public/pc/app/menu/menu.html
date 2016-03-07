@@ -1,0 +1,32 @@
+<!-- Menuleiste -->
+<div class="menu">
+	<div class="logo">
+	</div>
+	<div class="container">
+		<ul  class="nav nav-tabs nav-justified">
+			<li role="presentation">
+				<a ng-click="toggleMenu()">
+					<span class="glyphicon " ng-class="favorit ? 'glyphicon-chevron-left' : ' glyphicon-chevron-right'" ></span>
+				</a>	
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/home')">Home</a>
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/devices')">Geräte</a>
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/temperature')">Temperaturen</a>
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/timer')">Timer</a>
+			</li>
+			<li role="presentation" ng-show="activeUser.admin">
+				<a href="../settings">Einstellungen</a>
+			</li>
+			<li role="presentation">
+				<div active-user-directive></div>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,45 @@
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Variablen</h3>
+	</div>
+	<div class="panel-body" ng-repeat="variable in variables">
+		<div class="pull-left">
+			{{variable.name}}
+		</div>
+		<div class="pull-right">
+			<div class="box-btn-switch">
+				<a type="button" class="btn btn-info" href="#/editVariable/{{variable.id}}">Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteVariable({"id":variable.id})'>Löschen</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Neue Variable anlegen:</h3>
+	</div>
+	<div class="panel-body">
+		<ul>
+			<li>
+				<div style="text-align:right">
+					<form ng-controller="saveVariableController">
+						<ul>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="name">Name</span>
+										<input type="text" class="form-control" ng-model="editVariable.variable.name" id="name" aria-describedby="name" />
+									</div>
+								</div>
+							</li>
+							<li>
+								<button class="btn btn-success" ng-click="saveVariable()">Hinzufügen</button>
+								<button class="btn btn-danger" ng-click="abortNewVariable()">Abbrechen</button>
+							</li>
+						</ul>
+					</form>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

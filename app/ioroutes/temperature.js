@@ -13,14 +13,7 @@ module.exports = function(app, db){
 		});
 	});
 	app.io.route('saveSensor', function(req, res){
-		var sensor = {};
-		sensor.id = req.data.id;
-		sensor.linetype = req.data.dashStyle;
-		sensor.name = req.data.name;
-		sensor.charttype = req.data.type;
-		sensor.linecolor = req.data.color;
-		sensor.nodeid = req.data.nodeid;
-		temperatureFunctions.saveSensor(sensor, req, res, function(data){
+		temperatureFunctions.saveSensor(req.data, req, res, function(data){
 			console.log(data);
 		});
 	});

@@ -36,6 +36,16 @@ app.config(['$routeProvider', function($routeProvider) {
 	}).
 
 
+	when('/variables/', {
+		templateUrl: './app/variables/index.html',
+		controller: 'variableController'
+	}).
+	when('/editVariable/:id', {
+		templateUrl: './app/variables/editVariable.html',
+		controller: 'editVariableController'
+	}).
+
+
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
 		controller: 'groupController'
@@ -76,7 +86,6 @@ app.controller('appController', function($rootScope, $scope, $location){
 		}
 	}
 	$scope.abort = function(data) {
-		console.log(data);
 		$location.url(data);
 	};
 });

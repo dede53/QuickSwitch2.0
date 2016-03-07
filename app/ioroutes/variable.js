@@ -4,7 +4,7 @@ module.exports = function(app, db){
 	var variableFunctions = require('../functions/variable.js');
 
 	app.io.route('variables', function(req, res){
-		roomFunctions.getVariables( req, res, function(data){
+		variableFunctions.getVariables( req, res, function(data){
 			req.io.emit('variables', data);
 		});
 	});
@@ -13,7 +13,7 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('variable', function(req, res){
 		var id = req.data.id;
-		roomFunctions.getVariable(id, req, res, function(data){
+		variableFunctions.getVariable(id, req, res, function(data){
 			req.io.emit('variable', data);
 		});
 	});
@@ -41,7 +41,7 @@ module.exports = function(app, db){
 					"error": req.data.error
 				};
 			variableFunctions.saveEditVariable(data, req, res, function(data){
-				roomFunctions.getVariables(req, res, function(data){
+				variableFunctions.getVariables(req, res, function(data){
 					app.io.broadcast('variables', data);
 				});
 			});

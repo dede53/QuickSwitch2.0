@@ -18,7 +18,7 @@ app.controller('editRoomController',  function($scope, $rootScope, socket, $rout
 	***********************************************/
 	if(!$routeParams.id){
 			$scope.editRoom = {
-				title: "Hinzufügen"
+				title: "hinzufügen"
 			}
 	}else{
 		socket.emit('room', {"id":  $routeParams.id});
@@ -32,7 +32,7 @@ app.controller('editRoomController',  function($scope, $rootScope, socket, $rout
 			if(data.constructor === Array){
 
 				$scope.editRoom = {
-					title: "Bearbeiten",
+					title: "bearbeiten",
 					roomlist: data[0]
 				}
 			}else{
@@ -52,7 +52,12 @@ app.controller('saveRoomController', function($scope, socket, $location) {
 			socket.emit('saveRoom', $scope.editRoom.roomlist);
 			$location.url("/rooms");
 		};
-		socket.on('savedDevice', function(data){
-			alert("Antwort:" + data);
-		});
+		$scope.abortNewRoom = function(){
+			$scope.editRoom = {
+				title: "Bearbeiten",
+				roomlist: {
+					name: ""
+				}
+			}
+		}
 });

@@ -36,7 +36,7 @@ module.exports = {
 		});
 	},
 	getSensor: function (id, req, res, callback){
-		var query = "SELECT sensors.id, sensors.name, sensors.nodeid, sensors.linetype, sensors.linecolor FROM sensors AND id = " + id + ";";
+		var query = "SELECT sensors.id, sensors.name, sensors.nodeid, sensors.linecolor, sensors.linetype, sensors.charttype FROM sensors WHERE id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -57,11 +57,10 @@ module.exports = {
 	},
 	saveSensor: function(data, req, res, callback){
 		if(typeof data.id == 'number'){
-			var query = "UPDATE sensors SET name = '" + data.name + "', nodeid = " + data.nodeid + ", charttype = '" + data.charttype + "', linetype = '" + data.linetype + "', linecolor = '" + data.linecolor + "' WHERE id = " + data.id + ";";
+			var query = "UPDATE sensors SET name = '" + data.name + "', nodeid = '" + data.nodeid + "', charttype = '" + data.charttype + "', linetype = '" + data.linetype + "', linecolor = '" + data.linecolor + "' WHERE nodeid = '" + data.nodeid + "';";
 		}else{
 			var query = "INSERT INTO sensors (name, nodeid, charttype, linetype, linecolor) VALUES ('" + data.name + "', '" + data.nodeid + "', '" + data.charttype + "', '" + data.linetype + "', '" + data.linecolor + "');";
 		}
-	
 		db.all(query, function(err, row){
 			if(err){
 				console.log(err);
@@ -156,7 +155,7 @@ module.exports = {
 					},
 					function(err){
 						if(err){
-							console.log(err);
+							console.log(err);	
 						}else{
 							callback(alldata);
 							console.log("Temperaturdaten gesendet!");

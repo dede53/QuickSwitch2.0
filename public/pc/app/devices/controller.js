@@ -1,4 +1,4 @@
-app.controller('devicesController', function($scope, socket){
+app.controller('devicesController', function($rootScope, $scope, socket){
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
@@ -8,7 +8,7 @@ app.controller('devicesController', function($scope, socket){
 	*	Daten empfangen, Scope zuordnen
 	***********************************************/
 	socket.on('devices', function(data) {
-		$scope.devicelist = data;
+		$rootScope.devicelist = data;
 	});
 
 	$scope.formatNumber = function(i) {
@@ -16,13 +16,13 @@ app.controller('devicesController', function($scope, socket){
 	}
 
 	$scope.switchdeviceSlider = function(data) {
-		socket.emit('switchdevice', {"id":data.device.deviceid,"status": $scope.devicelist[data.device.Raum].roomdevices[data.device.deviceid].status});
+		socket.emit('switchdevice', {"id":data.device.deviceid,"status": data.device.status});
 	}
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
 	}
 	socket.on('switchDevice', function(data) {
-		$scope.devicelist[data.device.Raum].roomdevices[data.device.deviceid].status = data.status;
+		$rootScope.devicelist[data.device.Raum].roomdevices[data.device.deviceid].status = data.status;
 	});
 	$scope.switchRoom = function(data){
 		socket.emit('switchRoom', {"status": data.status, "room": data.room});
@@ -68,7 +68,8 @@ app.controller('favoritDevices', function($rootScope, $scope, socket){
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
 	}
+	
 	$scope.switchdeviceSlider = function(data) {
-		socket.emit('switchdevice', {"id":data.device.deviceid,"status":$scope.favoritDevices[data.device.deviceid].status});
+		socket.emit('switchdevice', {"id":data.device.deviceid,"status": data.device.status});
 	}
 });

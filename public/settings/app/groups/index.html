@@ -1,20 +1,23 @@
-<div class="tile">
-	<ul>
-		<li ng-repeat="group in grouplist">
-			<div>
-				<div style="text-align:left">
-				{{group.name}}
-				</div>
-				<div style="text-align:right">
-					<div class="box-btn-switch">
-						<a href="#/editGroup/{{group.id}}" id="btnOn{{group.id}}" >Bearbeiten</a>
-						<button ng-click='deleteGroup({"id":group.id})' id="btnOn{{group.id}}">Löschen</button>
-					</div>
-				</div>
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Gruppen</h3>
+	</div>
+	<div class="panel-body" ng-repeat="group in grouplist">
+		<div class="pull-left">
+			{{group.name}}
+		</div>
+		<div class="pull-right">
+			<div class="box-btn-switch">
+				<a type="button" class="btn btn-info" href="#/editGroup/{{group.id}}">Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteGroup({"id":group.id})'>Löschen</button>
 			</div>
-		</li>
-		<li>
-			<a href="#/editGroup/" >Neue Gruppe anlegen</a>
-		</li>
-	</ul>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default" style="position: fixed;bottom:0;margin:0;width: 20%;z-index:200;">
+	<div class="panel-body" style="text-align: center;">
+		<a href="#/editGroup/" class="btn btn-success" >
+			Neue Gruppe anlegen
+		</a>
+	</div>  
 </div>

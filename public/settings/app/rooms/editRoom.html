@@ -1,23 +1,22 @@
-<h3>{{editRoom.title}}</h3>
-	<ul>
-		<li>
-			<div class="ui-block-a" style="text-align:left">
-				{{editRoom.roomlist.name}}
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Raum {{editRoom.title}}</h3>
+	</div>
+	<div >
+		<form ng-controller="saveRoomController">
+			<input type="hidden" id="id" value="{{editRoom.roomlist.id}}">
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="name">Name</span>
+					<input type="text" class="form-control" placeholder="Name" ng-model="editRoom.roomlist.name" id="name" aria-describedby="name">
+				</div>
 			</div>
-			<div style="text-align:right">
-				<form ng-controller="saveRoomController">
-					<ul>
-						<input type="hidden" id="id" value="{{editRoom.roomlist.id}}">
-						<li>
-							<label for="name">Name</label>
-							<input type="text" placeholder="Name" ng-model="editRoom.roomlist.name" id="name" value="{{editRoom.roomlist.name}}"/>
-						</li>
-						<li>
-							<button ng-click="saveRoom()">Speichern</button>
-							<button ng-click="abort('/rooms')">Abbrechen</button>
-						</li>
-					</ul>
-				</form>
+			<div class="panel-body">
+				<div class="pull-right">
+					<button class="btn btn-success" ng-click="saveRoom()">Speichern</button>
+					<button class="btn btn-danger" ng-click="abort('/rooms')">Abbrechen</button>
+				</div>
 			</div>
-		</li>
-	</ul>
+		</form>
+	</div>
+</div>

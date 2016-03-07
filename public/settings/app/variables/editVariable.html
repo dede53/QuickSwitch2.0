@@ -1,0 +1,30 @@
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">{{editVariable.title}}</h3>
+	</div>
+	<div class="panel-body">
+		<ul>
+			<li>
+				<div style="text-align:right">
+					<form ng-controller="saveVariableController">
+						<ul>
+							<input type="hidden" id="id" value="{{editVariable.variable.id}}">
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="name">Name</span>
+										<input type="text" class="form-control" ng-model="editVariable.variable.name" id="name" aria-describedby="name" />
+									</div>
+								</div>
+							</li>
+							<li>
+								<button class="btn btn-success" ng-click="saveVariable()">Speichern</button>
+								<button class="btn btn-danger" ng-click="abort('/variables')">Abbrechen</button>
+							</li>
+						</ul>
+					</form>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

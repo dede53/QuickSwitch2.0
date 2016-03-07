@@ -1,23 +1,23 @@
-<div class="tile">
-	<ul>
-		<li ng-repeat="room in devicelist">
-			<h3>{{room.room.name}}</h3>
-			<div ng-repeat="devices in room.roomdevices">
-				<div>
-					<div style="text-align:left">
-						{{devices.name}}
-					</div>
-					<div class="ui-block-b" style="text-align:right">
-						<div class="box-btn-switch">
-							<a href="#/editDevice/{{devices.deviceid}}" id="btnOn{{devices.deviceid}}" >Bearbeiten</a>
-							<button ng-click='deleteDevice({"id":devices.deviceid,"status":"1"})' id="btnOn{{devices.deviceid}}" >Löschen</button>
-						</div>
-					</div>
-				</div>
+<div ng-repeat="room in devicelist" class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">{{room.room.name}}</h3>
+	</div>
+	<div class="panel-body" ng-repeat="devices in room.roomdevices">
+		<div class="pull-left">
+			{{devices.name}}
+		</div>
+		<div class="pull-right">
+			<div class="box-btn-switch">
+				<a type="button" class="btn btn-info" href="#/editDevice/{{devices.deviceid}}" id="btnOn{{devices.deviceid}}" >Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteDevice({"id":devices.deviceid,"status":"1"})' id="btnOn{{devices.deviceid}}" >Löschen</button>
 			</div>
-		</li>
-		<li>
-			<a href="#/editDevice/" >Neues Gerät anlegen</a>
-		</li>
-	</ul>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default" style="position: fixed;bottom:0;margin:0;width: 20%;z-index:200;">
+	<div class="panel-body" style="text-align: center;">
+		<a href="#/editDevice/" class="btn btn-success" >
+			Neues Gerät anlegen
+		</a>
+	</div>	
 </div>

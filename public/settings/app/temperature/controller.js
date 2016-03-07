@@ -232,16 +232,35 @@ $scope.dashStyles = [
 
 
 app.controller('editSensorController',  function($scope, $rootScope, socket, $routeParams) {
-	socket.emit('charttypen');
-	socket.on('charttypen', function(data){
-		$scope.charttypen = data;
-	});
+	$scope.chartTypes = [
+		{"chart": "line",		"title": "Line"},
+		{"chart": "spline", 	"title": "Smooth line"},
+		{"chart": "area",		"title": "Area"},
+		{"chart": "areaspline",	"title": "Smooth area"},
+		{"chart": "column",		"title": "Column"},
+		{"chart": "bar",		"title": "Bar"},
+		{"chart": "scatter",	"title": "Scatter"}
+	];
+
+	$scope.dashStyles = [
+		{"line": "Solid",			"title": "Solid"},
+		{"line": "ShortDash",		"title": "ShortDash"},
+		{"line": "ShortDot",		"title": "ShortDot"},
+		{"line": "ShortDashDot",	"title": "ShortDashDot"},
+		{"line": "ShortDashDotDot",	"title": "ShortDashDotDot"},
+		{"line": "Dot",				"title": "Dot"},
+		{"line": "Dash",			"title": "Dash"},
+		{"line": "LongDash",		"title": "LongDash"},
+		{"line": "DashDot",			"title": "DashDot"},
+		{"line": "LongDashDot",		"title": "LongDashDot"},
+		{"line": "LongDashDotDot",	"title": "LongDashDotDot"}
+	];
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
 	if(!$routeParams.id){
 			$scope.editSensor = {
-				title: "Hinzufügen"
+				title: "hinzufügen"
 			}
 	}else{
 		socket.emit('getSensor', {"id":  $routeParams.id});
@@ -250,11 +269,10 @@ app.controller('editSensorController',  function($scope, $rootScope, socket, $ro
 		*	Daten empfangen, Scope zuordnen
 		***********************************************/
 		socket.on('sensor', function(data) {
-			
 			if(data.constructor === Array){
 
 				$scope.editSensor = {
-					title: "Bearbeiten",
+					title: "bearbeiten",
 					sensorlist: data[0]
 				}
 			}else{
@@ -271,6 +289,7 @@ app.controller('editSensorController',  function($scope, $rootScope, socket, $ro
 app.controller('saveSensorController', function($scope, socket, $location) {
 		$scope.saveSensor = function() {
 			// Validierung!!
+			console.log($scope.editSensor.sensorlist);
 			socket.emit('saveSensor', $scope.editSensor.sensorlist);
 			$location.url("/temperature");
 		};
