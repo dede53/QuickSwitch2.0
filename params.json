@@ -1,0 +1,6 @@
+{
+  "name": "Quickswitch2.0",
+  "tagline": "",
+  "body": "# QuickSwitch2.0 wiki\r\n\r\nQuickSwitch ist eine webbasierte Hausautomatisierungs Software für den Raspberry Pi und alle Server die Node.js unterstützen.\r\n\r\n\r\n***\r\n\r\n###Funktionen\r\n* PC und Smartphone abhängige Ansicht\r\n* Schalten von Funksteckdosen vieler Hersteller (u.a.: FRITZ!DECT 200 )\r\n* Speichern und verwalten von Temperaturen\r\n* Dimmen von GPIOs des Raspberry Pi\r\n* Countdowns von Geräten (schalten von Geräten nach einer gewissen Zeit)\r\n* Zeit und Ereignissteuerung\r\n* Benutzer abhängige Inhalte\r\n* Anrufliste aus der Fritzbox\r\n* Benachrichtigung bei Anrufen über die Fritzbox\r\n* Chat\r\n* Synchronisierte Status zwischen den Geräten\r\n* ...",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
