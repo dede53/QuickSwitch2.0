@@ -1,7 +1,9 @@
 <!-- Menuleiste -->
 <div class="menu">
+	<!--
 	<div class="logo">
 	</div>
+
 	<div class="container">
 		<ul  class="nav nav-tabs nav-justified">
 			<li role="presentation">
@@ -29,4 +31,45 @@
 			</li>
 		</ul>
 	</div>
+-->
+<nav class="navbars">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<ul class="nav navbar-nav">
+			<li role="presentation">
+				<a ng-click="toggleMenu()">
+					<ng-md-icon icon="{{menuIcon}}" options='{"duration": 250,"rotation": "none"}' style="fill:grey" size="25"></ng-md-icon>
+				</a>	
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/home')">Home</a>
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/devices')">Geräte</a>
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/temperature')">Temperaturen</a>
+			</li>
+			<li role="presentation">
+				<a  href="" ng-click="switchPage('/timer')">Timer</a>
+			</li>
+			<li role="presentation" ng-show="activeUser.admin">
+				<a href="../settings">Einstellungen</a>
+			</li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li role="presentation">
+				<div active-user-directive></div>
+			</li>
+		</ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 </div>

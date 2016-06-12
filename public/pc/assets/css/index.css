@@ -1,4 +1,6 @@
 body{
+	/*
+	*/
 	background-image: url('../img/purty_wood.png');
 	background-repeat: repeat-y repeat-x;
 	background-attachment: fixed;
@@ -118,6 +120,9 @@ button{
 	margin:1px;
 	background-color:#ffc0c0;
 /*
+MAMA:
+EIN:	#1CD2F9/#95CAFF
+AUS:	#FF97FF
 	min-width: 60px;
 */
 	width: 25%;
@@ -166,6 +171,9 @@ input[type="range"]:hover{
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.7);
 	z-index:201;
+}
+.sliderText{
+	margin:0 0;
 }
 /*
 */

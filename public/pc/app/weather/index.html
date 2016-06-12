@@ -1,0 +1,100 @@
+<style type="text/css">
+	.weather-headline{
+		/*
+		background-color: #729ed8;
+		border-radius: 4px 4px 0 0;
+		margin:0!important;
+		padding: 5px;
+		*/
+	}
+	.weather-temp{
+		margin-top: 15px;
+	}
+	.weather-clouds{
+		margin-top: 15px;
+	}
+	.weather-wind{
+		margin-top: 15px;
+	}
+	.weather-icon{
+		height: 50px;
+		width: 50px;
+		padding:0;
+		margin:0px 0px 0px 20px;
+	}
+/*  SECTIONS  */
+.section {
+	clear: both;
+	padding: 0px;
+	margin: 0px;
+	/*
+	background-color: #467EC7;
+	width:100%;
+	border-radius: 0 0 4px 4px;
+	*/
+}
+
+/*  COLUMN SETUP  */
+.col {
+	display: block;
+	float:left;
+}
+
+/*  GROUPING  */
+.group:before,
+.group:after { content:""; display:table; }
+.group:after { clear:both;}
+.group { zoom:1; /* For IE 6/7 */ }
+/*  GRID OF FOUR  */
+.span_4_of_4 {
+	width: 100%;
+}
+.span_3_of_4 {
+	width: 74.6%;
+}
+.span_2_of_4 {
+	width: 49.2%;
+}
+.span_1_of_4 {
+	width: 23.8%;
+}
+
+/*  GO FULL WIDTH BELOW 480 PIXELS */
+@media only screen and (max-width: 480px) {
+	.col {  margin: 1% 0 1% 0%; }
+	.span_1_of_4, .span_2_of_4, .span_3_of_4, .span_4_of_4 { width: 100%; }
+}
+</style>
+<h3>Wetter {{weather.city.name}}</h3>
+<ul>
+	<li class="panel panel-default" ng-repeat="forcast in weather.list">
+		<div class="panel-heading">
+			<h4 class="panel-title ">
+				{{forecastdays[$index]}}
+			</h4>
+		</div>
+		<div class="panel-body">
+			<div class="section group">
+				<div class="col span_1_of_4">
+				<img  class="col span_1_of_3 weather weather-icon" src="http://openweathermap.org/img/w/{{forcast.weather[0].icon}}.png"></img>
+					<!--
+					{{forcast.weather[0].icon}}
+				<picture class="col span_1_of_3 weather weather-icon">
+					<source src='http://openweathermap.org/img/w/{{forcast.weather[0].icon}}.png'></source>
+				</picture>
+				-->
+				</div>
+				<div class="col span_1_of_4 weather-temp">
+					{{forcast.temp.min}}° / {{forcast.temp.max}}°
+				</div>
+				<div class="col span_1_of_4 weather-clouds">
+					Wolken: {{forcast.clouds}}%
+				</div>
+				<div class="col span_1_of_4 weather-wind">
+					Wind: {{forcast.speed}} m/s
+				</div>
+			</div>
+			{{forcast.weather[0].description}}
+		</div>
+	</li>
+</ul>

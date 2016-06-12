@@ -1,24 +1,26 @@
-<div ng-if="device.protocol != 8 " class="ui-block-b" style="text-align:right">
-	<div class="box-btn-switch">
-		<button class="btnOn" id="btnOn{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"1"})' >
-			<div ng-if = "device.status == 0 ">
-				<input type="checkbox"></input>
-				{{device.buttonLabelOn}}
-			</div>
-			<div ng-if = "device.status == 1 ">
-				<input type="checkbox" checked="checked"></input>
-				{{device.buttonLabelOn}}
-			</div>
-		</button>
-		<button class="btnOff" id="btnOff{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"0"})'>
-			<div ng-if = "device.status != 0 ">
-				<input type="checkbox"></input>
-				{{device.buttonLabelOff}}
-			</div>
-			<div ng-if = "device.status != 1 ">
-				<input type="checkbox" checked="checked" ></input>
-				{{device.buttonLabelOff}}
-			</div>
-		</button>
+<div>
+	<p class="left">{{device[device.type].name}}</p>
+	<div class="ui-block-b" style="text-align:right">
+		<div class="box-btn-switch">
+			<!--
+			-->
+			<button
+				class="btnOn"
+				ng-style="{'background-color': buttonOnColor}"
+				id="btnOn{{device[device.type].deviceid}}"
+				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"1"})' >
+				<input type='checkbox' ng-model='device[device.type].status' ng-true-value="1" ng-false-value="0">
+					{{device[device.type].buttonLabelOn}}
+			</button>
+			<button
+				class="btnOff" 
+				id="btnOff{{device[device.type].deviceid}}"
+				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'
+				ng-style="{'background-color': buttonOffColor}"
+				>
+				<input type='checkbox' ng-model='device[device.type].status' ng-true-value="0" ng-false-value="1">
+				{{device[device.type].buttonLabelOff}}
+			</button>
+		</div>
 	</div>
 </div>

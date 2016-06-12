@@ -1,0 +1,18 @@
+<h3>
+	Variablen
+</h3>
+<div class="panel panel-default">
+<!--
+	<div class="panel-heading">
+		<h3 class="panel-title">Variablen</h3>
+	</div>
+-->
+	<div class="panel-body" ng-repeat='variable in variables'>
+		<div class="pull-left">
+			{{variable.name}}:
+		</div>
+		<div class="pull-right">
+			{{variable.status}}{{variable.suffix}}
+		</div>
+	</div>
+</div>

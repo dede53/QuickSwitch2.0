@@ -1,6 +1,7 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){	
 	if($rootScope.chartConfig === undefined){
-		socket.emit('getSensorvalues', {"date":"all"});
+		socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
+		console.log('Daten angefragt!');
 		$rootScope.tempNoData = false;
 		var chartConfig = {
 				options:{
@@ -52,7 +53,6 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			                animation: false
 						}
 					},
-					exporting: false,
 					xAxis: [{
 						type: 'datetime',
 						labels:{
@@ -63,8 +63,8 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 							}
 						},
 						dateTimeLabelFormats: {
-							second: '%Y-%m-%d<br/>%H:%M:%S',
-							minute: '%Y-%m-%d<br/>%H:%M',
+							second: '%d.%m<br/>%H:%M:%S',
+							minute: '%d.%m<br/>%H:%M',
 							hour: '%d.%m<br/>%H:%M',
 							day: '%d.%m<br/>%H:%M',
 							week: '%d.%m.%Y',
@@ -97,7 +97,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 								text: '5°C'
 							}
 						}*/]
-					},
+					},/*
 					{
 						allowDecimals: true,
 						title: {
@@ -115,7 +115,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 							}
 						},
 						opposite: true
-					}],
+					}*/],
 
 					legend: {
 						enabled: true,
@@ -131,7 +131,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 					},
 					tooltip: {
 						headerFormat: '<div class="header">{point.key}</div>',
-						pointFormat: '<div class="line"><p style="float:left;">{series.name} {point.y}</p></div>',
+						pointFormat: '<div class="line"><p style="float:left;">{series.name} {point.y:.2f}</p></div>',
 						borderWidth: 1,
 						borderRadius: 5,
 						borderColor: '#a4a4a4',
@@ -152,14 +152,24 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 		$rootScope.chartConfig = chartConfig;
 	}
 
-	socket.on('Sensorvalues', function(alldata) {
+	socket.on('storedVariables', function(alldata) {
 		if(alldata != false){
-			alldata.forEach(function(data){
-				$rootScope.chartConfig.series.push(data);
-				$rootScope.chartConfig.loading = false;
-			});
-		}else{
+			$rootScope.tempNoData = false;
+			$rootScope.chartConfig.series.push(alldata);
+			$rootScope.chartConfig.loading = false;
+		}else if($rootScope.chartConfig.series.length == 0){
 			$rootScope.tempNoData = true;
+		}
+	});
+
+	socket.on('storedVariable', function(data) {
+		if(data != false){
+			for(var i = 0; i < $rootScope.chartConfig.series.length; i++ ){
+				if(data.nodeid == $rootScope.chartConfig.series[i].nodeid){
+					$rootScope.chartConfig.series[i] = data;
+					$rootScope.chartConfig.loading = false;
+				}
+			}
 		}
 	});
 

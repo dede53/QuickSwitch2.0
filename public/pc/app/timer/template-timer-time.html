@@ -1,21 +1,17 @@
 <div>
-	<h5>
-		Uhrzeit:
-		Von 
-			<span ng-if="condition.start.time == 'sunset'">
-				Sonnenuntergang
-			</span>
-			<span ng-if="condition.start.time == 'sunrise'">
-				Sonnenaufgang
-			</span>
-			{{condition.start.offset.unit}} {{condition.start.offset.number}}
-		 bis 
-			<span ng-if="condition.stop.time == 'sunset'">
-				Sonnenuntergang
-			</span>
-			<span ng-if="condition.stop.time == 'sunrise'">
-				Sonnenaufgang
-			</span>
-			{{condition.stop.offset.unit}} {{condition.stop.offset.number}}
-	</h5>
+	Uhrzeiten:
+	<div ng-repeat="time in conditions">
+		<div ng-switch on="time.time">
+			<div ng-switch-when="sunset">
+				Sonnenuntergang {{time.offset.unit}}{{time.offset.number}}  Minuten: {{time.action}} 
+			</div>
+			<div ng-switch-when="sunrise">
+				{{time.action}} Sonnenaufgang {{time.offset.unit}}{{time.offset.number}}  Minuten: {{time.action}} 
+			</div>
+			<div ng-switch-default>
+				{{time.time}}: {{time.action}} 
+			</div>
+
+		</div>
+	</div>
 </div>

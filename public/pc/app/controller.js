@@ -3,7 +3,8 @@ var app = 	angular.module('jsbin',[
 				'ngAnimate',
 				'ngRoute',
 				'ngTouch',
-				'highcharts-ng'
+				'highcharts-ng',
+				'ngMdIcons'
 			]);
 
 
@@ -41,13 +42,14 @@ app.config(['$routeProvider', function($routeProvider) {
 app.controller('appController', function($rootScope, $scope, $location){
 
 	$scope.favorit = true;
+	$scope.menuIcon = "keyboard_arrow_left";
 	$scope.storedUser = getCookie("username");
 
 	if ($scope.storedUser != "") {
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
 	}else{
 		$rootScope.activeUser = {};
-		$rootScope.activeUser.favoritDevices = "[1, 16, 3, 7, 14, 8, 17]";
+		$rootScope.activeUser.favoritDevices = [];
 		$rootScope.activeUser.name = "Besucher";
 	}
 
@@ -59,12 +61,12 @@ app.controller('appController', function($rootScope, $scope, $location){
 		}
 	}
 
-	$scope.toggleMenu = function(angle){
+	$scope.toggleMenu = function(){
 		$scope.favorit =! ($scope.favorit);
 		if($scope.favorit){
-			$scope.angle = "0";
+			$scope.menuIcon = "keyboard_arrow_left";
 		}else{
-			$scope.angle = "180";	
+			$scope.menuIcon = "keyboard_arrow_right";	
 		}
 	}
 });

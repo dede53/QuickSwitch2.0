@@ -6,6 +6,14 @@ app.directive('timerDirective', function(){
 	}
 });
 
+app.directive('createTimerDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: "./app/timer/template-timer.html",
+		controller: "createTimerController"
+	}
+});
+
 app.directive('timerWeekdaysDirective', function(){
 	return {
 		restrict: "EA",
@@ -27,9 +35,30 @@ app.directive('timerDeviceDirective', function(){
 	}
 });
 
+app.directive('timerVariableDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-variable.html'
+	}
+});
+
+app.directive('timerAlertDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-alert.html'
+	}
+});
+
 app.directive('timerGroupDirective', function(){
 	return {
 		restrict: "EA",
 		templateUrl: './app/timer/template-timer-time.html'
+	}
+});
+
+app.directive('timerPushbulletDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-pushbullet.html'
 	}
 });

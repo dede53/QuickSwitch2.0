@@ -15,10 +15,16 @@
 			<div class="panel-body">
 				<ul ng-repeat="device in room.roomdevices">
 					<li>
-						<p class="left">{{device.name}}</p>
-						<div class="right">
-							<div slider-directive></div>
-							<div button-directive></div>
+						<div ng-switch="device[device.type].protocol">
+							<div ng-switch-when="set-gpio">
+								<div slider2-directive></div>
+							</div>
+							<div ng-switch-when="send-rpi-color">
+								<div colorpicker-directive></div>
+							</div>
+							<div ng-switch-default>
+								<div button-directive></div>
+							</div>
 						</div>
 					</li>
 				</ul>

@@ -1,0 +1,191 @@
+<div>
+	<uib-accordion-heading>
+		{{timer.name}}
+		<div class="pull-right">
+			<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
+			
+			<ng-md-icon ng-show="timer.isOpen" icon="edit" style="fill:#399BB0" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchPage('/editTimer/{{timer.id}}')"></ng-md-icon>
+
+			<ng-md-icon ng-show="timer.isOpen" icon="delete" style="fill:#FF8000" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();deleteTimer(timer)"></ng-md-icon>
+		</div>
+	</uib-accordion-heading>
+	<div>
+		<h4 ng-show="timer.variables">
+			Variablen:
+		</h4>
+		<div ng-repeat="(name, variable) in timer.variables">
+			{{name}}:
+				<div ng-repeat="variab in variable">
+					{{variab.mode}} {{variab.status}}
+				</div>
+		</div>
+		<h4 ng-show="timer.conditions">
+			Bedingungen:
+		</h4>
+		<div ng-repeat="(type, conditions) in timer.conditions">
+			<div ng-switch on="type">
+				<div ng-switch-when="range">
+					<div timer-range-directive></div>
+				</div>
+				<div ng-switch-when="time">
+					<div timer-time-directive></div>
+				</div>
+				<div ng-switch-when="weekdays">
+					<div timer-weekdays-directive></div>
+				</div>
+			</div>
+		</div>
+		<h4 ng-show="timer.actions">
+			Aktionen:
+		</h4>
+		<div ng-repeat="(type, actions) in timer.actions">
+				<div ng-switch on="type">
+					<div ng-switch-when="alerts">
+						<div timer-alert-directive></div>
+					</div>
+					<div ng-switch-when="devices">
+						<div timer-device-directive></div>
+					</div>
+					<div ng-switch-when="storeVariables">
+						Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
+					</div>
+					<div ng-switch-when="saveSensors">
+						Speichere Sensoren
+					</div>
+					<div ng-switch-when="pushbullets">
+						<div timer-pushbullet-directive></div>
+					</div>
+					<div ng-switch-when="intervals">
+						<div ng-repeat="interval in actions">
+							<h6>Interval: {{interval.number}}{{interval.unit}}</h6>
+							<h6>
+								Action:
+								<span ng-switch on="interval.action">
+									<span ng-switch-when="alerts">
+										<div timer-alert-directive></div>
+									</span>
+									<span ng-switch-when="devices">
+										<div timer-device-directive></div>
+									</span>
+									<div ng-switch-when="storeVariables">
+										Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
+									</div>
+									<span ng-switch-when="saveSensors">
+										Speichere Sensoren
+									</span>
+									<span ng-switch-default>
+										<div>{{type}}{{action}}</div>
+									</span>
+								</span>
+							</h6>
+						</div>
+					</div>
+					<div ng-switch-default>
+						<div>{{type}}{{action}}</div>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+<!--
+<div class="panel-heading">
+	<h4 class="panel-title " style="height:30px;">
+		<a data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{timer.id}}" class="pull-left">
+			{{timer.name}}{{collapse}}
+		</a>
+		<!--
+			<input type="color" ng-model="color">
+			<input type="color" ng-model="colordel">
+		<div class="pull-right">
+			<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="switchTimer(timer)"></ng-md-icon>
+	-->
+			<!-- 127bcc 
+			<ng-md-icon icon="edit" style="fill:#399BB0" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="switchPage('/editTimer/{{timer.id}}')"></ng-md-icon>
+		-->
+
+
+			<!-- ffab05
+			<ng-md-icon icon="delete" style="fill:#FF8000" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="deleteTimer({'id':timer.id})"></ng-md-icon>
+			 -->
+
+		<!--
+		</div>
+	</h4>
+</div>
+<div id="collapse{{timer.id}}" class="panel-collapse collapse">
+	<div class="panel-body">
+		<h4 ng-show="timer.variables">
+			Variablen:
+		</h4>
+		<div ng-repeat="(name, variable) in timer.variables">
+			{{name}}:
+				<div ng-repeat="variab in variable">
+					{{variab.mode}} {{variab.status}}
+				</div>
+		</div>
+		<h4 ng-show="timer.conditions">
+			Bedingungen:
+		</h4>
+		<div ng-repeat="(type, conditions) in timer.conditions">
+			<div ng-switch on="type">
+				<div ng-switch-when="range">
+					<div timer-range-directive></div>
+				</div>
+				<div ng-switch-when="time">
+					<div timer-timer-directive></div>
+				</div>
+				<div ng-switch-when="weekdays">
+					<div timer-weekdays-directive></div>
+				</div>
+			</div>
+		</div>
+		<h4 ng-show="timer.actions">
+			Aktionen:
+		</h4>
+		<div ng-repeat="(type, actions) in timer.actions">
+				<div ng-switch on="type">
+					<div ng-switch-when="alerts">
+						<div timer-alert-directive></div>
+					</div>
+					<div ng-switch-when="devices">
+						<div timer-device-directive></div>
+					</div>
+					<div ng-switch-when="storeVariables">
+						Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
+					</div>
+					<div ng-switch-when="saveSensors">
+						Speichere Sensoren
+					</div>
+					<div ng-switch-when="intervals">
+						<div ng-repeat="interval in actions">
+							<h6>Interval: {{interval.number}}{{interval.unit}}</h6>
+							<h6>
+								Action:
+								<span ng-switch on="interval.action">
+									<span ng-switch-when="alerts">
+										<div timer-alert-directive></div>
+									</span>
+									<span ng-switch-when="devices">
+										<div timer-device-directive></div>
+									</span>
+									<div ng-switch-when="storeVariables">
+										Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
+									</div>
+									<span ng-switch-when="saveSensors">
+										Speichere Sensoren
+									</span>
+									<span ng-switch-default>
+										<div>{{type}}{{action}}</div>
+									</span>
+								</span>
+							</h6>
+						</div>
+					</div>
+					<div ng-switch-default>
+						<div>{{type}}{{action}}</div>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+-->

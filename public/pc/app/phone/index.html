@@ -3,14 +3,21 @@
 	<ul class="panel panel-default">
 		<div class="panel-body">
 			<li ng-repeat="call in phonelist" class="">
-				<p id="">
+				<!--
 					<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
-						
-					{{	call.date | date:'d. MMM | HH:mm'}}
+				-->
+				<p id="">
+						<ng-md-icon ng-if="(call.direction) == 'outbound'" icon="call_made" style="fill:blue" size="20" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>					
+						<ng-md-icon ng-if="(call.direction) == 'missed'" icon="call_missed" style="fill:red" size="20" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>					
+						<ng-md-icon ng-if="(call.direction) == 'inbound'" icon="call_received" style="fill:green" size="20" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>
+	
+					<span class="pull-left">
+						{{	call.date | date:'d.MM. HH:mm'}}
+					</span>
 					<span class="pull-right">
 						{{call.remotenumber}}
 						<span class="right grey">
-							{{call.duration}} {{call.durationminutes}} Minuten
+							{{call.duration}} {{call.durationminutes}} Min.
 						</span>
 					</span>
 				</p>

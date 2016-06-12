@@ -8,18 +8,10 @@ app.directive('roomdevicesDirective', function($rootScope){
 
 app.directive('buttonDirective', function ($rootScope) {
 	return {
+		scope: true,
 		restrict: 'EA',
+    	replace: 'true',
 		templateUrl: './app/devices/template-button.html'
-	};
-});
-
-app.directive('button2Directive', function ($rootScope) {
-	return {
-		restrict: 'EA',
-		templateUrl: './app/devices/template-button2.html',
-		link: function(){
-			
-		}
 	};
 });
 
@@ -27,6 +19,33 @@ app.directive('sliderDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',
 		templateUrl: './app/devices/template-slider.html'
+	};
+});
+
+app.directive('colorpickerDirective', function ($rootScope) {
+	return {
+		restrict: 'EA',
+		templateUrl: './app/devices/template-colorpicker.html',
+		link: function(scope, elem, attrs) {
+			/*
+			elem.bind('click', function() {
+				elem.css('background-color', 'white');
+				scope.$apply(function() {
+					scope.color = "white";
+				});
+			});
+*/
+			elem.bind('mouseover', function() {
+				elem.css('cursor', 'pointer');
+			});
+		}
+	};
+});
+
+app.directive('slider2Directive', function ($rootScope) {
+	return {
+		restrict: 'EA',
+		templateUrl: './app/devices/template-slider2.html'
 	};
 });
 

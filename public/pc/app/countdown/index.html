@@ -1,40 +1,51 @@
-<h3>Countdowns</h3>
-<div ng-if="activeCountdowns.length == 0" class="alert alert-info" role="alert">Keine Countdowns gesetzt!</div>
-<div class="panel panel-default" ng-if="activeCountdowns.length != 0">
-	<div class="panel-body">
-		<ul style=" overflow:auto">
-			<li ng-repeat="countdown in activeCountdowns">
-				<p>{{countdown.device.name}} ({{countdown.device.Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.switchstatus ? "ein" :  "aus"}}schalten
-					<button class="btn btn-xs btn-danger" ng-click='deleteCountdown({"id":countdown.id})' >Löschen</button>
-				</p>
-			</li>
-		</ul>
+<div>
+	<h3>Countdowns</h3>
+	<div ng-if="activeCountdowns.length == 0" class="alert alert-info" role="alert">Keine Countdowns gesetzt!</div>
+	<div class="panel panel-default" ng-if="activeCountdowns.length != 0">
+		<div class="panel-body">
+			<ul style=" overflow:auto">
+				<li ng-repeat="countdown in activeCountdowns">
+					<p>{{countdown.device[countdown.device.type].name}} ({{countdown.device[countdown.device.type].Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.switchstatus ? "ein" :  "aus"}}schalten
+						<button class="btn btn-xs btn-danger" ng-click='deleteCountdown({"id":countdown.id})' >Löschen</button>
+					</p>
+				</li>
+			</ul>
+		</div>
 	</div>
+	<form ng-controller="newCountdowntimer">
+		<ul style="text-align:right;" >
+			<fieldset class="form-group">
+				<label for="device" class="left">Gerät</label>
+			<!--
+				<select class="form-control" id="device" ng-model="newCountdowntimer.device" required="required">
+					<option value="0">
+						Wähle ein Gerät
+					</option>
+					<option ng-repeat="obj in devicelist" value="{{obj.deviceid}}">
+						{{obj.name}} ({{obj.Raum}})
+					</option>
+				</select>
+			-->
+				<select
+						class="form-control"
+						ng-change=""
+						ng-model="newCountdowntimer.device"
+						ng-options="value.deviceid as value.name group by value.Raum for value in devicelist">
+						<option value="">Wähle ein Gerät</option>
+				</select>
+			</fieldset>
+			<fieldset class="form-group">
+				<label for="minutes" class="left">Verzögerung: {{newCountdowntimer.time}} Minuten</label>
+				<input id="minutes" style="width:calc(100% - 17px);" type="range" min="1" max="180"	class="form-control" ng-model="newCountdowntimer.time"></input>
+			</fieldset>
+			<fieldset class="form-group">
+				<label for="status">Status</label>
+				<div class="btn-group">
+					<label class="btn btn-default" ng-model="newCountdowntimer.switchstatus" uib-btn-radio="'1'" >An</label>
+					<label class="btn btn-default" ng-model="newCountdowntimer.switchstatus" uib-btn-radio="'0'" >Aus</label>
+				</div>
+				<button class="btn btn-default" ng-click="newCountdown()">Speichern!</button>
+			</fieldset>
+		</ul>
+	</form>
 </div>
-<form ng-controller="newCountdowntimer">
-	<ul style="text-align:right;" >
-		<fieldset class="form-group">
-			<label for="device" class="left">Gerät</label>
-			<select class="form-control" id="device" ng-model="newCountdowntimer.device" required="required">
-				<option value="0">
-					Wähle ein Gerät
-				</option>
-				<option ng-repeat="obj in devicelist" value="{{obj.deviceid}}">
-					{{obj.name}} ({{obj.Raum}})
-				</option>
-			</select>
-		</fieldset>
-		<fieldset class="form-group">
-			<label for="minutes" class="left">Verzögerung: {{newCountdowntimer.time}} Minuten</label>
-			<input id="minutes" style="width:calc(100% - 17px);" type="range" min="1" max="180"	class="form-control" ng-model="newCountdowntimer.time"></input>
-		</fieldset>
-		<fieldset class="form-group">
-			<label for="status">Status</label>
-			<div class="btn-group">
-				<label class="btn btn-default" ng-model="newCountdowntimer.switchstatus" uib-btn-radio="'1'" >An</label>
-				<label class="btn btn-default" ng-model="newCountdowntimer.switchstatus" uib-btn-radio="'0'" >Aus</label>
-			</div>
-			<button class="btn btn-default" ng-click="newCountdown()">Speichern!</button>
-		</fieldset>
-	</ul>
-</form>
