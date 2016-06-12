@@ -1,9 +1,11 @@
 process.stdin.resume();
 process.env.TZ		=	'Europe/Amsterdam';
 
+// Killt alles was node heißt:
+// ps -ef | grep node | grep -v grep | awk '{print $2}' | xargs kill -9
 
-	var express			=	require('express.io');
-	var app				=	express().http().io();
+var express			=	require('express.io');
+var app				=	express().http().io();
 
 var conf 			=	require('./config.json');
 var helper			=	require('./app/functions/helper.js');
@@ -14,7 +16,50 @@ var port			=	process.argv[2] || conf.QuickSwitch.port;
 var dgram			=	require('dgram');
 var http			=	require('http');
 var util			=	require('util');
-var exec			=	require('child_process').exec;
+var fs 				=	require('fs');
+var spawn			=	require('child_process').spawn;
+
+if(!fs.existsSync("./log")){
+	fs.mkdirSync("./log", 0766, function(err){
+		if(err){
+			console.log("mkdir ./log: failed: " + err);
+		}
+	});
+}
+		var plugins = {};
+		var log_file = {};
+		var data = [
+			"autoloader.js",
+			"timerserver.js",
+			"countdownserver.js",
+			"eventLoader.js",
+		]
+
+		data.forEach(function(file){
+			var splitedfile = file.split(".");
+			var filename = splitedfile[0];
+			var debugFile = __dirname + '/log/debug-' + filename + '.log';
+
+			log_file[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
+
+			plugins[filename] = spawn( process.execPath, [file]);
+
+			plugins[filename].stdout.on('data', function(data) {
+			    // console.log(data.toString());
+			    log_file[filename].write(data.toString());
+			});
+			plugins[filename].stderr.on('data', function(data) {
+			    console.log(data.toString());
+			    log_file[filename].write(data.toString());
+			});
+			plugins[filename].on('close', function(code) {
+			    console.log(code.toString());
+			    log_file[filename].write(code.toString());
+			});
+		});
+
+/*
+// var exec			=	require('child_process').exec;
 var fs 				=	require('fs');
 
 if(!fs.existsSync("./log")){
@@ -40,12 +85,12 @@ console.log = function(d) {
 	log_file.write(util.format(d) + '\n');
 	log_stdout.write(util.format(d) + '\n');
 };
-/*
-*/
+
 var countdownserver 	=	exec('forever start ./countdownserver.js');
 var timerserver 		=	exec('forever start ./timerserver.js');
 var SwitchServer 		=	exec('forever start ./SwitchServer.js');
 var eventLoader 		=	exec('forever start ./eventLoader.js');
+*/
 
 var bodyParser			=	require('body-parser');
 var cookieParser		=	require('cookie-parser');
@@ -75,4 +120,4 @@ require('./app/ioroutes/variable.js')(app, db);
 
 
 app.listen(port);
-helper.log("Server running at http://127.0.0.1:" + port + "/", "info");
+helper.log.info("Server running at http://127.0.0.1:" + port + "/");
