@@ -30,35 +30,55 @@ echo "| -- mysql"
 echo "| -- git"
 echo "| -- pi-blaster"
 echo
-echo "update die Packetquellen"
-sudo apt-get update
-echo "Upgrade das system"
-sudo apt-get -y upgrade
-echo "Installieren git und mysql"
-sudo apt-get -y install git mysql-server mysql-client autoconf
-
-echo "Lade node-latest herrunter"
-wget http://node-arm.herokuapp.com/node_latest_armhf.deb
-echo "installieren node"
-sudo dpkg -i node_latest_armhf.deb
-
+echo "Soll ein Update des Systems vorgenommen werden? (y / n)"
+read updateanswer
+if [ $updateanswer == 'y' ]
+then
+	echo "update die Packetquellen"
+	sudo apt-get update
+	echo "Upgrade das system"
+	sudo apt-get -y upgrade
+fi
+echo "Installiere mysql"
+sudo apt-get -y install mysql-server mysql-client autoconf
 echo
-pwd
-cd ../
-pwd
-echo
-echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
-git clone https://github.com/sarfata/pi-blaster.git
-cd pi-blaster
-./autogen.sh
-./configure
-make
-sudo make install
-sudo ./pi-blaster
+
+echo "Soll Node.js installiert werden? (y / n)"
+read nodeanswer
+if [ $nodeanswer == 'y' ]
+then
+	echo "Lade Node.js-latest herrunter"
+	wget http://node-arm.herokuapp.com/node_latest_armhf.deb
+	echo "installieren Node.js"
+	sudo dpkg -i node_latest_armhf.deb
+fi
+
 
 echo
 pwd
 cd ../
+pwd
+echo
+echo "Soll der pi-blaster-deamon zum dimmen der GPIO-Ports installiert werden? (y / n | default: y)"
+read piblaster
+if [ $piblaster == 'y' ]
+then
+	echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
+	git clone https://github.com/sarfata/pi-blaster.git
+	cd pi-blaster
+	./autogen.sh
+	./configure
+	make
+	sudo make install
+	sudo ./pi-blaster
+	echo "Der pi-blaster-deamon wurde fertig installiert"
+	echo
+	echo
+	pwd
+	cd ../
+fi
+
+
 pwd
 echo
 
