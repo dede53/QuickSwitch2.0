@@ -1,5 +1,6 @@
 var fs 				=	require('fs');
-var exec			=	require('child_process').exec;
+// var exec			=	require('child_process').exec;
+var spawn			=	require('child_process').spawn;
 
 process.stdin.resume();
 process.on('SIGINT', function () {
@@ -11,28 +12,36 @@ fs.readdir('./app/events', function(err, data){
 	if(err){
 		console.log(err);
 	}else{
-		console.log(data);
 		var plugins = {};
 		var log_file = {};
-		var log_stdout = {};
 		
 		data.forEach(function(file){
-			var splitedfile = file.split(".");
-			var filename = splitedfile[0];
-			var debugFile = __dirname + '/log/debug-' + filename + '.log';
+			console.log(file);
+			if(file.includes('.')){
+				var splitedfile = file.split(".");
+				var filename = splitedfile[0];
+				var adapterName = filename;
+			}else{
+				var adapterName = file;
+				var filename = './' + file + '/index.js';
+			}
+				var debugFile = __dirname + '/log/debug-' + adapterName + '.log';
 
-			log_file[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
-			log_stdout[filename]		=	process.stdout;
+			log_file[adapterName]			=	fs.createWriteStream( debugFile, {flags : 'w'});
 
-			plugins[filename] = exec('node ' + __dirname + "/app/events/" + file);
-			plugins[filename].stdout.on('data', function(data) {
-			    console.log(data);
+			plugins[adapterName] = spawn( process.execPath, ['app/events/' + file]);
+			
+			plugins[adapterName].stdout.on('data', function(data) {
+				log_file[adapterName].write(data.toString());
+			    console.log(data.toString());
 			});
-			plugins[filename].stderr.on('data', function(data) {
-			    console.log(data);
+			plugins[adapterName].stderr.on('data', function(data) {
+				log_file[adapterName].write(data.toString());
+			    //console.log(data.toString());
 			});
-			plugins[filename].on('close', function(code) {
-			    console.log(code);
+			plugins[adapterName].on('close', function(code) {
+				log_file[adapterName].write(code.toString());
+			    //console.log(code.toString());
 			});
 		});
 	}
