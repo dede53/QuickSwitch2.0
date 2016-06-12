@@ -1,7 +1,8 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){	
 	if($rootScope.chartConfig === undefined){
-		socket.emit('getSensorvalues', {"date":"all"});
-
+		socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
+		console.log('Daten angefragt!');
+		$rootScope.tempNoData = false;
 		var chartConfig = {
 				options:{
 					chart: {
@@ -50,7 +51,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 								enabled: false
 							},
 			                animation: false
-						},
+						}
 					},
 					exporting: false,
 					xAxis: [{
@@ -63,8 +64,8 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 							}
 						},
 						dateTimeLabelFormats: {
-							second: '%Y-%m-%d<br/>%H:%M:%S',
-							minute: '%Y-%m-%d<br/>%H:%M',
+							second: '%d.%m<br/>%H:%M:%S',
+							minute: '%d.%m<br/>%H:%M',
 							hour: '%d.%m<br/>%H:%M',
 							day: '%d.%m<br/>%H:%M',
 							week: '%d.%m.%Y',
@@ -88,7 +89,15 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 								"fontSize": "16px"
 							}
 						},
-						plotLines: []
+						plotLines: [/*{
+							value: 5,
+							color: '#444488',
+							dashStyle: 'shortdash',
+							width: 2,
+							label: {
+								text: '5°C'
+							}
+						}*/]
 					},
 					{
 						allowDecimals: true,
@@ -141,15 +150,16 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 				series: [],
 				loading: true
 			}
-		
 		$rootScope.chartConfig = chartConfig;
 	}
 
-	socket.on('Sensorvalues', function(alldata) {
-		alldata.forEach(function(data){
-			$rootScope.chartConfig.series.push(data);
+	socket.on('storedVariables', function(alldata) {
+		if(alldata != false){
+			$rootScope.chartConfig.series.push(alldata);
 			$rootScope.chartConfig.loading = false;
-		});
+		}else{
+			$rootScope.tempNoData = true;
+		}
 	});
 
 	Highcharts.setOptions({
@@ -157,7 +167,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			useUTC : false
 		},
 		lang : {
-			loading: "Lade Daten...",
+			loading: "Lade Daten..",
 			rangeSelectorZoom: ""
 		}
 	});

@@ -4,7 +4,8 @@ var app = 	angular.module('jsbin',[
 				'ngAnimate',
 				'ngRoute',
 				'ngTouch',
-				'highcharts-ng'
+				'highcharts-ng',
+				'ngMdIcons'
 			]);
 
 
@@ -49,10 +50,9 @@ app.controller('appController', function($rootScope, $scope, $location){
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
 	}else{
 		$rootScope.activeUser = {};
-		$rootScope.activeUser.favoritDevices = "[1, 16, 3, 7, 14, 8, 17]";
+		$rootScope.activeUser.favoritDevices = [];
 		$rootScope.activeUser.name = "Besucher";
 	}
-
 	$scope.showmenu=false;
 	$scope.toggleMenu = function(data){
 		$scope.showmenu=!($scope.showmenu);
@@ -83,21 +83,3 @@ app.controller('appController', function($rootScope, $scope, $location){
 app.controller('favoritmenucontroller', function($scope){
 
 });
-/*
-app.directive('rotate', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, element, attrs) {
-            scope.$watch(attrs.degrees, function (rotateDegrees) {
-                var r = 'rotate(' + rotateDegrees + 'deg)';
-                element.css({
-                    '-moz-transform': r,
-                    '-webkit-transform': r,
-                    '-o-transform': r,
-                    '-ms-transform': r
-                });
-            });
-        }
-    }
-});
-*/

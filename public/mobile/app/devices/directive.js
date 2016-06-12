@@ -13,12 +13,22 @@ app.directive('buttonDirective', function ($rootScope) {
 	};
 });
 
-app.directive('button2Directive', function ($rootScope) {
+app.directive('colorpickerDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',
-		templateUrl: './app/devices/template-button2.html',
-		link: function(){
-			
+		templateUrl: './app/devices/template-colorpicker.html',
+		link: function(scope, elem, attrs) {
+			/*
+			elem.bind('click', function() {
+				elem.css('background-color', 'white');
+				scope.$apply(function() {
+					scope.color = "white";
+				});
+			});
+*/
+			elem.bind('mouseover', function() {
+				elem.css('cursor', 'pointer');
+			});
 		}
 	};
 });

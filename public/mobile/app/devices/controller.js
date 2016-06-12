@@ -1,4 +1,4 @@
-app.controller('devicesController', function($scope, socket){
+app.controller('devicesController', function($rootScope, $scope, socket){
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
@@ -8,7 +8,7 @@ app.controller('devicesController', function($scope, socket){
 	*	Daten empfangen, Scope zuordnen
 	***********************************************/
 	socket.on('devices', function(data) {
-		$scope.devicelist = data;
+		$rootScope.devicelist = data;
 	});
 
 	$scope.formatNumber = function(i) {
@@ -16,13 +16,14 @@ app.controller('devicesController', function($scope, socket){
 	}
 
 	$scope.switchdeviceSlider = function(data) {
-		socket.emit('switchdevice', {"id":data.device.deviceid,"status": data.device.status});
+		socket.emit('switchdevice', {"id":data.id,"status": data.status});
 	}
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
 	}
 	socket.on('switchDevice', function(data) {
-		$scope.devicelist[data.device.Raum].roomdevices[data.device.deviceid].status = data.status;
+		var device = data.device[data.device.type];
+		$rootScope.devicelist[device.Raum].roomdevices[device.deviceid][data.device.type].status = parseFloat(data.status);
 	});
 	$scope.switchRoom = function(data){
 		socket.emit('switchRoom', {"status": data.status, "room": data.room});
@@ -60,15 +61,16 @@ app.controller('favoritDevices', function($rootScope, $scope, socket){
 
 	socket.on('switchDevice', function(data) {
 		for(var i = 0; i < $scope.favoritDevices.length; i++){
-			if($scope.favoritDevices[i].deviceid == data.device.deviceid){
-				$scope.favoritDevices[i].status = data.status;
+			if($scope.favoritDevices[i][data.device.type].deviceid == data.device[data.device.type].deviceid){
+				$scope.favoritDevices[i][data.device.type].status = parseInt(data.status);
 			}
 		}
 	});
 	$scope.switchdevice = function(data) {
 		socket.emit('switchdevice', {"id":data.id,"status":data.status});
 	}
+	
 	$scope.switchdeviceSlider = function(data) {
-		socket.emit('switchdevice', {"id":data.device.deviceid,"status":data.device.status});
+		socket.emit('switchdevice', {"id":data.device.deviceid,"status": data.device.status});
 	}
 });

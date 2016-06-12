@@ -102,3 +102,12 @@ a{
 .green{
 	color:green;
 }
+.devicename{
+	white-space: nowrap; 
+	width: 96px;
+	overflow: hidden;
+	text-overflow: ellipsis; 
+    /*
+    border: 1px solid #000000;
+    */
+}

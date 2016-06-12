@@ -4,7 +4,7 @@
 	<div class="panel-body">
 		<ul style=" overflow:auto">
 			<li ng-repeat="countdown in activeCountdowns">
-				<p>{{countdown.device.name}} ({{countdown.device.Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.switchstatus ? "ein" :  "aus"}}schalten
+				<p>{{countdown.device[countdown.device.type].name}} ({{countdown.device[countdown.device.type].Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.switchstatus ? "ein" :  "aus"}}schalten
 					<button class="btn btn-xs btn-danger" ng-click='deleteCountdown({"id":countdown.id})' >Löschen</button>
 				</p>
 			</li>
@@ -15,13 +15,12 @@
 	<ul style="text-align:right;" >
 		<fieldset class="form-group">
 			<label for="device" class="left">Gerät</label>
-			<select class="form-control" id="device" ng-model="newCountdowntimer.device" required="required">
-				<option value="0">
-					Wähle ein Gerät
-				</option>
-				<option ng-repeat="obj in devicelist" value="{{obj.deviceid}}">
-					{{obj.name}} ({{obj.Raum}})
-				</option>
+			<select
+					class="form-control"
+					ng-change=""
+					ng-model="newCountdowntimer.device"
+					ng-options="value.deviceid as value.name group by value.Raum for value in devicelist">
+					<option value="">Wähle ein Gerät</option>
 			</select>
 		</fieldset>
 		<fieldset class="form-group">

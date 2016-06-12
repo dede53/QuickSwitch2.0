@@ -1,36 +1,13 @@
-<h3>Timer</h3>
+<h3>
+	<a ng-click="switchPage('/timer')">
+		Timer
+	</a>
+</h3>
 
 <div ng-if="timers.length == 0" class="alert alert-info" role="alert">Keine Timer gesetzt!</div>
-<ul class="panel-group"  ng-if="timers.length != 0">
-	<li class="panel panel-default" ng-repeat="timer in timers">
-		
-		<div class="panel-heading">
-			<h4 class="panel-title ">
-				{{timer.name}}
-				<button class="pull-right btn btn-xs btn-danger" ng-click='deleteTimer({"id":timer.id})' >Löschen</button>
-			</h4>
-		</div>
-		<div class="panel-body">
-			<div ng-repeat="condition in timer.conditions">
-				<div ng-switch on="condition.type">
-					<div ng-switch-when="weekdays">
-						<div timer-weekdays-directive></div>
-					</div>
-					<div ng-switch-when="time">
-						<div timer-time-directive></div>
-					</div>
-				</div>
-			</div>
-			<div ng-repeat="action in timer.actions">
-				<div ng-switch on="action.type">
-					<div ng-switch-when="device">
-						<div timer-device-directive></div>
-					</div>
-					<div ng-switch-when="group">
-						<div timer-group-directive></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</li>
-</ul>
+
+<uib-accordion ng-if="timers.length != 0" close-others="true">
+	<uib-accordion-group ng-repeat="timer in timers" is-open="timer.isOpen">
+		<div create-timer-directive></div>
+	</uib-accordion-group>
+</uib-accordion>

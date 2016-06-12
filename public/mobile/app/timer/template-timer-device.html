@@ -1,3 +1,6 @@
-<h5>
-	Gerät: {{action.actionid}}
-</h5>
+<div>
+	Gerät: 
+	<div ng-repeat="device in action">
+		{{device.name}}
+	</div>
+</div>

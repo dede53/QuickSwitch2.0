@@ -2,29 +2,16 @@
 <ul class="panel panel-default">
 	<div class="panel-body">
 		<li ng-repeat="call in phonelist" class="">
-			<!--
-				<h4 class="">
-					<div class="left">
-						<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
-						{{call.date}} 
-						{{call.time}} 
-						{{call.remotenumber}}
-					</div>
-					<div class="right grey">
-						{{call.duration}}
-					</div>
-				</h4>
-			-->
 					<p id="">
-						<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
-							
-						{{	call.date | date:'d. MMM | HH:mm'}}
-						<span class="pull-right">
-							{{call.remotenumber}}
-							<span class="right grey">
-								{{call.duration}} {{call.durationminutes}} Minuten
-							</span>
+					<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
+						
+					{{	call.date | date:'d.MM. HH:mm'}}
+					<span class="pull-right">
+						{{call.remotenumber}}
+						<span class="right grey">
+							{{call.duration}} {{call.durationminutes}} Min.
 						</span>
+					</span>
 				</p>
 		</li>
 	</div>
