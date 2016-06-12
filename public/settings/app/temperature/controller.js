@@ -1,3 +1,4 @@
+/*
 app.controller('temperatureController', function($scope, $rootScope, socket){
 	console.log("Temperaturen!");
     socket.emit('getSensors');
@@ -31,6 +32,29 @@ app.controller('temperatureController', function($scope, $rootScope, socket){
 
     	});
     });
+*/
+app.controller('temperatureController', function($scope, $rootScope, socket){
+	socket.emit('getStoredVariables', {"variables":false});
+	socket.on('storedVariables', function(alldata) {
+		if(alldata != false){
+			$rootScope.chartConfig.series.push(alldata);
+			$rootScope.chartConfig.loading = false;
+		}else{
+			$rootScope.tempNoData = true;
+		}
+	});
+
+	socket.on('storedVariable', function(data) {
+		if(data != false){
+			for(var i = 0; i < $rootScope.chartConfig.series.length; i++ ){
+				if(data.nodeid == $rootScope.chartConfig.series[i].nodeid){
+					$rootScope.chartConfig.series[i] = data;
+					$rootScope.chartConfig.loading = false;
+				}
+			}
+		}
+	});
+// });
 
 $scope.chartTypes = [
 	{"chart": "line",		"title": "Line"},

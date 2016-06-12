@@ -4,12 +4,12 @@
 	</div>
 	<div class="panel-body" ng-repeat="devices in room.roomdevices">
 		<div class="pull-left">
-			{{devices.name}}
+			{{devices.device.name}}
 		</div>
 		<div class="pull-right">
 			<div class="box-btn-switch">
-				<a type="button" class="btn btn-info" href="#/editDevice/{{devices.deviceid}}" id="btnOn{{devices.deviceid}}" >Bearbeiten</a>
-				<button type="button" class="btn btn-danger" ng-click='deleteDevice({"id":devices.deviceid,"status":"1"})' id="btnOn{{devices.deviceid}}" >Löschen</button>
+				<a type="button" class="btn btn-info" href="#/editDevice/{{devices.device.deviceid}}" id="btnOn{{devices.device.deviceid}}" >Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteDevice(devices.device.deviceid)' id="btnOn{{devices.device.deviceid}}" >Löschen</button>
 			</div>
 		</div>
 	</div>

@@ -5,7 +5,8 @@ var app = 	angular.module('jsbin',[
 				'ngRoute',
 				'ngTouch',
 				'highcharts-ng',
-				'as.sortable'
+				'as.sortable',
+				'ngMdIcons'
 			]);
 
 app.config(['$routeProvider', function($routeProvider) {

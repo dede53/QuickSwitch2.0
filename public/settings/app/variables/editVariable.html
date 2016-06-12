@@ -1,6 +1,6 @@
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">{{editVariable.title}}</h3>
+		<h3 class="panel-title">{{editVariable}}</h3>
 	</div>
 	<div class="panel-body">
 		<ul>
@@ -12,8 +12,55 @@
 							<li>
 								<div class="panel-body">
 									<div class="input-group">
+										<highchart class="chart" config="editVariable.variable.chart" ></highchart>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
 										<span class="input-group-addon" id="name">Name</span>
-										<input type="text" class="form-control" ng-model="editVariable.variable.name" id="name" aria-describedby="name" />
+										<input type="text" class="form-control" ng-model="editVariable.variable.chart.series[0].name" id="name" aria-describedby="name" />
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="nodeid">Nodeid</span>
+										<input type="text" class="form-control" ng-model="editVariable.variable.nodeid" id="nodeid" aria-describedby="nodeid" />
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="type">Charttype</span>
+										<select class="form-control" ng-model="editVariable.variable.chart.series[0].type" id="type" ng-options="t.id as t.title for t in chartTypes"></select>
+									</div>
+								</div>
+							</li>
+							<li ng-show="editVariable.variable.chart.series[0].type == 'line' || editVariable.variable.chart.series[0].type == 'area'">
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="step">Schritt</span>
+										<select class="form-control" id="step" ng-model="editVariable.variable.chart.series[0].step" ng-options="step.id as step.title for step in stepTypes"></select>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="color">Farbe</span>
+										<input type="color" class="form-control" ng-model="editVariable.variable.chart.series[0].color">
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="type">Linie</span>
+										<select class="form-control" id="type" ng-model="editVariable.variable.chart.series[0].dashStyle" ng-options="ds.id as ds.title for ds in dashStyles"></select>
 									</div>
 								</div>
 							</li>

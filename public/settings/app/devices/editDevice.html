@@ -1,56 +1,56 @@
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">Gerät {{editDevice.title}}</h3>
+		<h3 class="panel-title">Gerät {{editDevice.device.title}}</h3>
 	</div>
 	<div >
 		<form ng-controller="saveDeviceController">
-			<input type="hidden" id="deviceid" value="{{editDevice.device.deviceid}}">
+			<input type="hidden" id="deviceid" value="{{editDevice.device.device.deviceid}}">
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="name">Name</span>
-					<input type="text" class="form-control" placeholder="Name" ng-model="editDevice.device.name" id="name" aria-describedby="name">
+					<input type="text" class="form-control" placeholder="Name" ng-model="editDevice.device.device.name" id="name" aria-describedby="name">
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="basic-addon1">Buttontitel an</span>
-					<input type="text" class="form-control" placeholder="Name/Anschaltbutton" ng-model="editDevice.device.buttonLabelOn" id="buttonLabelOn" aria-describedby="basic-addon1">
+					<input type="text" class="form-control" placeholder="Name/Anschaltbutton" ng-model="editDevice.device.device.buttonLabelOn" id="buttonLabelOn" aria-describedby="basic-addon1">
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="buttonLabelOff">Buttontitel aus</span>
-					<input type="text" class="form-control" placeholder="Name/Ausschaltbutton" ng-model="editDevice.device.buttonLabelOff" id="buttonLabelOff" aria-describedby="name">
+					<input type="text" class="form-control" placeholder="Name/Ausschaltbutton" ng-model="editDevice.device.device.buttonLabelOff" id="buttonLabelOff" aria-describedby="name">
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="CodeOn">Einschaltcode</span>
-					<input type="text" class="form-control" placeholder="On-Code/Masterdip" ng-model="editDevice.device.CodeOn" id="CodeOn" aria-describedby="CodeOn">
+					<input type="text" class="form-control" placeholder="On-Code/Masterdip" ng-model="editDevice.device.device.CodeOn" id="CodeOn" aria-describedby="CodeOn">
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="CodeOff">Ausschaltcode</span>
-					<input type="text" class="form-control" placeholder="Off-Code/Slavedip" ng-model="editDevice.device.CodeOff" id="CodeOff" aria-describedby="CodeOff">
+					<input type="text" class="form-control" placeholder="Off-Code/Slavedip" ng-model="editDevice.device.device.CodeOff" id="CodeOff" aria-describedby="CodeOff">
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="room">Raum</span>
-					<select class="form-control" ng-model="editDevice.device.roomid" ng-options="obj.id as obj.name for obj in rooms"></select>
+					<select class="form-control" ng-model="editDevice.device.device.roomid" ng-options="obj.id as obj.name for obj in rooms"></select>
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="protocol">Protokoll</span>
-				<select class="form-control" ng-model="editDevice.device.protocol" ng-options="obj.id as obj.name for obj in options" aria-describedby="protocol"></select>
+				<select class="form-control" ng-model="editDevice.device.device.protocol" ng-options="obj.id as obj.name for obj in options" aria-describedby="protocol"></select>
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="switchserver">Switchserver</span>
-					<input type="text" class="form-control" placeholder="default: 0" ng-model="editDevice.device.switchserver" id="switchserver" aria-describedby="switchserver">
+					<input type="text" class="form-control" placeholder="default: 0" ng-model="editDevice.device.device.switchserver" id="switchserver" aria-describedby="switchserver">
 				</div>
 			</div>
 			<div class="panel-body">

@@ -4,8 +4,8 @@ app.controller('devicesController',  function($scope, $rootScope, socket) {
 	socket.on('devices', function(data) {
 		$scope.devicelist = data;
 	});
-	$scope.deleteDevice = function(data) {
-		socket.emit('deleteDevice', {"id":data.id});	
+	$scope.deleteDevice = function(id) {
+		socket.emit('deleteDevice', {"id":id});	
 	}
 	socket.on('deletedDevice', function(data) {
 		$scope.devicelist = data;
