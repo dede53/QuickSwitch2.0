@@ -1,25 +1,25 @@
 
-var express     = require('express');
-var app         = express();
-var request     = require('request');
-var exec        = require('exec');
-var dgram       = require('dgram');  
-var http        = require('http'); 
-var util        = require('util');
-var exec        = require('child_process').exec;
-var sleep       = require('sleep');
-var bodyParser  = require('body-parser');
-var multer      = require('multer'); 
-var fritz       = require('smartfritz');
-var piblaster   = require('pi-blaster.js');
-var conf        = require('./config.json');
-var connair     = conf.connair;
-var homematicIP = conf.homematicIP;
+var express 			= require('express');
+var app 				= express();
+var request 			= require('request');
+var exec 				= require('exec');
+var dgram 				= require('dgram');  
+var http 				= require('http'); 
+var util 				= require('util');
+var exec 				= require('child_process').exec;
+var sleep 				= require('sleep');
+var bodyParser 			= require('body-parser');
+var multer 				= require('multer'); 
+var fritz 				= require('smartfritz');
+var piblaster       = require('pi-blaster.js');
+var conf            = require('./config.json');
+var connair         = conf.connair;
+var homematicIP     = conf.homematicIP;
 
-var fs 					=	require('fs');
+var fs                  =   require('fs');
 
-var log_file 			=	fs.createWriteStream(__dirname + '/log/debug-SwitchServer.log', {flags : 'w'});
-var log_stdout			=	process.stdout;
+var log_file            =   fs.createWriteStream(__dirname + '/log/debug-SwitchServer.log', {flags : 'w'});
+var log_stdout          =   process.stdout;
 
 
 app.use(bodyParser.json());                             // for parsing application/json
@@ -27,16 +27,16 @@ app.use(bodyParser.urlencoded({ extended: true }));     // for parsing applicati
 app.use(multer());                                      // for parsing multipart/form-data
 
 app.post('/switch', function (req, res) {
-  switchdevice(req.body.status, req.body.device);
-  res.json(200);
+	switchdevice(req.body.status, req.body.device);
+	res.json(200);
 });
 
 
 
 
 console.log = function(d) { //
-  log_file.write(util.format(d) + '\n');
-  log_stdout.write(util.format(d) + '\n');
+	log_file.write(util.format(d) + '\n');
+	log_stdout.write(util.format(d) + '\n');
 };
 
 
@@ -123,7 +123,7 @@ function sendUDP(status, data){
 	var client = dgram.createSocket('udp4'); // Neuen Socket zum Client aufbauen
 	client.send(msg, 0, msg.length, connair.port, connair.ip, function(err, bytes) 
 	{
-		console.log('UDP message sent to ' + connair.ip +':'+ connair.port +'; \nFolgendes wurde gesendet:' + msg); // Ausgabe der Nachricht
+		console.log('UDP message sent to ' + connair.ip +':'+ connair.port +'; \n Folgendes wurde gesendet:' + msg); // Ausgabe der Nachricht
 		client.close(); // Bei erfolgreichen Senden, die Verbindung zum CLient schließen
 	});
 }
