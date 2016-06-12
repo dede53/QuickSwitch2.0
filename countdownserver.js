@@ -10,8 +10,8 @@ var log_file 			=	fs.createWriteStream(__dirname + '/log/debug-countdownserver.l
 var log_stdout			=	process.stdout;
 
 console.log = function(d) { //
-  log_file.write(util.format(d) + '\n');
-  log_stdout.write(util.format(d) + '\n');
+	log_file.write(util.format(d) + '\n');
+	log_stdout.write(util.format(d) + '\n');
 };
 
 checkCountdowns();
@@ -69,7 +69,7 @@ function checkCountdowns(){
 					db.run(query);
 					*/
 				}else{
-					console.log("	Stimmt leider nicht!\n");
+					console.log("	Stimmt nicht!\n");
 				}
 
 
@@ -79,19 +79,19 @@ function checkCountdowns(){
 }
 
 function switchaction(type, id, action){
-		request.get({
-			url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
-			form:
-				{
-				}
-		},function( err, httpResponse, body){
-			if(err){
-				console.log( err , "error");
-			}else{
-				console.log("Erfolgreich an den SwitchServer gesendet");
+	request.get({
+		url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
+		form:
+			{
 			}
-		});
-		console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
+	},function( err, httpResponse, body){
+		if(err){
+			console.log( err , "error");
+		}else{
+			console.log("Erfolgreich an den SwitchServer gesendet");
+		}
+	});
+	console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
 }
 
 
