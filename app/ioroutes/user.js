@@ -5,9 +5,11 @@ module.exports = function(app, db){
 	/*****************************************
 	Socket.io routes für Benutzerbearbeitung
 	*****************************************/
-	app.io.route('newuser',function(req, res){
-		userFunctions.getUsers(req,res,function(data){
-			req.io.emit('newuser', data);
+	app.io.route('users',function(req, res){
+		userFunctions.getUsers(req,res,function(user){
+			// data.forEach(function(user){
+				req.io.emit('user', user);
+			// });
 		});
 	});
 
@@ -21,7 +23,8 @@ module.exports = function(app, db){
 		if( !req.data.id){
 			var data = {
 				"name": req.data.name,
-				"favoritDevices": req.data.favoritDevices
+				"favoritDevices": req.data.favoritDevices,
+				"variables": req.data.variables
 			};
 			userFunctions.saveNewUser(data, req, res, function(response){
 				req.io.emit('savedUser', response);
@@ -34,11 +37,12 @@ module.exports = function(app, db){
 				{
 					"id": req.data.id,
 					"name": req.data.name,
-					"favoritDevices": req.data.favoritDevices
+					"favoritDevices": req.data.favoritDevices,
+					"variables": req.data.variables
 				};
 			userFunctions.saveEditUser(data, req, res, function(response){
 				userFunctions.getUsers(req, res, function(user){
-					app.io.broadcast('newuser', user);
+					app.io.broadcast('user', user);
 				});
 			});
 		}

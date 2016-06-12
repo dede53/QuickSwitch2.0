@@ -68,7 +68,7 @@ module.exports = function(app, db){
 		var status = req.data.status;
 		roomFunctions.switchRoom(room, status, app, req, res, function(err){
 			if(err != 200){
-				console.log("Raum konnte nicht geschaltet werden");
+				helper.log.error("Raum konnte nicht geschaltet werden");
 			}
 		});
 	});

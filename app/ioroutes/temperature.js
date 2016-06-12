@@ -13,13 +13,10 @@ module.exports = function(app, db){
 		});
 	});
 	app.io.route('saveSensor', function(req, res){
-		temperatureFunctions.saveSensor(req.data, req, res, function(data){
-			console.log(data);
-		});
+		temperatureFunctions.saveSensor(req.data, req, res);
 	});
 	app.io.route('deleteSensor', function(req, res){
 		var id = req.data;
-		console.log(req.data);
 		temperatureFunctions.deleteSensor(id, req, res, function(data){
 			temperatureFunctions.getSensors(req, res, function(data){
 				app.io.broadcast('sensors', data);

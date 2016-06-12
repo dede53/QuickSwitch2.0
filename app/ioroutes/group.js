@@ -74,7 +74,7 @@ module.exports = function(app, db){
 		var status = req.data.status;
 		groupFunctions.switchGroup(app, group, status, req, res, function(err){
 			if(err != 200){
-				console.log("Gruppe konnte nicht geschaltet werden");
+				helper.log.error("Gruppe konnte nicht geschaltet werden");
 			}
 		});
 	});

@@ -17,7 +17,7 @@ module.exports = function(app, db){
 	app.io.route('sendActiveDevices',function(req, res){
 		SwitchServerFunctions.sendActiveDevices(app, function(err){
 			if(err != 200){
-				console.log("Error: Liste der aktiven Geräte konnte nicht gesendet werden" + err);
+				helper.log.error("Error: Liste der aktiven Geräte konnte nicht gesendet werden" + err);
 			}
 		});
 	});
@@ -104,7 +104,7 @@ module.exports = function(app, db){
 		var status = req.data.status;
 		deviceFunctions.switchDevices(app, status, req, res, function(err){
 			if(err != 200){
-				console.log(err, "error");
+				helper.log.error(err);
 			}
 		});
 	});
@@ -117,7 +117,7 @@ module.exports = function(app, db){
 		var status = req.data.status;
 		deviceFunctions.switchDevice(app, id, status, req, res, function(err){
 			if(err != 200){
-				console.log("Gerät konnte nicht geschaltet werden");
+				helper.log.error("Gerät konnte nicht geschaltet werden");
 			}
 		});
 	});

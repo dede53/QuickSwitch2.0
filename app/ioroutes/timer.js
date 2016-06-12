@@ -11,7 +11,9 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('timers', function(req, res){
 		timerFunctions.getTimers(req, res, function(data){
-			req.io.emit('timers', data);
+			data.forEach(function(timer){
+				req.io.emit('timer', timer);
+			});
 		});
 	});
 	/*****************************************
@@ -25,8 +27,19 @@ module.exports = function(app, db){
 		app.io.broadcast('newTimer', data);
 		timerFunctions.saveNewTimer(req.data, function(data){
 			if(data != "200"){
-				log("Nachricht konnte nicht gespeichert werden!", "error");
-				log( data , "error");
+				helper.log.error("Nachricht konnte nicht gespeichert werden!");
+				helper.log.error( data );
+			}
+		});
+	});
+
+	app.io.route('switchTimer', function(req){
+		var data = req.data;
+		timerFunctions.switchTimer(data, function(status){
+			if(status == 200){
+				timerFunctions.getTimer(data.id, function(timer){
+					app.io.broadcast('timer', timer);
+				});
 			}
 		});
 	});
@@ -35,9 +48,12 @@ module.exports = function(app, db){
 	*****************************************/
 	app.io.route('deleteTimer', function(req, res){
 		var id = req.data.id;
-		timerFunctions.deleteTimer(id, req, res, function(data){
-			getTimers(req, res, function(data){
-				app.io.broadcast('timers', data);
+		helper.log.debug("Lösche den Timer mit der id:" + id);
+		timerFunctions.deleteTimer(id, function(data){
+			timerFunctions.getTimers(req, res, function(data){
+				data.forEach(function(timer){
+					app.io.broadcast('timer', timer);
+				});
 			});
 		});
 	});

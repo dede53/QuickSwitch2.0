@@ -24,8 +24,8 @@ module.exports = function(app, db){
 		data.time = data.settime + (data.time * 60000);
 		countdownFunctions.setNewCountdown(data, function(data){
 			if(data != "200"){
-				log("Nachricht konnte nicht gespeichert werden!", "error");
-				log( data , "error");
+				helper.log.error("Nachricht konnte nicht gespeichert werden!");
+				helper.log.error( data );
 			}else{	
 				countdownFunctions.getCountdowns(req, res, function(data){
 					app.io.broadcast('countdowns', data);

@@ -4,22 +4,29 @@ module.exports = function(app, db){
 	var variableFunctions = require('../functions/variable.js');
 
 	app.io.route('variables', function(req, res){
-		variableFunctions.getVariables( req, res, function(data){
-			req.io.emit('variables', data);
-		});
-	});
-	/*****************************************
-	* schickt die Informationen zu einem Raum an den Clienten
-	*****************************************/
-	app.io.route('variable', function(req, res){
-		var id = req.data.id;
-		variableFunctions.getVariable(id, req, res, function(data){
+		variableFunctions.getVariables(function(data){
 			req.io.emit('variable', data);
 		});
 	});
 	/*****************************************
-	* Speichert den Raum der vom CLienten geliefert wurde
+	* schickt die Informationen zu einer Variablen an den Clienten
 	*****************************************/
+	app.io.route('variable', function(req, res){
+		var id = req.data.id;
+		variableFunctions.getVariable(id, function(data){
+			req.io.emit('variable', data);
+		});
+	});
+
+	app.io.route('getStoredVariables', function(req, res){
+		variableFunctions.getStoredVariables(req.data, function(data){
+			req.io.emit('storedVariables', data);
+		});
+	});
+	/*****************************************
+	* Speichert den Wert der vom Clienten geliefert wurde
+	*****************************************/
+	/*
 	app.io.route('saveVariable', function(req, res){
 		if( !req.data.id){
 			var data = {
@@ -29,7 +36,9 @@ module.exports = function(app, db){
 			};
 			variableFunctions.saveNewVariable(data, req, res, function(data){
 				variableFunctions.getVariables(req, res, function(data){
-					app.io.broadcast('variables', data);
+					data.forEach(function(variable){
+						app.io.broadcast('variable', variable);
+					});
 				});
 			});
 		}else{
@@ -42,19 +51,30 @@ module.exports = function(app, db){
 				};
 			variableFunctions.saveEditVariable(data, req, res, function(data){
 				variableFunctions.getVariables(req, res, function(data){
-					app.io.broadcast('variables', data);
+					data.forEach(function(variable){
+						app.io.broadcast('variable', variable);
+					});
 				});
 			});
 		}
 	});
+*/
+	app.io.route('saveVariable', function(req, res){
+		variableFunctions.saveNewVariable(req.data, function(){
+			variableFunctions.getVariables(function(data){
+				app.io.broadcast('variable', variable);
+			});
+		});
+	});
 	/*****************************************
-	* Löscht den Raum dessen ID vom Clienten kommt
+	* Löscht die Variable dessen ID vom Clienten kommt
 	*****************************************/
 	app.io.route('deleteVariable', function(req, res){
-		var id = req.data.id;
-		variableFunctions.deleteVariable(id, req, res, function(data){
-			variableFunctions.getVariables(req, res, function(data){
-				app.io.broadcast('variables', data);
+		var name = req.data.name;
+		helper.log.info('Delete Variable: ' + name);
+		variableFunctions.deleteVariable(name, function(data){
+			variableFunctions.getVariables(function(data){
+				app.io.broadcast('variable', variable);
 			});
 		});
 	});

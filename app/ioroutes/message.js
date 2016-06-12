@@ -15,8 +15,8 @@ module.exports = function(app, db){
 		app.io.broadcast('newLinkMessage', req.data);
 		messageFunctions.saveMessage(req.data, function(data){
 			if(data != "200"){
-				log("Nachricht konnte nicht gespeichert werden!", "error");
-				log( data , "error");
+				helper.log.error("Nachricht konnte nicht gespeichert werden!");
+				helper.log.error( data );
 			}
 		});
 	});
