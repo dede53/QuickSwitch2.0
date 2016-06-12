@@ -38,4 +38,5 @@ gulp.task('compress-server', function() {
 		.pipe(uglify())
 		.pipe(gulp.dest('dist'));
 });
-gulp.task('default', ['compress-mobile','compress-settings' , 'compress-pc']);
+// gulp.task('default', ['compress-mobile','compress-settings' , 'compress-pc']);
+gulp.task('default', ['compress-mobile', 'uglify-mobile']);
