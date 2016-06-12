@@ -6,6 +6,7 @@ var userFunctions 			= require('./functions/user.js');
 var messageFunctions 		= require('./functions/message.js');
 var variableFunctions 		= require('./functions/variable.js');
 var timerFunctions 			= require('./functions/timer.js');
+var SwitchServerFunctions 	= require('./functions/SwitchServer.js');
 /***********************************************************************************
 
 +	/						(GET)		auswahl zwischen PC/Mobile
@@ -85,16 +86,42 @@ var timerFunctions 			= require('./functions/timer.js');
 			/hours
 				/interval
 
-	/setVariable 			(GET)		setzt den Status einer Variablen 
-		/name 							Name der Variablen (z.b.: festnetz)
-			/status 					Status der Variablen (z.b.: klingelt)
-				/data 					Daten zu Variablen (nicht zwingend anzugeben!)(z.b.: Telefonnummer)
-					/error 				Error (nicht zwingend anzugeben!)(true|false)
+	/setVariable 			(GET)		setzt den Status einer Variablen
+			/name 							Name der Variablen (z.b.: festnetz)
+				/status 					Status der Variablen (z.b.: klingelt)
+					/data 					Daten zu Variablen (nicht zwingend anzugeben!)(z.b.: Telefonnummer)
+						/error 				Error (nicht zwingend anzugeben!)(true|false)
+	/setVariableByNodeid 			(GET)		setzt den Status einer Variablen
+			/Nodeid							Nodeid der Variablen (z.b.: festnetz)
+				/status 					Status der Variablen (z.b.: klingelt)
+					/data 					Daten zu Variablen (nicht zwingend anzugeben!)(z.b.: Telefonnummer)
+						/error 				Error (nicht zwingend anzugeben!)(true|false)
 
 	/alert 					(GET)		erzeugt Popup
 		/name 							Name des Popups
 			/message 					Nachricht
-				/type 					Type der Nachricht: success(grün), info(blau), warning (orange?), danger (rot), nicht Angegeben (weiß);  (nicht zwingend anzugeben!)
+				/type 					Type der Nachricht(nicht zwingend anzugeben!):
+											primary: (blau - kräftig)
+											success(grün)
+											info(blau)
+											warning (orange)
+											danger (rot)
+											default (weiß)
+	/send
+		/alert 				(GET)		erzeugt Popup
+			/title						Name/Überschrift
+				/message 				Nachricht
+					/type 				Type der Nachricht(nicht zwingend anzugeben!):
+											primary: (blau - kräftig)
+											success(grün)
+											info(blau)
+											warning (orange)
+											danger (rot)
+											default (weiß)
+		/pushbullet			(GET)		sendet Pushbullet nachricht
+			/title						Name/Überschrift
+				/message 				Nachricht
+					/type
 
 
 ***********************************************************************************/
@@ -106,7 +133,7 @@ module.exports = function(app, db){
 	app.get('/', function(req, res) {
 		res.sendfile(__dirname + '/public/index.html');
 	});
-
+	
 	/*******************************************************************************
 	**	Mobile-Oberfläche	********************************************************
 	*******************************************************************************/
@@ -349,42 +376,71 @@ module.exports = function(app, db){
 
 	app.post('/newdata', function(req, res){
 		var data = req.body;
-		temperatureFunctions.saveSensorValues(data, req, res, function(request){
-			res.json(request);
+		temperatureFunctions.saveSensorValues(data, req, res, function(status){
+			res.json(status);
 		});
 	});
 
 	app.get('/temperature/reloadTempData', function(req, res){
-		temperatureFunctions.getSensorvalues(req, res, function(data){
-			app.io.broadcast('Sensorvalues', data);
-			res.status(200).end();
+		variableFunctions.getStoredVariables("all", function(variable){
+			app.io.broadcast('storedVariable', variable);
 		});
+		res.status(200).end();
 	});
 
-	app.get('/setVariable/:name/:status/:data?/:error?', function(req, res){
+	app.get('/setVariable/:name/:status', function(req, res){
 		var name = req.params.name;
 		var status = req.params.status;
-		var error = req.params.error;
-		var data = req.params.data;
 		var variable = {
 			"name": name,
-			"status": status,
-			"data": data,
-			"error": error
+			"status": status
 		}
-		variableFunctions.saveEditVariable(variable, req, res, function(data){
+		variableFunctions.setVariable(variable, app, function(data){
+			timerFunctions.checkTimer(variable);
 			res.json(data);
 		});
-		timerFunctions.checkTimer(variable);
 	});
-	
-	app.get('/alert/:name/:message/:type?', function(req, res){
-		var alert = {
-			"name": req.params.name,
-			"message": req.params.message,
-			"type": req.params.type
+	app.get('/setVariableByNodeid/:nodeid/:status', function(req, res){
+		variableFunctions.setVariableByNodeid(req.params, app, function(data){
+			timerFunctions.checkTimer(data);
+			res.json(data);
+		});
+	});
+	app.post('/setVariableByNodeid', function(req, res){
+		variableFunctions.setVariableByNodeid(req.body, app, function(data){
+			timerFunctions.checkTimer(data);
+			res.json(data);
+		});
+	});
+	app.get('/send/alert/:title/:message/:type?', function(req, res){
+		variableFunctions.replaceVar(req.params.message, function(message){
+			variableFunctions.replaceVar(req.params.title, function(title){
+				var alert = {
+					"title": title,
+					"message": message,
+					"type": req.params.type
+				}
+				app.io.broadcast('alert', alert);
+				res.status(200).end();
+			});
+		});
+	});
+	app.get('/send/pushbullet/:message/:title/:receiver', function(req, res){
+		var push = {
+			"type":"object",
+			"object":{
+				"protocol": "send-pushbullet",
+				"title": req.params.title,
+				"message": req.params.message,
+				"receiver": req.params.receiver,
+				"switchserver":0
+			}
 		}
-		app.io.broadcast('alert', alert);
+		SwitchServerFunctions.sendto(app, req, "send", push,function(status){
+			if(status != 200){
+				console.log('SwitchServerFunctions.sendto:' + status);
+			}
+		});
 		res.status(200).end();
 	});
 }
