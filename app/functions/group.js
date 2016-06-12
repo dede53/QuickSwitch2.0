@@ -1,6 +1,7 @@
 var db 				= require('./database.js');
 var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
+var helper 			= require('./helper.js');
 
 module.exports = {
 	switchGroup: function(app, group, status, req, res, callback){
@@ -14,13 +15,16 @@ module.exports = {
 				string = string + " OR  deviceid = " + dev;
 			}
 		});
-		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE rooms.id = devices.roomid AND ("+ string +");";
+		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type,devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE rooms.id = devices.roomid AND ("+ string +") AND devices.type = 'device';";
 		db.all(query , function(err, data) {
 			if(err){
-				console.log(err);
+				helper.log.error(err);
 				callback(404);
 			}else{
-				data.forEach(function(device){
+				data.forEach(function(row){
+					var device = {};
+					device.type = row.type;
+					device[row.type] = row;
 					SwitchServer.sendto(app, req, status, device, function(status){
 						if(status == 200){
 						}
@@ -35,7 +39,7 @@ module.exports = {
 		db.all(query, function(err, data){
 			if(err){
 				callback(404);
-				console.log(err);
+				helper.log.error(err);
 			}else{
 				callback(data);
 			}
@@ -45,10 +49,10 @@ module.exports = {
 		var query = "SELECT id, name, devices as groupDevices FROM groups WHERE id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
-				console.log(err);
+				helper.log.error(err);
 				callback(404);
 			}else if(data == ""){
-				console.log("Keine Gruppe mit der ID: " + id);
+				helper.log.info("Keine Gruppe mit der ID: " + id);
 				callback(404);
 			}else{
 				callback(data);

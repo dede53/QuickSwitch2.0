@@ -1,5 +1,6 @@
 var db 				= require('./database.js');
 var async 			= require("async");
+var helper 			= require('./helper.js');
 
 module.exports = {
 	/*****************************************
@@ -9,9 +10,19 @@ module.exports = {
 		var query = "SELECT * FROM user;";
 		db.all(query, function(err, row){
 			if(err){
-				console.log(err);
+				helper.log.error(err);
 			}else{
-				callback(row);
+				row.forEach(function(user){
+					try{
+						user.favoritDevices = JSON.parse(user.favoritDevices);
+						user.variables = JSON.parse(user.variables);
+					}catch(e){
+						helper.log.error('Falsches Datenformat bei dem Benutzer: ' + user.name);
+						user.favoritDevices = [];
+						user.variables = [];
+					}
+					callback(user);
+				});
 			}
 		});
 	},
@@ -23,13 +34,21 @@ module.exports = {
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
-				console.log(err);
-				callback(404);
+				helper.log.error(err);
 			}else if(row == ""){
 				callback("Kein Benutzer mit der ID" + id);
-				console.log("Kein Benutzer mit der ID" + id);
+				helper.log.error("Kein Benutzer mit der ID" + id);
 			}else{
-				callback(row);
+				try{
+					row[0].favoritDevices = JSON.parse(row[0].favoritDevices);
+					row[0].variables = JSON.parse(row[0].variables);
+				}catch(e){
+					helper.log.error('Falsches Datenformat bei dem Benutzer: ' + row[0].name);
+					row[0].favoritDevices = [];
+					row[0].variables = [];
+				}
+				console.log(row[0]);
+				callback(row[0]);
 			}
 		});
 	},
@@ -44,19 +63,19 @@ module.exports = {
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
-				console.log('Error: ' + err);
+				helper.log.error(err);
 				callback('Error: ' + err);
 			}else if (row == "") {
 				callback("300");
-				console.log("Kein User mit der ID");
+				helper.log.error("Kein User mit der ID");
 			} else {
 				var query = "DELETE FROM user WHERE id = "+ id +";";
 				db.all(query ,function(err,rows){
 					if(err){
-						console.log('Error: ' + err);
+						helper.log.error(err);
 						callback('Error: ' + err);
 					}else{
-						console.log('Delete User with id: ' + id);
+						helper.log.info('Delete User with id: ' + id);
 						callback("200");
 					}
 				});
@@ -76,8 +95,8 @@ module.exports = {
 	* ändert einen schon vorhandenen User
 	*****************************************/
 	saveEditUser: function (data, req, res, callback) {
-		var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '["+ data.favoritDevices +"]' WHERE id = '"+ data.id +"';";
-		console.log(query);
+		console.log(data);
+		var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '["+ data.favoritDevices +"]', variables = '["+ data.variables +"]' WHERE id = '"+ data.id +"';";
 		db.run(query);
 		callback(201);
 	}

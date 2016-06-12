@@ -1,6 +1,7 @@
 var db 				= require('./database.js');
 var async 			= require("async");
 var deviceFunctions = require('./device.js');
+var helper 			= require('./helper.js');
 
 module.exports = {
 	/*****************************************
@@ -10,7 +11,7 @@ module.exports = {
 		var query = "SELECT countdowns.id, countdowntypen.type, countdowns.switchid, countdowns.time, countdowns.status AS switchstatus FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id;";
 		db.all(query, function(err, row){
 			if(err){
-				console.log(err);
+				helper.log.error(err, "error");
 			}else{
 				var bla = new Array;
 				async.each(row,
@@ -23,7 +24,7 @@ module.exports = {
 					},
 					function(err){
 						if(err){
-							console.log(err);
+							helper.log.error(err, "error");
 						}else{
 							callback(bla);
 						}
@@ -39,19 +40,19 @@ module.exports = {
 		var query = "SELECT * FROM countdowns WHERE id = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
-				console.log('Error: ' + err);
+				helper.log.error(err, "error");
 				callback('Error: ' + err);
 			}else if (row == "") {
 				callback("300");
-				console.log("Kein Countdown mit der ID");
+				helper.log.error("Kein Countdown mit der ID: " + id, "debug");
 			} else {
 				var query = "DELETE FROM countdowns WHERE id = "+ id +";";
 				db.all(query ,function(err,rows){
 					if(err){
-						console.log('Error: ' + err);
+						helper.log.error(err, "error");
 						callback('Error: ' + err);
 					}else{
-						console.log('Delete Countdown with id: ' + id);
+						helper.log.info('Delete Countdown with id: ' + id, "info");
 						callback("200");
 					}
 				});
