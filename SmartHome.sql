@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 31. Dez 2015 um 14:51
+-- Erstellungszeit: 12. Jun 2016 um 16:27
 -- Server Version: 5.5.44-0+deb8u1
--- PHP-Version: 5.6.14-0+deb8u1
+-- PHP-Version: 5.6.20-0+deb8u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Datenbank: `SmartHome`
@@ -32,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `charttypen` (
 `id` bigint(11) NOT NULL,
   `chart` varchar(20) NOT NULL,
   `name` varchar(20) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -46,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `countdowns` (
   `time` varchar(20) NOT NULL,
   `switchid` int(11) NOT NULL,
   `status` int(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=227 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -57,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `countdowns` (
 CREATE TABLE IF NOT EXISTS `countdowntypen` (
 `id` int(11) NOT NULL,
   `type` varchar(20) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -67,16 +61,17 @@ CREATE TABLE IF NOT EXISTS `countdowntypen` (
 
 CREATE TABLE IF NOT EXISTS `devices` (
 `deviceid` int(11) NOT NULL,
-  `status` float NOT NULL,
+  `status` int(50) NOT NULL,
   `name` varchar(40) NOT NULL,
-  `protocol` int(11) NOT NULL,
+  `protocol` varchar(40) NOT NULL,
   `buttonLabelOn` varchar(20) NOT NULL,
   `buttonLabelOff` varchar(20) NOT NULL,
   `CodeOn` varchar(200) NOT NULL,
   `CodeOff` varchar(200) NOT NULL,
   `roomid` int(11) NOT NULL,
-  `switchserver` int(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+  `switchserver` int(11) NOT NULL,
+  `type` varchar(30) NOT NULL DEFAULT 'device'
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -88,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 `id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
   `devices` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -100,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `linetypen` (
 `id` bigint(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `line` varchar(20) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -114,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `type` int(11) NOT NULL,
   `author` varchar(20) NOT NULL,
   `message` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -125,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
 CREATE TABLE IF NOT EXISTS `messagetypen` (
 `id` int(11) NOT NULL,
   `type` varchar(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -136,7 +131,8 @@ CREATE TABLE IF NOT EXISTS `messagetypen` (
 CREATE TABLE IF NOT EXISTS `rooms` (
 `id` int(11) NOT NULL,
   `name` varchar(30) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
 
 -- --------------------------------------------------------
 
@@ -151,22 +147,20 @@ CREATE TABLE IF NOT EXISTS `sensors` (
   `charttype` varchar(255) NOT NULL,
   `linetype` varchar(255) NOT NULL,
   `linecolor` varchar(255) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `sensor_data`
+-- Tabellenstruktur für Tabelle `stored_vars`
 --
 
-CREATE TABLE IF NOT EXISTS `sensor_data` (
-`id` bigint(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `stored_vars` (
+`id` int(11) NOT NULL,
   `nodeid` varchar(20) NOT NULL,
   `time` varchar(20) NOT NULL,
-  `temp` float NOT NULL,
-  `hum` float NOT NULL,
-  `supplyV` int(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=763883 ;
+  `value` varchar(20) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -177,9 +171,12 @@ CREATE TABLE IF NOT EXISTS `sensor_data` (
 CREATE TABLE IF NOT EXISTS `timer` (
 `id` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
+  `active` varchar(10) NOT NULL DEFAULT 'true',
+  `variables` varchar(1000) NOT NULL,
   `conditions` varchar(500) NOT NULL,
-  `actions` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+  `actions` text NOT NULL,
+  `user` varchar(20) NOT NULL DEFAULT 'system'
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -191,8 +188,30 @@ CREATE TABLE IF NOT EXISTS `user` (
 `id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
   `favoritDevices` varchar(200) NOT NULL,
-  `background` varchar(500) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+  `background` varchar(500) NOT NULL,
+  `variables` varchar(200) NOT NULL DEFAULT '[]'
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `variable`
+--
+
+CREATE TABLE IF NOT EXISTS `variable` (
+`id` int(11) NOT NULL,
+  `nodeid` varchar(255) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `charttype` varchar(255) NOT NULL,
+  `linetype` varchar(255) NOT NULL,
+  `linecolor` varchar(255) NOT NULL,
+  `suffix` varchar(10) NOT NULL,
+  `error` varchar(255) NOT NULL,
+  `step` varchar(20) NOT NULL DEFAULT 'false',
+  `showall` varchar(20) NOT NULL DEFAULT 'false',
+  `user` varchar(20) NOT NULL DEFAULT 'system'
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 --
 -- Indexes for dumped tables
@@ -259,10 +278,10 @@ ALTER TABLE `sensors`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`);
 
 --
--- Indexes for table `sensor_data`
+-- Indexes for table `stored_vars`
 --
-ALTER TABLE `sensor_data`
- ADD PRIMARY KEY (`id`), ADD KEY `nodeid` (`nodeid`);
+ALTER TABLE `stored_vars`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indexes for table `timer`
@@ -277,6 +296,12 @@ ALTER TABLE `user`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`);
 
 --
+-- Indexes for table `variable`
+--
+ALTER TABLE `variable`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`), ADD UNIQUE KEY `name` (`name`), ADD KEY `id_2` (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -284,71 +309,72 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `charttypen`
 --
 ALTER TABLE `charttypen`
-MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `countdowns`
 --
 ALTER TABLE `countdowns`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=227;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `countdowntypen`
 --
 ALTER TABLE `countdowntypen`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `devices`
 --
 ALTER TABLE `devices`
-MODIFY `deviceid` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
+MODIFY `deviceid` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `groups`
 --
 ALTER TABLE `groups`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `linetypen`
 --
 ALTER TABLE `linetypen`
-MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=45;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `messagetypen`
 --
 ALTER TABLE `messagetypen`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `sensors`
 --
 ALTER TABLE `sensors`
-MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
--- AUTO_INCREMENT for table `sensor_data`
+-- AUTO_INCREMENT for table `stored_vars`
 --
-ALTER TABLE `sensor_data`
-MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=763883;
+ALTER TABLE `stored_vars`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `timer`
 --
 ALTER TABLE `timer`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `variable`
+--
+ALTER TABLE `variable`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=0;
 
 --
 -- Daten für Tabelle `charttypen`
