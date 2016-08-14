@@ -1,13 +1,11 @@
 var fork 				= require('child_process').fork;
 var express 			= require('express');
 var bodyParser 			= require('body-parser');
-var multer 				= require('multer');
 var fs 					= require('fs');
 var app 				= express();
 
 app.use(bodyParser.json());									// for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));			// for parsing application/x-www-form-urlencoded
-app.use(multer());											// for parsing multipart/form-data
 
 app.post('/switch', function (req, res) {
 	// console.log(req.body);
@@ -34,18 +32,6 @@ app.post('/switch', function (req, res) {
 	"receiver": 		"pushbullet iden"
 }
 ***************************************************************/
-
-/*
-	example1.on('message', function(response) {
-		console.log(response);
-	});
-
-
-console.log(__dirname);
-
-var example1 = fork(__dirname + '/send-exec.js');
-example1.send(status, data);
-*/
 
 var dir = fs.readdirSync( './actions');
 
@@ -77,24 +63,8 @@ function action(status, data){
 	try{
 		plugins[data.protocol].send(transData);
 	}catch(err){
-		console.log("Adapter zum schalten nicht installiert!");
+		console.log("Adapter zum schalten nicht installiert: " + data.protocol);
 	}
-		
-/*
-	dir.forEach(function(file){
-		var splitedfile = file.split(".");
-		var filename = splitedfile[0];
-		console.log(data);
-		if(data.protocol == filename){
-			// console.log(data.protocol);
-			var transData = {
-				status: status,
-				data: data
-			}
-			plugins[filename].send(transData);
-		}
-	});
-*/
 }
 
 app.listen(4041);

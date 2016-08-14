@@ -34,14 +34,13 @@ function checkCountdowns(){
 	}
 
 	var now = hours + ':' + minutes;
-	console.log("Prüfe Countdowntimer...");
-	console.log("Es ist " + now);
+	console.log("Es ist " + now + ". Prüfe Countdowntimer...");
 	var query ="SELECT countdowns.id as id, countdowns.type as typeid, time as date, switchid, status, countdowntypen.type as type FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id;";
 	db.all(query, function(err, countdowns){
 		if(err){
 			console.log(err);
 		}else{
-			console.log("Es sind "+ countdowns.length + " Countdowns gesetzt...");
+			console.log("	Es sind "+ countdowns.length + " Countdowns gesetzt...");
 			countdowns.forEach(function(countdown){
 				var datum = new Date(parseInt(countdown.date));
 				var tag = datum.getDay();
@@ -57,19 +56,19 @@ function checkCountdowns(){
 
 				var switchtime = hours + ':' + minutes;
 				
-				console.log("	Countdown id: " + countdown.id);
-				console.log("	Schaltzeit: " + switchtime);
+				console.log("		Countdown id: " + countdown.id);
+				console.log("		Schaltzeit: " + switchtime);
 
 					// console.log(countdown);
 				if(switchtime == now){
-					console.log("	Schalte Countdown!\n");
+					console.log("		Schalte Countdown!\n");
 					switchaction(countdown.type, countdown.switchid, countdown.status);
 					/*
 					var query="DELETE FROM countdowns WHERE id = " + countdown.id + ";";
 					db.run(query);
 					*/
 				}else{
-					console.log("	Stimmt nicht!\n");
+					console.log("		Stimmt nicht!\n");
 				}
 
 

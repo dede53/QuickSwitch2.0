@@ -1,12 +1,6 @@
 var fs 				=	require('fs');
-// var exec			=	require('child_process').exec;
 var spawn			=	require('child_process').spawn;
 
-process.stdin.resume();
-process.on('SIGINT', function () {
-	// exec('forever stopall');
-	process.exit();
-});
 
 fs.readdir('./app/events', function(err, data){
 	if(err){
@@ -14,18 +8,18 @@ fs.readdir('./app/events', function(err, data){
 	}else{
 		var plugins = {};
 		var log_file = {};
-		
+		console.log("Installierte Eventlistener:");
 		data.forEach(function(file){
-			console.log(file);
+			console.log('	' + file);
 			if(file.includes('.')){
 				var splitedfile = file.split(".");
 				var filename = splitedfile[0];
 				var adapterName = filename;
 			}else{
 				var adapterName = file;
-				var filename = './' + file + '/index.js';
+				var file = file + '/index.js';
 			}
-				var debugFile = __dirname + '/log/debug-' + adapterName + '.log';
+			var debugFile = __dirname + '/log/debug-' + adapterName + '.log';
 
 			log_file[adapterName]			=	fs.createWriteStream( debugFile, {flags : 'w'});
 
@@ -33,7 +27,7 @@ fs.readdir('./app/events', function(err, data){
 			
 			plugins[adapterName].stdout.on('data', function(data) {
 				log_file[adapterName].write(data.toString());
-			    console.log(data.toString());
+			    console.log(data.toString().trim());
 			});
 			plugins[adapterName].stderr.on('data', function(data) {
 				log_file[adapterName].write(data.toString());

@@ -63,16 +63,24 @@ echo "Soll der pi-blaster-deamon zum dimmen der GPIO-Ports installiert werden? (
 read piblaster
 if [ $piblaster == 'y' ]
 then
-	echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
-	git clone https://github.com/sarfata/pi-blaster.git
-	cd pi-blaster
-	./autogen.sh
-	./configure
-	make
+	# echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
+	# git clone https://github.com/sarfata/pi-blaster.git
+	# cd pi-blaster
+	# ./autogen.sh
+	# ./configure
+	# make
+	# sudo make install
+	# sudo ./pi-blaster
+	# echo "Der pi-blaster-deamon wurde fertig installiert"
+	# echo
+	echo "Installiere pigpiod zum dimmen der GPIO-Ports"
+	wget https://github.com/joan2937/pigpio/archive/master.zip
+	unzip master.zip
+	cd pigpio-master
+	make -j4
 	sudo make install
-	sudo ./pi-blaster
-	echo "Der pi-blaster-deamon wurde fertig installiert"
-	echo
+
+	echo 'pigpiod wurde installiert'
 	echo
 	pwd
 	cd ../
