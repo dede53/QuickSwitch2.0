@@ -1,0 +1,11 @@
+<div class="tile">
+	<h1>Schaltevents</h1>
+	<div ng-hide="$root.tempNoData == true" class="panel-group">
+		<div class="panel panel-default">
+			<div class="panel-body" style="padding:15px 0 0 0;">
+				<highchart class="chart" config="$root.chartConfigSwitchHistory" ></highchart>
+			</div>
+		</div>
+	</div>
+	{{$root.chartConfigSwitchHistory}}
+</div>
