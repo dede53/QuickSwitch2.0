@@ -33,6 +33,13 @@ app.directive('colorpickerDirective', function ($rootScope) {
 	};
 });
 
+app.directive('shutterDirective', function ($rootScope) {
+	return {
+		restrict: 'EA',
+		templateUrl: './app/devices/template-shutter.html'
+	};
+});
+
 app.directive('sliderDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',

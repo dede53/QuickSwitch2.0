@@ -1,11 +1,14 @@
 <ul>
-	<li ng-repeat="device in favoritDevices">
+	<li ng-repeat="device in activeUser.favoritDevices">
 		<div ng-switch="device[device.type].protocol">
 			<div ng-switch-when="set-gpio">
 				<div slider2-directive></div>
 			</div>
 			<div ng-switch-when="send-rpi-color">
 				<div colorpicker-directive></div>
+			</div>
+			<div ng-switch-when="send-homematic">
+				<div shutter-directive></div>
 			</div>
 			<div ng-switch-default>
 				<div button-directive></div>
