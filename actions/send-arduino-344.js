@@ -10,7 +10,7 @@ process.on('message', function(data) {
 });
 // send-arduino-udp
 function sendUDP(status, data){
-	var msg = "send433:" + status + ":" + data.CodeOn + ":" + data.CodeOff;
+	var msg = "send433:" + status + ":" + data.CodeOn + ":" + data.CodeOff + "::";
 	
 	// dgram Klasse für UDP-Verbindungen
 	var client = dgram.createSocket('udp4'); // Neuen Socket zum Client aufbauen

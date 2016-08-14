@@ -13,7 +13,11 @@ function setGPIO(status, data){
 	//		0		128		255		0
 	var status = new Object;
 	var value = parseInt(data.status);
-	if(value >= 0 && value <= 128){
+	if(value == 0){
+		status.red = 0;
+		status.blue = 0;
+		status.green = 0;
+	}else if(value > 0 && value <= 128){
 		status.red = 128 + value;
 		status.blue = 0;
 		status.green = 128 - value;
@@ -36,22 +40,29 @@ function setGPIO(status, data){
 	}
 
 	try{
-		console.log(data);
-		var pins = JSON.parse(data.CodeOn);
-		var colors = [red, blue, green];
+		console.log(status);
 		try{
+			var pins = JSON.parse(data.CodeOn);
+		}catch(e){
+			console.log('JSON Fehler: PINS falsch angegeben!');
+			console.log(e);
+		}
+		
+		try{
+			var colors = ['red', 'blue', 'green'];		
 			colors.forEach(function(i){
-					if(gpio[pins[i]]){
-						gpio[pins[i]].pwmWrite(status[i]);
-					}else{
-						gpio[pins[i]] = new Gpio(pins[i], {mode: Gpio.OUTPUT});
-						gpio[pins[i]].pwmWrite(status[i]);
-					}
+				if(gpio[pins[i]]){
+					gpio[pins[i]].pwmWrite(status[i]);
+				}else{
+					gpio[pins[i]] = new Gpio(pins[i], {mode: Gpio.OUTPUT});
+					gpio[pins[i]].pwmWrite(status[i]);
+				}
 			});
 		}catch(err){
 			console.log(err + "Kann keine Pins setzen!");
 		}
 	}catch(e){
 		console.log("Falsche Pins angegeben!");
+		console.log(e);
 	}
 }

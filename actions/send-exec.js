@@ -1,4 +1,4 @@
-var exec        = require('exec');
+var exec 			= require('child_process').execFile;
 
 process.on('message', function(data) {
 	var status = data.status;
@@ -13,11 +13,12 @@ function sendEXEC(status, data){
 	}else{
 		var execString = data.CodeOff;
 	}
-	exec(execString,function(error, stdout, stderr) { 
-		// util.puts(stdout); 
-		console.log(stdout); 
+	exec(execString, function(error, stdout, stderr){
+		console.log(stdout);
 		console.log("Executing Done");
 	});
 }
+
+
 
 
