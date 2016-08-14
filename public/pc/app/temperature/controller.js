@@ -1,6 +1,8 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){	
 	if($rootScope.chartConfig === undefined){
-		socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
+		console.log($rootScope.activeUser.varChart);
+		// socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
+		socket.emit('getStoredVariables', $rootScope.activeUser);
 		console.log('Daten angefragt!');
 		$rootScope.tempNoData = false;
 		var chartConfig = {
@@ -153,7 +155,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 	}
 
 	socket.on('storedVariables', function(alldata) {
-		if(alldata != false){
+		if(alldata != false && alldata.user == $rootScope.activeUser.name){
 			$rootScope.tempNoData = false;
 			$rootScope.chartConfig.series.push(alldata);
 			$rootScope.chartConfig.loading = false;
