@@ -8,7 +8,7 @@ app.controller('groupsController',  function($scope, $rootScope, socket) {
 	*	Daten empfangen, Scope zuordnen
 	***********************************************/
 	socket.on('groups', function(data) {
-		$scope.grouplist = data;
+		$rootScope.grouplist = data;
 	});
 	
 	/***********************************************

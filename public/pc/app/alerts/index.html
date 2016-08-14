@@ -10,8 +10,11 @@
 <div class="alerts">
 	<div class="panel panel-{{alert.type}}" ng-repeat="alert in alerts" ng-click="closeAlert($index)">
 		<div class="panel-heading">
-			<h4 class="panel-title ">
+			<h4 class="panel-title" style="text-align:left;">
 				{{alert.title}}
+				<span class="pull-right grey">
+					{{alert.date | date:'dd.MMM., H:mm'}}
+				</span>
 			</h4>
 		</div>
 		<div class="panel-body">

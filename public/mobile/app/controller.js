@@ -40,7 +40,7 @@ app.config(['$routeProvider', function($routeProvider) {
 	});
 }]);
 
-app.controller('appController', function($rootScope, $scope, $location){
+app.controller('appController', function($rootScope, $scope, $location, socket){
 
 	$scope.favorit = true;
 
@@ -77,6 +77,14 @@ app.controller('appController', function($rootScope, $scope, $location){
 		slideIntent: 40,
 		minDragDistance: 5
 	}
+	socket.emit('devices', {"type":"object"});
+
+	/***********************************************
+	*	Daten empfangen, Scope zuordnen
+	***********************************************/
+	socket.on('devices', function(data) {
+		$rootScope.devicelist = data;
+	});
 
 });
 

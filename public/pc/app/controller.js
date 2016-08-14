@@ -7,7 +7,6 @@ var app = 	angular.module('jsbin',[
 				'ngMdIcons'
 			]);
 
-
 app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.
 	when('/home', {
@@ -30,8 +29,16 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/temperature/index.html',
 		controller: 'temperatureController'
 	}).
+	when('/switchHistory', {
+		templateUrl: './app/switchHistory/index.html',
+		controller: 'switchHistoryController'
+	}).
 	when('/timer', {
 		templateUrl: './app/timer/index.html',
+		controller: 'timerController'
+	}).
+	when('/editTimer/:id', {
+		templateUrl: './app/timer/editTimer.html',
 		controller: 'timerController'
 	}).
 	otherwise({
@@ -60,7 +67,9 @@ app.controller('appController', function($rootScope, $scope, $location){
 			$location.url(data);
 		}
 	}
-
+	$scope.abort = function(data) {
+		$location.url(data);
+	};
 	$scope.toggleMenu = function(){
 		$scope.favorit =! ($scope.favorit);
 		if($scope.favorit){

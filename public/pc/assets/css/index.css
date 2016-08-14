@@ -110,6 +110,11 @@ button{
 	border:0px;
 	border-radius:0px;
 	margin:2px 0px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+
+	user-select: none;
 }
 .btnOn{
 	margin:1px;
