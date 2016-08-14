@@ -1,7 +1,7 @@
 app.directive('temperatureDirective', function ($rootScope) {
 	return {
-		restrict: 'EA', //E = element, A = attribute, C = class, M = comment         
-		template: '<h3>Temperaturen</h3><highchart style="min-height: 600px; min-width: 310px" class="chart" config="chartConfig" class="span9" data-snap-ignore="true" ></highchart>',
+		restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+		templateUrl: "./app/temperature/template-chart.html",
 		controller: 'temperatureController', //Embed a custom controller in the directive
 		link: function($scope, element, attr){
 			function reflow(){

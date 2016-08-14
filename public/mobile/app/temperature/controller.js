@@ -1,6 +1,8 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){	
 	if($rootScope.chartConfig === undefined){
-		socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
+		console.log($rootScope.activeUser.varChart);
+		// socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
+		socket.emit('getStoredVariables', $rootScope.activeUser);
 		console.log('Daten angefragt!');
 		$rootScope.tempNoData = false;
 		var chartConfig = {
@@ -53,7 +55,6 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 			                animation: false
 						}
 					},
-					exporting: false,
 					xAxis: [{
 						type: 'datetime',
 						labels:{
@@ -98,7 +99,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 								text: '5°C'
 							}
 						}*/]
-					},
+					},/*
 					{
 						allowDecimals: true,
 						title: {
@@ -116,7 +117,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 							}
 						},
 						opposite: true
-					}],
+					}*/],
 
 					legend: {
 						enabled: true,
@@ -132,7 +133,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 					},
 					tooltip: {
 						headerFormat: '<div class="header">{point.key}</div>',
-						pointFormat: '<div class="line"><p style="float:left;">{series.name} {point.y}</p></div>',
+						pointFormat: '<div class="line"><p style="float:left;">{series.name} {point.y:.2f}</p></div>',
 						borderWidth: 1,
 						borderRadius: 5,
 						borderColor: '#a4a4a4',
@@ -154,11 +155,23 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 	}
 
 	socket.on('storedVariables', function(alldata) {
-		if(alldata != false){
+		if(alldata != false && alldata.user == $rootScope.activeUser.name){
+			$rootScope.tempNoData = false;
 			$rootScope.chartConfig.series.push(alldata);
 			$rootScope.chartConfig.loading = false;
-		}else{
+		}else if($rootScope.chartConfig.series.length == 0){
 			$rootScope.tempNoData = true;
+		}
+	});
+
+	socket.on('storedVariable', function(data) {
+		if(data != false){
+			for(var i = 0; i < $rootScope.chartConfig.series.length; i++ ){
+				if(data.nodeid == $rootScope.chartConfig.series[i].nodeid){
+					$rootScope.chartConfig.series[i] = data;
+					$rootScope.chartConfig.loading = false;
+				}
+			}
 		}
 	});
 
