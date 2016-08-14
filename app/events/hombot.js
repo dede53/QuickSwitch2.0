@@ -3,7 +3,7 @@ var request 		= require('request');
 var conf = {
 	'hombot':[
 		{
-			'ip':'192.168.2.104',
+			'ip':'192.168.2.25',
 			'port':'6260'
 		}
 	],

@@ -95,57 +95,85 @@ var gpio					= require('rpi-gpio');
 var request					= require('request');
 var later 					= require('later');
 var intervals				= {};
+var storedTimes 			= {};
 function isObjectEmpty(value){
     return Boolean(value && typeof value == 'object') && !Object.keys(value).length;
 }
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+function parseTime(time){
+	var time 		= time.split(':');
+	return createTime(new Date().setHours(time[0], time[1]));
+}
+function createTime(time){
+	time = new Date(parseInt(time));
+	time.setMilliseconds(0);
+	time.setSeconds(0);
+	var minutes = ("0" + time.getMinutes()).slice(-2);
+	var hours = ("0" + time.getHours()).slice(-2);
+	return {
+		timestamp: time.getTime(),
+		hours: time.getHours(),
+		minutes: time.getMinutes(),
+		time: hours + ':' + minutes
+	}
+}
+
 var checkConditions = function(timer, switchToThis, switchtimer, callback){
 		// helper.log.debug(timer.conditions);
 		if(switchtimer == false || switchtimer == "false"){
 			return;
 		}
 		if(!timer.conditions){
+			helper.log.pure("	Keine Bedingungen für diesen Timer");
+			helper.log.pure("		Ergebnis: 	stimmt");
 			callback(timer, switchToThis, switchtimer);
+			return;
+		}
+		
+		// Wenn noch nie ausgeführt dann letzte Ausführung auf vor 12 Stunden setzten
+		if(!timer.lastexec){
+			timer.lastexec = new Date().getTime() - 12 * 60 * 60000;
+		}else{
+			timer.lastexec = parseInt(timer.lastexec);
 		}
 
 		if(timer.conditions.range){
-			timer.conditions.range.forEach(function(condition){					
-				if(helper.isTimeInRange(condition.start.time, condition.stop.time)){
-					console.log("	Ergebnis: 	stimmt \n");
-					switchtimer = true;
+			helper.log.pure("	Prüfe Zeitraum...");
+			timer.conditions.range.forEach(function(condition){
+				helper.log.pure("		" + condition.start + " - " + condition.stop);
+				var startTime = parseTime(condition.start);
+				var stopTime = parseTime(condition.stop);
+				
+				if(helper.isTimeInRange(startTime.timestamp, stopTime.timestamp)){
+					helper.log.pure("		Ergebnis: 	stimmt \n");
 				}else{
-					console.log("	Ergebnis: 	stimmt nicht \n");
+					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+					switchtimer = false;
 				}
 			});
 		}
 
 		if(timer.conditions.weekdays){
-
 			var datum = new Date();
 			var tag = datum.getDay();
 
-			console.log("	Prüfe Wochentag...");
-			if(timer.conditions.weekdays[tag] == 1){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			} else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
+			helper.log.pure("	Prüfe Wochentag...");
+			timer.conditions.weekdays.forEach(function(condition){
+				if(condition[tag] == 1){
+					helper.log.pure("		Ergebnis: 	stimmt \n");
+				}else{
+					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+					switchtimer = false;
+				}
+			});
 		}
 
 		if(timer.conditions.time){
-			var datum = new Date();
-			var tag = datum.getDay();
-			var hours = datum.getHours();
-			var minutes = datum.getMinutes();
+			var now = createTime(new Date().getTime());
 
-			if(minutes <= 9){
-				minutes = "0" + minutes;
-			}
-			if(hours <= 9){
-				hours = "0" + hours;
-			}
-
-			var now = hours + ':' + minutes;
 
 			console.log("Prüfe Zeit...");
 
@@ -154,10 +182,15 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 					case "sunset":
 						console.log("	Sonnenuntergang:");
 						var newTime = helper.getSuntime("sunset", condition.offset);
-						console.log("		Schaltzeit: 	" + newTime);
-						if(newTime == now){
-							console.log("		Ergebnis: 	stimmt \n");
-							switchToThis = condition.action;
+						console.log("		Schaltzeit: 	" + newTime.time);
+						if(newTime.time == now.time){
+							if(timer.lastexec < newTime.timestamp){
+								console.log("		Ergebnis: 	stimmt \n");
+								switchToThis = condition.action;
+							}else{
+								helper.log.pure('Timer wurde schon geschaltet');
+								switchtimer = false;
+							}
 						}else{
 							console.log("		Ergebnis: 	stimmt nicht \n");
 							switchtimer = false;
@@ -166,20 +199,31 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 					case "sunrise":
 						console.log("	Sonnenaufgang:");
 						var newTime = helper.getSuntime("sunrise", condition.offset);
-						console.log("		Schaltzeit: 	" + newTime);
-						if(newTime == now){
-							console.log("		Ergebnis: 	stimmt \n");
-							switchToThis = condition.action;
+						console.log("		Schaltzeit: 	" + newTime.time);
+						if(newTime.time == now.time){
+							if(timer.lastexec < newTime.timestamp){
+								console.log("		Ergebnis: 	stimmt \n");
+								switchToThis = condition.action;
+							}else{
+								helper.log.pure('Timer wurde schon geschaltet');
+								switchtimer = false;
+							}
 						}else{
 							console.log("		Ergebnis: 	stimmt nicht \n");
 							switchtimer = false;
 						}
 						break;
 					default:
-						console.log("	Startzeit..." + condition.time);
-						if(condition.time == now){
-							console.log("		Ergebnis: 	stimmt \n");
-							switchToThis = condition.action;
+						condition.time = parseTime(condition.time);
+						console.log("	Schaltzeit..." + condition.time.time);
+						if(condition.time.time == now.time){
+							if(timer.lastexec < condition.time.timestamp){
+								console.log("		Ergebnis: 	stimmt \n");
+								switchToThis = condition.action;
+							}else{
+								helper.log.pure('Timer wurde schon geschaltet');
+								switchtimer = false;
+							}
 						}else{
 							console.log("		Ergebnis: 	stimmt nicht \n");
 							switchtimer = false;
@@ -188,243 +232,67 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 				}
 			});
 		}
+		if(timer.conditions.random){
+			helper.log.pure("Prüfe Zufallszeit...");
 
-		if(timer.conditions.variables){
-			timer.conditions.variables.forEach(function(varToCheck){
-				variableFunctions.getVariableByName(varToCheck.name, function(fullVariable){
-					compareVariables(varToCheck, fullVariable);
-				});
+			timer.conditions.random.forEach(function(condition){
+				var now = createTime(new Date().getTime());
+				var startTime = parseTime(condition.start);
+				var stopTime = parseTime(condition.stop);
+
+				// Zeitraum prüfen
+				if(startTime.timestamp <= now.timestamp && stopTime.timestamp >= now.timestamp){
+					if(timer.lastexec > startTime.timestamp && timer.lastexec < stopTime.timestamp){
+						// schon ausgeführt!
+						helper.log.pure("	Timer schon ausgeführt");
+						helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+						switchtimer = false;
+					}else{
+						// Noch nicht ausgeführt!
+						if(!storedTimes[timer.id]){
+							// Timestamp zum Schalten generieren
+							var minutes = getRandomInt(now.timestamp, stopTime.timestamp);
+							// helper.log.pure(new Date(minutes));
+							storedTimes[timer.id] = createTime(minutes);
+							helper.log.pure('	Neue Schaltzeit berechnet!');
+						}
+						helper.log.pure('	Schaltzeit:' + new Date(storedTimes[timer.id].timestamp));
+						if(storedTimes[timer.id].time == now.time){
+							// Schalten!!
+							helper.log.pure('	Jetzt schalten!');
+							storedTimes[timer.id] = false;
+							helper.log.pure("		Ergebnis: 	stimmt \n");
+							switchToThis = condition.action;
+						}else{
+							helper.log.pure('		Ergebnis: 	stimmt nicht \n');
+							switchtimer = false;
+						}
+					}
+				}else{
+					helper.log.pure("	Uhrzeit nicht zwischen " + startTime.time + " und " + stopTime.time);
+					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+					switchtimer = false;
+				}
+					
 			});
 		}
+
+		// if(timer.conditions.variables){
+		// 	timer.conditions.variables.forEach(function(varToCheck){
+		// 		variableFunctions.getVariableByName(varToCheck.name, function(fullVariable){
+		// 			compareVariables(varToCheck, fullVariable);
+		// 		});
+		// 	});
+		// }
 
 		callback(timer, switchToThis, switchtimer);
 }
-var getTimers = function(req, res, callback){
-	var query = "SELECT id, name, active, variables, conditions, actions, user FROM timer;";
-	db.all(query, function(err, data){
-		if(err){
-			callback(404);
-			helper.log.error(err);
-		}else{
-			for(var i = 0; i< data.length; i++){
-				try{
-					if(data[i].variables != ""){
-						data[i].variables = JSON.parse(data[i].variables.trim());
-					}
-					if(data[i].conditions != ""){
-						data[i].conditions = JSON.parse(data[i].conditions.trim());
-					}
-					if(data[i].actions){
-						data[i].actions = JSON.parse(data[i].actions.trim());
-					}
-				}catch(e){
-					helper.log.error("Fehler im JSON bei diesem Timer!");
-					console.log(data[i]);
-				}
-			}
-			callback(data);
-		}
-	});
-}
-var checkVariables = function(timer, variable, switchToThis, switchtimer, callback){
-	timer.variables[variable.name].forEach(function(variab){
-		switch(variab.mode){
-			case 'match':
-				if(variab.status == variable.status.toString()){
-					helper.log.debug('Variable ' + variab.name + ' hat sich zu "' + variab.status + '" geändert!');
-					switchtimer = true;
-					switchToThis = 'on';
-				}else{
-					// helper.log.debug('Variable hat den falschen status');
-				}
-				break;
-			case 'onChange':
-				helper.log.debug('Variable ' + variable.name + ' hat sich geändert');
-				switchtimer = true;
-				break;
-			default:
-				// console.log('error');
-				break;
-		}
-	});
-	callback(timer, switchToThis, switchtimer);
-}
-
-var switchActions = function(timer, status, switchtimer){
-	if(timer.actions && switchtimer != false){
-		if(timer.actions.devices){
-			helper.log.debug('Geräte schalten!');
-			timer.actions.devices.forEach(function(device){
-				helper.switchaction('device', device.id, status);
-			});
-		}
-		if(timer.actions.groups){
-			helper.log.debug('Gruppe schalten!');
-			timer.actions.groups.forEach(function(group){
-				helper.switchaction('group', group.id, status);
-			});
-		}
-		if(timer.actions.rooms){
-			helper.log.debug('Raum schalten!');
-			timer.actions.rooms.forEach(function(room){
-				helper.switchaction('room', room.id, status);
-			});
-		}
-		if(timer.actions.saveSensors){
-			onewire.saveSensors();
-		}
-		if(timer.actions.alerts){
-			timer.actions.alerts.forEach(function(alert){	
-				var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.name + "/" + alert.message + "/" + alert.type;
-				// console.log(url);
-				request(url , function (error, response, body) {
-					if (error) {
-						console.log(error);
-					}
-				});
-			});
-		}
-		// console.log(timer.actions);
-		if(timer.actions.intervals){
-			timer.actions.intervals.forEach(function(interval){
-				var sched			=	later.parse.text('every ' + interval.number + ' ' + interval.unit);
-				var id = interval.id;
-				if(intervals[id] == undefined){
-					console.log("	Setze ein Interval!");
-					switch(interval.action){
-						case "saveSensors":
-							intervals[id] = later.setInterval(onewire.saveSensors , sched);
-							break;
-						case "device":
-						case "group":
-						case "room":
-							intervals[id] = later.setInterval(function() { helper.switchaction(interval.action, interval.actionid, "on");} , sched);
-							break;
-						case "storeVariable":
-							intervals[id] = later.setInterval(function() { variableFunctions.storeVariable(interval.name);} , sched);
-							break;
-						default:
-							break;
-					}
-					console.log("	Neues Interval mit der id: " + id + " angelegt!\n");
-				}else{
-					// console.log("	Interval wurde schon gesetzt!\n");
-				}
-			});
-		}
-		if(timer.actions.pushbullets){
-			timer.actions.pushbullets.forEach(function(action){
-				var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
-				//console.log(url);
-				request(url , function (error, response, body) {
-					if (error) {
-						console.log(error);
-					}
-				});
-			});
-		}
-		if(timer.actions.storeVariables){
-			timer.actions.storeVariables.forEach(function(variable){
-				variableFunctions.storeVariable(variable.name);
-			});
-		}
-	}
-}
-
-var compareVariables = function(condition, variable){
-	switch(condition.condition){
-		case"größer":
-			if(variable.temp > condition.value){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			}else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
-			break;
-		case"kleiner":
-			if(variable.temp < condition.value){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			}else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
-			break;
-		case"gleich":
-			if(variable.temp === condition.value){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			}else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
-			break;
-		case"ungleich":
-			if(variable.temp !== condition.value){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			}else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
-			break;										
-		case"größergleich":
-			if(variable.temp >= condition.value){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			}else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
-			break;
-		case"kleinergleich":
-			if(variable.temp <= condition.value){
-				console.log("		Ergebnis: 	stimmt \n");
-				switchtimer = true;
-			}else{
-				console.log("		Ergebnis: 	stimmt nicht \n");
-			}
-			break;
-		default:
-			break;
-	}
-}
-
-var checkTimer = function(variable){
-
-	getTimers(false, false, function(timers){
-		// helper.log.debug("Checke Timer");
-		timers.forEach(function(timer){
-
-			if(timer.active == "false"){
-				return;
-			}
-			if(variable){
-				if(typeof timer.variables == "object"){
-					if(timer.variables[variable.name]){
-						// console.log("CheckTimer: Richtige Variable!");
-						// console.log(timer.name);
-						checkVariables(timer, variable, undefined, false, function(timer, switchToThis, switchtimer){
-							checkConditions(timer, switchToThis, switchtimer, function(timer, switchToThis, switchtimer){
-								switchActions(timer, switchToThis, switchtimer);
-							});
-						});
-					}
-				}
-			}else{
-				if(typeof timer.variables != "object"){
-					// console.log("CheckTimer: Nur Bedingungen");
-					checkConditions(timer, undefined, true, function(timer, switchToThis, switchtimer){
-						switchActions(timer, switchToThis, switchtimer);
-					});
-				}
-			}
-		});
-	});
-}
-module.exports = {
-	getTimers: getTimers,
-	getTimer: function(id, callback){
-		var query = "SELECT id, name, active, variables, conditions, actions, user FROM timer WHERE id = " + id + ";";
+var getTimer = function(id, callback){
+	helper.log.pure(id);
+		var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
-				helper.log.error(err);
+				helper.log.pure(err);
 			}else if(data == ""){
 				helper.log.error("Keinen Timer mit der ID: " + id);
 			}else{
@@ -440,30 +308,318 @@ module.exports = {
 					}
 					callback(data[0]);
 				}catch(e){
-					console.log("Fehler im Json des Timers!");
-					console.log(data[0]);
+					helper.log.pure("Fehler im Json des Timers!");
+					helper.log.pure(data[0]);
 					return;
 				};
 			}
 		});
-	},
-	saveNewTimer: function(data, req, res, callback){
-		var query = "INSERT INTO timer (name, variables, conditions, actions) VALUES ('" + data.name + "', '" + data.variables + "' '" + data.conditions + "', '" + data.actions + "');";
+	}
+var getTimers = function(callback){
+	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
+	db.all(query, function(err, data){
+		if(err){
+			callback(404);
+			helper.log.error(err);
+		}else{
+			for(var i = 0; i< data.length; i++){
+				try{
+					if(data[i].variables != ""){
+						data[i].variables = JSON.parse(data[i].variables.trim());
+					}else{
+						data[i].variables = false;
+					}
+					if(data[i].conditions != ""){
+						data[i].conditions = JSON.parse(data[i].conditions.trim());
+					}else{
+						data[i].conditions = false;
+					}
+					if(data[i].actions){
+						data[i].actions = JSON.parse(data[i].actions.trim());
+					}else{
+						data[i].actions = false;
+					}
+				}catch(e){
+					helper.log.error("Fehler im JSON bei diesem Timer!");
+					helper.log.pure(data[i]);
+				}
+			}
+			callback(data);
+		}
+	});
+}
+var checkVariables = function(timer, variable, switchToThis, switchtimer, callback){
+	timer.variables[variable.name].forEach(function(variab){
+		switch(variab.mode){
+			case 'match':
+				if(variab.status == variable.status.toString()){
+					helper.log.pure('	Variable ' + variab.name + ' hat sich zu "' + variab.status + '" geändert!');
+					switchtimer = true;
+					switchToThis = 'on';
+				}else{
+					// helper.log.debug('Variable hat den falschen status');
+				}
+				break;
+			case 'onChange':
+				helper.log.pure('	Variable ' + variable.name + ' hat sich geändert');
+				switchtimer = true;
+				break;
+			default:
+				// helper.log.pure('error');
+				break;
+		}
+	});
+	callback(timer, switchToThis, switchtimer);
+}
+
+var switchActions = function(timer, status, switchtimer){
+	if(timer.actions && switchtimer != false){
+		helper.log.pure("	Aktionen ausführen:");
+		if(timer.actions.devices){
+			helper.log.debug('		Geräte schalten!');
+			timer.actions.devices.forEach(function(device){
+				helper.switchaction('device', device.id, device.action);
+			});
+		}
+		if(timer.actions.groups){
+			helper.log.debug('		Gruppe schalten!');
+			timer.actions.groups.forEach(function(group){
+				helper.switchaction('group', group.id, status);
+			});
+		}
+		if(timer.actions.rooms){
+			helper.log.debug('		Raum schalten!');
+			timer.actions.rooms.forEach(function(room){
+				helper.switchaction('room', room.id, status);
+			});
+		}
+		if(timer.actions.saveSensors){
+			helper.log.pure("		Speichere Sensoren");
+			onewire.saveSensors();
+		}
+		if(timer.actions.alerts){
+			timer.actions.alerts.forEach(function(alert){
+				helper.log.pure("		Erzeuge Alert: " + alert.name + "|" + alert.message);	
+				var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.name + "/" + alert.message + "/" + alert.type;
+				// helper.log.pure(url);
+				request(url , function (error, response, body) {
+					if (error) {
+						helper.log.pure(error);
+					}
+				});
+			});
+		}
+		if(timer.actions.intervals){
+			timer.actions.intervals.forEach(function(interval){
+				var sched			=	later.parse.text('every ' + interval.number + ' ' + interval.unit);
+				var id = parseInt(interval.id);
+				if(intervals[id] == undefined){
+					helper.log.pure("		Setze ein Interval!");
+					switch(interval.action){
+						case "saveSensors":
+							helper.log.pure("		Speichere Sensoren");
+							intervals[id] = later.setInterval(onewire.saveSensors , sched);
+							break;
+						case "device":
+						case "group":
+						case "room":
+							helper.log.pure("		Schalte Gerät");
+							intervals[id] = later.setInterval(function() { helper.switchaction(interval.action, interval.actionid, "on");} , sched);
+							break;
+						case "storeVariable":
+							helper.log.pure("		Speichere Variable");
+							intervals[id] = later.setInterval(function() { variableFunctions.storeVariable(interval.name);} , sched);
+							break;
+						default:
+							break;
+					}
+					helper.log.pure("		Neues Interval mit der id: " + id + " angelegt!\n");
+				}else{
+					helper.log.pure("		Interval wurde schon gesetzt!\n");
+				}
+			});
+		}
+		if(timer.actions.pushbullets){
+			timer.actions.pushbullets.forEach(function(action){
+				helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
+				var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
+				//helper.log.pure(url);
+				request(url , function (error, response, body) {
+					if (error) {
+						helper.log.pure(error);
+					}
+				});
+			});
+		}
+		if(timer.actions.storeVariables){
+			timer.actions.storeVariables.forEach(function(variable){
+				helper.log.pure("		Speichere Variable:" + variable.name);
+				variableFunctions.storeVariable(variable.name);
+			});
+		}
+		if(timer.actions.urls){
+			timer.actions.urls.forEach(function(url){
+				request(url.url , function (error, response, body) {
+					if (error) {
+						helper.log.pure(error);
+					}
+				});
+			});
+		}
+		// lastexec setzen!
+		// var query = "UPDATE timer SET lastexec = '" + new Date().getTime() + "' WHERE id = '" + timer.id + "'";
+		var query = "UPDATE `timer` SET `lastexec`='" + parseInt(new Date().getTime()) + "' WHERE `id` = " + timer.id + ";";
 		db.run(query);
-		callback(201);
+		// helper.log.pure(query);
+	}
+}
+
+/*
+var compareVariables = function(condition, variable){
+	switch(condition.condition){
+		case"größer":
+			if(variable.temp > condition.value){
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				switchtimer = false;
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+			}
+			break;
+		case"kleiner":
+			if(variable.temp < condition.value){
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				switchtimer = false;
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+			}
+			break;
+		case"gleich":
+			if(variable.temp === condition.value){
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				switchtimer = false;
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+			}
+			break;
+		case"ungleich":
+			if(variable.temp !== condition.value){
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				switchtimer = false;
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+			}
+			break;										
+		case"größergleich":
+			if(variable.temp >= condition.value){
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				switchtimer = false;
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+			}
+			break;
+		case"kleinergleich":
+			if(variable.temp <= condition.value){
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				switchtimer = false;
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+			}
+			break;
+		default:
+			break;
+	}
+}
+*/
+var checkTimer = function(variable){
+	var datum = new Date();
+	var tag = datum.getDay();
+	var hours = datum.getHours();
+	var minutes = datum.getMinutes();
+
+	if(minutes <= 9){
+		minutes = "0" + minutes;
+	}
+	if(hours <= 9){
+		hours = "0" + hours;
+	}
+
+	var now = hours + ':' + minutes;
+	getTimers(function(timers){
+		timers.forEach(function(timer){
+			if(timer.active == "false"){
+				return;
+			}
+			if(variable && typeof timer.variables == "object"){
+				if(timer.variables[variable.name]){
+					helper.log.debug("Prüfe Timer mit Variablen: " + timer.name);
+					checkVariables(timer, variable, undefined, false, function(timer, switchToThis, switchtimer){
+						checkConditions(timer, switchToThis, switchtimer, function(timer, switchToThis, switchtimer){
+							switchActions(timer, switchToThis, switchtimer);
+						});
+					});
+				}
+			}else if(typeof timer.variables != "object"){
+				helper.log.debug("Prüfe Timer nur mit Bedingungen: " + timer.name);
+				checkConditions(timer, undefined, true, function(timer, switchToThis, switchtimer){
+					switchActions(timer, switchToThis, switchtimer);
+				});
+			}
+		});
+	});
+}
+module.exports = {
+	getTimers: getTimers,
+	getTimer: getTimer,
+	saveTimer: function(data, callback){
+		if(!data.lastexec){
+			data.lastexec = new Date().getTime();
+		}
+		// helper.log.pure(data);
+		if(data.id){
+			var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + JSON.stringify(data.variables) + "', conditions = '" + JSON.stringify(data.conditions) + "', actions = '" + JSON.stringify(data.actions) + "', lastexec = '" + data.lastexec + "' WHERE id = '" + data.id + "';";
+			db.run(query);
+			getTimer(data.id, function(data){
+				callback( undefined, data);
+			});
+		}else{
+			var query = "INSERT INTO timer (name, variables, conditions, actions, user, lastexec) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "','" + data.lastexec + "');";
+			// db.run(query);
+			db.all(query, function(err, data){
+				if(err){
+					callback(err, undefined);
+				}else{
+					getTimer(data.insertId, function(data){
+						callback( undefined, data);
+					});
+				}
+			});
+		}
+	},
+	saveNewTimer: function(data, callback){
+		var query = "INSERT INTO timer (name, variables, conditions, actions, user) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "');";
+		// db.run(query);
+		db.all(query, function(err, data){
+			if(err){
+				callback(err, undefined);
+			}else{
+				getTimer(data.insertId, function(data){
+					callback( undefined, data);
+				});
+			}
+		});
 	},
 	saveEditTimer: function(data, req ,res, callback){
 		var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + data.variables + "', conditions = '" + data.conditions + "', actions = '" + data.actions + "' WHERE id = '" + data.id + "';";
 		db.run(query);
 		callback(201);
 	},
-	deleteTimer: function(id, callback){
+	deleteTimer: function(id, app){
 		var query = "DELETE FROM timer WHERE id = '" + id + "';";
 		db.all(query, function(err, data){
 			if(err){
 				callback(err);
 			}else{
-				callback("200");
+				app.io.broadcast('deleteTimer', id);
 			}
 		});
 	},
@@ -472,9 +628,6 @@ module.exports = {
 		db.run(query);
 		callback(200);
 	},
-	checkTimer: checkTimer
+	checkTimer: checkTimer,
+	switchActions: switchActions
 }
-/*
-checkTimer({'name':'Daniel-Home', 'status': true});
-checkTimer();
-*/

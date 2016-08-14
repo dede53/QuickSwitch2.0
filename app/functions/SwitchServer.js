@@ -11,8 +11,12 @@ function saveStatus(app, req, action, data, callback){
 			callback(404);
 		}else{
 			app.io.broadcast('switchDevice', {"device":data,"status":action});
-
-			var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0 AND devices.type = 'device';";
+			console.log(data[data.type]);
+			if(data[data.type].showStatus == 1 || data[data.type].showStatus == '1'){
+				var query = "INSERT INTO `switch_history` (`deviceid`, `time`, `status`, `place`) VALUES ('" + data[data.type].deviceid + "', " + new Date().getTime() + ", '" + action + "', '" + data[data.type].name + "(" + data[data.type].Raum + ")');";
+				db.run(query);
+			}
+			var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0 AND devices.type = 'device' AND showStatus = 1;";
 			db.all(query , function(err, activedevices) {
 				if (err) {
 					helper.log.error(err);
@@ -61,8 +65,38 @@ module.exports = {
 			}
 		});
 	},
+	// sendto: function(app, req, action, data, callback){
+	// 	try{
+	// 		if(action == "toggle"){
+	// 			if(data[data.type].status == "0"){
+	// 				action = 1;
+	// 			}else{
+	// 				action = 0;
+	// 			}
+	// 		}
+
+	// 		if(data.type == "device"){
+	// 			saveStatus(app, req, action, data, function(data){
+	// 				callback(data);
+	// 			});
+	// 		}else{
+	// 			helper.log.info("Erfolgreich an den SwitchServer gesendet");
+	// 			callback(200);
+	// 		}
+
+	// 		var transData = {
+	// 			status: status,
+	// 			data: data
+	// 		}
+
+	// 		plugins.autoloader.send(transData);
+
+	// 	}catch(err){
+	// 		console.log("Adapter zum schalten nicht installiert!");
+	// 	}
+	// },
 	sendActiveDevices: function (app, callback){
-		var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0 AND devices.type = 'device';";
+		var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0 AND devices.type = 'device' AND devices.showStatus = '1';";
 		db.all(query , function(err, activedevices) {
 			if (err) {
 				helper.log.error(err);

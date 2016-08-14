@@ -12,7 +12,7 @@ var stream = pusher.stream();
 stream.connect();
 
 stream.on('connect', function() {
-	helper.log.info("Connected to Pushbullet", "info");
+	helper.log.debug("Connected to Pushbullet");
 });
 
 stream.on('close', function() { 

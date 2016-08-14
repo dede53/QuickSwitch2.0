@@ -1,12 +1,47 @@
 var db 				= require('./database.js');
+var deviceFunctions	= require('./device.js');
 var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
 var helper 			= require('./helper.js');
 
+function switchAction(dev, status, app, req, res){
+	switch(dev.type){
+		case "device":
+			deviceFunctions.switchDevice(app, dev.id, status, res, res, function(err){
+				if(err != 200){
+					helper.log.error("Raum konnte nicht geschaltet werden");
+				}});
+			break;
+		case "room":
+			var room = {};
+			room.id = dev.id;
+			roomFunctions.switchRoom(room, status, app, req, res, function(err){
+				if(err != 200){
+					helper.log.error("Raum konnte nicht geschaltet werden");
+				}
+			});
+			break;
+		default:
+			helper.log.error("Falscher Gruppen type:" + dev.type);	
+			break;
+	}
+}
 module.exports = {
 	switchGroup: function(app, group, status, req, res, callback){
 		var groupDevices = JSON.parse(group.groupDevices);
-		var devices = new Object;
+		var string = "";
+		groupDevices.forEach(function(dev){
+			if(dev.timeout){
+				setTimeout(function(){
+					switchAction(dev, status, app, req, res);
+				}, ( parseInt(dev.timeout) * 1000) );
+			}else{
+				switchAction(dev, status, app, req, res);
+			}
+		});
+	},
+	switchGroupOrg: function(app, group, status, req, res, callback){
+		var groupDevices = JSON.parse(group.groupDevices);
 		var string = "";
 		groupDevices.forEach(function(dev){
 			if(string == ""){

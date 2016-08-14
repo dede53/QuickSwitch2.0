@@ -8,7 +8,8 @@ module.exports = function(app, db){
 	* Sendet die Gerätefavoriten zu dem neuen Benutzer
 	*********************************************************/
 	app.io.route('favoritDevices', function( req, res){
-		var data = req.data;		
+		var data = req.data;
+		console.log(data);
 		deviceFunctions.favoritDevices(data, req,res,function(data){
 			req.io.emit('favoritDevices', data);
 		});
@@ -27,17 +28,22 @@ module.exports = function(app, db){
 	* Speichert ein Gerät
 	*********************************************************/
 	app.io.route('saveDevice', function(req, res){
-		if( !req.data.deviceid){
+		if( !req.data.device.deviceid){
+			console.log(req.data);
 			var data = {
-				"name": req.data.name,
-				"buttonLabelOn": req.data.buttonLabelOn,
-				"buttonLabelOff": req.data.buttonLabelOff,
-				"CodeOn": req.data.CodeOn,
-				"CodeOff": req.data.CodeOff,
-				"protocol": req.data.protocol,
-				"room": req.data.roomid,
-				"switchserver": req.data.switchserver
+				"type": "device",
+				"device":{
+					"name": req.data.device.name,
+					"buttonLabelOn": req.data.device.buttonLabelOn,
+					"buttonLabelOff": req.data.device.buttonLabelOff,
+					"CodeOn": req.data.device.CodeOn,
+					"CodeOff": req.data.device.CodeOff,
+					"protocol": req.data.device.protocol,
+					"room": req.data.device.roomid,
+					"switchserver": req.data.device.switchserver
+				}
 			};
+			console.log(data);
 			deviceFunctions.saveNewDevice(data, req, res, function(data){
 				deviceFunctions.getDevices('object', req, res, function(data){
 					app.io.broadcast('devices', data);
@@ -46,15 +52,15 @@ module.exports = function(app, db){
 		}else{
 			var data = 
 				{
-					"deviceid": req.data.deviceid,
-					"name": req.data.name,
-					"buttonLabelOn": req.data.buttonLabelOn,
-					"buttonLabelOff": req.data.buttonLabelOff,
-					"CodeOn": req.data.CodeOn,
-					"CodeOff": req.data.CodeOff,
-					"protocol": req.data.protocol,
-					"room": req.data.roomid,
-					"switchserver": req.data.switchserver
+					"deviceid": req.data.device.deviceid,
+					"name": req.data.device.name,
+					"buttonLabelOn": req.data.device.buttonLabelOn,
+					"buttonLabelOff": req.data.device.buttonLabelOff,
+					"CodeOn": req.data.device.CodeOn,
+					"CodeOff": req.data.device.CodeOff,
+					"protocol": req.data.device.protocol,
+					"room": req.data.device.roomid,
+					"switchserver": req.data.device.switchserver
 				};
 			deviceFunctions.saveEditDevice(data, req, res, function(data){
 				deviceFunctions.getDevices('object',req, res, function(data){
@@ -115,10 +121,24 @@ module.exports = function(app, db){
 	app.io.route('switchdevice', function(req, res){
 		var id = req.data.id;
 		var status = req.data.status;
+		console.log(status);
 		deviceFunctions.switchDevice(app, id, status, req, res, function(err){
 			if(err != 200){
 				helper.log.error("Gerät konnte nicht geschaltet werden");
 			}
+		});
+	});
+
+	app.io.route('getSwitchHistory', function(req, res){
+		console.log(req.data);
+		deviceFunctions.getSwitchHistory(req.data, function(data){
+			req.io.emit('switchHistory', data);
+		});
+	});
+	app.io.route('getSwitchHistoryByID', function(req, res){
+		// console.log(req.data);
+		deviceFunctions.getSwitchHistoryByID(req.data, function(data){
+			req.io.emit('switchHistoryByID', data);
 		});
 	});
 }

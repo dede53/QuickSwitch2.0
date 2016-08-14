@@ -7,7 +7,7 @@ var helper 			= require('./helper.js');
 
 module.exports = {
 	saveSensors : function(){
-		helper.log.info("Lese Temperaturen...");
+		helper.log.info("Lese Temperaturen aus den 1-Wiresensoren...");
 		bus.listAllSensors().then(function(data){
 			if(data.err){
 				helper.log.error(data);

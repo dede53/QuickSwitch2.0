@@ -19,7 +19,10 @@ module.exports = function(app, db){
 	});
 
 	app.io.route('getStoredVariables', function(req, res){
+		console.log(req.data);
+		req.data.hour = 24;
 		variableFunctions.getStoredVariables(req.data, function(data){
+			console.log("SENDE DATEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			req.io.emit('storedVariables', data);
 		});
 	});

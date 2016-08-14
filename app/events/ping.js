@@ -1,11 +1,10 @@
 var ping 			= require('ping');
-var helper 			= require('../functions/helper.js');
+var helper 			= require('./../functions/helper.js');
 
 
-// var hosts 			= ['192.168.2.10', '192.168.2.190'];
 var hosts 			= [
 	{
-		"ip":'192.168.2.10',
+		"ip":'192.168.2.23',
 		"name": 'Daniel-Home'
 	}, 
 	{
@@ -29,14 +28,14 @@ hosts.forEach(function(host){
 function checkHosts (){
 	hosts.forEach(function (host) {
 		ping.sys.probe(host.ip, function(isAlive){
-			helper.log.debug('Prüfe ip ' + host.ip + ' auf anwesenheit.', "info");
+			helper.log.debug('Prüfe ip ' + host.ip + ' auf anwesenheit.');
 			if(status[host.ip].status == isAlive){
 				status[host.ip].lastChange 	= Math.round(new Date().getTime()/1000);
-				helper.log.debug('	Ergebnis: Kein veränderter Status! Das Gerät ist immernoch ' + status[host.ip].status + '\n', "data");
+				helper.log.debug('	Ergebnis: Kein veränderter Status! Das Gerät ist immernoch ' + status[host.ip].status);
 				return;
 			}
 			if(isAlive == true){
-				helper.log.debug('	Ergebnis: anwesend', "data");
+				helper.log.debug('	Ergebnis: anwesend');
 				status[host.ip].lastChange 	= Math.round(new Date().getTime()/1000);
 				status[host.ip].status 		= isAlive;
 
@@ -44,15 +43,15 @@ function checkHosts (){
 				return;
 			}
 			
-			helper.log.debug('	Ergebnis: abwesend\n', "data");
+			helper.log.debug('	Ergebnis: abwesend', "data");
 			var time = Math.round(new Date().getTime()/1000) - status[host.ip].lastChange;
 			if(time >= minTime){
 				status[host.ip].status 		= isAlive;
 				status[host.ip].lastChange 	= Math.round(new Date().getTime()/1000);
 				helper.setVariable(host.name, status[host.ip].status);
-				helper.log.info('	Gerät (' + host.ip + ') ist länger als ' + minTime + ' Sekunden abwesend. Status wurde geändert.\n', "data");
+				helper.log.info('	Gerät (' + host.ip + ') ist länger als ' + minTime + ' Sekunden abwesend. Status wurde geändert.');
 			}else{
-				helper.log.info('	Gerät (' + host.ip + ') noch keine ' + minTime + ' Sekunden abwesend! Erst ' + time + ' Sekunden sind verstrichen.\n','data');
+				helper.log.info('	Gerät (' + host.ip + ') noch keine ' + minTime + ' Sekunden abwesend! Erst ' + time + ' Sekunden sind verstrichen.');
 			}
 		});
 	});

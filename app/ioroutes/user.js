@@ -50,9 +50,9 @@ module.exports = function(app, db){
 	app.io.route('deleteUser', function(req, res){
 		var id = req.data.id;
 		userFunctions.deleteUser(id, req, res, function(data){
-			req.io.emit('deletedUser', data);
+			// req.io.emit('deletedUser', data);
 			userFunctions.getUsers(req, res, function(data){
-				app.io.broadcast('newuser', data);
+				app.io.broadcast('newusers', data);
 			});
 		});
 	});

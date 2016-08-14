@@ -8,7 +8,67 @@ var variableFunctions 		= require('./functions/variable.js');
 var timerFunctions 			= require('./functions/timer.js');
 var SwitchServerFunctions 	= require('./functions/SwitchServer.js');
 /***********************************************************************************
+├── dist/
+│   ├── bootstrap-clockpicker.css      # full code for bootstrap
+│   ├── bootstrap-clockpicker.js
+│   ├── bootstrap-clockpicker.min.css  # compiled and minified files for bootstrap
+│   ├── bootstrap-clockpicker.min.js
+│   ├── jquery-clockpicker.css         # full code for jquery
+│   ├── jquery-clockpicker.js
+│   ├── jquery-clockpicker.min.css     # compiled and minified files for jquery
+│   └── jquery-clockpicker.min.js
+└── src/                               # source code
+    ├── clockpicker.css
+    ├── clockpicker.js
+    ├── sdf
+    │	├──
+	│	│
+	│	│
+	│	│
+	├───
+	│
 
+You only have to go through a path of the tree and you have to connect the words with a slash (/). Only the id needs to be replaced.
+eg: 
+Switch Device with ID 1 on
+http://192.187.4.23:1230/switch/device/1/on
+
+ip:port/
+├──	switch
+│	├── device
+│	│	├── id
+│	│	│	├ on
+│	│	│	├ off
+│	│	│	└ toggle
+│	│	└── all
+│	│		├ on
+│	│		├ off
+│	│		└ toggle 
+│	├── group
+│	│	├── id
+│	│	│	├ on
+│	│	│	├ off
+│	│	│	└ toggle
+│	│	└── all
+│	│		├ on
+│	│		├ off
+│	│		└ toggle
+│	└── room
+│		├── id
+│		│	├ on
+│		│	├ off
+│		│	└ toggle
+│		└── all
+│			├ on
+│			├ off
+│			└ toggle 	
+├── send
+│	├──	alert
+│	│	└── title
+│	│		└── message
+│	│			└── type
+│	└── pushbullet
+		└──	
 +	/						(GET)		auswahl zwischen PC/Mobile
 
 +	/mobile 				(GET)		Mobile-Oberfläche
@@ -96,17 +156,6 @@ var SwitchServerFunctions 	= require('./functions/SwitchServer.js');
 				/status 					Status der Variablen (z.b.: klingelt)
 					/data 					Daten zu Variablen (nicht zwingend anzugeben!)(z.b.: Telefonnummer)
 						/error 				Error (nicht zwingend anzugeben!)(true|false)
-
-	/alert 					(GET)		erzeugt Popup
-		/name 							Name des Popups
-			/message 					Nachricht
-				/type 					Type der Nachricht(nicht zwingend anzugeben!):
-											primary: (blau - kräftig)
-											success(grün)
-											info(blau)
-											warning (orange)
-											danger (rot)
-											default (weiß)
 	/send
 		/alert 				(GET)		erzeugt Popup
 			/title						Name/Überschrift
@@ -121,7 +170,7 @@ var SwitchServerFunctions 	= require('./functions/SwitchServer.js');
 		/pushbullet			(GET)		sendet Pushbullet nachricht
 			/title						Name/Überschrift
 				/message 				Nachricht
-					/type
+					/DeviceIDEN
 
 
 ***********************************************************************************/
@@ -418,14 +467,15 @@ module.exports = function(app, db){
 				var alert = {
 					"title": title,
 					"message": message,
-					"type": req.params.type
+					"type": req.params.type,
+					"date": new Date()
 				}
 				app.io.broadcast('alert', alert);
 				res.status(200).end();
 			});
 		});
 	});
-	app.get('/send/pushbullet/:message/:title/:receiver', function(req, res){
+	app.get('/send/pushbullet/:title/:message/:receiver', function(req, res){
 		var push = {
 			"type":"object",
 			"object":{
@@ -442,5 +492,55 @@ module.exports = function(app, db){
 			}
 		});
 		res.status(200).end();
+	});
+	/*******************************
+		Neuen Countdowntimer anlegen:
+		{
+			time: 			schaltzeit in timestamp/ms
+			device: 		Gerät als Object
+			switchstatus: 	Aktion wie geschaltet wird
+		}
+	*******************************/
+	app.post('countdown', function(req, res){
+		var data = {};
+		switch(req.data.switchstatus){
+			case "on":
+			case "ON":
+			case "On":
+				data.switchstatus = "on";
+				break;
+			case "off":
+			case "OFF":
+			case "Off":
+				data.switchstatus = "off";
+				break;
+			case "toggle":
+			case "TOGGLE":
+			case "Toggle":
+				data.switchstatus = "toggle";
+				break;
+			default:
+				helper.log.error("Countdown konnte nicht gespeichert werden! Falsches Argument zum schalten! (on/off/toggle)");
+				break;
+		}
+
+		if(parseInt(req.data.time) && req.data.time > new Date().getTime()){
+			data.time = new Date().getTime() + (  parseInt(req.data.time) * 60000  );
+		}
+
+		if(typeof req.data.device == "object"){
+			data.device = req.data.device;
+		}
+		
+		countdownFunctions.setNewCountdown(data, function(data){
+			if(data != "200"){
+				helper.log.error("Countdown konnte nicht gespeichert werden!");
+				helper.log.error( data );
+			}else{	
+				countdownFunctions.getCountdowns(req, res, function(data){
+					app.io.broadcast('countdowns', data);
+				});
+			}
+		});
 	});
 }

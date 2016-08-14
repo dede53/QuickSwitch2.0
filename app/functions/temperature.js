@@ -138,7 +138,7 @@ module.exports = {
 									bla.push(asd);
 								});
 						
-								var data = new helper.Sensor(sensor.nodeID, sensor.name, bla, sensor.charttype, sensor.linetype, sensor.farbe, " °C", 0);
+								var data = new helper.Sensor(sensor.nodeID, sensor.name, bla, sensor.charttype, sensor.linetype, sensor.farbe, " °C", 0, true);
 
 								alldata.push(data);
 
@@ -151,7 +151,7 @@ module.exports = {
 										hum.push(asd1);
 									});
 
-									var humsensor = new helper.Sensor(sensor.nodeID + "hum", sensor.name + " (Feuchte)", hum, sensor.charttype, sensor.linetype, sensor.farbe, " %", 1);
+									var humsensor = new helper.Sensor(sensor.nodeID + "hum", sensor.name + " (Feuchte)", hum, sensor.charttype, sensor.linetype, sensor.farbe, " %", 1, true);
 
 									alldata.push(humsensor);
 								}

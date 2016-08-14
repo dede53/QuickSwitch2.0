@@ -4,6 +4,18 @@ var events 			= require('events');
 var helper 			= require('../functions/helper.js');
 var conf 			= require('./../../config.json');
 
+/*
+
++---------------------------------------+
+|										|
+|	Callmonitor aktivieren: 	#96*5*	|
+|	Callmonitor deaktivieren: 	#96*4*	|
+|										|
++---------------------------------------+
+
+*/
+
+
 var CallMonitor = function (host, port) {
 	var self = this;
 	self.call = {};
@@ -29,7 +41,6 @@ var CallMonitor = function (host, port) {
 	}
 
 	var client = net.createConnection(port, host);
-
 	client.addListener('data', function (chunk) {
 		var data = parseMessage(chunk);
 		if (data[1] === 'ring') {
@@ -89,6 +100,17 @@ var CallMonitor = function (host, port) {
 
 	client.addListener('end', function () {
 		client.end();
+	});
+
+	client.addListener('error', function (err) {
+		if(err.code = 'ECONNREFUSED'){
+			helper.log.error('Die fritzbox ('+ err.address +':'+err.port+') kann nicht erreicht werden!');
+			helper.log.error('Ist der CallMonitor aktiv?');
+			helper.log.error('Zum Aktivieren #96*5* anrufen');
+		}else{
+			helper.log.error(err);
+		}
+			
 	});
 };
 

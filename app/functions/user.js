@@ -1,6 +1,8 @@
 var db 				= require('./database.js');
 var async 			= require("async");
 var helper 			= require('./helper.js');
+var deviceFunctions	= require('./device.js');
+var variableFunctions		= require('./variable.js');
 
 module.exports = {
 	/*****************************************
@@ -13,15 +15,21 @@ module.exports = {
 				helper.log.error(err);
 			}else{
 				row.forEach(function(user){
+
 					try{
 						user.favoritDevices = JSON.parse(user.favoritDevices);
 						user.variables = JSON.parse(user.variables);
+						user.varChart = JSON.parse(user.varChart);
 					}catch(e){
 						helper.log.error('Falsches Datenformat bei dem Benutzer: ' + user.name);
 						user.favoritDevices = [];
 						user.variables = [];
+						user.varChart = [];
 					}
-					callback(user);
+					deviceFunctions.favoritDevices(user, req, res, function(devices){
+						user.favoritDevices = devices;
+						callback(user);
+					});
 				});
 			}
 		});
@@ -47,8 +55,10 @@ module.exports = {
 					row[0].favoritDevices = [];
 					row[0].variables = [];
 				}
-				console.log(row[0]);
-				callback(row[0]);
+				deviceFunctions.favoritDevices(row[0], req, res, function(devices){
+					row[0].favoritDevices = devices;
+					callback(row[0]);
+				});
 			}
 		});
 	},

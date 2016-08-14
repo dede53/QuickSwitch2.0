@@ -3,32 +3,37 @@ var helper = require('../functions/helper.js');
 module.exports = function(app, db){
 	var timerFunctions = require('../functions/timer.js');
 	/*****************************************
-	* Socket.io routes für Countdowns
+	* Socket.io routes für Timer
 	*
 	*
 	*
-	* Liefert alle Countdowns
+	* Liefert alle Timer
 	*****************************************/
 	app.io.route('timers', function(req, res){
-		timerFunctions.getTimers(req, res, function(data){
+		timerFunctions.getTimers(function(data){
 			data.forEach(function(timer){
 				req.io.emit('timer', timer);
 			});
 		});
 	});
+	app.io.route('timer', function(req, res){
+		console.log(req.data);
+		timerFunctions.getTimer(req.data, function(data){
+			data.forEach(function(timer){
+				console.log(timer);
+				req.io.emit('timer', timer);
+			});
+		});
+	});
 	/*****************************************
-	* legt einen neuen Countdown an
+	* legt einen neuen Timer an
 	*****************************************/
-	app.io.route('newTimer', function(req){
-		data = req.data;
-		data.settime = Math.floor(Date.parse(new Date));
-
-		data.time = data.settime + (data.time * 60000);
-		app.io.broadcast('newTimer', data);
-		timerFunctions.saveNewTimer(req.data, function(data){
-			if(data != "200"){
-				helper.log.error("Nachricht konnte nicht gespeichert werden!");
-				helper.log.error( data );
+	app.io.route('saveTimer', function(req){
+		timerFunctions.saveTimer(req.data, function(err, data){
+			if(err){
+				console.log(err);
+			}else{
+				app.io.broadcast('timer', data);
 			}
 		});
 	});
@@ -43,18 +48,16 @@ module.exports = function(app, db){
 			}
 		});
 	});
+
+	app.io.route('testActions', function(req){
+		timerFunctions.switchActions(req.data,true, true);
+	});
 	/*****************************************
 	* löscht einen Countdown
 	*****************************************/
 	app.io.route('deleteTimer', function(req, res){
 		var id = req.data.id;
 		helper.log.debug("Lösche den Timer mit der id:" + id);
-		timerFunctions.deleteTimer(id, function(data){
-			timerFunctions.getTimers(req, res, function(data){
-				data.forEach(function(timer){
-					app.io.broadcast('timer', timer);
-				});
-			});
-		});
+		timerFunctions.deleteTimer(id, app);
 	});
 }

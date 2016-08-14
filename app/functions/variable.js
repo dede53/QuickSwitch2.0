@@ -9,7 +9,7 @@ function getVariables(callback){
 	var query = "SELECT * FROM variable;";
 	db.all(query, function(err, variab){
 		if(err){
-			helper.log.error(err);
+			console.log(err);
 			return;
 		}
 		variab.forEach(function(variable){
@@ -21,7 +21,7 @@ function getVariableByNodeid(id, callback){
 	var query = "SELECT * FROM variable WHERE nodeid = '" + id + "';";
 	db.all(query, function(err, data){
 		if(err){
-			helper.log.error(err);
+			console.log(err);
 			return;
 		}else if(data == ""){
 			helper.log.debug("Keine Variabel mit der ID: " + id);
@@ -34,7 +34,7 @@ function getVariableByName(name, callback){
 	var query = "SELECT * FROM variable WHERE name = '" + name.trim() + "';";
 	db.all(query, function(err, data){
 		if(err){
-			helper.log.error(err);
+			console.log(err);
 			return;
 		}else if(data == ""){
 			helper.log.debug("Keine Variabel mit dem Namen: " + name);
@@ -233,25 +233,23 @@ module.exports = {
 		});
 	},
 	getStoredVariables: function(data, callback){
-		if(data.hour){
-			var timeRange = data.hour;
-		}else{
-			var timeRange = 36;
-		}
-		if(Array.isArray(data.variables)){
-			data.variables.forEach(function(id){
+		if( Array.isArray(data.varChart) && data.varChart.length > 0){
+			if(data.hour){
+				var timeRange = data.hour;
+			}else{
+				var timeRange = 36;
+			}
+			data.varChart.forEach(function(id){
 				getVariableByNodeid(id, function(variable){
-					loadStoredVariable(variable, timeRange, function(data){
-						callback(data);
+					loadStoredVariable(variable, timeRange, function(sensor){
+						sensor.user = data.name;
+						console.log(sensor);
+						callback(sensor);
 					});
 				});
 			});
 		}else{
-			getVariables(function(variable){
-				loadStoredVariable(variable, timeRange, function(data){
-					callback(data);
-				});
-			});
+			callback(false);
 		}
 	}
 }

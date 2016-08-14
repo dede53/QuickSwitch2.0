@@ -1,11 +1,11 @@
 var ical 			= require('ical');
-var helper 			= require('../../functions/helper.js');
+var helper 			= require('./../../functions/helper.js');
 var months 			= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var status 			= {};
 // helper.setVariable('Müll', 'false');
 
 function checkWaste(){
-	// console.log(__dirname);
+	helper.log.info("Checke den Kalender");
 	var data = ical.parseFile(__dirname + '/data.ics');
 	var today = new Date();
 	var todaysDay = today.getDate();
@@ -17,7 +17,7 @@ function checkWaste(){
 	var dayAfterTomorrowsDay = tomorrow.getDate();
 	var dayAfterTomorrowsMonth = tomorrow.getMonth();
 	for (var k in data){
-		if (data.hasOwnProperty(k)) {
+		if(data.hasOwnProperty(k)){
 			var ev = data[k];
 			if(ev.start.getDate() == dayAfterTomorrowsDay && ev.start.getMonth() == dayAfterTomorrowsMonth){
 				if(ev.summary != status.dayAfterTomorrow){
@@ -30,7 +30,7 @@ function checkWaste(){
 			}
 			if(ev.start.getDate() == tomorrowsDay && ev.start.getMonth() == tomorrowsMonth){
 				if(ev.summary != status.tomorrow){
-					console.log('Müll raus:' + ev.summary);
+					helper.log.info('Müll raus:' + ev.summary);
 					helper.setVariable('Müll', ev.summary);
 					status.tomorrow = ev.summary;
 				}else{
@@ -38,12 +38,12 @@ function checkWaste(){
 				}
 			}else if(ev.start.getDate() == todaysDay && ev.start.getMonth() == todaysMonth){
 				status.tomorrow = false;
-				helper.log.debug('heute war Müll: ' + ev.summary);
+				helper.log.info('heute war Müll: ' + ev.summary);
 				helper.setVariable('Müll', false);
 			}
 		}
 	}
 }
 checkWaste();
-helper.cron('2 0 * * *', checkWaste, 'Müll');
+helper.cron('2 * * * *', checkWaste, 'Müll');
 // setInterval(checkWaste, 60000);
