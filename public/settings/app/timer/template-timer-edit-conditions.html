@@ -1,0 +1,113 @@
+<div class="modal-header">
+	<h3 class="modal-title">Bedingungen</h3>
+</div>
+<div class="modal-body">
+	<ul class="list-group">
+		<div class="panel panel-primary">
+			<div class="panel-heading">Bedingungen</div>
+			<li class="list-group-item" ng-repeat="(type, conditions) in newTimer.conditions">
+				<div ng-switch on="type">
+					<div ng-switch-when="range">
+						<div timer-range-directive></div>
+					</div>
+					<div ng-switch-when="time">
+						<div timer-time-directive></div>
+					</div>
+					<div ng-switch-when="weekdays">
+						<div timer-weekdays-directive></div>
+					</div>
+				</div>
+			</li>
+			<li class="list-group-item">
+				<ul class="list-group">
+					<li class="list-group-item">
+						<select class="form-control" ng-model="addCondition.type">
+							<option value="{{condition.value}}" ng-repeat="condition in conditions">{{condition.name}}</option>
+						</select>
+					</li>
+				<div ng-show="addCondition.type == 'time'">
+					<li class="list-group-item">
+						<select class="form-control" ng-model="addCondition.mode">
+							<option value="time">Uhrzeit</option>
+							<option value="sunset">Sonnenuntergang</option>
+							<option value="sunrise">Sonnenaufgang</option>
+						</select>
+					</li>
+					<li class="list-group-item" ng-show="addCondition.mode == 'time'">
+						<uib-timepicker ng-model="addCondition.time" hour-step="1" minute-step="5" show-meridian="ismeridian"></uib-timepicker>
+					</li>
+					<li class="list-group-item">
+						<label>
+							Zufällige Verschiebung zu der eigentlichen Schaltzeit:
+						</label>
+						<input type="checkbox" ng-model="addCondition.offset.mode" ng-true-value="'random'" ng-false-value="'normal'">
+						{{addCondition.offset.mode}}
+					</li>
+					<li class="list-group-item" ng-show="addCondition.offset.mode == 'random'">
+						<label>
+							Anzahl der Minuten um die mindestens verschoben wird:
+						</label>
+						<input type="number" class="form-control" ng-model="addCondition.offset.numberMin">
+					</li>
+					<li class="list-group-item" ng-show="addCondition.offset.mode == 'random'">
+						<label>
+							Anzahl der Minuten um die höchstens verschoben wird:
+						</label>
+						<input type="number" class="form-control" ng-model="addCondition.offset.numberMax">
+					</li>
+					<li class="list-group-item" ng-show="addCondition.offset.mode == 'random'">
+<!-- 						<label>
+							Später
+							<input type="radio" ng-model="addCondition.offset.unit" value="+">
+						</label>
+						<label>
+							früher
+							<input type="radio" ng-model="addCondition.offset.unit" value="-">
+						</label>
+						<label>
+							Zufall
+							<input type="radio" ng-model="addCondition.offset.unit" value="random">
+						</label> -->
+						<fieldset class="form-group">
+							<label for="status">Verschiebung:</label>
+							<div class="btn-group">
+								<label class="btn btn-default" ng-model="addCondition.offset.unit" uib-btn-radio="'+'" >später</label>
+								<label class="btn btn-default" ng-selected="true" ng-model="addCondition.offset.unit" uib-btn-radio="'-'" >früher</label>
+								<label class="btn btn-default" ng-model="addCondition.offset.unit" uib-btn-radio="'random'" >Zufällig wechselnd</label>
+							</div>
+						</fieldset>
+					</li>
+					<li class="list-group-item" ng-hide="addCondition.mode == 'time'">
+						{{addCondition.offset.number}} Minuten
+						<select ng-model="addCondition.offset.unit">
+							<option value="+">später</option>
+							<option value="-">früher</option>
+						</select>
+						<input type="range" class="form-control" ng-model="addCondition.offset.number" min="0" max="1000">
+					</li>
+				</div>
+					<li class="list-group-item" ng-show="addCondition.type == 'range'">
+						Von
+						<uib-timepicker ng-model="addCondition.range.start" hour-step="1" minute-step="5" show-meridian="ismeridian"></uib-timepicker>
+						bis
+						<uib-timepicker ng-model="addCondition.range.stop" hour-step="1" minute-step="5" show-meridian="ismeridian"></uib-timepicker>
+					</li>
+					<div ng-show="addCondition.type == 'weekdays'">
+						<li ng-repeat="(id, day) in days" class="list-group-item">
+							<div class="input-group">
+								<span class="input-group-addon">
+									<input type="checkbox" ng-model="addCondition.weekdays[id]" aria-label="...">
+								</span>
+								<input type="text" disabled="true" class="form-control" value="{{day}}" >
+							</div>
+						</li>
+					</div>
+				</ul>
+			</li>
+		</div>
+	</ul>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="save()">OK</button>
+	<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

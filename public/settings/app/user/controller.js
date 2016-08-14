@@ -10,7 +10,8 @@ app.controller('userController', function($scope, $rootScope, socket){
 	$scope.deleteUser = function(data) {
 		socket.emit('deleteUser', {"id":data.id});	
 	}
-	socket.on('deletedUser', function(data) {
+	socket.on('newusers', function(data) {
+		console.log(data);
 		$scope.users = data;
 	});
 });
@@ -32,63 +33,64 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 			}
 	}else{
 		socket.emit('user', {"id":  $routeParams.id});
+		$scope.editUser = {
+			title: "bearbeiten",
+			userlist: {}
+		}
 	}
-	socket.emit('devices', {"type":"object"});
-	socket.emit('variables');
 		/***********************************************
 		*	Daten empfangen, Scope zuordnen
 		***********************************************/
 	socket.on('user', function(data) {
-		console.log(data);
+		$scope.editUser.userlist = data;
+		socket.emit('devices', {"type":"object"});
+		socket.emit('variables');
 
-		$scope.userVariables = data.variables;
-		$scope.editUser = {
-			title: "bearbeiten",
-			userlist: data
-		}
-	});
-	socket.on('devices', function(data) {
-		var devices = new Array;
-		// console.log(data);
-		var arr = Object.keys(data).map(function(k) { return data[k] });
-		arr.forEach(function(arr){
-			var ar = Object.keys(arr.roomdevices).map(function(k) { return arr.roomdevices[k] });
-			ar.forEach(function(arr){
-				if( $routeParams.id && inArray(arr.device.deviceid , $scope.editUser.userlist.favoritDevices) ){
-					var haystack = $scope.editUser.userlist.favoritDevices;
-					var length = $scope.editUser.userlist.favoritDevices.length;
-					for(var i = 0; i < length; i++) {
-						if(haystack[i] == arr.device.deviceid){
-							arr.selected = true;
-							devices.splice(i,0,arr);
-						};
+
+		socket.on('devices', function(data) {
+			var devices = new Array;
+			// console.log(data);
+			var arr = Object.keys(data).map(function(k) { return data[k] });
+			arr.forEach(function(arr){
+				var ar = Object.keys(arr.roomdevices).map(function(k) { return arr.roomdevices[k] });
+				ar.forEach(function(arr){
+					if( $routeParams.id && inArray(arr.device.deviceid , $scope.editUser.userlist.favoritDevices) ){
+						var haystack = $scope.editUser.userlist.favoritDevices;
+						var length = $scope.editUser.userlist.favoritDevices.length;
+						for(var i = 0; i < length; i++) {
+							if(haystack[i] == arr.device.deviceid){
+								arr.selected = true;
+								devices.splice(i,0,arr);
+							};
+						}
+						
+					}else{
+						arr.selected = false;
+						devices.push(arr);
 					}
-					
-				}else{
-					arr.selected = false;
-					devices.push(arr);
-				}
+				});
 			});
+			$scope.devicelist = devices;
 		});
-		$scope.devicelist = devices;
-	});
-	var showVariables = [];
-	socket.on('variable', function(data){
-		if($routeParams.id && !inArray(data.id , showVariables)){
-			if(inArray(data.id , $scope.userVariables)){
-				data.selected = true;
-				console.log($scope.userVariables.indexOf(data.id));
-			 	$scope.variables.splice($scope.userVariables.indexOf(data.id), 1, data);
-			}else{
-				data.selected = false;
-				$scope.variables.push(data);
+		var showVariables = [];
+		$scope.userVariables = data.variables;
+		socket.on('variable', function(data){
+			if($routeParams.id && !inArray(data.id , showVariables)){
+				if(inArray(data.id , $scope.userVariables)){
+					data.selected = true;
+					console.log($scope.userVariables.indexOf(data.id));
+				 	$scope.variables.splice($scope.userVariables.indexOf(data.id), 1, data);
+				}else{
+					data.selected = false;
+					$scope.variables.push(data);
+				}
+				// if(data.selected == true){
+				// }else{
+				// 	console.log(data);
+				// }
+				showVariables.push(data.id);
 			}
-			// if(data.selected == true){
-			// }else{
-			// 	console.log(data);
-			// }
-			showVariables.push(data.id);
-		}
+		});
 	});
 
 	// helper method to get selected fruits

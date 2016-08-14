@@ -18,7 +18,12 @@ ul, ol{
 	margin: auto;
 	margin-top: 20px;
 }
-
+.grey{
+	color:#bbb;
+}
+.green{
+	color:green;
+}
 .menu {
 	background-color: #ddf;
 	padding:20px;

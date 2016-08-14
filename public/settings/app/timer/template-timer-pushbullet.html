@@ -1,0 +1,16 @@
+<ul class="list-group">
+	<li class="list-group-item">Pushbullet Benachrichtigungen</li>
+	<li class="list-group-item" ng-repeat="action in actions">
+		<ul >
+			<li>
+				Titel: {{action.name}}
+				<button class="pull-right btn btn-danger btn-xs" ng-click="removeAction({action:action, type:'pushbullets'})">Löschen</button>
+			</li>
+			<li>
+				Nachricht: {{action.message}}
+			</li>
+		</ul>
+		
+	</li>
+</ul>
+

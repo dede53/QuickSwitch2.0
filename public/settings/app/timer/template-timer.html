@@ -1,0 +1,115 @@
+<div>
+	<uib-accordion-heading>
+		{{timer.name}}
+		<div class="pull-right">
+
+			<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
+
+			
+			<ng-md-icon ng-show="timer.isOpen" icon="edit" style="fill:#399BB0" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchPage('/editTimer/{{timer.id}}')"></ng-md-icon>
+
+			<ng-md-icon ng-show="timer.isOpen" icon="delete" style="fill:#FF8000" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();deleteTimer(timer)"></ng-md-icon>
+		</div>
+	</uib-accordion-heading>
+	<div>
+		<ul ng-show="timer.variables" class="list-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Variablen/Events</div>
+					<div ng-repeat="(type, variables) in timer.variables">
+						<div timer-variable-directive></div>
+					</div>
+			</div>
+		</ul>
+		<ul class="list-group">
+			<div ng-show="timer.conditions" class="panel panel-primary">
+				<div class="panel-heading">Bedingungen</div>
+				<li class="list-group-item" ng-repeat="(type, conditions) in timer.conditions">
+					<div ng-switch on="type">
+						<div ng-switch-when="range">
+							<div timer-range-directive></div>
+						</div>
+						<div ng-switch-when="time">
+							<div timer-time-directive></div>
+						</div>
+						<div ng-switch-when="weekdays">
+							<div timer-weekdays-directive></div>
+						</div>
+					</div>
+				</li>
+			</div>
+			<div ng-show="timer.actions" class="panel panel-primary">
+				<div class="panel-heading">Aktionen</div>
+				<li ng-show="timer.actions" class="list-group-item" ng-repeat="(type, actions) in timer.actions">
+					<div ng-switch on="type">
+						<div ng-switch-when="alerts">
+							<div timer-alert-directive></div>
+						</div>
+						<div ng-switch-when="devices">
+							<div timer-device-directive></div>
+						</div>
+						<div ng-switch-when="storeVariables">
+							<ul class="list-group">
+								<li class="list-group-item">Speichere Variablen</li>
+								<li class="list-group-item" ng-repeat="action in actions">
+									<ul >
+										<li>
+											Titel: {{action.name}}
+											<button class="pull-right btn btn-danger btn-xs" ng-click="removeAction({action:action, type:'devices'})">Löschen</button>
+										</li>
+									</ul>
+
+								</li>
+							</ul>
+						</div>
+						<div ng-switch-when="saveSensors">
+							Speichere Sensoren 
+							<a class="pull-right" ng-click="removeAction({action:action, type:'saveSensors'})">Löschen</a>
+						</div>
+						<div ng-switch-when="pushbullets">
+							<div timer-pushbullet-directive></div>
+						</div>					
+						<div ng-switch-when="urls">
+							<ul class="list-group">
+								<li class="list-group-item">Urls aufrufen</li>
+								<li class="list-group-item" ng-repeat="action in actions">
+									Url: {{action.url}}
+								</li>
+							</ul>
+						</div>
+						<div ng-switch-when="intervals">
+							<div ng-repeat="interval in actions">
+								<h6>Interval: {{interval.number}}{{interval.unit}}</h6>
+								<h6>
+									Action:
+									<span ng-switch on="interval.action">
+										<span ng-switch-when="alerts">
+											<div timer-alert-directive></div>
+										</span>
+										<span ng-switch-when="devices">
+											<div timer-device-directive></div>
+										</span>
+										<div ng-switch-when="storeVariables">
+											Speichere Variablen:
+											<ul>
+												<li ng-repeat="action in actions">{{action.name}}</li>
+											</ul>
+										</div>
+										<span ng-switch-when="saveSensors">
+											Speichere Sensoren
+										</span>
+										<span ng-switch-default>
+											<div>{{type}}{{action}}</div>
+										</span>
+									</span>
+								</h6>
+							</div>
+						</div>
+						<div ng-switch-default>
+							<div>{{type}}{{action}}</div>
+						</div>
+					</div>
+				</li>
+			</div>
+		</ul>
+	</div>
+</div>

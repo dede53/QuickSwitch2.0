@@ -4,7 +4,7 @@
 	</div>
 	<div class="panel-body" ng-repeat="devices in room.roomdevices">
 		<div class="pull-left">
-			{{devices.device.name}}
+			<a href="" data-toggle="tooltip" title="Masterdip:{{devices.device.CodeOn}}|Slavedip:{{devices.device.CodeOff}}">{{devices.device.name}}</a>
 		</div>
 		<div class="pull-right">
 			<div class="box-btn-switch">
@@ -14,10 +14,9 @@
 		</div>
 	</div>
 </div>
-<div class="panel panel-default" style="position: fixed;bottom:0;margin:0;width: 20%;z-index:200;">
-	<div class="panel-body" style="text-align: center;">
-		<a href="#/editDevice/" class="btn btn-success" >
-			Neues Gerät anlegen
+<!-- <div class="panel panel-default" style="position: fixed;bottom:0;margin:0;width: 20%;z-index:200;"> -->
+	<!-- <div class="panel-body" style="text-align: center;"> -->
+		<a href="#/editDevice/" class="btn btn-success" style="text-align: center;position: fixed;bottom:0;margin:10px auto;width: 20%;left:40%;z-index:200;">
+			Neues Gerät hinzufügen
 		</a>
-	</div>	
-</div>
+	<!-- </div> -->

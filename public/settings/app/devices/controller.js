@@ -19,49 +19,43 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 	$scope.options = 	[
 				{
 					name: "Shell/exec",
-					id: 1
+					id: 'send-exec'
 				},
 				{ 
 					name: "URL/WGET",
-					id: 2
+					id: 'send-url'
 				},
-				
 				{ 
 					name: "Fritz!Dect 200",
-					id: 3
+					id: 'switch-fritzdect'
 				},
-				{ 
-					name: "Milight",
-					id: 4
-				},
-				
 				{ 
 					name: "Connair - Brennenstuhl",
-					id: 5
+					id: 'send-connair-brennenstuhl'
 				},
 				{ 
 					name: "Connair - Elro",
-					id: 6
+					id: 'send-connair-elro'
 				},
 				{ 
-					name: "Connair - RAW-Code",
-					id: 7
+					name: "Connair - Raw",
+					id: 'send-connair-raw'
 				},
 				{ 
 					name: "GPIO Fade",
-					id: 8
-				},
-				{ 
-					name: "CCU-Gerät",
-					id: 9
-				},
-				{ 
-					name: "CCU-Programm",
-					id: 10
+					id: 'set-gpio'
 				},
 				{ 
 					name: "UDP-Arduino",
-					id: 11
+					id: 'send-arduino-udp'
+				},
+				{ 
+					name: "Telefunken-TV",
+					id: 'set-telefunken-tv'
+				},
+				{ 
+					name: "Homematic",
+					id: 'send-homematic'
 				}
 			];
 
@@ -74,9 +68,14 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				$scope.editDevice = {
 					title: "hinzufügen",
 					device: {
-						buttonLabelOn: "An",
-						buttonLabelOff: "Aus",
-						status: "0"
+						type:"device",
+						device:{
+							buttonLabelOn: "An",
+							buttonLabelOff: "Aus",
+							status: "0",
+							switchserver: "0"
+							
+						}
 					}
 				}
 		}else{
@@ -98,6 +97,7 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 
 app.controller('saveDeviceController', function($scope, socket, $location) {
 	$scope.submitnew = function() {
+		console.log($scope.editDevice.device);
 		socket.emit('saveDevice', $scope.editDevice.device);
 		$location.url("/devices");
 	};

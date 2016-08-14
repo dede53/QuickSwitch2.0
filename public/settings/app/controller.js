@@ -1,7 +1,7 @@
 var app = 	angular.module('jsbin',[
-				'ui.bootstrap',
-				'snap',
 				'ngAnimate',
+				'snap',
+				'ui.bootstrap',
 				'ngRoute',
 				'ngTouch',
 				'highcharts-ng',
@@ -46,6 +46,15 @@ app.config(['$routeProvider', function($routeProvider) {
 		controller: 'editVariableController'
 	}).
 
+
+	when('/timer', {
+		templateUrl: './app/timer/index.html',
+		controller: 'timerController'
+	}).
+	when('/editTimer/:id', {
+		templateUrl: './app/timer/editTimer.html',
+		controller: 'timerController'
+	}).
 
 	when('/groups', {
 		templateUrl: './app/groups/index.html',

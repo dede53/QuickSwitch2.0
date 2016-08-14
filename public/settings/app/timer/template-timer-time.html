@@ -1,0 +1,32 @@
+<ul class="list-group">
+	<li class="list-group-item">Uhrzeiten</li>
+	<li class="list-group-item" ng-repeat="time in conditions">
+		<div ng-switch on="time.time">
+			<div ng-switch-when="sunset">
+				Sonnenuntergang {{time.offset.unit}}{{time.offset.number}}  Minuten: {{time.action}}
+				<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+			</div>
+			<div ng-switch-when="sunrise">
+				{{time.action}} Sonnenaufgang {{time.offset.unit}}{{time.offset.number}}  Minuten: {{time.action}}
+				<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+			</div>
+			<div ng-switch-default>
+				<div ng-switch on="time.offset.unit">
+					<div ng-switch-when="random">
+						{{time.offset.numberMin}}-{{time.offset.numberMax}} Minuten früher oder später als {{time.time}}
+						<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+					</div>
+					<div ng-switch-when="-">
+						{{time.offset.numberMin}}-{{time.offset.numberMax}} Minuten früher als {{time.time}}
+						<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+					</div>
+					<div ng-switch-when="+">
+						{{time.offset.numberMin}}-{{time.offset.numberMax}} Minuten später als {{time.time}}
+						<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</li>
+</ul>
