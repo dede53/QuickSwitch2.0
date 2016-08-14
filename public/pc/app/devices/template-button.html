@@ -3,22 +3,41 @@
 	<div class="ui-block-b" style="text-align:right">
 		<div class="box-btn-switch">
 			<!--
+			{{device}}
 			-->
 			<button
 				class="btnOn"
-				ng-style="{'background-color': buttonOnColor}"
 				id="btnOn{{device[device.type].deviceid}}"
-				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"1"})' >
-				<input type='checkbox' ng-model='device[device.type].status' ng-true-value="1" ng-false-value="0">
-					{{device[device.type].buttonLabelOn}}
+				ng-click='switchdevice({"id":device.device.deviceid,"sendMultiple":device.device.sendMultiple,"status":"1"})'
+
+				ng-mousedown='switchdeviceMouseDown({"id":device.device.deviceid,"sendMultiple":device.device.sendMultiple,"status":"1"})'
+				ng-mouseup="switchdeviceMouseUp(device.device)"
+				ng-style="{'background-color': buttonOnColor}"
+				>
+				<input 
+					type='checkbox' 
+					ng-hide="device[device.type].showStatus == 0" 
+					ng-model='device[device.type].status' 
+					ng-true-value="1" 
+					ng-false-value="0"
+				>
+				{{device[device.type].buttonLabelOn}}
 			</button>
 			<button
 				class="btnOff" 
 				id="btnOff{{device[device.type].deviceid}}"
-				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'
+				ng-click='switchdevice({"id":device.device.deviceid,"sendMultiple":device.device.sendMultiple,"status":"0"})'
+				ng-mousedown='switchdeviceMouseDown({"id":device.device.deviceid,"sendMultiple":device.device.sendMultiple,"status":"0"})'
+				ng-mouseup="switchdeviceMouseUp(device.device)"
 				ng-style="{'background-color': buttonOffColor}"
 				>
-				<input type='checkbox' ng-model='device[device.type].status' ng-true-value="0" ng-false-value="1">
+				<input
+					type='checkbox'
+					ng-hide="device[device.type].showStatus == 0"
+					ng-model='device[device.type].status'
+					ng-true-value="0"
+					ng-false-value="1"
+				>
 				{{device[device.type].buttonLabelOff}}
 			</button>
 		</div>

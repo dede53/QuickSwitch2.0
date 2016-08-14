@@ -8,9 +8,10 @@
 			max="1"
 			step="0.01"
 			ng-model="device[device.type].status"
-			ng-model-options="{ debounce: 50 }"
+			
 			ng-change='switchdeviceSlider({"device":device[device.type]})'
 		>
+		<!-- ng-model-options="{ debounce: 50 }" -->
 		</input>
 	</div>
 </div>

@@ -1,0 +1,26 @@
+<div>
+	<p class="left">{{device[device.type].name}}</p>
+	<div class="ui-block-b" style="text-align:right">
+		<div class="box-btn-switch">
+			<button
+				ng-style="{'background-color': buttonOnColor}"
+				id="btnOn{{device[device.type].deviceid}}"
+				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"1"})' >
+					{{device[device.type].buttonLabelOn}}
+			</button>
+			<button
+				ng-style="{'background-color': buttonOnColor}"
+				id="btnOn{{device[device.type].deviceid}}"
+				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"stop"})' >
+					Stopp
+			</button>
+			<button
+				id="btnOff{{device[device.type].deviceid}}"
+				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'
+				ng-style="{'background-color': buttonOffColor}"
+				>
+				{{device[device.type].buttonLabelOff}}
+			</button>
+		</div>
+	</div>
+</div>

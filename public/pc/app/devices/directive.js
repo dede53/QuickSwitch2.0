@@ -15,10 +15,26 @@ app.directive('buttonDirective', function ($rootScope) {
 	};
 });
 
+app.directive('pushButtonDirective', function ($rootScope) {
+	return {
+		scope: true,
+		restrict: 'EA',
+    	replace: 'true',
+		templateUrl: './app/devices/template-pushButton.html'
+	};
+});
+
 app.directive('sliderDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',
 		templateUrl: './app/devices/template-slider.html'
+	};
+});
+
+app.directive('shutterDirective', function ($rootScope) {
+	return {
+		restrict: 'EA',
+		templateUrl: './app/devices/template-shutter.html'
 	};
 });
 

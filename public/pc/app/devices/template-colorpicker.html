@@ -6,21 +6,21 @@
 				<p class="sliderText grey">{{device[device.type].status}}</p>
 			</div>
 			<div class="text-right" style="">
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'>
-					{{device[device.type].buttonLabelOff}}
-				</button>
 				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"765"})'>
 					{{device[device.type].buttonLabelOn}}
+				</button>
+				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'>
+					{{device[device.type].buttonLabelOff}}
 				</button>
 			</div>
 		<input
 			type="range" 
 			min="0" 
 			max="765"
-			step="1"
+			step="5"
 			ng-model="device[device.type].status"
-			ng-model-options="{ debounce: 50 }"
-			ng-change='switchdevice({"id":device[device.type].deviceid, "status":device[device.type].status})'
+			ng-change='switchdevice({"id":device.device.deviceid, "status":device.device.status})'
+			ng-model-options="{ debounce: 5 }"
 		>
 		</input>
 	</div>
