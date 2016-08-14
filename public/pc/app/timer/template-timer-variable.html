@@ -1,6 +1,16 @@
-<div ng-if="timer.variables.length != 0">
-	Variablen:
-	<div ng-repeat="variable in timer.variables">
-		{{variable.name}}: {{variable.status}}
-	</div>
-</div>
+<!-- <ul class="list-group"> -->
+
+	<li class="list-group-item" ng-repeat="variable in variables">
+		<div ng-switch on="variable.mode">
+			<div ng-switch-when="match">
+				Löse aus sobald die Variable "{{variable.name}}" den Wert "{{variable.status}}" hat.
+			</div>
+			<div ng-switch-when="onChange">
+				Löse aus sobald die Variable "{{variable.name}}" ihren Wert ändert hat.
+			</div>
+			<div ng-switch-default>
+				{{variable}}
+			</div>
+		</div>
+	</li>
+<!-- </ul> -->

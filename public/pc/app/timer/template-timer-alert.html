@@ -1,6 +1,16 @@
-<div>
-	Alert:
-	<div ng-repeat="action in actions">
-		{{action.name}} ({{action.message}})
-	</div>
-</div>
+<ul class="list-group">
+	<li class="list-group-item">Alerts</li>
+	<li class="list-group-item" ng-repeat="action in actions">
+		<ul >
+			<li>
+				Titel: {{action.name}}
+			</li>
+			<li>
+				Nachricht: {{action.message}}
+			</li>
+			<li>
+				Type: {{action.type}}
+			</li>
+		</ul>
+	</li>
+</ul>

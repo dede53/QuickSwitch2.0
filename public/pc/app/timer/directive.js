@@ -9,11 +9,16 @@ app.directive('timerDirective', function(){
 app.directive('createTimerDirective', function(){
 	return {
 		restrict: "EA",
-		templateUrl: "./app/timer/template-timer.html",
-		controller: "createTimerController"
+		templateUrl: "./app/timer/template-timer.html"
 	}
 });
-
+app.directive('timerEditDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-edit.html',
+		controller: "addNewTimerController"
+	}
+});
 app.directive('timerWeekdaysDirective', function(){
 	return {
 		restrict: "EA",
@@ -21,10 +26,23 @@ app.directive('timerWeekdaysDirective', function(){
 	}
 });
 
+app.directive('timerRangeDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-range.html'
+	}
+});
 app.directive('timerTimeDirective', function(){
 	return {
 		restrict: "EA",
 		templateUrl: './app/timer/template-timer-time.html'
+	}
+});
+
+app.directive('timerRandomDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-random.html'
 	}
 });
 
