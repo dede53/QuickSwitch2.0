@@ -1,13 +1,10 @@
 <h3>
-	<a ng-click="switchPage('/timer')">
-		Timer
-	</a>
+	Timer
 </h3>
+<div ng-if="$root.timers.length == 0" class="alert alert-info" role="alert">Keine Timer gesetzt!</div>
 
-<div ng-if="timers.length == 0" class="alert alert-info" role="alert">Keine Timer gesetzt!</div>
-
-<uib-accordion ng-if="timers.length != 0" close-others="true">
-	<uib-accordion-group ng-repeat="timer in timers" is-open="timer.isOpen">
+<uib-accordion ng-if="$root.timers.length != 0" close-others="true">
+	<uib-accordion-group ng-show="timer.user == $root.activeUser.name" ng-repeat="timer in $root.timers"  is-open="timer.isOpen">
 		<div create-timer-directive></div>
 	</uib-accordion-group>
 </uib-accordion>
