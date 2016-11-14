@@ -1,0 +1,11 @@
+{
+	"hombots":[
+		{
+			"name":"Fluffi",
+			"ip":"192.168.2.25",
+			"port": 6260
+		}
+	],
+	"requesttime": 1,
+	"cron": "/5 * * * * * *"
+}

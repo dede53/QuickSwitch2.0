@@ -1,0 +1,22 @@
+{
+	"hosts":[
+		{
+			"ip":"192.168.2.23",
+			"name": "DanielHome"
+		}, 
+		{
+			"ip":"192.168.2.190",
+			"name": "DanielTablet"
+		}, 
+		{
+			"ip":"192.168.2.64",
+			"name": "Phone"
+		}, 
+		{
+			"ip":"192.168.2.55",
+			"name": "Tablet"
+		}
+	],
+	"interval":1,
+	"minTime": 300
+}
