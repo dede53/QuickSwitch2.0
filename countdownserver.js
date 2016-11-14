@@ -59,14 +59,14 @@ function checkCountdowns(){
 				console.log("		Countdown id: " + countdown.id);
 				console.log("		Schaltzeit: " + switchtime);
 
-					// console.log(countdown);
+
 				if(switchtime == now){
 					console.log("		Schalte Countdown!\n");
 					switchaction(countdown.type, countdown.switchid, countdown.status);
-					/*
+					
 					var query="DELETE FROM countdowns WHERE id = " + countdown.id + ";";
 					db.run(query);
-					*/
+					
 				}else{
 					console.log("		Stimmt nicht!\n");
 				}
