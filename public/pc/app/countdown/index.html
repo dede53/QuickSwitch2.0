@@ -1,6 +1,5 @@
 <div>
 	<h3>Countdowns</h3>
-<<<<<<< HEAD
 	<div ng-show="$root.countdowns | isEmpty" class="alert alert-info" role="alert">Keine Countdowns gesetzt!</div>
 	<div class="panel panel-default" ng-hide="$root.countdowns | isEmpty">
 		<div class="panel-body">
@@ -8,41 +7,15 @@
 				<li ng-repeat="countdown in $root.countdowns">
 					<p>{{countdown.device[countdown.device.type].name}} ({{countdown.device[countdown.device.type].Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.status ? "ein" :  "aus"}}schalten
 						<button class="btn btn-xs btn-danger" ng-click="remove('countdowns', {'id':countdown.id})" >Löschen</button>
-=======
-	<div ng-if="activeCountdowns.length == 0" class="alert alert-info" role="alert">Keine Countdowns gesetzt!</div>
-	<div class="panel panel-default" ng-if="activeCountdowns.length != 0">
-		<div class="panel-body">
-			<ul style=" overflow:auto">
-				<li ng-repeat="countdown in activeCountdowns">
-					<p>{{countdown.device[countdown.device.type].name}} ({{countdown.device[countdown.device.type].Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.switchstatus ? "ein" :  "aus"}}schalten
-						<button class="btn btn-xs btn-danger" ng-click='deleteCountdown({"id":countdown.id})' >Löschen</button>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					</p>
 				</li>
 			</ul>
 		</div>
 	</div>
-<<<<<<< HEAD
 	<form>
 		<ul style="text-align:right;" >
 			<fieldset class="form-group">
 				<label for="device" class="left">Gerät</label>
-=======
-	<form ng-controller="newCountdowntimer">
-		<ul style="text-align:right;" >
-			<fieldset class="form-group">
-				<label for="device" class="left">Gerät</label>
-			<!--
-				<select class="form-control" id="device" ng-model="newCountdowntimer.device" required="required">
-					<option value="0">
-						Wähle ein Gerät
-					</option>
-					<option ng-repeat="obj in devicelist" value="{{obj.deviceid}}">
-						{{obj.name}} ({{obj.Raum}})
-					</option>
-				</select>
-			-->
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				<select
 						class="form-control"
 						ng-change=""
@@ -57,7 +30,6 @@
 			</fieldset>
 			<fieldset class="form-group">
 				<label for="status">Status</label>
-<<<<<<< HEAD
 				<div class="btn-group btn-group-sm" role="group">
 					<button type="button" class="btn btn-secondary"
 						ng-model="newCountdowntimer.status" uib-btn-radio="1">
@@ -69,13 +41,6 @@
 					</button>
 				</div>
 				<button class="btn btn-secondary btn-sm" ng-click="add('countdowns', newCountdowntimer)">Speichern!</button>
-=======
-				<div class="btn-group">
-					<label class="btn btn-default" ng-model="newCountdowntimer.switchstatus" uib-btn-radio="'1'" >An</label>
-					<label class="btn btn-default" ng-model="newCountdowntimer.switchstatus" uib-btn-radio="'0'" >Aus</label>
-				</div>
-				<button class="btn btn-default" ng-click="newCountdown()">Speichern!</button>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			</fieldset>
 		</ul>
 	</form>

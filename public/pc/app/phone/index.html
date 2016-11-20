@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div>
 	<h3>Telefonanrufe</h3>
 	<!-- <div ng-show="variables['avmfritz.phonelist'].status"> -->
@@ -44,33 +43,3 @@
 		{{bla}}
 	</div> -->
 </div>
-=======
-<h3>Telefonanrufe</h3>
-<div ng-show="phonelist">
-	<ul class="panel panel-default">
-		<div class="panel-body">
-			<li ng-repeat="call in phonelist" class="">
-				<!--
-					<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
-				-->
-				<p id="">
-						<ng-md-icon ng-if="(call.direction) == 'outbound'" icon="call_made" style="fill:blue" size="20" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>					
-						<ng-md-icon ng-if="(call.direction) == 'missed'" icon="call_missed" style="fill:red" size="20" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>					
-						<ng-md-icon ng-if="(call.direction) == 'inbound'" icon="call_received" style="fill:green" size="20" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>
-	
-					<span class="pull-left">
-						{{	call.date | date:'d.MM. HH:mm'}}
-					</span>
-					<span class="pull-right">
-						{{call.remotenumber}}
-						<span class="right grey">
-							{{call.duration}} {{call.durationminutes}} Min.
-						</span>
-					</span>
-				</p>
-			</li>
-		</div>
-	</ul>
-</div>
-<div ng-hide="phonelist" class="alert alert-info" role="alert">Keine Verbindung zur Fritzbox!</div>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

@@ -14,7 +14,6 @@ app.filter('action', function() {
 		}
 		// do some bounds checking here to ensure it has that index
 	}
-<<<<<<< HEAD
 });
 
 
@@ -28,6 +27,4 @@ app.filter('isEmpty', function () {
 		}
 		return true;
 	};
-=======
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

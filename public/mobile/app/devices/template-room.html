@@ -1,23 +1,14 @@
 <h3>Geräte</h3>
 <div class="panel-group" id="accordion">
-<<<<<<< HEAD
 	<div class="panel panel-default" ng-repeat="room in devices">
-=======
-	<div class="panel panel-default" ng-repeat="room in devicelist">
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		<div class="panel-heading">
 			<h4 class="panel-title" style="height:40px;">
 				<a data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{room.room.id}}" class="pull-left">
 					{{room.room.name}}
 				</a>
 				<div class="pull-right">
-<<<<<<< HEAD
 					<button  class="btnOn buttonM" id="btnOn{{room.room.id}}" ng-click='switch("rooms", {"room":room.room,"status":"1"})' >An</button>
 					<button class="btnOff buttonM" id="btnOff{{room.room.id}}" ng-click='switch("rooms", {"room":room.room,"status":"0"})' >Aus</button>
-=======
-					<button  class="btnOn" id="btnOn{{room.room.id}}" ng-click='switchRoom({"room":room.room,"status":"1"})' >An</button>
-					<button class="btnOff" id="btnOff{{room.room.id}}" ng-click='switchRoom({"room":room.room,"status":"0"})' >Aus</button>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				</div>
 			</h4>
 		</div>
@@ -25,11 +16,7 @@
 			<div class="panel-body">
 				<ul ng-repeat="device in room.roomdevices">
 					<li>
-<<<<<<< HEAD
 						<div ng-switch="device.protocol">
-=======
-						<div ng-switch="device[device.type].protocol">
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							<div ng-switch-when="set-gpio">
 								<div slider-directive></div>
 							</div>

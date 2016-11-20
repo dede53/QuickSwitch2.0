@@ -249,6 +249,7 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	});
 	socket.on('change', function(data){
 		console.log(data);
+		console.log($rootScope[data.masterType]);
 		switch(data.type){
 			case "push":
 				console.log($rootScope[data.masterType]);

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <ul class="alerts">
 	<li ng-repeat="alert in $root.alerts" ng-click="remove('alerts', alert)">
 		<div class="card card-{{alert.type}}">
@@ -16,29 +15,3 @@
 		</div>
 	</li>
 </ul>
-=======
-<!--
-	<div class="alerts">
-		<uib-alert class="alert-xl" ng-repeat="alert in alerts" type="{{alert.type}}" ng-click="closeAlert($index)">
-				<strong>{{alert.name}} </strong>
-				{{alert.message}}
-		</uib-alert>
-	</div>
--->
-
-<div class="alerts">
-	<div class="panel panel-{{alert.type}}" ng-repeat="alert in alerts" ng-click="closeAlert($index)">
-		<div class="panel-heading">
-			<h4 class="panel-title" style="text-align:left;">
-				{{alert.title}}
-				<span class="pull-right grey">
-					{{alert.date | date:'dd.MMM., H:mm'}}
-				</span>
-			</h4>
-		</div>
-		<div class="panel-body">
-			{{alert.message}}
-		</div>
-	</div>
-</div>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

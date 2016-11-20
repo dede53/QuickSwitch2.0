@@ -1,7 +1,6 @@
 <div data-snap-ignore="true">
 	<div class="box-btn-switch">
 			<div class="left">
-<<<<<<< HEAD
 				<p class="sliderText">{{device.name}}</p>
 				<p class="sliderText grey">{{formatNumber(device.status)}}%</p>
 			</div>
@@ -23,29 +22,6 @@
 				</button>
 				<button class="" id="" ng-click='switchdevice({"id":device.deviceid,"status":"1"})'>
 					{{device.buttonLabelOn}}
-=======
-				<p class="sliderText">{{device[device.type].name}}</p>
-				<p class="sliderText grey">{{formatNumber(device[device.type].status)}}%</p>
-			</div>
-			<div class="text-right" style="">
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'>
-					{{device[device.type].buttonLabelOff}}
-				</button>
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0.2"})'>
-					20%
-				</button>
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0.4"})'>
-					40%
-				</button>
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0.6"})'>
-					60%
-				</button>
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0.8"})'>
-					80%
-				</button>
-				<button class="" id="" ng-click='switchdevice({"id":device[device.type].deviceid,"status":"1"})'>
-					{{device[device.type].buttonLabelOn}}
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				</button>
 			</div>
 		<input
@@ -53,15 +29,9 @@
 			min="0" 
 			max="1"
 			step="0.01"
-<<<<<<< HEAD
 			ng-model="device.status"
 			
 			ng-change='switchdevice({"id":device.deviceid, "status": device.status})'
-=======
-			ng-model="device[device.type].status"
-			
-			ng-change='switchdevice({"id":device[device.type].deviceid, "status": device[device.type].status})'
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		>
 		<!-- ng-model-options="{ debounce: 50 }" -->
 		</input>

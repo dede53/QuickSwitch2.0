@@ -6,25 +6,6 @@
 				<div ng-switch-when="random">
 					<li>
 						<ul>
-<<<<<<< HEAD
-=======
-<!-- 							<li>
-								<div ng-switch on="time.time">
-									<div ng-switch-when="sunset">
-										Sonnenuntergang 
-										<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-									</div>
-									<div ng-switch-when="sunrise">
-										Sonnenaufgang
-										<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-									</div>
-									<div ng-switch-default>
-										{{time.time}}
-										<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-									</div>
-								</div>
-							</li> -->
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							<li>
 								Zwischen
 								<span ng-switch on="time.offset.unit">
@@ -49,11 +30,7 @@
 										{{time.time}}
 									</span>
 								</span>
-<<<<<<< HEAD
 								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-=======
-								<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							</li>
 						</ul>
 					</li>
@@ -63,7 +40,6 @@
 						<div ng-switch on="time.time">
 							<div ng-switch-when="sunset">
 								Sonnenuntergang 
-<<<<<<< HEAD
 								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
 							</div>
 							<div ng-switch-when="sunrise">
@@ -73,17 +49,6 @@
 							<div ng-switch-default>
 								{{time.time}}
 								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-=======
-								<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-							</div>
-							<div ng-switch-when="sunrise">
-								Sonnenaufgang
-								<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
-							</div>
-							<div ng-switch-default>
-								{{time.time}}
-								<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							</div>
 						</div>
 					</li>

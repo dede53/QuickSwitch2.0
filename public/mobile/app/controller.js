@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 		var chartConfig = {
 				options:{
 					chart: {
@@ -164,41 +163,11 @@ app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.
 	when('/home', {
 		templateUrl: './app/home/index.html'
-=======
-var app = 	angular.module('jsbin',[
-				'ui.bootstrap',
-				'snap',
-				'ngAnimate',
-				'ngRoute',
-				'ngTouch',
-				'highcharts-ng',
-				'ngMdIcons'
-			]);
-
-
-app.config(['$routeProvider', function($routeProvider) {
-	$routeProvider.
-	when('/home', {
-		templateUrl: './app/home/index.html',
-		controller: 'homeController'
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}).
 	when('/devices', {
 		templateUrl: './app/devices/index.html',
 		controller: 'devicesController'
-<<<<<<< HEAD
 	}).
-=======
-	})/*.
-	when('/groups', {
-		templateUrl: './app/groups/index.html',
-		controller: 'groupsController'
-	}).
-	when('/rooms', {
-		templateUrl: './app/rooms/index.html',
-		controller: 'roomsController'
-	})*/.
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	when('/temperature', {
 		templateUrl: './app/temperature/index.html',
 		controller: 'temperatureController'
@@ -211,37 +180,11 @@ app.config(['$routeProvider', function($routeProvider) {
 		redirectTo: '/home'
 	});
 }]);
-<<<<<<< HEAD
 app.controller('favoritmenucontroller', function($scope){
 
 });
 
 app.controller('appController', function($scope, socket, $rootScope, $location){
-=======
-
-app.controller('appController', function($rootScope, $scope, $location, socket){
-
-	$scope.favorit = true;
-
-	$scope.storedUser = getCookie("username");
-
-	if ($scope.storedUser != "") {
-		$rootScope.activeUser = JSON.parse($scope.storedUser);
-	}else{
-		$rootScope.activeUser = {};
-		$rootScope.activeUser.favoritDevices = [];
-		$rootScope.activeUser.name = "Besucher";
-	}
-	$scope.showmenu=false;
-	$scope.toggleMenu = function(data){
-		$scope.showmenu=!($scope.showmenu);
-		if(data != ""){
-			$location.url(data);
-		}
-	}
-
-	
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	$scope.snapOptions = {
 		disable: 'none',
 		addBodyClasses: true,
@@ -257,7 +200,6 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 		slideIntent: 40,
 		minDragDistance: 5
 	}
-<<<<<<< HEAD
 	var oldUser = "system";
 	var newUser;
 	// Setup the ready route, join room and broadcast to room.
@@ -350,19 +292,4 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 	$scope.abort = function(data) {
 		$location.url(data);
 	};
-=======
-	socket.emit('devices', {"type":"object"});
-
-	/***********************************************
-	*	Daten empfangen, Scope zuordnen
-	***********************************************/
-	socket.on('devices', function(data) {
-		$rootScope.devicelist = data;
-	});
-
-});
-
-app.controller('favoritmenucontroller', function($scope){
-
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

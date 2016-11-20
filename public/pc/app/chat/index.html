@@ -2,44 +2,23 @@
 	<h3>Chat</h3>
 	<div class="panel panel-default">
 		<div class="panel-body">
-<<<<<<< HEAD
 		<ul style="max-height:230px; overflow:auto;">
 			<li class="" ng-hide="chat.moreMessagesAvible">
 				<div class="alert-sm alert-info" role="alert">Keine weiteren Nachrichten verfügbar!</div>
 			</li>
 			<li class="" ng-show="chat.moreMessagesAvible">
-=======
-		<ul class="" style="max-height:230px; overflow:auto;">
-			<li class="" ng-hide="moreMessagesAvible">
-				<div class="alert-sm alert-info" role="alert">Keine weiteren Nachrichten verfügbar!</div>
-			</li>
-			<li class="" ng-show="moreMessagesAvible">
-				<!--
-				<button class="btn btn-sm btn-default" ng-click = "loadOldMessages()">ältere Laden</button>
-				-->
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				<div class="alert-sm alert-info" role="alert">
 					<a href="" class="alert-link" ng-click = "loadOldMessages()" >ältere Nachrichten Laden</a>
 				</div>
 			</li>
-<<<<<<< HEAD
 			<li class="tile" ng-repeat="message in chat.messages track by $index">
 				<div ng-if="message.type == '1'">
 					<p class="sliderText" id="{{message.time}}">
-=======
-			<li class="" ng-repeat="message in sharedMessages track by $index">
-				<div ng-if="message.type == '1'">
-					<p id="{{message.time}}">
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 						<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>  {{message.author}}: {{message.message}}
 					</p>
 				</div>
 				<div ng-if="message.type == '2'">
-<<<<<<< HEAD
 					<p class="sliderText" id="{{message.time}}">
-=======
-					<p id="{{message.time}}">
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 						<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>
 						{{message.author}}: 
 						<a target-blank ng-href="{{message.message}}">{{message.message}}</a>
@@ -50,21 +29,13 @@
 		</div>
 	</div>
 	<br>
-<<<<<<< HEAD
 	<form>
-=======
-	<form ng-controller="sendNewMessage">
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		<input type="text" class="form-control"		id="message" 	ng-model="link.message" placeholder="Neue Nachricht eingeben" ></input>
 		<br>
 	    <div class="btn-group">
 	        <label class="btn btn-default" ng-model="link.type" uib-btn-radio="'1'" >Text</label>
 	        <label class="btn btn-default" ng-model="link.type" uib-btn-radio="'2'" >Link</label>
 	    </div>
-<<<<<<< HEAD
 		<button class="btn btn-default" ng-click="add('messages', link)">Senden!</button>
-=======
-		<button class="btn btn-default" ng-click="sendMessage()">Senden!</button>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	</form>
 </div>

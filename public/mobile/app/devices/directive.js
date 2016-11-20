@@ -50,12 +50,7 @@ app.directive('sliderDirective', function ($rootScope) {
 app.directive('favoritenDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',
-<<<<<<< HEAD
 		templateUrl: './app/devices/template-favorit.html'
-=======
-		templateUrl: './app/devices/template-favorit.html',
-		controller: 'favoritDevices'
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	};
 });
 

@@ -7,7 +7,6 @@ app.directive('timerDirective', function(){
 });
 
 app.directive('createTimerDirective', function(){
-<<<<<<< HEAD
 	var controller = ['$scope', 'socket', '$rootScope', function ($scope, socket, $rootScope) {
 		$scope.$watch('timer', function(newValue, oldValue) {
 			if(newValue.active == 'true'){
@@ -37,10 +36,6 @@ app.directive('createTimerDirective', function(){
 	return {
 		restrict: "EA",
 		controller: controller,
-=======
-	return {
-		restrict: "EA",
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		templateUrl: "./app/timer/template-timer.html"
 	}
 });

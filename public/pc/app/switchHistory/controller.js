@@ -2,19 +2,8 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
-<<<<<<< HEAD
 	socket.emit('switchHistory:get');
 
-=======
-	// socket.emit('getSwitchHistory', 24);
-
-	/***********************************************
-	*	Daten empfangen, Scope zuordnen
-	***********************************************/
-	socket.on('switchHistory', function(data) {
-		$rootScope.switchHistory = data;
-	});
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 
 	var chartConfig = {
 		options:{
@@ -62,36 +51,12 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 		loading:true
 	}
 	$rootScope.chartConfigSwitchHistory = chartConfig;
-<<<<<<< HEAD
 
 	$scope.$watch('switchHistory', function(newValue, oldValue){
 		$rootScope.chartConfigSwitchHistory.series = newValue;
 		$rootScope.chartConfigSwitchHistory.loading = false;
 	});
 
-=======
-	socket.emit('getSwitchHistoryByID', 24);
-	socket.on('switchHistoryByID', function(alldata) {
-		if(alldata != false){
-			$rootScope.chartConfigSwitchHistory.series.push(alldata);
-			$rootScope.chartConfigSwitchHistory.loading = false;
-			// $rootScope.chartConfigSwitchHistory.options.yAxis.plotBands.push({
-			// 	from: parseInt(alldata.nodeid) - 0.5,
-			// 	to: parseInt	(alldata.nodeid) + 0.5,
-			// 	color: 'rgba(68, 170, 213, 0.1)',
-			// 	label: {
-			// 		text: alldata.name,
-			// 		style: {
-			// 			color: '#606060',
-			// 			'size':2
-			// 		}
-			// 	}
-			// });
-		}else{
-			$rootScope.tempNoData = true;
-		}
-	});
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	Highcharts.setOptions({
 		global : {
 			useUTC : false

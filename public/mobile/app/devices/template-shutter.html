@@ -1,5 +1,4 @@
 <div>
-<<<<<<< HEAD
 	<p class="left">{{device.name}}</p>
 	<div style="text-align:right">
 		<div class="box-btn-switch">
@@ -24,29 +23,6 @@
 				ng-style="{'background-color': buttonOffColor}"
 				>
 				{{device.buttonLabelOff}}
-=======
-	<p class="left">{{device[device.type].name}}</p>
-	<div class="ui-block-b" style="text-align:right">
-		<div class="box-btn-switch">
-			<button
-				ng-style="{'background-color': buttonOnColor}"
-				id="btnOn{{device[device.type].deviceid}}"
-				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"1"})' >
-					{{device[device.type].buttonLabelOn}}
-			</button>
-			<button
-				ng-style="{'background-color': buttonOnColor}"
-				id="btnOn{{device[device.type].deviceid}}"
-				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"stop"})' >
-					Stopp
-			</button>
-			<button
-				id="btnOff{{device[device.type].deviceid}}"
-				ng-click='switchdevice({"id":device[device.type].deviceid,"status":"0"})'
-				ng-style="{'background-color': buttonOffColor}"
-				>
-				{{device[device.type].buttonLabelOff}}
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			</button>
 		</div>
 	</div>

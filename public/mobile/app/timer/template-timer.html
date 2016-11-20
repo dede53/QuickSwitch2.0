@@ -41,7 +41,6 @@
 			<div ng-show="timer.actions != false" class="panel panel-primary">
 				<div class="panel-heading">
 					Aktionen
-<<<<<<< HEAD
 					<ng-md-icon 
 						icon="play_arrow"
 						style="fill:lightgreen"
@@ -49,9 +48,6 @@
 						size="25"
 						ng-click='switchAll("timers", timer)'>	
 					</ng-md-icon>
-=======
-					<ng-md-icon icon="play_arrow" style="fill:lightgreen" class="pull-right" size="25" ng-click="testActions(timer)"></ng-md-icon>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				</div>
 				<li ng-show="timer.actions" class="list-group-item" ng-repeat="(type, actions) in timer.actions">
 					<div ng-switch on="type">

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div  class="card">
 	<uib-accordion-heading>
 		<div class="card-header">
@@ -153,35 +152,6 @@
 			<div ng-show="timer.conditions != false" class="card">
 				<ul class="card-block">
 					<li class="card-header">Bedingungen</li>
-=======
-<div>
-	<uib-accordion-heading>
-		{{timer.name}}
-		<div class="pull-right">
-
-			<span ng-show="timer.isOpen">
-				Zuletzt ausgeführt: {{timer.lastexec | date:'d. MMM | HH:mm'}}
-			</span>
-
-			<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
-
-			
-			<ng-md-icon ng-show="timer.isOpen" icon="edit" style="fill:#399BB0" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchPage('/editTimer/{{timer.id}}')"></ng-md-icon>
-
-			<ng-md-icon ng-show="timer.isOpen" icon="delete" style="fill:#FF8000" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();deleteTimer(timer)"></ng-md-icon>
-		</div>
-	</uib-accordion-heading>
-	<div>
-			<div ng-show="timer.variables != false" class="panel panel-primary">
-				<div class="panel-heading">Variablen/Events</div>
-				<div ng-repeat="(type, variables) in timer.variables">
-					<div timer-variable-directive></div>
-				</div>
-			</div>
-			<div ng-show="timer.conditions != false" class="panel panel-primary">
-				<div class="panel-heading">Bedingungen</div>
-				<ul>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					<li class="list-group-item" ng-repeat="(type, conditions) in timer.conditions">
 						<div ng-switch on="type">
 							<div ng-switch-when="range">
@@ -200,7 +170,6 @@
 					</li>
 				</ul>
 			</div>
-<<<<<<< HEAD
 			<div ng-show="timer.actions != false" class="card">
 				<ul class="card-block">				
 					<li class="card-header">
@@ -213,14 +182,6 @@
 							ng-click='switchAll("timers", timer)'>	
 						</ng-md-icon>
 					</li>
-=======
-			<div ng-show="timer.actions != false" class="panel panel-primary">
-				<div class="panel-heading">
-					Aktionen
-					<ng-md-icon icon="play_arrow" style="fill:lightgreen" class="pull-right" size="25" ng-click="testActions(timer)"></ng-md-icon>
-				</div>
-				<ul>				
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					<li ng-show="timer.actions" class="list-group-item" ng-repeat="(type, actions) in timer.actions">
 						<div ng-switch on="type">
 							<div ng-switch-when="alerts">
@@ -278,9 +239,4 @@
 					</li>
 				</ul>
 			</div>
-<<<<<<< HEAD
 		</div> -->
-=======
-	</div>
-</div>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

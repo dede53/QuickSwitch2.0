@@ -1,7 +1,6 @@
 <h3>Telefonanrufe</h3>
 <ul class="panel panel-default">
 	<div class="panel-body">
-<<<<<<< HEAD
 		<li ng-repeat="call in calls" class="">
 					<p id="" style="padding:8px 0;">
 						<span class="pull-left">
@@ -22,19 +21,6 @@
 								{{call.duration}} {{call.durationminutes}} Min.
 							</span>
 						</span>
-=======
-		<li ng-repeat="call in phonelist" class="">
-					<p id="">
-					<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
-						
-					{{	call.date | date:'d.MM. HH:mm'}}
-					<span class="pull-right">
-						{{call.remotenumber}}
-						<span class="right grey">
-							{{call.duration}} {{call.durationminutes}} Min.
-						</span>
-					</span>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				</p>
 		</li>
 	</div>

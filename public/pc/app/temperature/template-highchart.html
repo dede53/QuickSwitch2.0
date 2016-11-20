@@ -3,7 +3,6 @@
 		Temperaturen
 	</a>
 </h3>
-<<<<<<< HEAD
 <div ng-show="varChart == false">
 	<p class="alert alert-info">Du hast keine Datenpunkte für das Diagramm ausgewählt. Füge sie in den Einstellungen (Einstellungen -> Benutzer -> Diagram) hinzu.</p>
 </div>
@@ -11,15 +10,6 @@
 	<div class="panel panel-default">
 		<div class="panel-body" style="padding:15px 0 0 0;">
 			<highchart class="chart" config="varChart" ></highchart>
-=======
-<div ng-show="$root.tempNoData == true">
-     		<p class="alert alert-info">Keine Daten in der Datenbank</p>
-</div>
-<div ng-hide="$root.tempNoData == true" class="panel-group">
-	<div class="panel panel-default">
-		<div class="panel-body" style="padding:15px 0 0 0;">
-			<highchart class="chart" config="$root.chartConfig" ></highchart>
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		</div>
 	</div>
 </div>

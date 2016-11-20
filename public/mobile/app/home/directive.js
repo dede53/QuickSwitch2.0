@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // app.directive('myBackgroundImage', function ($rootScope) {
 // 	return function ($scope, element, attrs) {
 // 		element.css({
@@ -26,15 +25,4 @@ app.directive('onKeydown', function() {
              });
         }
     };
-=======
-app.directive('myBackgroundImage', function ($rootScope) {
-	return function ($scope, element, attrs) {
-		element.css({
-			'background-image': 'url(' + $rootScope.activeUser.background + ')',
-			'background-size': 'cover',
-			'background-repeat': 'no-repeat',
-			'background-position': 'center center'
-		});
-	};
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });
