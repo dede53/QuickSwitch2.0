@@ -4,19 +4,11 @@ var async 			= require("async");
 var helper 			= require('./helper.js');
 
 module.exports = {
-<<<<<<< HEAD
 	getDevices: function(type, callback){
 		if(type == "object"){
 			var uff = new Object;
 		}else{
 			var uff = new Object;
-=======
-	getDevices: function(type, req, res, callback){
-		if(type == "object"){
-			var uff = new Object;
-		}else{
-			var uff = new Array;
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		}
 		var query = "SELECT * FROM rooms;";
 		db.all(query, function(err, row){
@@ -37,26 +29,13 @@ module.exports = {
 
 									bla.roomdevices = new Object;
 									data.forEach(function(dat){
-<<<<<<< HEAD
-										bla.roomdevices[dat.deviceid] = dat;								
-=======
-										var device = {};
-										device.type = dat.type;
-										device[dat.type] = dat;
-										bla.roomdevices[dat.deviceid] = device;								
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
+										bla.roomdevices[dat.deviceid] = dat;
 									});
 
 									uff[row.name] = bla;
 								}else{
-<<<<<<< HEAD
 									data.forEach(function(dat){
 										uff[dat.deviceid] = dat;
-=======
-									// uff[row.name] = new Array;
-									data.forEach(function(dat){
-										uff.push(dat);							
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 									});
 									
 								}
@@ -75,11 +54,7 @@ module.exports = {
 			}
 		});		
 	},
-<<<<<<< HEAD
 	getDevice: function(id, callback){
-=======
-	getDevice: function(id, req, res, callback){
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "SELECT devices.*, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.deviceid = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
@@ -95,7 +70,6 @@ module.exports = {
 			}
 		});		
 	},
-<<<<<<< HEAD
 	saveNewDevice: function (data, callback) {
 		console.log("Speichere eine neues Gerät");
 		var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
@@ -113,22 +87,6 @@ module.exports = {
 		callback(201, data);
 	},
 	deleteDevice: function (id, callback) {
-=======
-	saveNewDevice: function (data, req, res, callback) {
-		console.log("Speichere eine neues Gerät");
-		var data = data[data.type];
-		var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
-		db.run(query);
-		callback(201);
-	},
-	saveEditDevice: function (data, req, res, callback) {
-		console.log("Speichere eine bearbeitetes Gerät");
-		var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
-		db.run(query);
-		callback(201);
-	},
-	deleteDevice: function (id, req, res, callback) {
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "SELECT * FROM devices WHERE deviceid = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
@@ -151,18 +109,13 @@ module.exports = {
 			}
 		});
 	},
-<<<<<<< HEAD
 	switchDevice: function (app, id, status, callback) {
-=======
-	switchDevice: function (app, id, status, req, res, callback) {
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type, showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE deviceid = '" + id + "' AND devices.roomid = rooms.id;";
 		db.all(query , function(err, row) {
 			if (err) {
 				helper.log.error(err);
 				callback(404);
 			}else if(row == ""){
-<<<<<<< HEAD
 				callback(404);
 			}else{
 				SwitchServer.sendto(app, status, row[0] ,function(status){
@@ -178,28 +131,10 @@ module.exports = {
 			var status = 0;
 		}
 		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type , showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
-=======
-				callback("Kein Gerät mit der ID " + id);
-			}else{
-				var device = {};
-				device.type = row[0].type;
-				device[row[0].type] = row[0];
-				SwitchServer.sendto(app, req, status, device ,function(status){
-					if(status == 200){
-					}
-				});
-				callback(200);
-			}
-		});
-	},
-	switchDevices: function (app, status, req, res, callback) {
-		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type , showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		db.all(query , function(err, row) {
 			if (err) {
 				helper.log.error(err);
 				callback(404);
-<<<<<<< HEAD
 			}if(row.length == 0){
 				callback(200);
 			}else{
@@ -244,45 +179,6 @@ module.exports = {
 				callback(activedevices);
 			}
 		});
-=======
-			} else {
-				row.forEach(function(dev){
-					var device = {};
-					device.type = dev.type;
-					device[dev.type] = dev;
-					SwitchServer.sendto(app, req, status, device,function(status){
-					});
-				});
-				callback(200);
-			}
-		});
-	},
-	favoritDevices: function (data, req, res, callback){
-		if(data.favoritDevices == false || data.favoritDevices.length == 0){
-			helper.log.info("Keine Geräte gewählt!");
-			callback(false);
-		}else{
-			var favorits	= new Array;
-			var bla 		= new Object;
-			var query 		= "SELECT rooms.name AS Raum, devices.* FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.type = 'device';";
-			db.all(query , function(err, users) {
-				if(err){
-					helper.log.error(err);
-				}else{
-					users.forEach(function(dat){
-						var device = {};
-						device.type = dat.type;
-						device[dat.type] = dat;
-						bla[dat.deviceid] = device;								
-					});
-					data.favoritDevices.forEach(function(deviceid){
-						favorits.push(bla[deviceid]);
-					});
-					callback(favorits);
-				}
-			});
-		}
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	},
 	getSwitchHistory: function(hours, callback){
 		var query = "SELECT * FROM `switch_history` WHERE time > '" + new Date(new Date().getTime() - (hours * 60000 * 60)).getTime() + "';";
@@ -334,10 +230,7 @@ module.exports = {
 
 							}
 							var sensor = new helper.Sensor(device.deviceid, device.place, sortedData, 'line', 'solid', '#ff00ff', '', 0, false, true, false);
-<<<<<<< HEAD
 							sensor.id = device.deviceid;
-=======
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							sensor.color = undefined;
 							// console.log(sensor);
 							callback(sensor);
