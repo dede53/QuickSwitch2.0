@@ -67,7 +67,6 @@ function adapter(settings){
 		}
 	}
 	this.setSetting = function(name, status){
-<<<<<<< HEAD
 		that = this;
 		this.settings[name] = status;
 		fs.readFile("./adapter/" + that.name.toLowerCase() + "/" + settings.settingsFile, "utf8", function(err, data){
@@ -87,19 +86,6 @@ function adapter(settings){
 				}catch(e){
 					this.log.error("Json Fehler!");
 				}
-=======
-		this.settings[name] = status;
-		fs.readFile("./adapter/" + this.name.toLowerCase() + "/" + settings.settingsFile, "utf8", function(err, data){
-			if(err){
-				console.log(err);
-			}else{
-				data[name] = status;
-				fs.writeFile("./adapter/" + this.name.toLowerCase() + "/" + settings.settingsFile, data, function(err){
-					if(err){
-						console.log(err);
-					}
-				});
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			}
 		});
 	}
