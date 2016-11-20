@@ -1,3 +1,46 @@
+<<<<<<< HEAD
+app.controller('timerController',function($scope, $rootScope, socket, $location){
+	$scope.days = {
+		"0":"So",
+		"1":"Mo",
+		"2":"Di",
+		"3":"Mi",
+		"4":"Do",
+		"5":"Fr",
+		"6":"Sa"
+	}
+	$scope.timer = {
+		active:true,
+		variables:false,
+		conditions:false,
+		actions:false,
+		clickIcon:"notifications",
+		fill:'lightgreen'
+	};
+
+	$rootScope.switchPage = function(data, data1){
+		$rootScope.showmenu =! ($rootScope.showmenu);
+		if(data != ""){
+			if(data1 != undefined){
+				$location.url(data + data1);
+			}else{
+				$location.url(data);
+			}
+		}
+	}
+});
+
+app.controller('addNewTimerController', function($scope, $uibModal, socket, $routeParams, $location, $rootScope) {
+	console.log('addNewTimerController');
+	console.log($routeParams);
+	if($routeParams.id){
+		$scope.headline = "Timer bearbeiten";
+		if($scope.timers){
+			$scope.timer = $scope.timers[$routeParams.id];
+		}else{
+			$location.url("/timer");
+		}
+=======
 app.controller('timerController',function($scope, $rootScope, socket){
 	$scope.days = {
 		"0":"Sonntag",
@@ -65,6 +108,7 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 		console.log($routeParams.id);
 		$scope.headline = "Timer bearbeiten";
 		socket.emit('timer', $routeParams.id);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}else{
 		$scope.headline = "Timer hinzufügen";
 		$scope.timer = {
@@ -73,9 +117,16 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 			conditions:false,
 			actions:false,
 			clickIcon:"notifications",
+<<<<<<< HEAD
+			fill:'lightgreen'
+		};	
+	}
+
+=======
 			fill:'lightgreen',
 		};	
 	}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	$scope.addAction = {
 		variable:{
 			id: Math.floor((Math.random() * 1000) + 1) * Math.floor((Math.random() * 1000) + 1)
@@ -179,8 +230,14 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 		});
 	}
 	$scope.openAction = function (mode) {
+<<<<<<< HEAD
+
+		var modalInstance = $uibModal.open({
+			animation: false,
+=======
 		var modalInstance = $uibModal.open({
 			animation: true,
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			templateUrl: "./app/timer/template-timer-edit-actions.html",
 			controller: "editActionsController",
 			size: 'lg',
@@ -191,15 +248,26 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 			if(!$scope.timer.actions){
 				$scope.timer.actions = {};
 			}
+<<<<<<< HEAD
+			console.log(data);
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			switch(data.type){
 				case "devices":
 					var device = data.device;
 					var action = {
+<<<<<<< HEAD
+						name: device.name + ' (' + device.Raum + ' , ' + device.buttonLabelOn + '|' + device.buttonLabelOff + ')',
+						id: device.deviceid,
+						action: data.switchstatus
+					}
+=======
 						name: device.name + ' (' + device.Raum + ')',
 						id: device.deviceid,
 						action: data.switchstatus
 					}
 					console.log(action);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					break;
 				case "alerts":
 					var action = data.alert;
@@ -284,7 +352,11 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 	$scope.saveTimer = function(){
 		console.log($scope.timer);
 		$scope.timer.user = $rootScope.activeUser.name;
+<<<<<<< HEAD
+		socket.emit('timers:edit', {user:$rootScope.activeUser, edit: $scope.timer});
+=======
 		socket.emit('saveTimer', $scope.timer);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		$scope.timer = {
 			active:true,
 			variables:false,
@@ -297,8 +369,14 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 	}
 });
 
+<<<<<<< HEAD
+app.controller('editActionsController', function($scope, $uibModalInstance, socket, $rootScope){
+	socket.emit('devices:devicelist');
+	
+=======
 app.controller('editActionsController', function($scope, $uibModalInstance, socket){
 
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	$scope.alertTypen = [
 		{value:'primary', name:'Blau/Primary'},
 		{value:'info', name:'Hellblau/Info'},
@@ -313,10 +391,13 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 		},
 		switchstatus: '1'
 	}
+<<<<<<< HEAD
+=======
 	socket.emit('devices', 'objects');
 	socket.on('devices', function(data){
 		$scope.devices = data;
 	});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	$scope.variables = {};
 	socket.emit('variables');
 	socket.on('variable', function(data){

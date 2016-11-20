@@ -1,4 +1,30 @@
 <div>
+<<<<<<< HEAD
+	<p class="left">{{device.name}}</p>
+	<div style="text-align:right">
+		<div class="box-btn-switch">
+			<button
+				class="buttonL"
+				ng-style="{'background-color': buttonOnColor}"
+				id="btnOn{{device.deviceid}}"
+				ng-click='switch("devices", {"id":device.deviceid,"status":"1"})' >
+				{{device.buttonLabelOn}}
+			</button>
+			<button
+				class="buttonL"
+				ng-style="{'background-color': buttonOnColor}"
+				id="btnOn{{device.deviceid}}"
+				ng-click='switch("devices", {"id":device.deviceid,"status":"stop"})' >
+					Stopp
+			</button>
+			<button
+				class="buttonL"
+				id="btnOff{{device.deviceid}}"
+				ng-click='switch("devices", {"id":device.deviceid,"status":"0"})'
+				ng-style="{'background-color': buttonOffColor}"
+				>
+				{{device.buttonLabelOff}}
+=======
 	<p class="left">{{device[device.type].name}}</p>
 	<div class="ui-block-b" style="text-align:right">
 		<div class="box-btn-switch">
@@ -20,6 +46,7 @@
 				ng-style="{'background-color': buttonOffColor}"
 				>
 				{{device[device.type].buttonLabelOff}}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			</button>
 		</div>
 	</div>

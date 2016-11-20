@@ -1,5 +1,7 @@
 app.controller('variableController', function($scope, $rootScope, socket){
 
+<<<<<<< HEAD
+=======
 	$scope.variables = {};
 
 	socket.emit('variables', $rootScope.activeUser);
@@ -19,4 +21,5 @@ app.controller('variableController', function($scope, $rootScope, socket){
 	$scope.deleteVariable = function(data) {
 		socket.emit('deleteVariable', {"id":data.id});	
 	}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

@@ -1,3 +1,40 @@
+<<<<<<< HEAD
+<div id="accordion">
+	<h3>
+		Geräte
+	</h3>
+	<div class="card" ng-repeat="room in devices">
+		<div class="card-header">
+			<h6 class="card-titlee" style="height:25px;">
+				<a data-toggle="collapse" data-target="#collapse{{room.room.id}}" class="pull-left">
+					{{room.room.name}}
+				</a>
+				<div class="pull-right">
+					<button  class="btnOn buttonM" id="btnOn{{room.room.id}}" ng-click='switch("rooms", {"room":room.room,"status":"1"})' >An</button>
+					<button class="btnOff buttonM" id="btnOff{{room.room.id}}" ng-click='switch("rooms", {"room":room.room,"status":"0"})' >Aus</button>
+				</div>
+			</h6>
+		</div>
+		<div id="collapse{{room.room.id}}" class="card-block collapse" style="padding:5px;">
+			<ul ng-repeat="device in room.roomdevices">
+				<li>
+					<div ng-switch="device.protocol">
+						<div ng-switch-when="gpio">
+							<div slider2-directive></div>
+						</div>
+						<div ng-switch-when="send-rpi-color">
+							<div colorpicker-directive></div>
+						</div>
+						<div ng-switch-when="homematic">
+							<div shutter-directive></div>
+						</div>
+						<div ng-switch-default>
+							<div button-directive></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+=======
 <div class="panel-group" id="accordion">
 	<div class="panel panel-default" ng-repeat="room in devicelist">
 		<div class="panel-heading">
@@ -32,6 +69,7 @@
 					</li>
 				</ul>
 			</div>
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		</div>
 	</div>
 </div>

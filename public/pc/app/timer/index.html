@@ -1,3 +1,22 @@
+<<<<<<< HEAD
+<!-- <div create-timer-directive></div> -->
+<div>
+	<h3>
+		<a ng-click="switchPage('/timer')">
+			Timer
+		</a>
+		<button type="button" class="pull-right btn btn-sm btn-success" ng-click="switchPage('/editTimer', '')">
+			Timer hinzufügen
+		</button>
+	</h3>
+	<div ng-show="timers | isEmpty" class="alert alert-info" role="alert">Du hast noch keine Timer gesetzt!</div>
+	<uib-accordion ng-if="timers.length != 0" close-others="true">
+		<uib-accordion-group ng-repeat="timer in timers"  is-open="timer.isOpen">
+			<div create-timer-directive></div>
+		</uib-accordion-group>
+	</uib-accordion>
+</div>
+=======
 <h3>
 	<a ng-click="switchPage('/timer')">
 		Timer
@@ -18,3 +37,4 @@
 <!-- <a href="#/editTimer/" class="btn btn-success" style="text-align: center;position: fixed;bottom:0;margin:10px auto;width: 20%;left:40%;z-index:200;">
 	Neuen Timer hinzufügen
 </a> -->
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

@@ -1,6 +1,11 @@
 <ul>
+<<<<<<< HEAD
+	<li ng-repeat="device in favoritDevices">
+		<div ng-switch="device.protocol">
+=======
 	<li ng-repeat="device in activeUser.favoritDevices">
 		<div ng-switch="device[device.type].protocol">
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			<div ng-switch-when="set-gpio">
 				<div slider2-directive></div>
 			</div>

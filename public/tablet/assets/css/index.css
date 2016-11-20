@@ -1,0 +1,63 @@
+.progress{
+	z-index:62;
+	position:fixed;
+	top:300px;
+	left:50%;
+}
+.loader{
+	background: rgba(0,0,0,0.7);
+	position:fixed;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	z-index: 70;
+}
+.sidenav-left{
+	height: calc(100% - 80px);
+}
+ul, ol{
+	list-style-type: none;
+	padding: 0px !important;
+	margin:0px !important;
+}
+button{
+	cursor:pointer;
+	border:0px;
+	border-radius:0px;
+	margin:2px 0px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.buttonL{
+	min-width:60px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.buttonM{
+	min-width:60px;
+	padding-top: 8px;
+	padding-bottom: 8px;	
+}
+
+.btnOn{
+	width: 25%;
+	margin:1px;
+	background-color:#c0ffc0;
+/*
+	background-color:#95CAFF;
+*/
+}
+.btnOff{
+	width: 25%;
+	margin:1px;
+	background-color:#ffc0c0;
+/*
+	background-color:#FF97FF;
+*/
+}
+.sliderText{
+	margin:0 0;
+}

@@ -104,10 +104,19 @@ a{
 }
 .devicename{
 	white-space: nowrap; 
+<<<<<<< HEAD
+	max-width: 79px;
+=======
 	width: 96px;
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	overflow: hidden;
 	text-overflow: ellipsis; 
     /*
     border: 1px solid #000000;
     */
+<<<<<<< HEAD
 }
+
+=======
+}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

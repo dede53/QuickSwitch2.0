@@ -1,0 +1,18 @@
+<!-- <select
+	ng-options="item.name for item in users track by item.id"
+	ng-model="bla"
+	ng-change="setUser(bla)"
+></select> -->
+
+<md-menu>
+	<md-button aria-label="Open demo menu" ng-click="$mdOpenMenu($event)">
+		{{activeUser.name}}
+	</md-button>
+	<md-menu-content>
+		<md-menu-item ng-repeat="item in users track by item.id">
+			<md-button ng-click="setUser(item)">
+				{{item.name}}
+			</md-button>
+		</md-menu-item>
+	</md-menu-content>
+</md-menu>

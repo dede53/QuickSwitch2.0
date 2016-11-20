@@ -1,4 +1,6 @@
 app.controller('temperatureController', function($scope,$rootScope, socket){	
+<<<<<<< HEAD
+=======
 	if($rootScope.chartConfig === undefined){
 		console.log($rootScope.activeUser.varChart);
 		// socket.emit('getStoredVariables', {"variables":['6', '1', '2868035C050000CD', '28DB675B0500001B', '28-0000055b89df', '28-00044ea0e5ff']});
@@ -175,6 +177,7 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 		}
 	});
 
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	Highcharts.setOptions({
 		global : {
 			useUTC : false

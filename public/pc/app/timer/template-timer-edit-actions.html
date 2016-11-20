@@ -41,11 +41,30 @@
 						class="form-control"
 						ng-change=""
 						ng-model="addAction.device"
+<<<<<<< HEAD
+						ng-options="value as value.name group by value.Raum for value in $root.devicelist">
+=======
 						ng-options="value as value.name group by value.Raum for value in devices">
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 						<option value="">Wähle ein Gerät</option>
 				</select>
 			</li>
 			<li class="list-group-item" ng-show="isSame(addAction, 'devices')">
+<<<<<<< HEAD
+				<fieldset class="form-group">
+					<label for="status">Status</label>
+					<div class="btn-group btn-group-sm" role="group">
+						<button type="button" class="btn btn-secondary"
+							ng-model="addAction.switchstatus" uib-btn-radio="'1'">
+							An
+						</button>
+						<button type="button" class="btn btn-secondary"
+							ng-model="addAction.switchstatus" uib-btn-radio="'0'" >
+							Aus
+						</button>
+					</div>
+				</fieldset>
+=======
 					<fieldset class="form-group">
 						<label for="status">Status</label>
 						<div class="btn-group">
@@ -53,6 +72,7 @@
 							<label class="btn btn-default" ng-model="addAction.switchstatus" uib-btn-radio="'0'" >Aus/Ab</label>
 						</div>
 					</fieldset>
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			</li>
 			<li class="list-group-item" ng-show="isSame(addAction, 'urls')">
 					<div class="input-group">
@@ -71,6 +91,12 @@
 					<select ng-model="addAction.alert.type">
 						<option value="{{type.value}}" ng-repeat="type in alertTypen">{{type.name}}</option>
 					</select>
+<<<<<<< HEAD
+					<select ng-model="addAction.alert.user">
+						<option value="{{user.name}}" ng-repeat="user in users">{{user.name}}</option>
+					</select>
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			</li>
 			<li class="list-group-item" ng-show="isSame(addAction, 'pushbullets')">
 					<input type="text" placeholder="Titel" ng-model="addAction.pushbullet.name">

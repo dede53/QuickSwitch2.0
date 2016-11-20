@@ -1,10 +1,17 @@
 <h3>
 	Timer
 </h3>
+<<<<<<< HEAD
+<div ng-show="timers |isEmpty" class="alert alert-info" role="alert">Keine Timer gesetzt!</div>
+
+<uib-accordion ng-hide="timers |isEmpty" close-others="true">
+	<uib-accordion-group ng-repeat="timer in timers"  is-open="timer.isOpen">
+=======
 <div ng-if="$root.timers.length == 0" class="alert alert-info" role="alert">Keine Timer gesetzt!</div>
 
 <uib-accordion ng-if="$root.timers.length != 0" close-others="true">
 	<uib-accordion-group ng-show="timer.user == $root.activeUser.name" ng-repeat="timer in $root.timers"  is-open="timer.isOpen">
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		<div create-timer-directive></div>
 	</uib-accordion-group>
 </uib-accordion>

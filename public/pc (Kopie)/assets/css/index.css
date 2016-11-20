@@ -1,0 +1,180 @@
+body{
+	background-image: url('../img/purty_wood.png');
+	background-repeat: repeat-y repeat-x;
+	background-attachment: fixed;
+	overflow-y: scroll;
+	font-family: "Open Sans",sans-serif !important;
+}
+ul, ol{
+	list-style-type: none;
+	padding: 0px !important;
+	margin:0px !important;
+}
+.tile{
+	background: #FFFFFF;
+	padding:0px 8px;
+}
+.favorittile{
+	box-sizing: content-box;
+	overflow-y: auto;
+	float:left;
+	margin-left: 0;
+	margin-right: auto;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding:10px;
+	width:20%;
+	height: calc(100% - 80px);
+	background: linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	background: -moz-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%); 
+	background: -webkit-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	background: -ms-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	background: -o-linear-gradient(top, #ddf 0%, #ddf 0%, #ffffff 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddf, endColorstr=#ffffff,GradientType=1);
+	background-color: #fff;
+	position:fixed;
+	top:61.1px;
+}
+.chart{
+	min-height: 500px;
+	padding:0px;
+	margin:10px;
+}
+.menu {
+	padding: .5rem 1rem;
+	border-radius:0!important;
+	background-color: #ddf;
+	/*padding:20px;*/
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index:200;
+	color: #2A6496 ;
+}
+.menu li a {
+	border:0 !important;
+}
+.menu a:hover{
+	background-color: #ddf;
+}
+.alerts{
+	z-index:202;
+	position: fixed;
+	top: 10px;
+	right:10px;
+	min-width: 45%;
+}
+.alert-xl{
+	padding:60px!important; 
+	background-color: #ffffff;
+}
+a{
+	cursor:pointer;
+	text-decoration: none !important;
+	color: inherit !important;
+}
+a:hover{
+	text-decoration: none;
+}
+
+
+.clear {
+	clear: both;
+}
+.float_left{
+	float:left;
+	width:50%;
+	padding-right: 10px;
+}
+.left{
+	float:left;
+}
+.right{
+	padding-left: 10px;
+}
+
+.card{
+	background: #F5F5F5;
+}
+.card-columns{
+	-webkit-column-count: 2!important; /* Chrome, Safari, Opera */
+	-moz-column-count: 2!important; /* Firefox */
+	column-count: 2!important;
+}
+.card-header{
+	padding: .4rem .4rem .4rem .4rem!important;
+}
+button{
+	cursor:pointer;
+	border:0px;
+	border-radius:0px;
+	margin:2px 0px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.buttonL{
+	min-width:60px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.buttonM{
+	min-width:60px;
+	padding-top: 8px;
+	padding-bottom: 8px;	
+}
+
+.btnOn{
+	width: 25%;
+	margin:1px;
+	background-color:#c0ffc0;
+/*
+	background-color:#95CAFF;
+*/
+}
+.btnOff{
+	width: 25%;
+	margin:1px;
+	background-color:#ffc0c0;
+/*
+	background-color:#FF97FF;
+*/
+}
+.favoritmenu{
+	margin-left:21%;
+}
+.alert-sm {
+	padding: 5px;
+	margin-bottom: 5px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+input[type="range"]{
+	border-radius: 4px;
+}
+input[type="range"]:hover{
+	cursor:grab;
+}
+.grey{
+	color:#bbb;
+}
+.green{
+	color:green;
+}
+.label{
+	padding:5px;
+	margin:0 5px;
+}
+.loader {
+	position: fixed;
+	top:0;
+	opacity: .7;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	z-index:201;
+}
+.sliderText{
+	margin:0 0;
+}

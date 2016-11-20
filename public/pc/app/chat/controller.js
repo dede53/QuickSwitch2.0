@@ -1,4 +1,8 @@
 app.controller("chatController", function($scope, socket, $location, $anchorScroll){
+<<<<<<< HEAD
+	if(typeof $scope.messages == 'undefined'){
+		socket.emit("messages:loadOld", new Date().getTime());
+=======
 
 	$scope.moreMessagesAvible = true;
 	$scope.sharedMessages = new Array;
@@ -26,12 +30,16 @@ app.controller("chatController", function($scope, socket, $location, $anchorScro
 	
 	$scope.loadOldMessages = function(){
 		socket.emit('loadOldMessages', $scope.sharedMessages[0].time);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}
 });
 
 app.controller('sendNewMessage', function($scope, socket) {
 	$scope.sendMessage = function() {
+<<<<<<< HEAD
+=======
 		// Validierung!!
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		$scope.linkMessage = {
 			author: $scope.activeUser.name,
 			message: $scope.link.message,
@@ -40,6 +48,9 @@ app.controller('sendNewMessage', function($scope, socket) {
 		$scope.link.message = "";
 		$scope.link.type = "1";
 		socket.emit('newLinkMessage', $scope.linkMessage);
+<<<<<<< HEAD
+=======
 		
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	};
 });

@@ -1,0 +1,127 @@
+<html lang="en" >
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Angular Material style sheet -->
+	<title>QuickSwitch</title>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="./assets/css/index.css" rel="stylesheet">
+	<style rel="stylesheet" type="text/css">
+	</style>
+</head>
+<body ng-app="BlankApp" ng-cloak ng-controller="AppCtrl">
+	<!--
+		Your HTML content here
+	-->
+
+	<md-toolbar class="md-hue-2">
+		<div class="md-toolbar-tools">
+			<md-button class="md-icon-button" aria-label="Favoriten" ng-click="toggleLeft()" hide-gt-md="">
+				<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+			</md-button>
+			<h2>
+
+				<md-button class="md-icon-button" aria-label="Favoriten" ng-click="">
+					<md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+				</md-button>
+				<md-button class="md-icon-button" aria-label="Favoriten" ng-click="">
+					<md-icon md-svg-icon="img/icons/done.svg"></md-icon>
+				</md-button>
+				<md-button class="md-icon-button" aria-label="Favoriten" ng-click="">
+					<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+				</md-button>
+			</h2>
+			<span flex=""></span>
+			<md-button class="md-icon-button" aria-label="Favorite">
+				<md-icon md-svg-icon="img/icons/favorite.svg" style="color: greenyellow;"></md-icon>
+			</md-button>
+			<md-menu>
+				<md-button aria-label="Open demo menu" ng-click="$mdOpenMenu($event)">
+					{{activeUser.name}}
+				</md-button>
+				<md-menu-content>
+					<md-menu-item ng-repeat="item in users track by item.id">
+						<md-button ng-click="setUser(item)">
+							{{item.name}}
+						</md-button>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+		</div>
+	</md-toolbar>
+	<div  layout="row">
+		
+		<md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="6">
+
+			<md-toolbar class="md-theme-indigo">
+				<h1 class="md-toolbar-tools">Favoriten</h1>
+			</md-toolbar>
+			<md-content layout-padding="" class="sidenav-left">
+				<div favoriten-directive></div>
+					<p hide="" show-gt-md="">
+					This sidenav is locked open on your device. To go back to the default behavior,
+					narrow your display.
+					</p>
+			</md-content>
+
+		</md-sidenav>
+		<md-content flex="" layout-padding="">
+			<div layout="column" layout-align="top center">
+				<p>
+					Developers can also disable the backdrop of the sidenav.<br>
+					This will disable the functionality to click outside to close the sidenav.
+				</p>
+			</div>
+			<md-button ng-click="toggleProgress()" class="md-primary" >
+				Toggle Progress
+			</md-button>
+		<md-grid-list
+			md-cols-gt-md="12" md-cols="3" md-cols-md="8"
+			md-row-height-gt-md="1:1" md-row-height="4:3"
+			md-gutter-gt-md="16px" md-gutter-md="8px" md-gutter="4px">
+			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="3" md-rowspan-gt-sm=".1"></md-grid-tile>
+			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="1" md-rowspan-gt-sm="1"></md-grid-tile>
+			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="1" md-rowspan-gt-sm="1"></md-grid-tile>
+		</md-grid-list>
+		<md-grid-list md-cols="12" md-gutter="1px" md-row-height="1:.5">
+			<md-grid-tile ng-style="{'background': '#ff0'}"></md-grid-tile>
+			<md-grid-tile ng-style="{'background': '#ff0'}"></md-grid-tile>
+			<md-grid-tile ng-style="{'background': '#ff0'}"></md-grid-tile>
+		</md-grid-list>
+<md-list-item>
+  <span>SingleRow</span>
+  <md-button class="md-secondary">First Button</md-button>
+  <md-button class="md-secondary">Second Button</md-button>
+</md-list-item>
+		</md-content>
+		<div ng-show="progress" class="loader">
+			<md-progress-circular md-mode="indeterminate" class="progress"></md-progress-circular>
+		</div>
+	</div>
+	
+	<!-- Angular Material requires Angular.js Libraries -->
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+	<script src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+
+	<!-- Angular Material Library -->
+	<script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<!-- <script src="./factory.js"></script> -->
+	<script src="./assets/js/index.js"></script>
+	<script src="./controller.js"></script>
+	<script src="./app/devices/directive.js"></script>
+	
+	<!-- Your application bootstrap  -->
+	<script type="text/javascript">
+	/**
+	 * You must include the dependency on 'ngMaterial' 
+	 */
+
+	</script>
+	
+</body>
+</html>

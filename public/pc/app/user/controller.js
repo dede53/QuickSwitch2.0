@@ -1,5 +1,7 @@
 app.controller('activeUser', function($rootScope, $scope, socket){
 
+<<<<<<< HEAD
+=======
 	localUser = [];
 	$scope.values = [];
 	// $scope.values.push({name:"Admin",favoritDevices:[],variables:[], admin:"true"});
@@ -166,4 +168,5 @@ app.controller('activeUser', function($rootScope, $scope, socket){
 			setCookie("username", JSON.stringify($rootScope.activeUser), 365);
 		}
 	}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

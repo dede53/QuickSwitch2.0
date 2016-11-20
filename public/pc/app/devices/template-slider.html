@@ -1,15 +1,25 @@
 <div class="ui-block-b" style="text-align:right" data-snap-ignore="true">
 	<div class="box-btn-switch">
 		{{device}}
+<<<<<<< HEAD
+		{{ formatNumber(device.status) }}
+=======
 		{{ formatNumber(device[device.type].status) }}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		<input
 			type="range" 
 			min="0" 
 			max="1"
 			step="0.01"
+<<<<<<< HEAD
+			ng-model="device.status"
+			
+			ng-change='switchdeviceSlider({"device":device})'
+=======
 			ng-model="device[device.type].status"
 			
 			ng-change='switchdeviceSlider({"device":device[device.type]})'
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		>
 		<!-- ng-model-options="{ debounce: 50 }" -->
 		</input>

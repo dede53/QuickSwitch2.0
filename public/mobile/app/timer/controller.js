@@ -8,6 +8,8 @@ app.controller('timerController',function($scope, $rootScope, socket){
 		"5":"Freitag",
 		"6":"Samstag"
 	}
+<<<<<<< HEAD
+=======
 	$scope.deleteTimer = function(data) {
 		socket.emit('deleteTimer', data);
 	}
@@ -49,4 +51,5 @@ app.controller('timerController',function($scope, $rootScope, socket){
 		}
 		$rootScope.timers[data.id] = data;
 	});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

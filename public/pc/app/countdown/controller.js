@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+app.controller('countdownController',function($scope, socket, $rootScope){
+	socket.emit('devices:devicelist');
+	$scope.newCountdowntimer = {};
+	$scope.newCountdowntimer.time = 2;
+	$scope.newCountdowntimer.status = 0;
+	$scope.newCountdowntimer.user = $rootScope.activeUser.name;
+=======
 app.controller('countdownController',function($scope, socket){
 
 
@@ -36,4 +44,5 @@ app.controller('newCountdowntimer', function($scope, socket) {
 			socket.emit('newCountdowntimer', $scope.newCountdowntimer);
 		}
 	};
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

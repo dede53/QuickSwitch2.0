@@ -1,4 +1,7 @@
 app.controller('devicesController', function($rootScope, $scope, socket){
+<<<<<<< HEAD
+	socket.emit('devices:get');
+=======
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
@@ -38,21 +41,32 @@ app.controller('devicesController', function($rootScope, $scope, socket){
 	$scope.switchRoom = function(data){
 		socket.emit('switchRoom', data);
 	}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });
 
 app.controller('activeDevices', function($rootScope, $scope, socket){
 
 	$scope.activedeviceslist = [];
+<<<<<<< HEAD
+	socket.emit('devices:active');
+
+	$scope.switchalldevices = function(data) {
+		socket.emit('devices:switchAll', {"status":data.status});
+=======
 	socket.emit('sendActiveDevices');
 	socket.on('activedevices', function(data){
 		$scope.activedeviceslist = data.activedevices;
 	});
 	$scope.switchalldevices = function(data) {
 		socket.emit('switchalldevices', {"status":data.status});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}
 });
 
 app.controller('favoritDevices', function($rootScope, $scope, socket){
+<<<<<<< HEAD
+
+=======
 	console.log($rootScope.activeUser);
 	socket.emit('favoritDevices', $rootScope.activeUser);
 	socket.on('favoritDevices', function(data){
@@ -89,4 +103,5 @@ app.controller('favoritDevices', function($rootScope, $scope, socket){
 	$scope.switchdeviceSlider = function(data) {
 		socket.emit('switchdevice', {"id":data.device.deviceid,"status": data.device.status});
 	}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

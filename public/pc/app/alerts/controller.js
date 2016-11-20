@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+app.controller('alertsController', function(socket, $scope, $rootScope){
+=======
 app.controller('alertsController', function(socket, $scope){
 
 	socket.on('alert', function(data){
@@ -10,4 +13,5 @@ app.controller('alertsController', function(socket, $scope){
 	$scope.closeAlert = function(index) {
 		$scope.alerts.splice(index, 1);
 	};
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

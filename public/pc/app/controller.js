@@ -55,9 +55,13 @@ app.controller('appController', function($rootScope, $scope, $location){
 	if ($scope.storedUser != "") {
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
 	}else{
+<<<<<<< HEAD
+		$rootScope.activeUser = {name:"system",favoritDevices:[],variables:[], admin:true};
+=======
 		$rootScope.activeUser = {};
 		$rootScope.activeUser.favoritDevices = [];
 		$rootScope.activeUser.name = "Besucher";
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}
 
 	$scope.showmenu=false;

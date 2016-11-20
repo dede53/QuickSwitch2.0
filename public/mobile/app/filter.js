@@ -13,4 +13,18 @@ app.filter('action', function() {
 		}
 		// do some bounds checking here to ensure it has that index
 	}
+<<<<<<< HEAD
+});
+app.filter('isEmpty', function () {
+	var bar;
+	return function (obj) {
+		for (bar in obj) {
+			if (obj.hasOwnProperty(bar)) {
+				return false;
+			}
+		}
+		return true;
+	};
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 });

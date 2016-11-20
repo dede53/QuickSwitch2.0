@@ -2,6 +2,10 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
+<<<<<<< HEAD
+	socket.emit('switchHistory:get');
+
+=======
 	// socket.emit('getSwitchHistory', 24);
 
 	/***********************************************
@@ -10,6 +14,7 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 	socket.on('switchHistory', function(data) {
 		$rootScope.switchHistory = data;
 	});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 
 	var chartConfig = {
 		options:{
@@ -57,6 +62,14 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 		loading:true
 	}
 	$rootScope.chartConfigSwitchHistory = chartConfig;
+<<<<<<< HEAD
+
+	$scope.$watch('switchHistory', function(newValue, oldValue){
+		$rootScope.chartConfigSwitchHistory.series = newValue;
+		$rootScope.chartConfigSwitchHistory.loading = false;
+	});
+
+=======
 	socket.emit('getSwitchHistoryByID', 24);
 	socket.on('switchHistoryByID', function(alldata) {
 		if(alldata != false){
@@ -78,6 +91,7 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 			$rootScope.tempNoData = true;
 		}
 	});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	Highcharts.setOptions({
 		global : {
 			useUTC : false

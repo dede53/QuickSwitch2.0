@@ -1,0 +1,37 @@
+<div>
+	<h3>Telefonanrufe</h3>
+	<div ng-show="calls">
+		<ul class="">
+			<div class="tile">
+				<li ng-repeat="call in calls" class="">
+					<!--
+						<i class="glyphicon" ng-class="{'glyphicon-unchecked': (call.direction) == 'missed', 'glyphicon-log-out': (call.direction) == 'outbound','glyphicon-log-in': (call.direction) == 'inbound'}"></i>
+					-->
+					<p class="" style="padding:8px 0;">
+							
+		
+						<span class="pull-left">
+							<span title="getätigter Anruf">
+								<ng-md-icon ng-if="(call.direction) == 'outbound'" icon="call_made" style="fill:blue" size="17" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>					
+							</span>
+							<span title="verpasster Anruf">
+								<ng-md-icon ng-if="(call.direction) == 'missed'" icon="call_missed" style="fill:red" size="17" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>
+							</span>
+							<span title="empfangener Anruf">
+								<ng-md-icon ng-if="(call.direction) == 'inbound'" icon="call_received" style="fill:green" size="17" options='{"duration": 10, "rotation": "none"}'></ng-md-icon>
+							</span>
+							{{	call.date | date:'EEE, d.MMM., HH:mm'}}
+						</span>
+						<span class="pull-right">
+							{{call.remotenumber}}
+							<span class="right grey">
+								{{call.duration}} {{call.durationminutes}} Min.
+							</span>
+						</span>
+					</p>
+				</li>
+			</div>
+		</ul>
+	</div>
+	<div ng-hide="calls" class="alert alert-info" role="alert">Keine Verbindung zur Fritzbox!</div>
+</div>

@@ -1,0 +1,30 @@
+<ul>
+	<li>
+		<h3>
+			Gruppen
+		</h3>
+	</li>
+	<li ng-hide="groups.length == 0" ng-repeat="group in groups" class="card">
+		<div class="card-header">
+			<h6 class="card-titlee" style="height:25px;">
+				<a href="" data-toggle="collapse" data-target="#group{{group.id}}" >
+					{{group.name}}
+				</a>
+				<div class="pull-right">
+					<button class="btnOn buttonM" id="btnOn{{group.id}}" ng-click='switch("groups", {"group":group,"status":"1"})' >An</button>
+					<button class="btnOff buttonM" id="btnOff{{group.id}}" ng-click='switch("groups", {"group":group,"status":"0"})' >Aus</button>
+				</div>
+			</h6>
+		</div>
+		<div class="card-block collapse" ng-hide="devicelist | isEmpty" id="group{{group.id}}">
+			<ul>
+				<li ng-repeat="device in group.groupDevices">
+					{{devicelist[device.id].name}} ({{devicelist[device.id].Raum}})
+				</li>
+			</ul>
+		</div>
+	</li>
+	<li ng-show="groups.length == 0" role="alert" class="alert alert-info">
+		Du hast noch keine Gruppen erstellt!
+	</li>
+</ul>

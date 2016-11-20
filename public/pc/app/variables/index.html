@@ -1,3 +1,20 @@
+<<<<<<< HEAD
+<div>
+	<h3>Variablen</h3>
+	<div ng-show="variables" class="tile">
+		<ul>
+			<li ng-repeat="variable in variables" class="">
+				<p style="padding:8px;">
+					<span class="pull-left">
+						{{variable.name}}
+					</span>
+					<span class="pull-right" title="Letzte Änderung: {{variable.lastChange | date:'EEE, d. MMM., HH:mm'}}">
+						{{variable.status}}{{variable.suffix}}
+					</span>
+				</p>
+			</li>
+		</ul>
+=======
 <h3>
 	Variablen
 </h3>
@@ -14,5 +31,6 @@
 		<div class="pull-right">
 			{{variable.status}}{{variable.suffix}}
 		</div>
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	</div>
 </div>

@@ -6,7 +6,11 @@ app.directive('temperatureDirective', function ($rootScope) {
 		link: function($scope, element, attr){
 			function reflow(){
 				setTimeout(function(){
+<<<<<<< HEAD
+					var chart = $scope.varChart.getHighcharts();
+=======
 					var chart = $rootScope.chartConfig.getHighcharts();
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					chart.reflow();
 				}, 20);
 			}

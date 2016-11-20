@@ -1,0 +1,10 @@
+<div class="ui-block-b" style="text-align:right">
+	<div class="box-btn-switch">
+		<button class="btnOn" id="btnOn{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"1"})' >
+			{{device.buttonLabelOn}}
+		</button>
+		<button class="btnOff" id="btnOff{{device.deviceid}}" ng-click='switchdevice({"id":device.deviceid,"status":"0"})'>
+			{{device.buttonLabelOff}}
+		</button>
+	</div>
+</div>

@@ -1,5 +1,14 @@
+<<<<<<< HEAD
+<p ng-show="active.length == 0">Keine aktiven Geräte!</p>
+<ul ng-show="active.length != 0">
+	<li ng-repeat="device in active"><p>{{device.name}} ({{device.room}})</p></li>
+</ul>
+<button class="btnOn" ng-click='switchAll("devices", "1")'>Alle ein</button>
+<button class="btnOff" ng-click='switchAll("devices", "0")'>Alle aus</button>
+=======
 <ul>
 	<li ng-repeat="device in activedeviceslist"><p>{{device.name}} ({{device.room}})</p></li>
 </ul>
 <button class="btnOn" ng-click='switchalldevices({"status":"1"})'>Alle ein</button>
 <button class="btnOff" ng-click='switchalldevices({"status":"0"})'>Alle aus</button>
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

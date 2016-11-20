@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+<div class="card-block list-group-item" ng-repeat="variable in variables">
+	<div ng-switch on="variable.mode">
+		<div ng-switch-when="match">
+			Löse aus sobald die Variable "{{variable.name}}" den Wert "{{variable.status}}" hat.
+		</div>
+		<div ng-switch-when="onChange">
+			Löse aus sobald die Variable "{{variable.name}}" ihren Wert ändert.
+		</div>
+		<div ng-switch-default>
+			{{variable}}
+		</div>
+	</div>
+</div>
+=======
 <!-- <ul class="list-group"> -->
 
 	<li class="list-group-item" ng-repeat="variable in variables">
@@ -14,3 +29,4 @@
 		</div>
 	</li>
 <!-- </ul> -->
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874

@@ -2,6 +2,19 @@ app.controller('devicesController', function($rootScope, $scope, socket){
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
+<<<<<<< HEAD
+	socket.emit('devices:get');
+});
+
+app.controller('activeDevices', function($rootScope, $scope, socket){
+	$scope.activedeviceslist = [];
+	socket.emit('devices:active');
+
+	$scope.switchalldevices = function(data) {
+		socket.emit('devices:switchAll', {"status":data.status});
+	}
+});
+=======
 	socket.emit('devices', {"type":"object"});
 
 	/***********************************************
@@ -208,3 +221,4 @@ function message(type, data){
 	return message;
 }
 */
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
