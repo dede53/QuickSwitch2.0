@@ -67,6 +67,27 @@ function adapter(settings){
 		}
 	}
 	this.setSetting = function(name, status){
+<<<<<<< HEAD
+		that = this;
+		this.settings[name] = status;
+		fs.readFile("./adapter/" + that.name.toLowerCase() + "/" + settings.settingsFile, "utf8", function(err, data){
+			if(err){
+				console.log(err);
+			}else{
+				try{
+					data = JSON.parse(data);
+					data[name] = status;
+					fs.writeFile("./adapter/" + that.name.toLowerCase() + "/" + settings.settingsFile, JSON.stringify(data), "utf8", function(err){
+						if(err){
+							console.log(err);
+						}else{
+							console.log("SAVE");
+						}
+					});
+				}catch(e){
+					this.log.error("Json Fehler!");
+				}
+=======
 		this.settings[name] = status;
 		fs.readFile("./adapter/" + this.name.toLowerCase() + "/" + settings.settingsFile, "utf8", function(err, data){
 			if(err){
@@ -78,6 +99,7 @@ function adapter(settings){
 						console.log(err);
 					}
 				});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			}
 		});
 	}

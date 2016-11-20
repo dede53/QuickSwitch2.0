@@ -1,5 +1,8 @@
+<<<<<<< HEAD
+=======
 var colors			= require('colors/safe');
 var fritz 			= require('smartfritz');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var conf 			= require('./../../config.json');
 var request 		= require('request');
 var later 			= require('later');
@@ -44,17 +47,29 @@ var log = {
 		debug: function(msg){
 			var now = new Date;
 			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+<<<<<<< HEAD
+			console.log(datum +': '+ msg);
+=======
 			console.log(datum +': '+ colors.blue(msg));
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		},
 		error: function(msg){
 			var now = new Date;
 			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+<<<<<<< HEAD
+			console.log(datum +': '+ msg);
+=======
 			console.log(datum +': '+ colors.red(msg));
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		},
 		info: function(msg){
 			var now = new Date;
 			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+<<<<<<< HEAD
+			console.log(datum +': '+ msg);
+=======
 			console.log(datum +': '+ colors.green(msg));
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		},
 		pure: function(msg){
 			console.log(msg);
@@ -76,6 +91,10 @@ module.exports = {
 		return false;
 	},
 	log: log,
+<<<<<<< HEAD
+	Sensor: function(id, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
+		this.id = id;
+=======
 	mdyToDate: function(mdy) {
 		var d = mdy.split('.', 4);
 		var m = d[3].split(":", 2);
@@ -114,6 +133,7 @@ module.exports = {
 	},
 	Sensor: function(nodeid, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
 		this.nodeid = nodeid;
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		this.name = name;
 		this.data = data;
 		this.step = step;
@@ -134,7 +154,11 @@ module.exports = {
 		var tag = (typeof(i) == 'object') ? i.getDay() : i ;
 		return tag;
 	},
+<<<<<<< HEAD
+	switchaction: function (type, id, action, timeout){
+=======
 	switchaction: function (type, id, action){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		if(action == "on" || action == 'true'){
 			action = 1;
 		}if(action == "off" || action == 'false'){
@@ -142,6 +166,41 @@ module.exports = {
 		}else{
 			action = action;
 		}
+<<<<<<< HEAD
+		if(timeout){
+			setTimeout(function(){
+				request.get({
+					url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
+					form:
+						{
+						}
+				},function( err, httpResponse, body){
+					if(err){
+						console.log( err , "error");
+					}else{
+						console.log("Erfolgreich an den SwitchServer gesendet");
+					}
+				});
+			}, parseInt(timeout) * 1000);
+		}else{
+			request.get({
+				url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
+				form:
+					{
+					}
+			},function( err, httpResponse, body){
+				if(err){
+					console.log( err , "error");
+				}else{
+					console.log("Erfolgreich an den SwitchServer gesendet");
+				}
+			});
+		}
+		// console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
+	},
+	getSuntime: function (type, offset){
+		var suntimes			= SunCalc.getTimes(new Date(), conf.position.lat, conf.position.long);
+=======
 		request.get({
 			url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
 			form:
@@ -434,6 +493,7 @@ module.exports = {
 	},
 	getSuntime: function (type, offset){
 		var suntimes			= SunCalc.getTimes(new Date(), 51.5, -0.1);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		if(type == "sunrise"){
 			var suntime 		= new Date(suntimes.sunrise);
 			console.log("		Sonnenaufgang:	" + suntime.getHours() + ':' + suntime.getMinutes());
@@ -459,17 +519,36 @@ module.exports = {
 			if (error) {
 				var now = new Date;
 				var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+<<<<<<< HEAD
+				console.log(datum +': '+ error);
+			}
+		});
+	},
+	message: function(type, data){
+		var message = {};
+		var foo = type.split(':');
+		message.masterType = foo[0];
+		message.type = foo[1];
+		message[foo[1]] = data;
+		return message;
+	},
+=======
 				console.log(datum +': '+ colors.red(error));
 			}
 		});
 	},
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	setVariableByNodeid: function(nodeid, status){
 		var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/setVariableByNodeid/" + nodeid + "/" + status;
 		request(url , function (error, response, body) {
 			if (error) {
 				var now = new Date;
 				var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+<<<<<<< HEAD
+				console.log(datum +': '+ error);
+=======
 				console.log(datum +': '+ colors.red(error));
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			}
 		});
 	},

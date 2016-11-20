@@ -1,0 +1,27 @@
+{
+	"position": {
+		"long": "7.186729",
+		"lat": "50.777019"
+	},
+	"switchserver": [
+		{
+			"id": 0,
+			"ip": "192.168.2.47",
+			"port": 4041
+		},
+		{
+			"id": 1,
+			"ip": "192.168.2.51",
+			"port": 4041
+		}
+	],
+	"QuickSwitch": {
+		"ip": "192.168.2.47",
+		"port": 1230
+	},
+	"mysql": {
+		"host": "localhost",
+		"user": "root",
+		"password": "daniel"
+	}
+}

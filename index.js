@@ -7,9 +7,13 @@ var countdownFunctions 		= require('./app/functions/countdown.js');
 var deviceFunctions 		= require('./app/functions/device.js');
 var groupFunctions 			= require('./app/functions/group.js');
 var messageFunctions 		= require('./app/functions/message.js');
+<<<<<<< HEAD
+var roomFunctions 			= require('./app/functions/room.js');
+=======
 var phoneFunctions 			= require('./app/functions/phone.js');
 var roomFunctions 			= require('./app/functions/room.js');
 var temperatureFunctions 	= require('./app/functions/temperature.js');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var timerFunctions 			= require('./app/functions/timer.js');
 var userFunctions 			= require('./app/functions/user.js');
 var variableFunctions 		= require('./app/functions/variable.js');
@@ -19,12 +23,18 @@ var fork					=	require('child_process').fork;
 
 var bodyParser				=	require('body-parser');
 var cookieParser			=	require('cookie-parser');
+<<<<<<< HEAD
+=======
 var multer					=	require('multer');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 
 // app.use(express.logger('dev'));
 app.use(bodyParser.json()); 						// for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
+<<<<<<< HEAD
+=======
 app.use(multer()); 									// for parsing multipart/form-data
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 app.use(cookieParser());							// for parsing cookies
 app.use(express.static(__dirname + '/public'));		// provides static htmls
 
@@ -36,6 +46,8 @@ if(!fs.existsSync("./log")){
 	});
 }
 
+<<<<<<< HEAD
+=======
 var plugins = {};
 var log_file = {};
 var data = [
@@ -61,6 +73,7 @@ data.forEach(function(file){
 });
 
 
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 // Setup the ready route, join room and broadcast to room.
 app.io.route('room', {
 	join: function(req) {
@@ -202,6 +215,8 @@ app.io.route('user', {
 	}
 });
 
+<<<<<<< HEAD
+=======
 app.io.route('calls', {
 	get: function(req){
 		phoneFunctions.getPhonelist(function(data){
@@ -210,6 +225,7 @@ app.io.route('calls', {
 	}
 });
 
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 app.io.route('countdowns', {
 	add: function(req){
 		var data = req.data.add;
@@ -419,12 +435,47 @@ app.get('/', function(req, res) {
 
 require('./app/routes')(app, db);
 
+<<<<<<< HEAD
+// Server starten
+try{
+	var config = require("./config.json");
+	app.listen(config.QuickSwitch.port | 1230);
+=======
 try{
 	app.listen(1230);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 }catch(err){
 	console.log(err);
 }
 
+<<<<<<< HEAD
+// Andere Dateien starten
+var plugins = {};
+var log_file = {};
+var data = [
+	// "eventLoader.js",
+	// "autoloader.js",
+	"timerserver.js",
+	"countdownserver.js",
+	"adapter.js",
+];
+
+data.forEach(function(file){
+	var splitedfile = file.split(".");
+	var filename = splitedfile[0];
+	var debugFile = __dirname + '/log/debug-' + filename + '.log';
+	log_file[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});	
+
+	plugins[filename] = fork( './' + file );
+	plugins[filename].on('message', function(response) {
+		if(response.log){
+			log_file[filename].write(response.log.toString() + "\n");
+		}
+	});
+});
+
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 function message(type, data){
 	var message = {};
 	var foo = type.split(':');

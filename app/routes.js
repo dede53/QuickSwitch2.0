@@ -1,7 +1,11 @@
 var deviceFunctions 		= require('./functions/device.js');
 var roomFunctions 			= require('./functions/room.js');
 var groupFunctions 			= require('./functions/group.js');
+<<<<<<< HEAD
+var helper		 			= require('./functions/helper.js');
+=======
 var temperatureFunctions 	= require('./functions/temperature.js');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var userFunctions 			= require('./functions/user.js');
 var messageFunctions 		= require('./functions/message.js');
 var variableFunctions 		= require('./functions/variable.js');
@@ -105,6 +109,10 @@ ip:port/
 +	/devices/id 			(DELETE)	löscht ein Gerät anhand der ID
 +	/devices/id				(PUT)		speichert geändertes Gerät anhand der ID
 +	/devices 				(POST)		speichert neues Gerät
+<<<<<<< HEAD
++	/devices/active			(GET)		liefert die aktiven Geräte
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 
 +	/groups 				(GET)		liefert object der Gruppen
 +		/id 				(GET)		liefert eine Gruppe anhand der ID
@@ -214,18 +222,28 @@ module.exports = function(app, db){
 		switch(type){
 			case "device":
 				if(id == "all"){
+<<<<<<< HEAD
+					deviceFunctions.switchDevices(app, status, req, function(data){
+						if(!res.headersSent){
+=======
 					deviceFunctions.switchDevices(app, status, req, res, function(data){
 						if(data == 200){
 							res.json(200);
 						}else{
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							res.json(data);
 						}
 					});
 				}else{
+<<<<<<< HEAD
+					deviceFunctions.switchDevice(app, id, status, function(data){
+						if(!res.headersSent){
+=======
 					deviceFunctions.switchDevice(app, id, status, req, res, function(data){
 						if(data == 200){
 							res.json(200);
 						}else{
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							res.json(data);
 						}
 					});
@@ -236,10 +254,15 @@ module.exports = function(app, db){
 					if(group == "404"){
 						res.json(404);
 					}else{
+<<<<<<< HEAD
+						groupFunctions.switchGroup(app, group[0], status, function(data){
+							if(!res.headersSent){
+=======
 						groupFunctions.switchGroup(app, group[0], status, req, res, function(data){
 							if(data == 200){
 								res.json(200);
 							}else{
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 								res.json(data);
 							}
 						});
@@ -248,10 +271,15 @@ module.exports = function(app, db){
 				break;
 			case "room":
 				roomFunctions.getRoom(id, req, res, function(room){
+<<<<<<< HEAD
+					roomFunctions.switchRoom(room, status, app, function(data){
+						if(!res.headersSent){
+=======
 					roomFunctions.switchRoom(room, status, req, res, function(data){
 						if(data == 200){
 							res.json(200);
 						}else{
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							res.json(data);
 						}
 					});
@@ -266,7 +294,13 @@ module.exports = function(app, db){
 	*******************************************************************************/
 	app.get('/devices', function (req, res) {
 		deviceFunctions.getDevices('object',req, res, function(data){
+<<<<<<< HEAD
+			if(!res.headersSent){
+				res.json(data);
+			}
+=======
 			res.json(data);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		});
 	});
 	
@@ -275,9 +309,26 @@ module.exports = function(app, db){
 	*******************************************************************************/
 	app.get('/devices/:id', function (req, res) {
 		var id = req.params.id;
+<<<<<<< HEAD
+		switch(id){
+			case "active":
+				deviceFunctions.activeDevices(function(data){
+					res.json(data);
+				});
+				break;
+			default:
+				deviceFunctions.getDevice(id, function(data){
+					if(!res.headersSent){
+						res.json(data);
+					}
+				});
+				break;
+		}
+=======
 		deviceFunctions.getDevice(id, req, res, function(data){
 			res.json(data);
 		});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	});
 	
 	/*******************************************************************************
@@ -286,7 +337,13 @@ module.exports = function(app, db){
 	app.delete('/devices/:id', function (req, res) {
 		var id = req.params.id;
 		deviceFunctions.deleteDevice(id, req, res, function(data){
+<<<<<<< HEAD
+			if(!res.headersSent){
+				res.json(data);
+			}
+=======
 			res.json(data);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		});
 	});
 	
@@ -399,6 +456,8 @@ module.exports = function(app, db){
 			res.json(data);
 		});
 	});
+<<<<<<< HEAD
+=======
 
 	app.get('/sensor/:id/:date', function (req, res) {
 		temperatureFunctions.getSensorvalues(req, res, function(data){
@@ -410,6 +469,7 @@ module.exports = function(app, db){
 			res.send(data);
 		});
 	});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	app.get('/getUsers', function(req,res){
 		userFunctions.getUsers( req, res, function(data){
 			res.json(data);
@@ -423,16 +483,45 @@ module.exports = function(app, db){
 		});
 	});
 
+<<<<<<< HEAD
+	app.get('/saveSensors', function(req, res){
+		var onewire = {
+			"protocol": "onewire",
+			"switchserver":0
+		}
+		SwitchServerFunctions.sendto(app, "save", onewire,function(status){
+			if(status != 200){
+				console.log('SwitchServerFunctions.sendto:' + status);
+			}
+		});
+		res.status(200).end();
+=======
 	app.post('/newdata', function(req, res){
 		var data = req.body;
 		temperatureFunctions.saveSensorValues(data, req, res, function(status){
 			res.json(status);
 		});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	});
 
 	app.get('/temperature/reloadTempData', function(req, res){
 		variableFunctions.getStoredVariables("all", function(variable){
 			app.io.broadcast('storedVariable', variable);
+<<<<<<< HEAD
+			if(!res.headersSent){
+				res.json(200);
+			}
+		});
+	});
+
+	app.get('/setVariable/:id/:status', function(req, res){
+		variableFunctions.setVariable(req.params, app, function(data){
+			timerFunctions.checkTimer(req.params);
+			res.json(data);
+		});
+	});
+	app.get('/setVariableByNodeid/:id/:status', function(req, res){
+=======
 		});
 		res.status(200).end();
 	});
@@ -450,6 +539,7 @@ module.exports = function(app, db){
 		});
 	});
 	app.get('/setVariableByNodeid/:nodeid/:status', function(req, res){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		variableFunctions.setVariableByNodeid(req.params, app, function(data){
 			timerFunctions.checkTimer(data);
 			res.json(data);
@@ -461,22 +551,47 @@ module.exports = function(app, db){
 			res.json(data);
 		});
 	});
+<<<<<<< HEAD
+	app.get('/send/alert/:title/:message/:user/:type?', function(req, res){
+=======
 	app.get('/send/alert/:title/:message/:type?', function(req, res){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		variableFunctions.replaceVar(req.params.message, function(message){
 			variableFunctions.replaceVar(req.params.title, function(title){
 				var alert = {
 					"title": title,
 					"message": message,
 					"type": req.params.type,
+<<<<<<< HEAD
+					"user": req.params.user,
+					"date": new Date(),
+					"id": Math.floor((Math.random() * 100) + 1)
+				}
+				if(req.params.user == "all"){
+					app.io.broadcast('change', new helper.message("alerts:add", alert));
+				}else{
+					app.io.room(req.params.user).broadcast('change', new helper.message("alerts:add", alert));
+				}
+=======
 					"date": new Date()
 				}
 				app.io.broadcast('alert', alert);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				res.status(200).end();
 			});
 		});
 	});
 	app.get('/send/pushbullet/:title/:message/:receiver', function(req, res){
 		var push = {
+<<<<<<< HEAD
+			"protocol": "pushbullet",
+			"title": req.params.title,
+			"message": req.params.message,
+			"receiver": req.params.receiver,
+			"switchserver":0
+		}
+		SwitchServerFunctions.sendto(app, "send", push,function(status){
+=======
 			"type":"object",
 			"object":{
 				"protocol": "send-pushbullet",
@@ -487,6 +602,7 @@ module.exports = function(app, db){
 			}
 		}
 		SwitchServerFunctions.sendto(app, req, "send", push,function(status){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			if(status != 200){
 				console.log('SwitchServerFunctions.sendto:' + status);
 			}

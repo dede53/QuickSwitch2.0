@@ -86,12 +86,18 @@ var bla = [
 */
 var conf					= require('./../../config.json');
 var db						= require('./database.js');
+<<<<<<< HEAD
+=======
 var onewire					= require('./onewire.js');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var helper					= require('./helper.js');
 var variableFunctions		= require('./variable.js');
 var fs						= require('fs');
 var async					= require("async");
+<<<<<<< HEAD
+=======
 var gpio					= require('rpi-gpio');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var request					= require('request');
 var later 					= require('later');
 var intervals				= {};
@@ -140,6 +146,11 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 			timer.lastexec = parseInt(timer.lastexec);
 		}
 
+<<<<<<< HEAD
+		var switchNow = null;
+
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		if(timer.conditions.range){
 			helper.log.pure("	Prüfe Zeitraum...");
 			timer.conditions.range.forEach(function(condition){
@@ -148,6 +159,10 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 				var stopTime = parseTime(condition.stop);
 				
 				if(helper.isTimeInRange(startTime.timestamp, stopTime.timestamp)){
+<<<<<<< HEAD
+					switchNow = true;
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					helper.log.pure("		Ergebnis: 	stimmt \n");
 				}else{
 					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
@@ -156,6 +171,8 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 			});
 		}
 
+<<<<<<< HEAD
+=======
 		if(timer.conditions.weekdays){
 			var datum = new Date();
 			var tag = datum.getDay();
@@ -170,6 +187,7 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 				}
 			});
 		}
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 
 		if(timer.conditions.time){
 			var now = createTime(new Date().getTime());
@@ -186,6 +204,10 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 						if(newTime.time == now.time){
 							if(timer.lastexec < newTime.timestamp){
 								console.log("		Ergebnis: 	stimmt \n");
+<<<<<<< HEAD
+								switchNow = true;
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 								switchToThis = condition.action;
 							}else{
 								helper.log.pure('Timer wurde schon geschaltet');
@@ -203,6 +225,10 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 						if(newTime.time == now.time){
 							if(timer.lastexec < newTime.timestamp){
 								console.log("		Ergebnis: 	stimmt \n");
+<<<<<<< HEAD
+								switchNow = true;
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 								switchToThis = condition.action;
 							}else{
 								helper.log.pure('Timer wurde schon geschaltet');
@@ -219,6 +245,10 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 						if(condition.time.time == now.time){
 							if(timer.lastexec < condition.time.timestamp){
 								console.log("		Ergebnis: 	stimmt \n");
+<<<<<<< HEAD
+								switchNow = true;
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 								switchToThis = condition.action;
 							}else{
 								helper.log.pure('Timer wurde schon geschaltet');
@@ -262,6 +292,10 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 							helper.log.pure('	Jetzt schalten!');
 							storedTimes[timer.id] = false;
 							helper.log.pure("		Ergebnis: 	stimmt \n");
+<<<<<<< HEAD
+							switchNow = true;
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							switchToThis = condition.action;
 						}else{
 							helper.log.pure('		Ergebnis: 	stimmt nicht \n');
@@ -284,37 +318,55 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 		// 		});
 		// 	});
 		// }
+<<<<<<< HEAD
+		if(switchNow == true){
+			switchtimer = true;
+		}
 
+		if(timer.conditions.weekdays){
+			var datum = new Date();
+			var tag = datum.getDay();
+
+			helper.log.pure("	Prüfe Wochentag...");
+			timer.conditions.weekdays.forEach(function(condition){
+				if(condition[tag] == 1){					
+					// switchNow = true;
+					helper.log.pure("		Ergebnis: 	stimmt \n");
+				}else{
+					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+					switchtimer = false;
+				}
+			});
+		}
 		callback(timer, switchToThis, switchtimer);
 }
 var getTimer = function(id, callback){
-	helper.log.pure(id);
-		var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE id = " + id + ";";
-		db.all(query, function(err, data){
-			if(err){
-				helper.log.pure(err);
-			}else if(data == ""){
-				helper.log.error("Keinen Timer mit der ID: " + id);
-			}else{
-				try{
-					if(data[0].variables != ""){
-						data[0].variables = JSON.parse(data[0].variables.trim());
-					}
-					if(data[0].conditions != ""){
-						data[0].conditions = JSON.parse(data[0].conditions.trim());
-					}
-					if(data[0].actions){
-						data[0].actions = JSON.parse(data[0].actions.trim());
-					}
-					callback(data[0]);
-				}catch(e){
-					helper.log.pure("Fehler im Json des Timers!");
-					helper.log.pure(data[0]);
-					return;
-				};
-			}
-		});
-	}
+	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE id = " + id + ";";
+	db.all(query, function(err, data){
+		if(err){
+			helper.log.pure(err);
+		}else if(data == ""){
+			helper.log.error("Keinen Timer mit der ID: " + id);
+		}else{
+			try{
+				if(data[0].variables != ""){
+					data[0].variables = JSON.parse(data[0].variables.trim());
+				}
+				if(data[0].conditions != ""){
+					data[0].conditions = JSON.parse(data[0].conditions.trim());
+				}
+				if(data[0].actions){
+					data[0].actions = JSON.parse(data[0].actions.trim());
+				}
+				callback(data[0]);
+			}catch(e){
+				helper.log.pure("Fehler im Json des Timers!");
+				helper.log.pure(data[0]);
+				return;
+			};
+		}
+	});
+}
 var getTimers = function(callback){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
 	db.all(query, function(err, data){
@@ -348,12 +400,100 @@ var getTimers = function(callback){
 		}
 	});
 }
+var getUserTimers = function(user, callback){
+	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE user = '" + user + "';";
+=======
+
+		callback(timer, switchToThis, switchtimer);
+}
+var getTimer = function(id, callback){
+	helper.log.pure(id);
+		var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE id = " + id + ";";
+		db.all(query, function(err, data){
+			if(err){
+				helper.log.pure(err);
+			}else if(data == ""){
+				helper.log.error("Keinen Timer mit der ID: " + id);
+			}else{
+				try{
+					if(data[0].variables != ""){
+						data[0].variables = JSON.parse(data[0].variables.trim());
+					}
+					if(data[0].conditions != ""){
+						data[0].conditions = JSON.parse(data[0].conditions.trim());
+					}
+					if(data[0].actions){
+						data[0].actions = JSON.parse(data[0].actions.trim());
+					}
+					callback(data[0]);
+				}catch(e){
+					helper.log.pure("Fehler im Json des Timers!");
+					helper.log.pure(data[0]);
+					return;
+				};
+			}
+		});
+	}
+var getTimers = function(callback){
+	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
+	db.all(query, function(err, data){
+		if(err){
+			callback(404);
+			helper.log.error(err);
+		}else{
+<<<<<<< HEAD
+			var timers = {};
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
+			for(var i = 0; i< data.length; i++){
+				try{
+					if(data[i].variables != ""){
+						data[i].variables = JSON.parse(data[i].variables.trim());
+					}else{
+						data[i].variables = false;
+					}
+					if(data[i].conditions != ""){
+						data[i].conditions = JSON.parse(data[i].conditions.trim());
+					}else{
+						data[i].conditions = false;
+					}
+					if(data[i].actions){
+						data[i].actions = JSON.parse(data[i].actions.trim());
+					}else{
+						data[i].actions = false;
+					}
+<<<<<<< HEAD
+					timers[data[i].id] = data[i];
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
+				}catch(e){
+					helper.log.error("Fehler im JSON bei diesem Timer!");
+					helper.log.pure(data[i]);
+				}
+			}
+<<<<<<< HEAD
+			callback(timers);
+=======
+			callback(data);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
+		}
+	});
+}
 var checkVariables = function(timer, variable, switchToThis, switchtimer, callback){
+<<<<<<< HEAD
+	timer.variables[variable.id].forEach(function(variab){
+		switch(variab.mode){
+			case 'match':
+				if(variab.status == variable.status.toString()){
+					helper.log.pure('	Variable ' + variab.id + ' hat sich zu "' + variab.status + '" geändert!');
+=======
 	timer.variables[variable.name].forEach(function(variab){
 		switch(variab.mode){
 			case 'match':
 				if(variab.status == variable.status.toString()){
 					helper.log.pure('	Variable ' + variab.name + ' hat sich zu "' + variab.status + '" geändert!');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					switchtimer = true;
 					switchToThis = 'on';
 				}else{
@@ -361,7 +501,11 @@ var checkVariables = function(timer, variable, switchToThis, switchtimer, callba
 				}
 				break;
 			case 'onChange':
+<<<<<<< HEAD
+				helper.log.pure('	Variable ' + variable.id + ' hat sich geändert');
+=======
 				helper.log.pure('	Variable ' + variable.name + ' hat sich geändert');
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				switchtimer = true;
 				break;
 			default:
@@ -378,23 +522,62 @@ var switchActions = function(timer, status, switchtimer){
 		if(timer.actions.devices){
 			helper.log.debug('		Geräte schalten!');
 			timer.actions.devices.forEach(function(device){
+<<<<<<< HEAD
+				helper.switchaction('device', device.id, device.action, device.timeout);
+=======
 				helper.switchaction('device', device.id, device.action);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			});
 		}
 		if(timer.actions.groups){
 			helper.log.debug('		Gruppe schalten!');
 			timer.actions.groups.forEach(function(group){
+<<<<<<< HEAD
+				helper.switchaction('group', group.id, status, group.timeout);
+=======
 				helper.switchaction('group', group.id, status);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			});
 		}
 		if(timer.actions.rooms){
 			helper.log.debug('		Raum schalten!');
 			timer.actions.rooms.forEach(function(room){
+<<<<<<< HEAD
+				helper.switchaction('room', room.id, status, room.timeout);
+=======
 				helper.switchaction('room', room.id, status);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			});
 		}
 		if(timer.actions.saveSensors){
 			helper.log.pure("		Speichere Sensoren");
+<<<<<<< HEAD
+			helper.switchaction('onewire', undefined, undefined, undefined);
+		}
+		if(timer.actions.alerts){
+			timer.actions.alerts.forEach(function(alert){
+				if(alert.timeout){
+					setTimeout(function(){
+						helper.log.pure("		Erzeuge Alert: " + alert.name + "|" + alert.message);	
+						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.name + "/" + alert.message + "/" + alert.user + "/" + alert.type;
+						helper.log.pure(url);
+						request(url , function (error, response, body) {
+							if (error) {
+								helper.log.pure(error);
+							}
+						});
+					}, parseInt(alert.timeout) * 1000);
+				}else{
+					helper.log.pure("		Erzeuge Alert: " + alert.name + "|" + alert.message);	
+					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.name + "/" + alert.message + "/" + alert.user + "/" + alert.type;
+					helper.log.pure(url);
+					request(url , function (error, response, body) {
+						if (error) {
+							helper.log.pure(error);
+						}
+					});
+				}
+=======
 			onewire.saveSensors();
 		}
 		if(timer.actions.alerts){
@@ -407,6 +590,7 @@ var switchActions = function(timer, status, switchtimer){
 						helper.log.pure(error);
 					}
 				});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			});
 		}
 		if(timer.actions.intervals){
@@ -418,7 +602,18 @@ var switchActions = function(timer, status, switchtimer){
 					switch(interval.action){
 						case "saveSensors":
 							helper.log.pure("		Speichere Sensoren");
+<<<<<<< HEAD
+							var url = 'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/saveSensors';
+							intervals[id] = later.setInterval( function(){
+								request(url, function (error, response, body) {
+									if (error) {
+										helper.log.pure(error);
+									}
+								});
+							}, sched);
+=======
 							intervals[id] = later.setInterval(onewire.saveSensors , sched);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 							break;
 						case "device":
 						case "group":
@@ -430,6 +625,20 @@ var switchActions = function(timer, status, switchtimer){
 							helper.log.pure("		Speichere Variable");
 							intervals[id] = later.setInterval(function() { variableFunctions.storeVariable(interval.name);} , sched);
 							break;
+<<<<<<< HEAD
+						case "urls":
+							helper.log.pure("		Rufe Url auf");
+							interval.urls.forEach(function(url){
+								intervals[id] = later.setInterval(function() {
+									request(url, function (error, response, body) {
+										if (error) {
+											helper.log.pure(error);
+										}
+									});
+								} , sched);
+							});
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 						default:
 							break;
 					}
@@ -441,6 +650,29 @@ var switchActions = function(timer, status, switchtimer){
 		}
 		if(timer.actions.pushbullets){
 			timer.actions.pushbullets.forEach(function(action){
+<<<<<<< HEAD
+				if(action.timeout){
+					setInterval(function(){
+						helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
+						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
+						//helper.log.pure(url);
+						request(url , function (error, response, body) {
+							if (error) {
+								helper.log.pure(error);
+							}
+						});
+					}, parseInt(action.timeout) * 1000);
+				}else{
+					helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
+					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
+					//helper.log.pure(url);
+					request(url , function (error, response, body) {
+						if (error) {
+							helper.log.pure(error);
+						}
+					});
+				}
+=======
 				helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
 				var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
 				//helper.log.pure(url);
@@ -449,16 +681,48 @@ var switchActions = function(timer, status, switchtimer){
 						helper.log.pure(error);
 					}
 				});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			});
 		}
 		if(timer.actions.storeVariables){
 			timer.actions.storeVariables.forEach(function(variable){
 				helper.log.pure("		Speichere Variable:" + variable.name);
+<<<<<<< HEAD
+				if(variable.timeout){
+					setTimeout(function(){
+						variableFunctions.storeVariable(variable.name);
+					}, parseInt(variable.timeout) * 1000);
+				}else{
+					variableFunctions.storeVariable(variable.name);
+				}
+=======
 				variableFunctions.storeVariable(variable.name);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			});
 		}
 		if(timer.actions.urls){
 			timer.actions.urls.forEach(function(url){
+<<<<<<< HEAD
+				if(url.timeout){
+					setTimeout(function(){
+						request(url.url , function (error, response, body) {
+							if (error) {
+								helper.log.pure(error);
+							}
+						});
+					}, parseInt(url.timeout) * 1000);
+				}else{
+					request(url.url , function (error, response, body) {
+						if (error) {
+							helper.log.pure(error);
+						}
+					});
+				}
+			});
+		}
+		var query = "UPDATE `timer` SET `lastexec`='" + parseInt(new Date().getTime()) + "' WHERE `id` = " + timer.id + ";";
+		db.run(query);
+=======
 				request(url.url , function (error, response, body) {
 					if (error) {
 						helper.log.pure(error);
@@ -471,6 +735,7 @@ var switchActions = function(timer, status, switchtimer){
 		var query = "UPDATE `timer` SET `lastexec`='" + parseInt(new Date().getTime()) + "' WHERE `id` = " + timer.id + ";";
 		db.run(query);
 		// helper.log.pure(query);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}
 }
 
@@ -549,8 +814,14 @@ var checkTimer = function(variable){
 			if(timer.active == "false"){
 				return;
 			}
+<<<<<<< HEAD
+			// helper.log.pure(timer.variables);
+			if(variable && typeof timer.variables == "object"){
+				if(timer.variables[variable.id]){
+=======
 			if(variable && typeof timer.variables == "object"){
 				if(timer.variables[variable.name]){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					helper.log.debug("Prüfe Timer mit Variablen: " + timer.name);
 					checkVariables(timer, variable, undefined, false, function(timer, switchToThis, switchtimer){
 						checkConditions(timer, switchToThis, switchtimer, function(timer, switchToThis, switchtimer){
@@ -569,6 +840,10 @@ var checkTimer = function(variable){
 }
 module.exports = {
 	getTimers: getTimers,
+<<<<<<< HEAD
+	getUserTimers: getUserTimers,
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	getTimer: getTimer,
 	saveTimer: function(data, callback){
 		if(!data.lastexec){
@@ -597,7 +872,10 @@ module.exports = {
 	},
 	saveNewTimer: function(data, callback){
 		var query = "INSERT INTO timer (name, variables, conditions, actions, user) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "');";
+<<<<<<< HEAD
+=======
 		// db.run(query);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		db.all(query, function(err, data){
 			if(err){
 				callback(err, undefined);
@@ -608,18 +886,31 @@ module.exports = {
 			}
 		});
 	},
+<<<<<<< HEAD
+	saveEditTimer: function(data, callback){
+		var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + JSON.stringify(data.variables) + "', conditions = '" + JSON.stringify(data.conditions) + "', actions = '" + JSON.stringify(data.actions) + "' WHERE id = '" + data.id + "';";
+		db.run(query);
+		callback(undefined, data);
+	},
+	deleteTimer: function(id){
+=======
 	saveEditTimer: function(data, req ,res, callback){
 		var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + data.variables + "', conditions = '" + data.conditions + "', actions = '" + data.actions + "' WHERE id = '" + data.id + "';";
 		db.run(query);
 		callback(201);
 	},
 	deleteTimer: function(id, app){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "DELETE FROM timer WHERE id = '" + id + "';";
 		db.all(query, function(err, data){
 			if(err){
 				callback(err);
 			}else{
+<<<<<<< HEAD
+				callback(data);
+=======
 				app.io.broadcast('deleteTimer', id);
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			}
 		});
 	},

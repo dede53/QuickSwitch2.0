@@ -8,12 +8,20 @@ module.exports = {
 	/*****************************************
 	* Liefert alle User als Callback
 	*****************************************/
+<<<<<<< HEAD
+	getUsers: function (callback){
+=======
 	getUsers: function (req, res, callback){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "SELECT * FROM user;";
 		db.all(query, function(err, row){
 			if(err){
 				helper.log.error(err);
 			}else{
+<<<<<<< HEAD
+				var users = [];
+=======
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				row.forEach(function(user){
 
 					try{
@@ -26,11 +34,17 @@ module.exports = {
 						user.variables = [];
 						user.varChart = [];
 					}
+<<<<<<< HEAD
+					users.push(user);
+				});
+				callback(users);
+=======
 					deviceFunctions.favoritDevices(user, req, res, function(devices){
 						user.favoritDevices = devices;
 						callback(user);
 					});
 				});
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			}
 		});
 	},
@@ -38,7 +52,11 @@ module.exports = {
 	* liefert einen User als Callback
 	* Argument: userID
 	*****************************************/
+<<<<<<< HEAD
+	getUser: function (id, callback){
+=======
 	getUser: function (id, req, res, callback){
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
@@ -69,7 +87,11 @@ module.exports = {
 				300 bei nicht vorhandenem User
 	* Argument: userID
 	*****************************************/
+<<<<<<< HEAD
+	deleteUser: function (id, callback) {
+=======
 	deleteUser: function (id, req, res, callback) {
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
@@ -96,7 +118,11 @@ module.exports = {
 	* speichert einen neuen User
 	* Callback: 201
 	*****************************************/
+<<<<<<< HEAD
+	saveNewUser: function (data, callback) {
+=======
 	saveNewUser: function (data, req, res, callback) {
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		var query = "INSERT INTO user ( name, favoritDevices ) VALUES ('"+ data.name +"', '["+ data.favoritDevices +"]');";
 		db.run(query);
 		callback(201);
@@ -104,7 +130,11 @@ module.exports = {
 	/*****************************************
 	* ändert einen schon vorhandenen User
 	*****************************************/
+<<<<<<< HEAD
+	saveEditUser: function (data, callback) {
+=======
 	saveEditUser: function (data, req, res, callback) {
+>>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		console.log(data);
 		var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '["+ data.favoritDevices +"]', variables = '["+ data.variables +"]' WHERE id = '"+ data.id +"';";
 		db.run(query);
