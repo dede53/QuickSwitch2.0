@@ -1,10 +1,7 @@
 var fs 						=	require('fs');
 var cp 						=	require('child_process');
 var later 					= 	require('later');
-<<<<<<< HEAD
 var async 					= 	require('async');
-=======
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var express 				=	require('express.io');
 var bodyParser 				=	require('body-parser');
 var app 					=	express();
@@ -17,11 +14,7 @@ var adapter 				=	new adapterLib({
 	"description": "Lädt alle Adapter aus ./adapter.",
 	"settingsFile": "",
 	"settings":	{
-<<<<<<< HEAD
 		"port": 4041
-=======
-		"port": 4042
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	}
 });
 
@@ -34,7 +27,6 @@ app.post('/switch', function (req, res) {
 	res.json(200);
 });
 
-<<<<<<< HEAD
 app.get('/adapter/:mode/:name', function (req, res) {
 	switch(req.params.mode){
 		case "reload":
@@ -87,37 +79,23 @@ try{
 	}
 }
 
-=======
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 fs.readdir('./adapter', function(err, data){
 	if(err){
 		adapter.log.error(err);
 	}else{
-<<<<<<< HEAD
 		adapter.log.info("Installierte Adapter:");
-=======
-		adapter.log.info("Installierte Eventlistener:");
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		data.forEach(function(name){
 			if(name.startsWith("~")){
 				return;
 			}
 				var name = name.toLowerCase();
 				var path = './adapter/' + name + "/index.js";
-				
-<<<<<<< HEAD
-=======
-				adapter.log.info('	' + name);
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 				var debugFile = __dirname + '/log/debug-' + name + '.log';
 
 				try{
 					log_file[name]			=	fs.createWriteStream( debugFile, {flags : 'w', encoding: 'utf8'});
 					plugins[name] = cp.fork( path );
-<<<<<<< HEAD
 					adapter.log.info('	' + name);
-=======
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 					plugins[name].on('message', function(response) {
 							
 						if(response.log){
@@ -132,7 +110,6 @@ fs.readdir('./adapter', function(err, data){
 	}
 });
 
-<<<<<<< HEAD
 function startAdapter(name, cb){
 	if(plugins[name]){
 		console.log("Adapter läuft bereits!");
@@ -283,8 +260,6 @@ function removeAdapter(name, cb) {
 	});
 }
 
-=======
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 function action(status, data){
 	var transData = {
 		status: status,
@@ -298,23 +273,8 @@ function action(status, data){
 			plugins[data.protocol].send(transData);
 		}
 	}catch(err){
-<<<<<<< HEAD
 		adapter.log.error(data);
 		adapter.log.error(err);
 		adapter.log.error("Adapter zum schalten nicht installiert: " + data.protocol);
 	}
 }
-=======
-		adapter.log.error(err);
-		adapter.log.error("Adapter zum schalten nicht installiert: " + data.protocol);
-	}
-}
-try{
-	app.listen(adapter.settings.port);
-	adapter.log.info("SwitchServer running at http://127.0.0.1:" + adapter.settings.port);
-}catch(e){
-	app.listen(adapter.settings.port + 1);
-	adapter.log.info("SwitchServer running at http://127.0.0.1:" + adapter.settings.port + " Given port is used.");
-}
-	
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
