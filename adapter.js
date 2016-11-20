@@ -18,6 +18,14 @@ var adapter 				=	new adapterLib({
 	}
 });
 
+if(!fs.existsSync("./adapter")){
+	fs.mkdirSync("./adapter", 0766, function(err){
+		if(err){
+			console.log("mkdir ./adapter: failed: " + err);
+		}
+	});
+}
+
 app.use(bodyParser.json());									// for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));			// for parsing application/x-www-form-urlencoded
 
