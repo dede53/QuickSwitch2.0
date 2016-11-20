@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-var colors			= require('colors/safe');
-var fritz 			= require('smartfritz');
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 var conf 			= require('./../../config.json');
 var request 		= require('request');
 var later 			= require('later');
@@ -47,29 +42,17 @@ var log = {
 		debug: function(msg){
 			var now = new Date;
 			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-<<<<<<< HEAD
 			console.log(datum +': '+ msg);
-=======
-			console.log(datum +': '+ colors.blue(msg));
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		},
 		error: function(msg){
 			var now = new Date;
 			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-<<<<<<< HEAD
 			console.log(datum +': '+ msg);
-=======
-			console.log(datum +': '+ colors.red(msg));
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		},
 		info: function(msg){
 			var now = new Date;
 			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-<<<<<<< HEAD
 			console.log(datum +': '+ msg);
-=======
-			console.log(datum +': '+ colors.green(msg));
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		},
 		pure: function(msg){
 			console.log(msg);
@@ -91,49 +74,8 @@ module.exports = {
 		return false;
 	},
 	log: log,
-<<<<<<< HEAD
 	Sensor: function(id, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
 		this.id = id;
-=======
-	mdyToDate: function(mdy) {
-		var d = mdy.split('.', 4);
-		var m = d[3].split(":", 2);
-
-		if (d.length != 4 || m.length != 2){
-			return null;
-		}
-		// Check if date is valid
-		var mon = parseInt(d[1]); 
-		var	day = parseInt(d[0]);
-		var	year= parseInt(d[2]);
-		var hour = parseInt(m[0]);
-		var min = parseInt(m[1]);
-		if (d[2].length == 2) year += 2000;{
-			if (day <= 31 && mon <= 12 && year >= 2015){
-				return new Date(year, mon - 1, day, hour, min);
-			}
-		}
-		return null;
-	},
-	// AUSLAGERN!!??
-	fritzboxConnect: function(callback){
-		if(conf.fritzbox.user != 'false'){
-			console.log("Fritzboxnutzer: " + conf.fritzbox.user);
-			console.log("FritzboxIP: " + conf.fritzbox.ip);
-			var moreParam = { url: conf.fritzbox.ip };
-			fritz.getSessionID(conf.fritzbox.user , conf.fritzbox.password, function(sid){
-				console.log("Fritzbox Session ID: " + sid);
-				if(sid == "0000000000000000"){
-					console.log("Kann keine Verbindung zur Fritzbox herstellen!");
-				}else{
-					callback(fritz, sid);
-				}
-			}, moreParam);
-		}
-	},
-	Sensor: function(nodeid, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
-		this.nodeid = nodeid;
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		this.name = name;
 		this.data = data;
 		this.step = step;
@@ -154,11 +96,7 @@ module.exports = {
 		var tag = (typeof(i) == 'object') ? i.getDay() : i ;
 		return tag;
 	},
-<<<<<<< HEAD
 	switchaction: function (type, id, action, timeout){
-=======
-	switchaction: function (type, id, action){
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		if(action == "on" || action == 'true'){
 			action = 1;
 		}if(action == "off" || action == 'false'){
@@ -166,7 +104,6 @@ module.exports = {
 		}else{
 			action = action;
 		}
-<<<<<<< HEAD
 		if(timeout){
 			setTimeout(function(){
 				request.get({
@@ -196,23 +133,6 @@ module.exports = {
 				}
 			});
 		}
-		// console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
-	},
-	getSuntime: function (type, offset){
-		var suntimes			= SunCalc.getTimes(new Date(), conf.position.lat, conf.position.long);
-=======
-		request.get({
-			url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
-			form:
-				{
-				}
-		},function( err, httpResponse, body){
-			if(err){
-				console.log( err , "error");
-			}else{
-				console.log("Erfolgreich an den SwitchServer gesendet");
-			}
-		});
 		// console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
 	},
 	calculateOffset:function(timer, condition){
@@ -493,7 +413,6 @@ module.exports = {
 	},
 	getSuntime: function (type, offset){
 		var suntimes			= SunCalc.getTimes(new Date(), 51.5, -0.1);
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 		if(type == "sunrise"){
 			var suntime 		= new Date(suntimes.sunrise);
 			console.log("		Sonnenaufgang:	" + suntime.getHours() + ':' + suntime.getMinutes());
@@ -513,13 +432,12 @@ module.exports = {
 		}
 		return createTime(suntime.getTime());
 	},
-	setVariable: function(name, status){
-		var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/setVariable/" + name + "/" + status;
+	setVariable: function(id, status){
+		var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/setVariable/" + id + "/" + status;
 		request(url , function (error, response, body) {
 			if (error) {
 				var now = new Date;
 				var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-<<<<<<< HEAD
 				console.log(datum +': '+ error);
 			}
 		});
@@ -532,23 +450,13 @@ module.exports = {
 		message[foo[1]] = data;
 		return message;
 	},
-=======
-				console.log(datum +': '+ colors.red(error));
-			}
-		});
-	},
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 	setVariableByNodeid: function(nodeid, status){
-		var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/setVariableByNodeid/" + nodeid + "/" + status;
+		var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/setVariable/" + nodeid + "/" + status;
 		request(url , function (error, response, body) {
 			if (error) {
 				var now = new Date;
 				var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-<<<<<<< HEAD
 				console.log(datum +': '+ error);
-=======
-				console.log(datum +': '+ colors.red(error));
->>>>>>> d3e70a1d720f830c1b7fd87dccb9dd8e639e7874
 			}
 		});
 	},
