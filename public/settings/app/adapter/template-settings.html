@@ -1,0 +1,74 @@
+<div class="modal-header">
+	<h3 class="modal-title">{{adapter.name}}-Einstellungen</h3>
+</div>
+<div class="modal-body">
+	<ul class="list-group">
+		<li class="list-group-item" ng-repeat="(name, setting) in adapter.settings">
+			<div ng-switch on="getTypeof(setting)">
+				<div ng-switch-when="string">
+					<div class="input-group">
+						<span class="input-group-addon">{{name}}</span>
+						<input type="text" id="{{name}}" class="form-control" ng-model="setting">
+					</div>
+				</div>
+				<div ng-switch-when="object">
+						<ul  class="list-group">
+							<li class="list-group-item disabled">
+								{{name}}
+							</li>
+							<li class="list-group-item" ng-repeat="(nam, set) in setting">
+								<div ng-switch on="getTypeof(set)">
+									<div ng-switch-when="string">
+										<div class="input-group">
+											<span class="input-group-addon">{{nam}}</span>
+											<input type="text" id="{{nam}}" class="form-control" ng-model="set">
+										</div>
+									</div>
+									<div ng-switch-when="number">
+										<div class="input-group">
+											<span class="input-group-addon">{{nam}}</span>
+											<input type="number" id="{{nam}}" class="form-control" ng-model="set">
+										</div>
+									</div>
+									<div ng-switch-when="object">
+										<div ng-repeat="(na, se) in set">
+											<div class="input-group">
+												<span class="input-group-addon">{{na}}</span>
+												<input type="text" id="{{na}}" class="form-control" ng-model="se">
+											</div>
+										</div>
+									</div>
+									<div ng-switch-default>It's something else {{getTypeof(set)}}</div>
+								</div>
+							</li>
+						</ul>
+				</div>
+				<div ng-switch-when="number">
+					<div class="input-group">
+						<span class="input-group-addon">{{name}}</span>
+						<input type="number" id="{{name}}" class="form-control" ng-model="setting" min="1" max="4">
+					</div>
+				</div>
+	            <div ng-switch-when="array">It's an array</div>
+	            <div ng-switch-when="null">It's null</div>
+	            <div ng-switch-when="undefined">It's undefined</div>
+	            <div ng-switch-default>It's something else {{getTypeof(set)}}</div>
+			</div>
+		</li>
+	</ul>
+    <form name="userFormTwo" novalidate>
+    
+        <div class="form-group" ng-repeat="(key, user) in adapter.settings" ng-class="{ 'has-error' : userFieldForm.email.$invalid }">
+        <ng-form name="userFieldForm">
+            <label>{{ key }}</label>
+            <input type="text" class="form-control" name="email" ng-model="user" required>
+        </ng-form>
+        </div>
+        {{adapter.settings}}
+    </form>
+	{{adapter.settings}}
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="save(adapter.settings)">OK</button>
+	<button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+</div>

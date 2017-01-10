@@ -1,0 +1,48 @@
+<div ng-repeat="switchServer in switchServers" class="">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			{{switchServer.name}} ({{switchServer.ip}}:{{switchServer.port}}) - {{switchServer.status.server.status || switchServer.message}}
+			<div class="pull-right">
+				<button type="button" ng-click="reload()" class="btn btn-xs btn-success" href="">Aktualisieren</button>
+			</div>
+		</div>
+
+		{{switchServer.server.status}}
+		<!-- Table -->
+		<table class="table">
+			<tr>
+				<th>Name</th>
+				<th>Loglevel</th>
+				<th>Status</th>
+				<th></th>
+				<th>Pid</th>
+				<th>Steuern</th>
+				<th>Einstellungen</th>
+			</tr>
+			<tr ng-repeat="adapter in switchServer.status.adapter">
+				<td>{{adapter.name}}</td>
+				<td>{{adapter.settings.loglevel}}</td>
+				<td>
+					<h3 class="label label-xl glyphicon" ng-class='adapter.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' aria-hidden="true">
+						<span title="{{adapter.statusMessage}}">
+							{{adapter.status}}
+						</span>
+					</h3>
+				</td>
+				<td>
+					{{adapter.statusMessage}}
+				</td>
+				<td>{{adapter.pid}}</td>
+				<td>
+					<button type="button" ng-click="controlAdapter('start', switchServer, adapter.name)" class="btn btn-xs btn-success" href="">Start</button>
+					<button type="button" ng-click="controlAdapter('stop', switchServer, adapter.name)" class="btn btn-xs btn-danger" href="">Stop</button>
+					<button type="button" ng-click="controlAdapter('restart', switchServer, adapter.name)" class="btn btn-xs btn-warning" href="">Neustart</button>
+				</td>
+				<td><button type="button" class="btn btn-xs btn-info" ng-click="openSettings(adapter)">Einstellungen</button></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<a href="#/editDevice/" class="btn btn-success" style="text-align: center;position: fixed;bottom:0;margin:10px auto;width: 20%;left:40%;z-index:200;">
+	Neues Gerät hinzufügen
+</a>
