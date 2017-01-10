@@ -178,3 +178,6 @@ input[type="range"]:hover{
 .sliderText{
 	margin:0 0;
 }
+.pull-right{
+	float:right!important;
+}
