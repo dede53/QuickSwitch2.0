@@ -4,6 +4,7 @@
 		<ul >
 			<li>
 				Titel: {{action.name}}
+				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'alerts'})">Löschen</button>
 			</li>
 			<li>
 				Nachricht: {{action.message}}

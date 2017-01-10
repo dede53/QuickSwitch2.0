@@ -1,4 +1,4 @@
-app.controller('timerController',function($scope, $rootScope, socket, $location){
+app.controller('timerController', function($scope, $rootScope, socket){
 	$scope.days = {
 		"0":"So",
 		"1":"Mo",
@@ -8,39 +8,34 @@ app.controller('timerController',function($scope, $rootScope, socket, $location)
 		"5":"Fr",
 		"6":"Sa"
 	}
-	$scope.timer = {
-		active:true,
-		variables:false,
-		conditions:false,
-		actions:false,
-		clickIcon:"notifications",
-		fill:'lightgreen'
-	};
-
-	$rootScope.switchPage = function(data, data1){
-		$rootScope.showmenu =! ($rootScope.showmenu);
-		if(data != ""){
-			if(data1 != undefined){
-				$location.url(data + data1);
-			}else{
-				$location.url(data);
-			}
-		}
-	}
 });
 
-app.controller('addNewTimerController', function($scope, $uibModal, socket, $routeParams, $location, $rootScope) {
-	console.log('addNewTimerController');
-	console.log($routeParams);
+app.controller('editTimerController', function($scope, $rootScope, socket, $routeParams, $uibModal){
+	$scope.days = {
+		"0":"So",
+		"1":"Mo",
+		"2":"Di",
+		"3":"Mi",
+		"4":"Do",
+		"5":"Fr",
+		"6":"Sa"
+	}
+	$scope.timerEditMode = true;
 	if($routeParams.id){
-		$scope.headline = "Timer bearbeiten";
-		if($scope.timers){
-			$scope.timer = $scope.timers[$routeParams.id];
+		if(!$rootScope.timers){
+			$rootScope.switchPage('/timer', '');
+			return;
+		}
+
+		if($rootScope.timers[$routeParams.id]){
+			$scope.headline = "bearbeiten";
+			$scope.timer = $rootScope.timers[$routeParams.id];
 		}else{
-			$location.url("/timer");
+			$rootScope.switchPage('/timer', '');
+			return;
 		}
 	}else{
-		$scope.headline = "Timer hinzufügen";
+		$scope.headline = "hinzufügen";
 		$scope.timer = {
 			active:true,
 			variables:false,
@@ -48,9 +43,8 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 			actions:false,
 			clickIcon:"notifications",
 			fill:'lightgreen'
-		};	
+		}
 	}
-
 	$scope.addAction = {
 		variable:{
 			id: Math.floor((Math.random() * 1000) + 1) * Math.floor((Math.random() * 1000) + 1)
@@ -177,6 +171,14 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 						action: data.switchstatus
 					}
 					break;
+				case "groups":
+					var action = data.group;
+					action.action = data.switchstatus;
+					break;
+				case "rooms":
+					var action = data.room;
+					action.action = data.switchstatus;
+					break;
 				case "alerts":
 					var action = data.alert;
 					break;
@@ -259,8 +261,9 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 
 	$scope.saveTimer = function(){
 		console.log($scope.timer);
+		$scope.timerEditMode = false;
 		$scope.timer.user = $rootScope.activeUser.name;
-		socket.emit('timers:edit', {user:$rootScope.activeUser, edit: $scope.timer});
+		socket.emit('timers:save', {user:$rootScope.activeUser, save: $scope.timer});
 		$scope.timer = {
 			active:true,
 			variables:false,
@@ -269,12 +272,13 @@ app.controller('addNewTimerController', function($scope, $uibModal, socket, $rou
 			clickIcon:"notifications",
 			fill:'lightgreen',
 		};
-		$location.url("/timer");
+		$scope.switchPage("/timer");
 	}
 });
 
 app.controller('editActionsController', function($scope, $uibModalInstance, socket, $rootScope){
 	socket.emit('devices:devicelist');
+	socket.emit('rooms:get');
 	
 	$scope.alertTypen = [
 		{value:'primary', name:'Blau/Primary'},
@@ -290,13 +294,11 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 		},
 		switchstatus: '1'
 	}
-	$scope.variables = {};
-	socket.emit('variables');
-	socket.on('variable', function(data){
-		$scope.variables[data.name] = data;
-	});
+
 	$scope.actions = [
+		{value:"groups", name:"Gruppe"},
 		{value:"devices", name:"Geräte"},
+		{value:"rooms", name:"Räume"},
 		{value:"urls", name:"Url aufrufen"},
 		{value:"saveSensors", name:"Speichere Sensoren"},
 		{value:"alerts", name:"Alert"},
@@ -328,12 +330,8 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 });
 
 app.controller('editVariablesController', 	function($scope, $uibModalInstance, socket) {
-	socket.emit('variables');
-	$scope.variables = {};
+	socket.emit('variables:get');
 
-	socket.on('variable', function(data){
-		$scope.variables[data.name] = data;
-	});
 	$scope.addVariable = {};
 	$scope.save = function () {
 		$scope.addVariable.saveType = "addVariable";

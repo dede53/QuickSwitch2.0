@@ -30,7 +30,7 @@
 										{{time.time}}
 									</span>
 								</span>
-								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+								<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
 							</li>
 						</ul>
 					</li>
@@ -40,15 +40,15 @@
 						<div ng-switch on="time.time">
 							<div ng-switch-when="sunset">
 								Sonnenuntergang 
-								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+								<button ng-show="timerEditMode" ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
 							</div>
 							<div ng-switch-when="sunrise">
 								Sonnenaufgang
-								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+								<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
 							</div>
 							<div ng-switch-default>
 								{{time.time}}
-								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+								<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
 							</div>
 						</div>
 					</li>

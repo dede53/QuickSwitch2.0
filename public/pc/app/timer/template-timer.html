@@ -10,10 +10,10 @@
 						<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
 					</span>
 					<span title="Bearbeiten">
-						<ng-md-icon ng-show="timer.isOpen" icon="edit" style="fill:#399BB0" size="25" options='{"rotation": "none"}' ng-click='switchPage("/editTimer/", timer.id)'></ng-md-icon>
+						<ng-md-icon icon="edit" style="fill:#399BB0" size="25" options='{"rotation": "none"}' ng-click='$event.stopPropagation();$event.preventDefault();switchPage("/editTimer/" + timer.id)'></ng-md-icon>
 					</span>
 					<span title="Löschen">
-						<ng-md-icon ng-show="timer.isOpen" icon="delete" style="fill:#FF8000" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();deleteTimer(timer)"></ng-md-icon>
+						<ng-md-icon icon="delete" style="fill:#FF8000" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();remove('timers', timer)"></ng-md-icon>
 					</span>
 				</div>
 			</h6>
@@ -68,6 +68,9 @@
 							</div>
 							<div ng-switch-when="devices">
 								<div timer-device-directive></div>
+							</div>
+							<div ng-switch-when="groups">
+								<div timer-group-directive></div>
 							</div>
 							<div ng-switch-when="storeVariables">
 								Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>

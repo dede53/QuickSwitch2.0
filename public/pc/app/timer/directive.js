@@ -42,11 +42,7 @@ app.directive('createTimerDirective', function(){
 app.directive('timerEditDirective', function(){
 	return {
 		restrict: "EA",
-		templateUrl: './app/timer/template-timer-edit.html',
-		controller: "addNewTimerController",
-		// scope: {
-			// devicelist: '&'
-		// }
+		templateUrl: './app/timer/template-timer-edit.html'
 	}
 });
 app.directive('timerWeekdaysDirective', function(){
@@ -100,7 +96,14 @@ app.directive('timerAlertDirective', function(){
 app.directive('timerGroupDirective', function(){
 	return {
 		restrict: "EA",
-		templateUrl: './app/timer/template-timer-time.html'
+		templateUrl: './app/timer/template-timer-group.html'
+	}
+});
+
+app.directive('timerRoomDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-room.html'
 	}
 });
 

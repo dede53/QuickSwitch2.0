@@ -4,6 +4,6 @@
 		<span ng-class='day ? "green" :  "grey"'  ng-repeat="(index, day) in weekdayCondition">
 			{{days[index]}}
 		</span>
-		<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:weekdayCondition, type:'weekdays'})">Löschen</button>
+		<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:weekdayCondition, type:'weekdays'})">Löschen</button>
 	</li>
 </ul>

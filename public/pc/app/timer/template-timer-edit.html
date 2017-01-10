@@ -1,4 +1,3 @@
-
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<input type="text" placeholder="Name" ng-model="timer.name">
@@ -8,7 +7,7 @@
 				style="fill:#D9534F"
 				size="25"
 				options='{"duration": 10, "rotation": "none"}'
-				ng-click="abort('/timer/')"
+				ng-click="abort('/timer')"
 				class="pull-right"
 			></ng-md-icon>
 		</span>
@@ -68,6 +67,12 @@
 							</div>
 							<div ng-switch-when="devices">
 								<div timer-device-directive></div>
+							</div>
+							<div ng-switch-when="groups">
+								<div timer-group-directive></div>
+							</div>
+							<div ng-switch-when="rooms">
+								<div timer-room-directive></div>
 							</div>
 							<div ng-switch-when="urls">
 								<ul class="list-group">
@@ -149,8 +154,8 @@
 				</div>
 			</ul>
 			<div class="pull-right">
-				<button ng-click="saveTimer()" class="btn btn-success">Timer speichern</button>
-				<button class="btn btn-danger" ng-click="abort('/timer/')">Abbrechen</button>
+				<button class="btn btn-success" ng-click="saveTimer()">Timer speichern</button>
+				<button class="btn btn-danger" ng-click="abort('/timer')">Abbrechen</button>
 			</div>
 		</div>
 </div>

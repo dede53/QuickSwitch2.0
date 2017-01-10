@@ -4,7 +4,7 @@
 		<ul >
 			<li>
 				Titel: {{action.name}}
-				<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'pushbullets'})">Löschen</button>
+				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'pushbullets'})">Löschen</button>
 			</li>
 			<li>
 				Nachricht: {{action.message}}
