@@ -1,0 +1,63 @@
+<ul class="list-group">
+	<li class="list-group-item">Uhrzeiten</li>
+	<li class="list-group-item" ng-repeat="time in conditions">
+		<ul>
+			<div ng-switch on="time.offset.mode">
+				<div ng-switch-when="random">
+					<li>
+						<ul>
+							<li>
+								Zwischen
+								<span ng-switch on="time.offset.unit">
+									<span ng-switch-when="-">
+										{{time.offset.numberMin}} - {{time.offset.numberMax}} Minuten vor
+									</span>
+									<span ng-switch-when="+">
+										{{time.offset.numberMin}} - {{time.offset.numberMax}} Minuten nach
+									</span>
+									<span ng-switch-when="random">
+										{{time.offset.numberMin}} - {{time.offset.numberMax}} Minuten vor oder nach
+									</span>
+								</span>
+								<span ng-switch on="time.time">
+									<span ng-switch-when="sunset">
+										Sonnenuntergang
+									</span>
+									<span ng-switch-when="sunrise">
+										Sonnenaufgang
+									</span>
+									<span ng-switch-default>
+										{{time.time}}
+									</span>
+								</span>
+								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+							</li>
+						</ul>
+					</li>
+				</div>
+				<div ng-switch-default>
+					<li>
+						<div ng-switch on="time.time">
+							<div ng-switch-when="sunset">
+								Sonnenuntergang 
+								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+							</div>
+							<div ng-switch-when="sunrise">
+								Sonnenaufgang
+								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+							</div>
+							<div ng-switch-default>
+								{{time.time}}
+								<button class="pull-right btn btn-danger btn-sm" ng-click="removeCondition({condition:time, type:'time'})">Löschen</button>
+							</div>
+						</div>
+					</li>
+					<li ng-if="time.offset.number != '0'">
+						Offset: {{time.offset.unit}}{{time.offset.number}}
+					</li>
+				</div>
+			</div>
+		</ul>
+
+	</li>
+</ul>

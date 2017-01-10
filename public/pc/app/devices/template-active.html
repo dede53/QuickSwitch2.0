@@ -1,4 +1,5 @@
-<ul>
+<p ng-show="active.length == 0">Keine aktiven Geräte!</p>
+<ul ng-show="active.length != 0">
 	<li ng-repeat="device in active">{{device.name}} ({{device.room}})</li>
 </ul>
 <button class="btnOn buttonL" ng-click='switchAll("devices", "1")'>Alle ein</button>

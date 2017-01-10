@@ -2,8 +2,14 @@ app.controller('switchHistoryController',  function($scope, $rootScope, socket) 
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
-	socket.emit('switchHistory:get');
 
+	$scope.getSwitchHistory = function(hours){
+		console.log(hours);
+		$rootScope.switchHistory = [];
+		socket.emit('switchHistory:get', hours);
+	}
+	$scope.value = 24;
+	$scope.getSwitchHistory(24);
 
 	var chartConfig = {
 		options:{

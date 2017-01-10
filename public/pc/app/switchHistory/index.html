@@ -1,10 +1,17 @@
-<div class="">
+<div class="card card-block">
 	<h3>Schaltevents</h3>
-	<div ng-hide="$root.tempNoData == true" class="panel-group">
-		<div class="panel panel-default">
-			<div class="panel-body" style="padding:15px 0 0 0;">
-				<highchart class="chart" config="$root.chartConfigSwitchHistory" ></highchart>
-			</div>
-		</div>
+	<div class="btn-group">
+		<label class="btn btn-secondary" ng-class="{active:value==24}">
+			<input type="radio" data-ng-model="value" value="24" ng-change="getSwitchHistory(value)">24
+		</label>
+		<label class="btn btn-secondary" ng-class="{active:value==48}">
+			<input type="radio" data-ng-model="value" value="48" ng-change="getSwitchHistory(value)">48
+		</label>
+		<label class="btn btn-secondary" ng-class="{active:value==96}">
+			<input type="radio" data-ng-model="value" value="96" ng-change="getSwitchHistory(value)">96
+		</label>
+	</div>
+	<div style="padding:15px 0 0 0;">
+		<highchart class="chart" config="$root.chartConfigSwitchHistory" ></highchart>
 	</div>
 </div>

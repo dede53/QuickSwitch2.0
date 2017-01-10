@@ -3,6 +3,22 @@
 		Temperaturen
 	</a>
 </h3>
+<!-- <div class="btn-group" data-toggle="">
+	<label class="btn btn-secondary" ng-class="{active:value==24}">
+		<input type="radio" data-ng-model="value" value="24" ng-change="getTempHistory(value)">24
+	</label>
+	<label class="btn btn-secondary" ng-class="{active:value==48}">
+		<input type="radio" data-ng-model="value" value="48" ng-change="getTempHistory(value)">48
+	</label>
+	<label class="btn btn-secondary" ng-class="{active:value==96}">
+		<input type="radio" data-ng-model="value" value="96" ng-change="getTempHistory(value)">96
+	</label>
+</div> -->
+<div class="btn-group" role="group" aria-label="Basic example" data-toggle="button">
+  <button type="button" class="btn btn-secondary" ng-click="getTempHistory(24)" ng-class="{active:value === 24}" aria-pressed="false" autocomplete="off" checked>24h</button>
+  <button type="button" class="btn btn-secondary" ng-click="getTempHistory(48)" ng-class="{active:value === 48}" aria-pressed="false" autocomplete="off">48h</button>
+  <button type="button" class="btn btn-secondary" ng-click="getTempHistory(96)" ng-class="{active:value === 96}" aria-pressed="false" autocomplete="off">96h</button>
+</div>
 <div ng-show="varChart == false">
 	<p class="alert alert-info">Du hast keine Datenpunkte für das Diagramm ausgewählt. Füge sie in den Einstellungen (Einstellungen -> Benutzer -> Diagram) hinzu.</p>
 </div>
