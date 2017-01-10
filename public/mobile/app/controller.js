@@ -1,140 +1,9 @@
-		var chartConfig = {
-				options:{
-					chart: {
-						backgroundColor: 'transparent',
-						renderTo:"container",
-						zoomType:"x"
-					},
-					navigator: {
-						enabled: false,
-						adaptToUpdatedData: true,
-						series: []
-					},
-					rangeSelector: {
-						enabled: false,
-						inputStyle: {
-							fontSize: "16px"
-						},
-			            buttonTheme: {
-							style: {
-								fontSize: "16px"
-							},
-						},
-						labelStyle: {
-							fontSize: "16px"
-						},
-						buttons: [{
-							type: 'hour',
-							count: '12',
-							text: '12h'
-						}, {
-							type: 'hour',
-							count: '24',
-							text: '24h'
-						},{
-							type: 'all',
-							count: 'all',
-							text: 'Alle'
-						}],
-						selected: 2,
-            			inputDateFormat: '%e %b %Y',
-            			inputEditDateFormat: '%e %b %Y'
-					},
-					plotOptions: {
-						series: {
-							marker:{
-								enabled: false
-							},
-			                animation: false
-						}
-					},
-					xAxis: [{
-						type: 'datetime',
-						labels:{
-							rotation: 0,
-							style: {
-								"color": '#80a3ca',
-								"fontSize": "16px"
-							}
-						},
-						dateTimeLabelFormats: {
-							second: '%d.%m<br/>%H:%M:%S',
-							minute: '%d.%m<br/>%H:%M',
-							hour: '%d.%m<br/>%H:%M',
-							day: '%d.%m<br/>%H:%M',
-							week: '%d.%m.%Y',
-							month: '%m.%Y',
-							year: '%Y'
-						}
-					}],
-					yAxis: [{
-						allowDecimals: true,
-						title: {
-							text: '',
-							style: {
-								"color": '#80a3ca',
-								"fontSize": "16px"
-							}
-						},
-						labels: {
-							format: '{value}',
-							style: {
-								"color": '#80a3ca',
-								"fontSize": "16px"
-							}
-						},
-						plotLines: [/*{
-							value: 5,
-							color: '#444488',
-							dashStyle: 'shortdash',
-							width: 2,
-							label: {
-								text: '5°C'
-							}
-						}*/]
-					},/*
-					{
-						allowDecimals: true,
-						title: {
-							text: 'Luftfeuchtigkeit',
-							style: {
-								"color": '#80a3ca',
-								"fontSize": "16px"
-							}
-						},
-						labels: {
-							format: '{value}',
-							style: {
-								"color": '#80a3ca',
-								"fontSize": "16px"
-							}
-						},
-						opposite: true
-					}*/],
-
-					legend: {
-						enabled: true,
-						itemStyle: {
-							"fontSize": "16px"
-						}
-					},
-					title: {
-						text: ''
-					},
-					credits: {
-						enabled: false
-					},
-					useHighStocks: true
-				},
-				series: [],
-				loading: true
-			}
 var app = 	angular.module('jsbin',[
 				'ui.bootstrap',
-				'snap',
 				'ngRoute',
 				'highcharts-ng',
-				'ngMdIcons'
+				'ngMdIcons',
+				'snap'
 			]);
 app.factory('socket', function ($rootScope) {
 	var socket = io.connect();
@@ -156,7 +25,8 @@ app.factory('socket', function ($rootScope) {
 					}
 				});
 			})
-		}
+		},
+		socket: socket.socket
 	};
 });
 app.config(['$routeProvider', function($routeProvider) {
@@ -180,9 +50,6 @@ app.config(['$routeProvider', function($routeProvider) {
 		redirectTo: '/home'
 	});
 }]);
-app.controller('favoritmenucontroller', function($scope){
-
-});
 
 app.controller('appController', function($scope, socket, $rootScope, $location){
 	$scope.snapOptions = {
@@ -207,6 +74,7 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	$scope.list = [];
 	$scope.alerts = {};
 	$scope.countdowns = {};
+	$rootScope.chatMessages = {};
 	
 	if ($scope.storedUser != "") {
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
@@ -216,7 +84,7 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	$scope.bla = $rootScope.activeUser;
 
 	socket.emit('room:join', $rootScope.activeUser);
-	socket.emit('user:get');
+	socket.emit('users:get');
 	$scope.setUser = function(user){
 		console.log("leave:" + $rootScope.activeUser.name);
 		socket.emit('room:leave', $rootScope.activeUser);
@@ -244,41 +112,53 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		socket.emit(type + ':switchAll', {user:$rootScope.activeUser, switchAll: data});	
 	}
 	socket.on('change', function(data){
-		// console.log(data);
+		console.log(data);
 		switch(data.type){
+			case "push":
+				console.log($rootScope[data.masterType]);
+				if ($rootScope[data.masterType] == undefined){
+					$rootScope[data.masterType] = [];
+				}
+				$rootScope[data.masterType].push(data.push);
+				break;
 			case "add":
-				$scope[data.masterType][data.add.id] = data.add;
+				$rootScope[data.masterType][data.add.id] = data.add;
 				break;
 			case "remove":
-				delete $scope[data.masterType][data.remove];
+				delete $rootScope[data.masterType][data.remove];
 				break;
 			case "get":
-				$scope[data.masterType] = data.get;
+				$rootScope[data.masterType] = data.get;
 				break;
 			case "edit":
-				if($scope[data.masterType][data.edit.id]){
-					$scope[data.masterType][data.edit.id] = data.edit;
+				if($rootScope[data.masterType] && $rootScope[data.masterType][data.edit.id]){
+					$rootScope[data.masterType][data.edit.id] = data.edit;
 				}
 				break;
 			case "switch":
-				for(var i = 0; i < $scope.favoritDevices.length; i++){
-					if($scope.favoritDevices[i].deviceid == data.switch.device.deviceid){
-						$scope.favoritDevices[i].status = parseInt(data.switch.status);
+				for(var i = 0; i < $rootScope.favoritDevices.length; i++){
+					if($rootScope.favoritDevices[i].deviceid == data.switch.device.deviceid){
+						$rootScope.favoritDevices[i].status = parseInt(data.switch.status);
 					}
 				}
-				if($scope.devices){
-					$scope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
+				if($rootScope.devices){
+					$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
 				}
 				break;
-			case "chart":
-				if(data.chart == false){
-					$scope[data.masterType] = false;	
-				}else{
-					$scope[data.masterType] = chartConfig;
-					$scope[data.masterType].series = data.chart;
-					$scope[data.masterType].loading = false;
+		}
+		if(data.masterType == "variables"){
+				if($rootScope.favoritVariables[data.edit.id]){
+					$rootScope.favoritVariables[data.edit.id] = data.edit;
 				}
-				break;
+		}
+	});
+	$scope.$watch('users', function(newValue, oldValue){
+		if(newValue !== undefined){
+			newValue.forEach(function(user){
+				if(user.name == $scope.activeUser.name){
+					$scope.setUser(user);
+				}
+			});
 		}
 	});
 	$scope.favorit = true;
