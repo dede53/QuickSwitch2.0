@@ -1,29 +1,42 @@
 var app = 	angular.module('jsbin',[
 				'ui.bootstrap',
-				'ngAnimate',
 				'ngRoute',
-				'ngTouch',
 				'highcharts-ng',
 				'ngMdIcons'
 			]);
 
+app.factory('socket', function ($rootScope) {
+	var socket = io.connect();
+	return {
+		on: function (eventName, callback) {
+			socket.on(eventName, function () {  
+				var args = arguments;
+				$rootScope.$apply(function () {
+					callback.apply(socket, args);
+				});
+			});
+		},
+		emit: function (eventName, data, callback) {
+			socket.emit(eventName, data, function () {
+				var args = arguments;
+				$rootScope.$apply(function () {
+					if (callback) {
+						callback.apply(socket, args);
+					}
+				});
+			})
+		},
+		socket: socket.socket
+	};
+});
 app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.
 	when('/home', {
-		templateUrl: './app/home/index.html',
-		controller: 'homeController'
+		templateUrl: './app/home/index.html'
 	}).
 	when('/devices', {
 		templateUrl: './app/devices/index.html',
 		controller: 'devicesController'
-	}).
-	when('/groups', {
-		templateUrl: './app/groups/index.html',
-		controller: 'groupsController'
-	}).
-	when('/rooms', {
-		templateUrl: './app/rooms/index.html',
-		controller: 'roomsController'
 	}).
 	when('/temperature', {
 		templateUrl: './app/temperature/index.html',
@@ -37,47 +50,148 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/timer/index.html',
 		controller: 'timerController'
 	}).
-	when('/editTimer/:id', {
+	when('/editTimer/:id?', {
 		templateUrl: './app/timer/editTimer.html',
-		controller: 'timerController'
+		controller: 'editTimerController'
 	}).
 	otherwise({
 		redirectTo: '/home'
 	});
 }]);
 
-app.controller('appController', function($rootScope, $scope, $location){
-
-	$scope.favorit = true;
-	$scope.menuIcon = "keyboard_arrow_left";
-	$scope.storedUser = getCookie("username");
-
+app.controller('appController', function($scope, socket, $rootScope, $location){
+	var oldUser = "system";
+	var newUser;
+	$rootScope.storedUser = getCookie("username");
+	$rootScope.list = [];
+	$rootScope.alerts = {};
+	$rootScope.countdowns = {};
+	$rootScope.chatMessages = {};
+	$rootScope.moreMessagesAvailable = true;
+	
 	if ($scope.storedUser != "") {
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
 	}else{
-		$rootScope.activeUser = {name:"system",favoritDevices:[],variables:[], admin:true};
+		$rootScope.activeUser = {name:"system",favoritDevices: [], variables:[], admin:true};
+	}
+	$scope.bla = $rootScope.activeUser;
+
+	socket.emit('room:join', $rootScope.activeUser);
+	socket.emit('users:get');
+	$scope.setUser = function(user){
+		console.log("leave:" + $rootScope.activeUser.name);
+		socket.emit('room:leave', $rootScope.activeUser);
+		
+		$rootScope.activeUser = user;
+		setCookie("username", JSON.stringify(user), 365);
+
+		console.log("join:" + $rootScope.activeUser.name);
+		socket.emit('room:join', user);
 	}
 
-	$scope.showmenu=false;
-	$scope.switchPage = function(data){
-		$scope.showmenu=!($scope.showmenu);
+	$scope.add = function(type, data){
+		socket.emit(type + ':add', {user:$rootScope.activeUser, add: data});
+	}
+	$scope.addAll = function(type, data){
+		socket.emit(type + ':addAll', {user:$rootScope.activeUser, add:data});	
+	}
+	$scope.remove = function(type, data){
+		socket.emit(type + ':remove', {user:$rootScope.activeUser, remove: data.id});	
+	}
+	$scope.switch = function(type, data){
+		socket.emit(type + ':switch', {user:$rootScope.activeUser, switch: data});	
+	}
+	$scope.switchAll = function(type, data){
+		socket.emit(type + ':switchAll', {user:$rootScope.activeUser, switchAll: data});	
+	}
+	$scope.refresh = function(){
+		console.log(socket);
+		socket.socket.connect();
+		socket.emit('room:join', $rootScope.activeUser);
+	}
+	socket.on('connect', function(data){
+		$rootScope.socketConnected = true;
+	});
+	socket.on('disconnect', function(data){
+		$rootScope.socketConnected = false;
+	});
+	socket.on('serverError', function(data){
+		alert(data);
+	});
+	socket.on('change', function(data){
+		console.log(data);
+		switch(data.type){
+			case "push":
+				console.log($rootScope[data.masterType]);
+				if ($rootScope[data.masterType] == undefined){
+					$rootScope[data.masterType] = [];
+				}
+				$rootScope[data.masterType].push(data.push);
+				break;
+			case "add":
+				// console.log($rootScope[data.masterType]);
+				// console.log($rootScope.chat.messages);
+				$rootScope[data.masterType][data.add.id] = data.add;
+				break;
+			case "remove":
+				delete $rootScope[data.masterType][data.remove];
+				break;
+			case "get":
+				$rootScope[data.masterType] = data.get;
+				break;
+			case "edit":
+				if($rootScope[data.masterType] && $rootScope[data.masterType][data.edit.id]){
+					$rootScope[data.masterType][data.edit.id] = data.edit;
+				}
+				break;
+			case "switch":
+				for(var i = 0; i < $rootScope.favoritDevices.length; i++){
+					if($rootScope.favoritDevices[i].deviceid == data.switch.device.deviceid){
+						$rootScope.favoritDevices[i].status = parseInt(data.switch.status);
+					}
+				}
+				if($rootScope.devices){
+					$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
+				}
+				break;
+		}
+		if(data.masterType == "variables"){
+				if($rootScope.favoritVariables[data.edit.id]){
+					$rootScope.favoritVariables[data.edit.id] = data.edit;
+				}
+		}
+	});
+	$rootScope.favorit = true;
+	$rootScope.menuIcon = "keyboard_arrow_left";
+	$rootScope.showmenu=false;
+	$rootScope.switchPage = function(data, data1){
+		$rootScope.showmenu =! ($rootScope.showmenu);
 		if(data != ""){
-			$location.url(data);
+			if(data1 != undefined){
+				$location.url(data + data1);
+			}else{
+				$location.url(data);
+			}
 		}
 	}
-	$scope.abort = function(data) {
+	$scope.$watch('users', function(newValue, oldValue){
+		if(newValue !== undefined){
+			newValue.forEach(function(user){
+				if(user.name == $scope.activeUser.name){
+					$scope.setUser(user);
+				}
+			});
+		}
+	});
+	$rootScope.abort = function(data) {
 		$location.url(data);
 	};
-	$scope.toggleMenu = function(){
-		$scope.favorit =! ($scope.favorit);
-		if($scope.favorit){
-			$scope.menuIcon = "keyboard_arrow_left";
+	$rootScope.toggleMenu = function(){
+		$rootScope.favorit =! ($rootScope.favorit);
+		if($rootScope.favorit){
+			$rootScope.menuIcon = "keyboard_arrow_left";
 		}else{
-			$scope.menuIcon = "keyboard_arrow_right";	
+			$rootScope.menuIcon = "keyboard_arrow_right";	
 		}
 	}
-});
-
-app.controller('favoritmenucontroller', function($scope){
-
 });
