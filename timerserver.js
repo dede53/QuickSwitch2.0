@@ -15,8 +15,8 @@ var log_file			=	fs.createWriteStream(__dirname + '/log/debug-timerserver.log', 
 var log_stdout			=	process.stdout;
 
 console.log = function(d) {
-  log_file.write(util.format(d) + '\n');
-  log_stdout.write(util.format(d) + '\n');
+	log_file.write(util.format(d) + '\n');
+	log_stdout.write(util.format(d) + '\n');
 };
 
 timerFunctions.checkTimer();
