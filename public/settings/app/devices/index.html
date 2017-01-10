@@ -1,15 +1,15 @@
-<div ng-repeat="room in devicelist" class="panel panel-default tile">
+<div ng-repeat="room in devices" class="panel panel-default tile">
 	<div class="panel-heading">
 		<h3 class="panel-title">{{room.room.name}}</h3>
 	</div>
-	<div class="panel-body" ng-repeat="devices in room.roomdevices">
+	<div class="panel-body" ng-repeat="device in room.roomdevices">
 		<div class="pull-left">
-			<a href="" data-toggle="tooltip" title="Masterdip:{{devices.device.CodeOn}}|Slavedip:{{devices.device.CodeOff}}">{{devices.device.name}}</a>
+			<a href="" data-toggle="tooltip" title="Masterdip:{{device.CodeOn}}|Slavedip:{{device.CodeOff}}">{{device.name}} ({{device.buttonLabelOn}}|{{device.buttonLabelOff}})</a>
 		</div>
 		<div class="pull-right">
 			<div class="box-btn-switch">
-				<a type="button" class="btn btn-info" href="#/editDevice/{{devices.device.deviceid}}" id="btnOn{{devices.device.deviceid}}" >Bearbeiten</a>
-				<button type="button" class="btn btn-danger" ng-click='deleteDevice(devices.device.deviceid)' id="btnOn{{devices.device.deviceid}}" >Löschen</button>
+				<a type="button" class="btn btn-info" href="#/editDevice/{{device.deviceid}}">Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteDevice(device.deviceid)'>Löschen</button>
 			</div>
 		</div>
 	</div>

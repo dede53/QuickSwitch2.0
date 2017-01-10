@@ -1,32 +1,46 @@
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">Gruppe {{editGroup.title}}</h3>
+		<h3 class="panel-title">Gruppe {{title}}</h3>
 	</div>
-	<div >
-		<form ng-controller="saveGroupController">
-			<input type="hidden" id="id" value="{{editGroup.grouplist.id}}">
+	<div>
+			<input type="hidden" id="id" value="{{group.id}}">
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="name">Name</span>
-					<input type="text" class="form-control" placeholder="Name" ng-model="editGroup.grouplist.name" id="name" aria-describedby="name">
+					<input type="text" class="form-control" placeholder="Name" ng-model="group.name" id="name" aria-describedby="name">
+				</div>
+			</div>
+			{{group | json}}
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="fav">Geräte</span>
+					<div class="form-control" style="height:auto;" data-as-sortable="devicesDragControlListeners" ng-model="group.groupDevices">
+						<li data-ng-repeat="(key, device) in group.groupDevices" data-as-sortable-item>
+							<div data-as-sortable-item-handle>
+								{{devicelist[device.id].name}} ({{devicelist[device.id].Raum}})
+								<input type="number" name="timeout" ng-model="device.timeout">
+								<ng-md-icon
+									icon="cancel"
+									style="fill:#D9534F"
+									size="25"
+									options='{"duration": 10, "rotation": "none"}'
+									ng-click="removeDevice(key)"
+									class="pull-right"
+								></ng-md-icon>
+							</div>
+						</li>
+						<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
+							<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
+						</select>
+					</div>
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
-					<span class="input-group-addon" id="fav">Favoriten</span>
-					<div class="form-control" style="height:auto;" data-as-sortable="board.dragControlListeners"  data-ng-model="devicelist">
-						<li data-ng-repeat="ite in devicelist" data-as-sortable-item>
-							<div data-as-sortable-item-handle>
-								{{ite.name}} ({{ite.Raum}})
-								<input
-									type="checkbox"
-									name="selectedFruits[]"
-									value="{{ite.name}}"
-									ng-model="ite.selected"
-								  >
-							</div>
-						</li>
-					</div>
+					<span class="input-group-addon" id="fav">Besitzer der Gruppe</span>
+					<select class="form-control" ng-model="group.user">
+						<option ng-repeat="user in users" value="{{user.name}}">{{user.name}}</option>
+					</select>
 				</div>
 			</div>
 			<div class="panel-body">
@@ -35,6 +49,5 @@
 					<button class="btn btn-danger" ng-click="abort('/groups')">Abbrechen</button>
 				</div>
 			</div>
-		</form>
 	</div>
 </div>

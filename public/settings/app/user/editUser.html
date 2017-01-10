@@ -1,51 +1,60 @@
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">Benutzer {{editUser.title}}</h3>
+		<h3 class="panel-title">Benutzer {{title}}</h3>
 	</div>
-	<div >
+	<div>
 		<form ng-controller="saveUserController">
-			<input type="hidden" id="id" value="{{editUser.userlist.id}}">
+			<input type="hidden" id="id" value="{{user.id}}">
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="name">Name</span>
-					<input type="text" class="form-control" placeholder="Name" ng-model="editUser.userlist.name" id="name" aria-describedby="name">
+					<input type="text" class="form-control" placeholder="Name" ng-model="user.name" id="name" aria-describedby="name">
 				</div>
 			</div>
-			{{editUser.userlist}}
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="fav">Geräte</span>
-					<div class="form-control" style="height:auto;" data-as-sortable="board.dragControlListeners"  data-ng-model="devicelist">
-						<li data-ng-repeat="ite in devicelist" data-as-sortable-item>
+					<div class="form-control" style="height:auto;" data-as-sortable="devicesDragControlListeners"  data-ng-model="favoritDevices">
+						<li data-ng-repeat="(key, device) in favoritDevices" data-as-sortable-item>
 							<div data-as-sortable-item-handle>
-								{{ite.device.name}} {{ite.device.deviceid}} ({{ite.device.Raum}}){{ite.selected}}
-								<input
-									type="checkbox"
-									name="selectedDevices[]"
-									value="{{ite.device.name}}"
-									ng-model="ite.selected"
-								  >
+								{{device.name}} ({{device.Raum}})
+								<ng-md-icon
+									icon="cancel"
+									style="fill:#D9534F"
+									size="15"
+									options='{"duration": 10, "rotation": "none"}'
+									ng-click="removeDevice(key)"
+									class="pull-right"
+								></ng-md-icon>
 							</div>
 						</li>
+						<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
+							<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
+						</select>
 					</div>
 				</div>
 			</div>
+			{{favoritVariables}}
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="fav">Variablen</span>
-					{{editUser.userlist.variables}} {{variables}}
-					<div class="form-control" style="height:auto;" data-as-sortable="board.dragControlListeners"  data-ng-model="variables">
-						<li data-ng-repeat="variable in variables track by $index" data-as-sortable-item>
+					<div class="form-control" style="height:auto;" data-as-sortable="variableDragControlListeners"  data-ng-model="favoritVariables">
+						<li data-ng-repeat="(key, variable) in favoritVariables" data-as-sortable-item>
 							<div data-as-sortable-item-handle>
-								{{variable.name}} ({{variable.user}})
-								<input
-									type="checkbox"
-									name="selectedVariables[]"
-									value="{{variable.name}}"
-									ng-model="variable.selected"
-								  >
+								{{variable.id}} ({{variable.name}})
+								<ng-md-icon
+									icon="cancel"
+									style="fill:#D9534F"
+									size="15"
+									options='{"duration": 10, "rotation": "none"}'
+									ng-click="removeVariable(key)"
+									class="pull-right"
+								></ng-md-icon>
 							</div>
 						</li>
+						<select class="form-control" ng-model="addVariab" ng-change="addVariable(addVariab)">
+							<option ng-repeat="variable in variables" value="{{variable}}">{{variable.id}} ({{variable.name}})</option>
+						</select>
 					</div>
 				</div>
 			</div>

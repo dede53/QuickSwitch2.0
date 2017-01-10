@@ -1,105 +1,48 @@
 app.controller('groupController', function($scope, $rootScope, socket){
-	socket.emit('groups');
-	
-	socket.on('groups', function(data) {
-		$rootScope.grouplist = data;
-	});
+	socket.emit('groups:getAll');
+
 	$scope.deleteGroup = function(data) {
-		socket.emit('deleteGroup', {"id":data.id});	
+		socket.emit('group:remove', data);	
 	}
 });
-app.controller('editGroupController', function($scope, $rootScope, socket, $routeParams){
+app.controller('editGroupController', function($scope, $rootScope, socket, $routeParams, $location){
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
-	socket.emit('devices', {"type":"object"});
+	socket.emit('devices:devicelist');
+	socket.emit('users:get');
 	if(!$routeParams.id){
-			$scope.editGroup = {
-				title: "hinzufügen",
-				grouplist: {
-					name: "",
-					groupDevices: []
-				}
-			}
+		$scope.title = "hinzufügen";
+		$scope.group = {
+			groupDevices :[]
+		}
 	}else{
-		socket.emit('group', {"id":  $routeParams.id});
+		$scope.title = "bearbeiten";
+		socket.emit('group:get', $routeParams.id);
 	}
-		/***********************************************
-		*	Daten empfangen, Scope zuordnen
-		***********************************************/
-		socket.on('group', function(data) {
-			console.log(data);
-			if(data.constructor === Array){
-				
-				$scope.editGroup = {
-					title: "bearbeiten",
-					grouplist: data[0]
-				}
-
-			}else{
-				$scope.editGroup = {
-					title: "Achtung: Fehler!",
-					grouplist:{
-						name: data
-					}
-				}
-			}
-		});
-		socket.on('devices', function(data) {
-			var devices = new Array;
-			
-			var arr = Object.keys(data).map(function(k) { return data[k] });
-			arr.forEach(function(arr){
-				var ar = Object.keys(arr.roomdevices).map(function(k) { return arr.roomdevices[k] });
-				ar.forEach(function(arr){
-					if( $routeParams.id && inArray(arr.deviceid , JSON.parse($scope.editGroup.grouplist.groupDevices)) ){
-						var haystack = JSON.parse($scope.editGroup.grouplist.groupDevices);
-						var length = haystack.length;
-						for(var i = 0; i < length; i++) {
-							if(haystack[i] == arr.deviceid){
-								arr.selected = true;
-								devices.splice(i,0,arr);
-							};
-						}
-						
-					}else{
-						arr.selected = false;
-						devices.push(arr);
-					}
-				});
-			});
-			$scope.devicelist = devices;
-
-			// helper method to get selected fruits
-			$scope.selectedFruits = function selectedFruits() {
-				return filterFilter($scope.devicelist, { selected: true });
-			};
-			
-			// watch fruits for changes
-			$scope.$watch('devicelist|filter:{selected:true}', function (nv) {
-				$scope.editGroup.grouplist.groupDevices = nv.map(function (device) {
-					return device.deviceid;
-				});
-			}, true);
-		});
-
-
-  
-	$scope.dragControlListeners = {
-		accept: function (sourceItemHandleScope, destSortableScope) {return boolean},//override to determine drag is allowed or not. default is true.
-		itemMoved: function (event) {
-			},
-		orderChanged: function(event) {
-			},
-		containment: '#board'
-		//optional param.
+	$scope.addDevice = function(test){
+		var test = JSON.parse(test);
+		var device = {
+			"id": test.deviceid,
+			"type":test.type
+		}
+		$scope.group.groupDevices.push(device);
+		$scope.deviceAdd = 'nonsense';
+	}
+	$scope.removeDevice = function(index){
+		$scope.group.groupDevices.splice(index, 1);
+	}
+	$scope.devicesDragControlListeners = {
+		accept: function (sourceItemHandleScope, destSortableScope) {return true},//override to determine drag is allowed or not. default is true.
+		dragEnd: function(event){
+		}
+	};
+	$scope.saveGroup = function() {
+		socket.emit('group:add', $scope.group);
+		$location.url("/groups");
 	};
 });
-app.controller('saveGroupController', function($scope, socket, $location){
-		$scope.saveGroup = function() {
-			socket.emit('saveGroup', $scope.editGroup.grouplist);
-		};
-		socket.on('savedGroup', function(data){
-			$location.url("/groups");
-		});
-});
+// app.controller('saveGroupController', function($scope, socket, $location){
+// 		// socket.on('savedGroup', function(data){
+// 		// });
+// });

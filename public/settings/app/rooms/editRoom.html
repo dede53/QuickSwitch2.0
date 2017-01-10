@@ -1,14 +1,14 @@
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">Raum {{editRoom.title}}</h3>
+		<h3 class="panel-title">Raum {{title}}</h3>
 	</div>
-	<div >
-		<form ng-controller="saveRoomController">
-			<input type="hidden" id="id" value="{{editRoom.roomlist.id}}">
+	<div>
+		<form>
+			<input type="hidden" id="id" value="{{room.id}}">
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="name">Name</span>
-					<input type="text" class="form-control" placeholder="Name" ng-model="editRoom.roomlist.name" id="name" aria-describedby="name">
+					<input type="text" class="form-control" placeholder="Name" ng-model="room.name" id="name" aria-describedby="name">
 				</div>
 			</div>
 			<div class="panel-body">

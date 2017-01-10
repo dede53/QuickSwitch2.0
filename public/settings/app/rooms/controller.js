@@ -1,63 +1,35 @@
-app.controller('roomController',  function($scope, $rootScope, socket) {
-	socket.emit('rooms');
-	
-	socket.on('rooms', function(data) {
-		$scope.roomlist = data;
-	});
+app.controller('roomController',  function($scope, $rootScope, socket, $location) {
+	socket.emit('rooms:get');
+
 	$scope.deleteRoom = function(data) {
-		socket.emit('deleteRoom', {"id":data.id});	
-	}
-	socket.on('deletedRoom', function(data) {
 		console.log(data);
-		$scope.roomlist = data;
-	});
+		socket.emit('room:remove', {"remove":data.id});	
+	}
+	$scope.saveRoom = function() {
+		// Validierung!!
+		socket.emit('room:save', {"save": $scope.editRoom.roomlist});
+		$scope.editRoom.roomlist.name = "";
+		$location.url("/rooms");
+	};
 });
-app.controller('editRoomController',  function($scope, $rootScope, socket, $routeParams) {
+app.controller('editRoomController',  function($scope, $rootScope, socket, $routeParams, $location) {
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
 	if(!$routeParams.id){
-			$scope.editRoom = {
-				title: "hinzufügen"
-			}
+		$scope.title = "hinzufügen";
 	}else{
-		socket.emit('room', {"id":  $routeParams.id});
-
-		/***********************************************
-		*	Daten empfangen, Scope zuordnen
-		***********************************************/
-		socket.on('room', function(data) {
-			console.log(data);
-			
-			if(data.constructor === Array){
-
-				$scope.editRoom = {
-					title: "bearbeiten",
-					roomlist: data[0]
-				}
-			}else{
-				$scope.editRoom = {
-					title: "Achtung: Fehler!",
-					roomlist:{
-						name: data
-					}
-				}
-			}
-		});
+		$scope.title = "bearbeiten";
+		socket.emit('room:get', $routeParams.id);
 	}
-});
-app.controller('saveRoomController', function($scope, socket, $location) {
-		$scope.saveRoom = function() {
-			// Validierung!!
-			socket.emit('saveRoom', $scope.editRoom.roomlist);
-			$location.url("/rooms");
-		};
-		$scope.abortNewRoom = function(){
-			$scope.editRoom = {
-				title: "Bearbeiten",
-				roomlist: {
-					name: ""
-				}
-			}
-		}
+	$scope.saveRoom = function() {
+		// Validierung!!
+		socket.emit('room:save', {"save": $scope.room});
+		$scope.room.name = "";
+		$location.url("/rooms");
+	};
+	$scope.abortNewRoom = function(){
+		$scope.room.name = "";
+		$location.url("/rooms");
+	}
 });

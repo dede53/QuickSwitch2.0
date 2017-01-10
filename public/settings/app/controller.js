@@ -1,9 +1,7 @@
 var app = 	angular.module('jsbin',[
 				'ngAnimate',
-				'snap',
 				'ui.bootstrap',
 				'ngRoute',
-				'ngTouch',
 				'highcharts-ng',
 				'as.sortable',
 				'ngMdIcons'
@@ -47,15 +45,10 @@ app.config(['$routeProvider', function($routeProvider) {
 	}).
 
 
-	when('/timer', {
-		templateUrl: './app/timer/index.html',
-		controller: 'timerController'
+	when('/adapters/', {
+		templateUrl: './app/adapter/index.html',
+		controller: 'adapterController'
 	}).
-	when('/editTimer/:id', {
-		templateUrl: './app/timer/editTimer.html',
-		controller: 'timerController'
-	}).
-
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
 		controller: 'groupController'
@@ -73,22 +66,12 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/rooms/editRoom.html',
 		controller: 'editRoomController'
 	}).
-
-	
-	when('/temperature', {
-		templateUrl: './app/temperature/index.html',
-		controller: 'temperatureController'
-	}).	
-	when('/editSensor/:id', {
-		templateUrl: './app/temperature/editSensor.html',
-		controller: 'editSensorController'
-	}).
 	otherwise({
 		redirectTo: '/home'
 	});
 }]);
 
-app.controller('appController', function($rootScope, $scope, $location){
+app.controller('appController', function($rootScope, $scope, $location, socket){
 	$scope.switchPage = function(data){
 		$scope.showmenu=!($scope.showmenu);
 		if(data != ""){
@@ -98,4 +81,55 @@ app.controller('appController', function($rootScope, $scope, $location){
 	$scope.abort = function(data) {
 		$location.url(data);
 	};
+	socket.on('change', function(data){
+		console.log(data);
+		// console.log($rootScope[data.masterType]);
+		switch(data.type){
+			case "push":
+				// console.log($rootScope[data.masterType]);
+				if ($rootScope[data.masterType] == undefined){
+					$rootScope[data.masterType] = [];
+				}
+				$rootScope[data.masterType].push(data.push);
+				break;
+			case "add":
+				$rootScope[data.masterType][data.add.id] = data.add;
+				break;
+			case "remove":
+				delete $rootScope[data.masterType][data.remove];
+				break;
+			case "get":
+				$rootScope[data.masterType] = data.get;
+				break;
+			case "edit":
+				if($rootScope[data.masterType] && $rootScope[data.masterType][data.edit.id]){
+					$rootScope[data.masterType][data.edit.id] = data.edit;
+				}
+				break;
+			// case "switch":
+			// 	for(var i = 0; i < $rootScope.favoritDevices.length; i++){
+			// 		if($rootScope.favoritDevices[i].deviceid == data.switch.device.deviceid){
+			// 			$rootScope.favoritDevices[i].status = parseInt(data.switch.status);
+			// 		}
+			// 	}
+			// 	if($rootScope.devices){
+			// 		$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
+			// 	}
+			// 	break;
+			// case "chart":
+			// 	if(data.chart == false){
+			// 		$rootScope[data.masterType] = false;	
+			// 	}else{
+			// 		$rootScope[data.masterType] = chartConfig;
+			// 		$rootScope[data.masterType].series = data.chart;
+			// 		$rootScope[data.masterType].loading = false;
+			// 	}
+			// 	break;
+		}
+	});
+
+	socket.on('serverError', function(data){
+		console.log(data);
+		alert(data);
+	});
 });

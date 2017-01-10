@@ -1,6 +1,6 @@
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">{{editVariable}}</h3>
+		<h3 class="panel-title">{{variable.id}}</h3>
 	</div>
 	<div class="panel-body">
 		<ul>
@@ -8,27 +8,19 @@
 				<div style="text-align:right">
 					<form ng-controller="saveVariableController">
 						<ul>
-							<input type="hidden" id="id" value="{{editVariable.variable.id}}">
-							<li>
+							<input type="hidden" id="id" value="{{variable.id}}">
+<!-- 							<li>
 								<div class="panel-body">
 									<div class="input-group">
-										<highchart class="chart" config="editVariable.variable.chart" ></highchart>
+										<highchart class="chart" config="variable.chart" ></highchart>
 									</div>
 								</div>
-							</li>
+							</li> -->
 							<li>
 								<div class="panel-body">
 									<div class="input-group">
 										<span class="input-group-addon" id="name">Name</span>
-										<input type="text" class="form-control" ng-model="editVariable.variable.chart.series[0].name" id="name" aria-describedby="name" />
-									</div>
-								</div>
-							</li>
-							<li>
-								<div class="panel-body">
-									<div class="input-group">
-										<span class="input-group-addon" id="nodeid">Nodeid</span>
-										<input type="text" class="form-control" ng-model="editVariable.variable.nodeid" id="nodeid" aria-describedby="nodeid" />
+										<input type="text" class="form-control" ng-model="variable.name" id="name" aria-describedby="name" />
 									</div>
 								</div>
 							</li>
@@ -36,15 +28,15 @@
 								<div class="panel-body">
 									<div class="input-group">
 										<span class="input-group-addon" id="type">Charttype</span>
-										<select class="form-control" ng-model="editVariable.variable.chart.series[0].type" id="type" ng-options="t.id as t.title for t in chartTypes"></select>
+										<select class="form-control" ng-model="variable.charttype" id="type" ng-options="t.id as t.title for t in chartTypes"></select>
 									</div>
 								</div>
 							</li>
-							<li ng-show="editVariable.variable.chart.series[0].type == 'line' || editVariable.variable.chart.series[0].type == 'area'">
+							<li ng-show="variable.type == 'line' || variable.type == 'area'">
 								<div class="panel-body">
 									<div class="input-group">
 										<span class="input-group-addon" id="step">Schritt</span>
-										<select class="form-control" id="step" ng-model="editVariable.variable.chart.series[0].step" ng-options="step.id as step.title for step in stepTypes"></select>
+										<select class="form-control" id="step" ng-model="variable.step" ng-options="step.id as step.title for step in stepTypes"></select>
 									</div>
 								</div>
 							</li>
@@ -52,7 +44,7 @@
 								<div class="panel-body">
 									<div class="input-group">
 										<span class="input-group-addon" id="color">Farbe</span>
-										<input type="color" class="form-control" ng-model="editVariable.variable.chart.series[0].color">
+										<input type="color" class="form-control" ng-model="variable.linecolor">
 									</div>
 								</div>
 							</li>
@@ -60,7 +52,39 @@
 								<div class="panel-body">
 									<div class="input-group">
 										<span class="input-group-addon" id="type">Linie</span>
-										<select class="form-control" id="type" ng-model="editVariable.variable.chart.series[0].dashStyle" ng-options="ds.id as ds.title for ds in dashStyles"></select>
+										<select class="form-control" id="type" ng-model="variable.linetype" ng-options="ds.id as ds.title for ds in dashStyles"></select>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="type">Suffix</span>
+										<input type="text" class="form-control" id="type" ng-model="variable.suffix"></input>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="type">Benutzer</span>
+										<input type="text" class="form-control" id="type" ng-model="variable.user" readonly></input>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="type">Status</span>
+										<input type="text" class="form-control" id="type" ng-model="variable.status" readonly></input>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon" id="type">Letzte Änderung</span>
+										<p class="form-control" id="type" readonly>{{variable.lastChange |date:'EEE, d. MMM., HH:mm'}}</p>
 									</div>
 								</div>
 							</li>

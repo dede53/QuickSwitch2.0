@@ -1,20 +1,9 @@
 app.controller('variableController', function($scope, $rootScope, socket, $uibModal){
 
-	$scope.variables = {};
-
-	socket.emit('variables');
-	socket.on('variables', function(data){
-		data.forEach(function(variable){
-			$scope.variables[variable.name] = variable;
-		});
-	});
-
-	socket.on('variable', function(data){
-		$scope.variables[data.name] = data;
-	});
+	socket.emit('variables:get');
 
 	$scope.deleteVariable = function(data) {
-		socket.emit('deleteVariable', {"name":data});	
+		socket.emit('variable:remove', {"remove":data});	
 	}
 
 	$scope.open = function (data) {
@@ -24,14 +13,12 @@ app.controller('variableController', function($scope, $rootScope, socket, $uibMo
 			controller: 'varChartController',
 			size: data.size,
 			resolve: {
-				variableid: function () {
-					return data.id;
+				variable: function () {
+					return data.variable;
 				}
 			}
 		});
-
-		modalInstance.result.then(function (selectedItem) {
-		}, function () {	
+		modalInstance.result.catch(function (selectedItem) {
 		});
 	}; 
 
@@ -51,10 +38,10 @@ app.controller('editVariableController', function($scope, $rootScope, socket, $r
 	];
 
 	$scope.stepTypes = [
+		{'id':'', 'title':'Standard'},
 		{'id':'center', 'title':'Mitte'},
 		{'id':'left', 'title':'Links'},
-		{'id':'right', 'title':'Rechts'},
-		{'id':'', 'title':'Standard'}
+		{'id':'right', 'title':'Rechts'}
 	];
 
 	$scope.dashStyles = [
@@ -71,70 +58,22 @@ app.controller('editVariableController', function($scope, $rootScope, socket, $r
 		{"id": "LongDashDotDot", "title": "LongDashDotDot"}
 	];
 	if(!$routeParams.id){
-			$scope.editVariable = {
-				title: "Hinzufügen",
-				variable: {
-					name: "",
-					value: ""
-				}
-			}
-	}else{
-		socket.emit('variable', {"id":  $routeParams.id});
-	}
-	/***********************************************
-	*	Daten empfangen, Scope zuordnen
-	***********************************************/
-	socket.on('variable', function(data) {
-		if(data.constructor === Object && $scope.editVariable == undefined){
-			console.log($scope.editVariable);
-			$scope.editVariable = {
-				title: "Bearbeiten",
-				variable: data
-			}
-			$scope.editVariable.variable.chart = {
-				size:{
-					width:'900'
-				},
-				options:{
-					chart: {
-						type: 'areaspline'
-					}
-				},
-				series: [
-					{
-						id:data.id,
-						name: data.name,
-						data:[1,2,3,2,5,3],
-						/*
-						type: data.charttype,
-						*/
-						dashStyle: data.linetype,
-						color: data.linecolor
-					}
-				],
-				title: {
-					text: 'Hello'
-				},
-				loading: false,
-			}
-
-		}else if(data.constructor != Object){
-			$scope.editVariable = {
-				title: "Achtung: Fehler!",
-				variable:{
-					name: data
-				}
-			}
+		$scope.title = "hinzufügen";
+		$scope.variable = {
+			step:false,
+			charttype:"line",
+			linetype:"solid"
 		}
-	});
-
-
+	}else{
+		$scope.title = "bearbeiten";
+		socket.emit('variable:get', $routeParams.id);
+	}
 });
 app.controller('saveVariableController', function($scope, socket, $location) {
 		$scope.saveVariable = function() {
-			console.log($scope.editVariable.variable);
+			console.log($scope.variable);
 			// Validierung!!
-			socket.emit('saveVariable', $scope.editVariable.variable);
+			socket.emit('variables:edit', $scope.variable);
 			$location.url("/variables");
 		};
 		$scope.abortNewVariable = function(){
@@ -147,9 +86,8 @@ app.controller('saveVariableController', function($scope, socket, $location) {
 		}
 });
 
-app.controller('varChartController', function($scope, $rootScope, socket, variableid){
-	$rootScope.tempNoData = false;
-
+app.controller('varChartController', function($scope, $rootScope, socket, variable){
+	$scope.tempNoData = false;	
 	var chartConfig = {
 			options:{
 				chart: {
@@ -297,18 +235,19 @@ app.controller('varChartController', function($scope, $rootScope, socket, variab
 			series: [],
 			loading: true
 		}
-	$rootScope.chartConfigSettings = chartConfig;
-	socket.emit('getStoredVariables', {"variables":[variableid], "hour":200});
-	socket.on('storedVariables', function(alldata) {
-		console.log(alldata);
-		if(alldata != false){
-			$rootScope.chartConfigSettings.series.push(alldata);
-			$rootScope.chartConfigSettings.loading = false;
-		}else{
-			$rootScope.tempNoData = true;
+	$scope.chartConfigSettings = chartConfig;
+	socket.emit('variables:storedVariable', {"id":variable.id, "hours":200});
+	$scope.$watch('$root.storedVariable', function(newValue, oldValue){
+		if(newValue != undefined){
+			if(newValue != false){
+				$scope.chartConfigSettings.series.push(newValue);
+				$scope.chartConfigSettings.loading = false;
+			}else{
+				$scope.tempNoData = true;
+			}
 		}
-			
-	});
+	}, 1000);
+
 	Highcharts.setOptions({
 		global : {
 			useUTC : false

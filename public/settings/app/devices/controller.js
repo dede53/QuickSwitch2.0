@@ -1,19 +1,12 @@
 app.controller('devicesController',  function($scope, $rootScope, socket) {
-	socket.emit('devices', {"type":"object"});
-	
-	socket.on('devices', function(data) {
-		$scope.devicelist = data;
-	});
+	socket.emit('devices:get');
 	$scope.deleteDevice = function(id) {
-		socket.emit('deleteDevice', {"id":id});	
+		socket.emit('device:remove', {"remove":id});	
 	}
-	socket.on('deletedDevice', function(data) {
-		$scope.devicelist = data;
-	});
 });
 
-app.controller('editDeviceController',  function($scope, $rootScope, socket, $routeParams) {
-	socket.emit('rooms');
+app.controller('editDeviceController',  function($scope, $rootScope, socket, $routeParams, $location) {
+	socket.emit('rooms:get');
 
 	// Maybe in die Datenbank auslagern??
 	$scope.options = 	[
@@ -31,23 +24,27 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				},
 				{ 
 					name: "Connair - Brennenstuhl",
-					id: 'send-connair-brennenstuhl'
+					id: 'connair:brennenstuhl'
+				},
+				{ 
+					name: "Connair - Intertechno",
+					id: 'connair:intertechno'
+				},
+				{ 
+					name: "Connair - Intertec",
+					id: 'connair:intertec'
 				},
 				{ 
 					name: "Connair - Elro",
-					id: 'send-connair-elro'
+					id: 'connair:elro'
 				},
 				{ 
 					name: "Connair - Raw",
-					id: 'send-connair-raw'
+					id: 'connair:raw'
 				},
 				{ 
 					name: "GPIO Fade",
 					id: 'set-gpio'
-				},
-				{ 
-					name: "UDP-Arduino",
-					id: 'send-arduino-udp'
 				},
 				{ 
 					name: "Telefunken-TV",
@@ -56,49 +53,35 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				{ 
 					name: "Homematic",
 					id: 'send-homematic'
+				},
+				{ 
+					name: "Arduino-Infrarot",
+					id: 'arduino:ir'
+				},
+				{ 
+					name: "Arduino-344Mhz",
+					id: 'arduino:344'
 				}
 			];
 
-	/***********************************************
-	*	Daten anfordern
-	***********************************************/
-	socket.on('rooms', function(rooms) {
-		$scope.rooms = rooms;
-		if(!$routeParams.id){
-				$scope.editDevice = {
-					title: "hinzufügen",
-					device: {
-						type:"device",
-						device:{
-							buttonLabelOn: "An",
-							buttonLabelOff: "Aus",
-							status: "0",
-							switchserver: "0"
-							
-						}
-					}
-				}
-		}else{
-			socket.emit('device', {"id":  $routeParams.id});
-
-			/***********************************************
-			*	Daten empfangen, Scope zuordnen
-			***********************************************/
-
-			socket.on('device', function(data) {
-				$scope.editDevice = {
-					title: "bearbeiten",
-					device: data
-				}
-			});
+	if(!$routeParams.id){
+		$scope.mode = "hinzufügen";
+		$scope.device = {
+			buttonLabelOn: "An",
+			buttonLabelOff: "Aus",
+			status: "0",
+			switchserver: "0"
 		}
-	});
-});
-
-app.controller('saveDeviceController', function($scope, socket, $location) {
+	}else{
+		socket.emit('device:get', $routeParams.id);
+		$scope.mode = "bearbeiten";
+	}
 	$scope.submitnew = function() {
-		console.log($scope.editDevice.device);
-		socket.emit('saveDevice', $scope.editDevice.device);
+		console.log($scope.device);
+		socket.emit('device:save', {user:$rootScope.activeUser, save: $scope.device});
 		$location.url("/devices");
 	};
 });
+
+// app.controller('saveDeviceController', function($scope, socket, $location) {
+// });
