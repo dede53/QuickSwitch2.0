@@ -2,26 +2,23 @@
 	<h3>Chat</h3>
 	<div class="panel panel-default">
 		<div class="panel-body">
-		<ul class="" style="max-height:230px; overflow:auto;">
-			<li class="" ng-hide="moreMessagesAvible">
+		<ul style="max-height:230px; overflow:auto;">
+			<li class="" ng-hide="moreMessagesAvailable">
 				<div class="alert-sm alert-info" role="alert">Keine weiteren Nachrichten verfügbar!</div>
 			</li>
-			<li class="" ng-show="moreMessagesAvible">
-				<!--
-				<button class="btn btn-sm btn-default" ng-click = "loadOldMessages()">ältere Laden</button>
-				-->
+			<li class="" ng-show="moreMessagesAvailable">
 				<div class="alert-sm alert-info" role="alert">
 					<a href="" class="alert-link" ng-click = "loadOldMessages()" >ältere Nachrichten Laden</a>
 				</div>
 			</li>
-			<li class="" ng-repeat="message in sharedMessages track by $index">
+			<li class="tile" ng-repeat="message in chatMessages track by $index">
 				<div ng-if="message.type == '1'">
-					<p id="{{message.time}}">
+					<p class="sliderText" id="{{message.time}}">
 						<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>  {{message.author}}: {{message.message}}
 					</p>
 				</div>
 				<div ng-if="message.type == '2'">
-					<p id="{{message.time}}">
+					<p class="sliderText" id="{{message.time}}">
 						<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>
 						{{message.author}}: 
 						<a target-blank ng-href="{{message.message}}">{{message.message}}</a>
@@ -32,7 +29,7 @@
 		</div>
 	</div>
 	<br>
-	<form ng-controller="sendNewMessage" style="text-align:right;">
+	<form style="text-align:right;">
 		<fieldset class="form-group">
 			<input type="text" class="form-control"		id="message" 	ng-model="link.message" placeholder="Neue Nachricht eingeben" ></input>
 		</fieldset>
@@ -41,7 +38,7 @@
 				<label class="btn btn-default" ng-model="link.type" uib-btn-radio="'1'" >Text</label>
 				<label class="btn btn-default" ng-model="link.type" uib-btn-radio="'2'" >Link</label>
 			</div>
-			<button class="btn btn-default" ng-click="sendMessage()">Senden!</button>
+			<button class="btn btn-default" ng-click="sendMessage(link)">Senden!</button>
 		</fieldset>
 	</form>
 </div>
