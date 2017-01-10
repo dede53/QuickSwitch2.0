@@ -395,7 +395,7 @@ var checkVariables = function(timer, variable, switchToThis, switchtimer, callba
 		switch(variab.mode){
 			case 'match':
 				if(variab.status == variable.status.toString()){
-					helper.log.pure('	Variable ' + variab.id + ' hat sich zu "' + variab.status + '" geändert!');
+					helper.log.pure('	Variable ' + variable.id + ' hat sich zu "' + variab.status + '" geändert!');
 					switchtimer = true;
 					switchToThis = 'on';
 				}else{
@@ -420,6 +420,7 @@ var switchActions = function(timer, status, switchtimer){
 		if(timer.actions.devices){
 			helper.log.debug('		Geräte schalten!');
 			timer.actions.devices.forEach(function(device){
+				helper.log.debug(device.name);
 				helper.switchaction('device', device.id, device.action, device.timeout);
 			});
 		}
@@ -437,7 +438,12 @@ var switchActions = function(timer, status, switchtimer){
 		}
 		if(timer.actions.saveSensors){
 			helper.log.pure("		Speichere Sensoren");
-			helper.switchaction('onewire', undefined, undefined, undefined);
+			var url = 'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/saveSensors';
+			request(url, function (error, response, body) {
+				if (error) {
+					helper.log.pure(error);
+				}
+			});
 		}
 		if(timer.actions.alerts){
 			timer.actions.alerts.forEach(function(alert){
@@ -517,7 +523,7 @@ var switchActions = function(timer, status, switchtimer){
 				if(action.timeout){
 					setInterval(function(){
 						helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
-						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
+						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet:send/" + action.name + "/" + action.message + "/" + action.receiver;
 						//helper.log.pure(url);
 						request(url , function (error, response, body) {
 							if (error) {
@@ -527,8 +533,8 @@ var switchActions = function(timer, status, switchtimer){
 					}, parseInt(action.timeout) * 1000);
 				}else{
 					helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
-					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet/" + action.name + "/" + action.message + "/" + action.receiver;
-					//helper.log.pure(url);
+					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet:send/" + action.name + "/" + action.message + "/" + action.receiver;
+					helper.log.pure(url);
 					request(url , function (error, response, body) {
 						if (error) {
 							helper.log.pure(error);
@@ -713,14 +719,10 @@ module.exports = {
 		db.run(query);
 		callback(undefined, data);
 	},
-	deleteTimer: function(id){
+	deleteTimer: function(id, callback){
 		var query = "DELETE FROM timer WHERE id = '" + id + "';";
 		db.all(query, function(err, data){
-			if(err){
-				callback(err);
-			}else{
-				callback(data);
-			}
+			callback(err, data);
 		});
 	},
 	switchTimer: function(data, callback){

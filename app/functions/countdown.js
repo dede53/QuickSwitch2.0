@@ -62,7 +62,6 @@ module.exports = {
 	setNewCountdown: function (data, callback){
 		var query = "INSERT INTO countdowns (type, time, switchid, status, user) VALUES ('1','"+ data.time +"','"+ data.device +"','"+ data.status +"', '" + data.user + "');";
 		db.all(query, function(err, res){
-			console.log(data);
 			if(err){
 				callback(err);
 			}else{

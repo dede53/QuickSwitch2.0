@@ -3,6 +3,20 @@ var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
 var helper 			= require('./helper.js');
 
+function getDevice(id, callback){
+	var query = "SELECT devices.*, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.deviceid = " + id + ";";
+	db.all(query , function(err, row) {
+		if (err) {
+			helper.log.error(err);
+			callback(404);
+		}else if(row == ""){
+			callback("Kein Gerät mit der ID " + id);
+		}else{
+			callback(row[0]);
+		}
+	});
+}
+
 module.exports = {
 	getDevices: function(type, callback){
 		if(type == "object"){
@@ -54,22 +68,7 @@ module.exports = {
 			}
 		});		
 	},
-	getDevice: function(id, callback){
-		var query = "SELECT devices.*, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.deviceid = " + id + ";";
-		db.all(query , function(err, row) {
-			if (err) {
-				helper.log.error(err);
-				callback(404);
-			}else if(row == ""){
-				callback("Kein Gerät mit der ID " + id);
-			}else{
-				var device = {};
-				device.type = row[0].type;
-				device[row[0].type] = row[0];
-				callback(device);
-			}
-		});		
-	},
+	getDevice: getDevice,
 	saveNewDevice: function (data, callback) {
 		console.log("Speichere eine neues Gerät");
 		var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
@@ -85,6 +84,26 @@ module.exports = {
 		var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
 		db.run(query);
 		callback(201, data);
+	},
+	saveDevice: function (data, callback){
+		if(data.deviceid){
+			var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.roomid +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
+			db.run(query);
+			getDevice(data.id, function(dev){
+				callback(undefined, dev);
+			});
+		}else{
+			var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.roomid +"', '" + data.switchserver + "');";
+			db.all(query, function(err, data){
+				if(err){
+					callback(err, undefined);
+				}else{
+					getDevice(data.insertId, function(data){
+						callback( undefined, data);
+					});
+				}
+			});
+		}
 	},
 	deleteDevice: function (id, callback) {
 		var query = "SELECT * FROM devices WHERE deviceid = " + id + ";";
@@ -125,11 +144,6 @@ module.exports = {
 		});
 	},
 	switchDevices: function (app, status, req, callback) {
-		if(status == "on"){
-			var status = 1;
-		}else{
-			var status = 0;
-		}
 		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type , showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
 		db.all(query , function(err, row) {
 			if (err) {
@@ -182,7 +196,7 @@ module.exports = {
 	},
 	getSwitchHistory: function(hours, callback){
 		var query = "SELECT * FROM `switch_history` WHERE time > '" + new Date(new Date().getTime() - (hours * 60000 * 60)).getTime() + "';";
-		console.log(query);
+		// console.log(query);
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -193,7 +207,7 @@ module.exports = {
 	},
 	getSwitchHistoryByID: function(hours, callback){
 		var query = "SELECT * FROM `switch_history` WHERE time > '" + new Date(new Date().getTime() - (hours * 60000 * 60)).getTime() + "' GROUP BY deviceid;";
-		console.log(query);
+		// console.log(query);
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);

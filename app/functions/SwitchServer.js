@@ -11,7 +11,6 @@ function sendActiveDevices(app, callback){
 			callback(404);
 		}else{
 			app.io.broadcast('change', new helper.message('active:get', activedevices));
-			helper.log.info("Erfolgreich an den SwitchServer gesendet und die Liste der aktiven Geräte aktualisiert! ");
 			callback(200);
 		}
 	});
@@ -29,15 +28,15 @@ function saveStatus(app, action, data, callback){
 				var query = "INSERT INTO `switch_history` (`deviceid`, `time`, `status`, `place`) VALUES ('" + data.deviceid + "', " + new Date().getTime() + ", '" + action + "', '" + data.name + "(" + data.Raum + ")');";
 				db.run(query);
 			}
-			sendActiveDevices(app, function(data){
-				callback(data);
+			sendActiveDevices(app, function(res){
+				helper.log.info("Erfolgreich an den SwitchServer gesendet: /switch/device/" + data.deviceid + "/" + action);
+				callback(res);
 			});
 		}
 	});
 }
 module.exports = {
 	sendto: function (app, action, data, callback){
-		// console.log(data);
 		if(action == "toggle"){
 			if(data.status == "0"){
 				action = 1;
@@ -45,25 +44,37 @@ module.exports = {
 				action = 0;
 			}
 		}
+		var formData = {
+			status: action,
+			data: data
+		}
+		// console.log(formData);
 		request.post({
 			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/switch/',
-			form:
-				{
-					status: action,
-					data: data
-				}
+			form: formData
 		},function( err, httpResponse, body){
 			if(err){
 				helper.log.error("Error! \n SwitchServer ist nicht erreichbar!");
 				helper.log.error(err);
 			}else{
+				if(body !== '200'){
+					helper.log.error("Der SwitchServer [" + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + "] meldet einen Fehler mit dem Adapter: " + action);
+					if(callback){
+						callback(body);
+					}
+					return;
+				}
 				if(data.type == "device"){
 					saveStatus(app, action, data, function(data){
-						callback(data);
+						if(callback){
+							callback(data);
+						}
 					});
 				}else{
 					helper.log.info("Erfolgreich an den SwitchServer gesendet");
-					callback(200);
+					if(callback){
+						callback(200);
+					}
 				}
 			}
 		});

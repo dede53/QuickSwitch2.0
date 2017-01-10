@@ -115,7 +115,8 @@ module.exports = {
 					if(err){
 						console.log( err , "error");
 					}else{
-						console.log("Erfolgreich an den SwitchServer gesendet");
+						// console.log("Erfolgreich an den SwitchServer gesendet");
+						// console.log('/switch/' + type + '/' + id + '/' + action);
 					}
 				});
 			}, parseInt(timeout) * 1000);
@@ -129,7 +130,8 @@ module.exports = {
 				if(err){
 					console.log( err , "error");
 				}else{
-					console.log("Erfolgreich an den SwitchServer gesendet");
+					// console.log("Erfolgreich an den SwitchServer gesendet");
+					// console.log('/switch/' + type + '/' + id + '/' + action);
 				}
 			});
 		}

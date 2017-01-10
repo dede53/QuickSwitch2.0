@@ -204,13 +204,24 @@ module.exports = function(app, db){
 	app.get('/settings', function(req, res) {
 	    res.sendfile(__dirname + '/public/settings');
 	});
-
+	app.get('/saveSensors', function(req, res){
+		var onewire = {
+			"protocol": "onewire",
+			"switchserver":0
+		}
+		SwitchServerFunctions.sendto(app, "save", onewire);
+		res.status(200).end();
+	});
 	/*******************************************************************************
 	**	Schaltfunktionen	********************************************************
 	*******************************************************************************/
 	app.get('/switch/:type/:id/:status', function (req, res) {
 		var id = req.params.id;
-		var status = req.params.status;
+		if(req.params.status == "on" || req.params.status == 1){
+			var status = 1;
+		}else{
+			var status = 0;
+		}
 		var type = req.params.type;
 		switch(type){
 			case "device":
@@ -229,11 +240,11 @@ module.exports = function(app, db){
 				}
 				break;
 			case "group":
-				groupFunctions.getGroup(id, req, res, function(group){
+				groupFunctions.getGroup(id, function(group){
 					if(group == "404"){
 						res.json(404);
 					}else{
-						groupFunctions.switchGroup(app, group[0], status, function(data){
+						groupFunctions.switchGroup(app, group, status, function(data){
 							if(!res.headersSent){
 								res.json(data);
 							}
@@ -242,13 +253,19 @@ module.exports = function(app, db){
 				});
 				break;
 			case "room":
-				roomFunctions.getRoom(id, req, res, function(room){
+				roomFunctions.getRoom(id, function(room){
 					roomFunctions.switchRoom(room, status, app, function(data){
 						if(!res.headersSent){
 							res.json(data);
 						}
 					});
 				});
+				break;
+			default:
+				console.log(type);
+				if(!res.headersSent){
+					res.json(data);
+				}
 				break;
 		}
 	});
@@ -436,51 +453,37 @@ module.exports = function(app, db){
 		});
 	});
 
-	app.get('/setVariable/:id/:status', function(req, res){
-		var id = req.params.id;
-		var status = req.params.status;
-		var variable = {
-			"id": id,
-			"status": status
-		}
-		variableFunctions.setVariable(variable, app, function(data){
-			timerFunctions.checkTimer(variable);
+	app.post('/setVariable', function(req, res){
+		variableFunctions.setVariable(req.body, app, function(data){
+			timerFunctions.checkTimer(req.body);
 			res.json(data);
 		});
 	});
-	app.get('/send/alert/:title/:message/:user/:type?', function(req, res){
-		variableFunctions.replaceVar(req.params.message, function(message){
-			variableFunctions.replaceVar(req.params.title, function(title){
-				var alert = {
-					"title": title,
-					"message": message,
-					"type": req.params.type,
-					"user": req.params.user,
-					"date": new Date(),
-					"id": Math.floor((Math.random() * 100) + 1)
-				}
-				if(req.params.user == "all"){
-					app.io.broadcast('change', new helper.message("alerts:add", alert));
-				}else{
-					app.io.room(req.params.user).broadcast('change', new helper.message("alerts:add", alert));
-				}
-				res.status(200).end();
+	app.get('/send/:type/:title/:message/:receiver/:messageType?', function(req, res){
+		var data = {};
+		data.title = req.params.title;
+		data.protocol = req.params.type;
+		data.message = req.params.message;
+		data.receiver = req.params.receiver;
+		data.date = new Date();
+		data.id = Math.floor((Math.random() * 100) + 1);
+		if(req.params.type.includes(":")){
+			data.switchserver = 0;
+			SwitchServerFunctions.sendto(app, req.params.type, data);
+		}else{
+			variableFunctions.replaceVar(data.message, function(message){
+				variableFunctions.replaceVar(data.title, function(title){
+					data.message = message;
+					data.title = title;
+					if(req.params.receiver == "all"){
+						app.io.broadcast('change', new helper.message("alerts:add", data));
+					}else{
+						app.io.room(req.params.receiver).broadcast('change', new helper.message("alerts:add", data));
+					}
+					res.status(200).end();
+				});
 			});
-		});
-	});
-	app.get('/send/pushbullet/:title/:message/:receiver', function(req, res){
-		var push = {
-			"protocol": "pushbullet",
-			"title": req.params.title,
-			"message": req.params.message,
-			"receiver": req.params.receiver,
-			"switchserver":0
 		}
-		SwitchServerFunctions.sendto(app, "send", push,function(status){
-			if(status != 200){
-				console.log('SwitchServerFunctions.sendto:' + status);
-			}
-		});
 		res.status(200).end();
 	});
 	/*******************************

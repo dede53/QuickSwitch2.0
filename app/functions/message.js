@@ -33,13 +33,14 @@ module.exports = {
 			}else{
 				var messagesToSend = new Object;
 				messagesToSend.messages = new Object;
-				messages.forEach(function(message){
-					messagesToSend.messages[message.id] = message;
-				});
+				// messages.forEach(function(message){
+				// 	messagesToSend.messages[message.id] = message;
+				// });
+				messagesToSend.messages = messages;
 				if(messages == ""){
-					messagesToSend.moreMessagesAvible = false;
+					messagesToSend.moreMessagesAvailable = false;
 				}else{
-					messagesToSend.moreMessagesAvible = true;
+					messagesToSend.moreMessagesAvailable = true;
 				}
 				callback(messagesToSend);
 			}

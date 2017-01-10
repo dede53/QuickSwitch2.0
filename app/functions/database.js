@@ -16,7 +16,6 @@ module.exports = {
 		pool.getConnection(function(err,connection){
 			if(err){
 				console.log(err);
-				connection.release();
 				callback(err, null);
 				return;
 			}
@@ -49,17 +48,16 @@ module.exports = {
 		pool.getConnection(function(err,connection){
 			if (err) {
 				console.log(err);
-				connection.release();
 				return;
 			}
 
 
 			connection.query(query, function(err,rows){
-				connection.release();
 				if(err){
 					console.log(err);
 					return;
 				}
+				connection.release();
 			});
 
 			// connection.on('error', function(err) {
@@ -79,11 +77,11 @@ module.exports = {
 
 
 			connection.query(query, function(err,rows){
-				connection.release();
 				if(err){
 					console.log(err);
 					return;
 				}
+				connection.release();
 				connection.removeEventListener('error', errorHandler);
 				rows.forEach(function(row){
 					callback(err, row);

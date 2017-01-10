@@ -7,32 +7,51 @@ var helper 			= require('./helper.js');
 
 function getVariables(callback){
 	var query = "SELECT * FROM variable;";
-	db.all(query, function(err, variab){
+	db.all(query, function(err, variables){
 		if(err){
 			console.log(err);
 			return;
 		}
-		variab.forEach(function(variable){
-			callback(variable);
+		// callback(variables);
+		var variab = {};
+		variables.map(function(variable){
+			variab[variable.id] = variable;
 		});
+		callback(variab);
 	});
 }
 
-function favoritVariables(favoritVariables, callback){
-	var query = "SELECT * FROM variable;";
+function favoritVariables(favoritVariables, mode, callback){
+	var query = "SELECT uid, id, name, status, charttype, linetype, linecolor, suffix, error, step, showall, user, lastChange FROM variable;";
 	db.all(query, function(err, variab){
 		if(err){
 			console.log(err);
 			return;
 		}
-		var favoriten = {};
 		var variablen = {};
 		variab.forEach(function(variable){
 			variablen[variable.id] = variable;
 		});
-		favoritVariables.forEach(function(fav){
-			favoriten[fav] = variablen[fav];
-		});
+		if(mode == "array"){
+			if(favoritVariables == undefined){
+				callback([]);
+				return;
+			}
+			var favoriten = [];
+			favoritVariables.forEach(function(fav){
+				favoriten.push(variablen[fav]);
+			});
+		}else{
+			if(favoritVariables == undefined){
+				callback({});
+				return;
+			}
+			var favoriten = {};
+			favoritVariables.forEach(function(fav){
+				favoriten[fav] = variablen[fav];
+			});
+		}
+	
 		callback(favoriten);
 	});
 }
@@ -76,6 +95,7 @@ function getVariableByName(name, callback){
 	});
 }
 function loadStoredVariable(variable, hours, callback){
+	// console.log(variable);
 	if(variable.showall == 'true'){
 		var query = "SELECT * FROM stored_vars WHERE id = '" + variable.id + "' AND ROUND(time / 1000) <= UNIX_TIMESTAMP() AND ROUND(time / 1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + hours + " hour)) ORDER BY time ASC;";
 	}else{
@@ -126,15 +146,27 @@ function loadStoredVariable(variable, hours, callback){
 		}
 	});
 }
-
-function getStoredVariables(user, callback){
+function getStoredVariable(id, hours, callback){
+	// console.log(id);
+	getVariableByNodeid(id, function(variable){
+		// console.log(variable);
+		loadStoredVariable(variable, hours, function(sensor){
+			// console.log(sensor);
+			callback(sensor);
+		});
+	});
+}
+function getStoredVariables(user, hours, callback){
 	var async 			= require("async");
 	if( Array.isArray(user.varChart) && user.varChart.length > 0){
-		if(user.chartHour){
+		if(hours){
+			var timeRange = hours;
+		}else if(user.chartHour){
 			var timeRange = user.chartHour;
 		}else{
 			var timeRange = 24;
 		}
+		// console.log(timeRange);
 		var series = [];
 		async.each(user.varChart,
 			function(id, callback){
@@ -231,17 +263,16 @@ module.exports = {
 	getVariable: getVariableByNodeid,
 	getVariableByName: getVariableByName,
 	saveNewVariable: saveNewVariable,
-	saveEditVariable: function(data,callback){
+	saveEditVariable: function(data, callback){
 		var query = "UPDATE variable SET "
 					+ "name = '" + data.name + "', "
-					+ "id = '" + data.id + "', "
 					+ "status = '" + data.status + "', "
-					+ "charttype = '" + data.chartype + "', "
+					+ "charttype = '" + data.charttype + "', "
 					+ "linetype = '" + data.linetype + "', "
 					+ "linecolor = '" + data.linecolor + "', "
 					+ "error = '" + data.error + "', "
-					+ "lastChange = '" + new Date().getTime() + "', "
-					+ "WHERE uid = '" + data.uid + "';";
+					+ "lastChange = '" + new Date().getTime() + "' "
+					+ "WHERE id = '" + data.id + "';";
 		db.run(query);
 		callback(201, data);
 	},
@@ -303,5 +334,6 @@ module.exports = {
 			});
 		});
 	},
+	getStoredVariable: getStoredVariable,
 	getStoredVariables: getStoredVariables
 }
