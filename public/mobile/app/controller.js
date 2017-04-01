@@ -103,13 +103,18 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		socket.emit(type + ':addAll', {user:$rootScope.activeUser, add:data});	
 	}
 	$scope.remove = function(type, data){
-		socket.emit(type + ':remove', {user:$rootScope.activeUser, id: data.id});	
+		socket.emit(type + ':remove', {user:$rootScope.activeUser, remove: data.id});
 	}
 	$scope.switch = function(type, data){
 		socket.emit(type + ':switch', {user:$rootScope.activeUser, switch: data});	
 	}
 	$scope.switchAll = function(type, data){
 		socket.emit(type + ':switchAll', {user:$rootScope.activeUser, switchAll: data});	
+	}
+	$scope.refresh = function(){
+		console.log(socket);
+		socket.socket.connect();
+		socket.emit('room:join', $rootScope.activeUser);
 	}
 	socket.on('change', function(data){
 		console.log(data);
