@@ -9,8 +9,12 @@ app.filter('action', function() {
 	return function(x) {
 		if(x == 0){
 			return 'aus';
-		}else{
+		}else if(x == 1){
 			return 'an';
+		}else if(x == 2){
+			return 'toggle';
+		}else{
+			return x;
 		}
 		// do some bounds checking here to ensure it has that index
 	}

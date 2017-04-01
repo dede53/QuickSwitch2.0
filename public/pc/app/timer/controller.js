@@ -166,6 +166,7 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 				case "devices":
 					var device = data.device;
 					var action = {
+						timeout: data.timeout,
 						name: device.name + ' (' + device.Raum + ' , ' + device.buttonLabelOn + '|' + device.buttonLabelOff + ')',
 						id: device.deviceid,
 						action: data.switchstatus
@@ -174,32 +175,43 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 				case "groups":
 					var action = data.group;
 					action.action = data.switchstatus;
+					action.timeout = data.timeout;
 					break;
 				case "rooms":
 					var action = data.room;
 					action.action = data.switchstatus;
+					action.timeout = data.timeout;
 					break;
 				case "alerts":
 					var action = data.alert;
+					action.timeout = data.timeout;
 					break;
 				case "pushbullets":
 					var action = data.pushbullet;
+					action.timeout = data.timeout;
 					break;
 				case "storeVariables":
 					var action = {
 						name:data.saveVariable
 					}
+					action.timeout = data.timeout;
 					break;
 				case "intervals":
 					var action = data.interval;
+					action.timeout = data.timeout;
 					break;
 				case "urls":
 					var action = data.url;
+					action.timeout = data.timeout;
 					break;
+				case "saveSensors":
+					var action = {};
+					action.timeout = data.timeout;
 				default:
 					console.log(data);
 					break;
 			}
+			console.log(action);
 			if($scope.timer.actions[data.type]){
 				$scope.timer.actions[data.type].push(action);
 			}else{
@@ -292,7 +304,8 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 		interval:{
 			type: false
 		},
-		switchstatus: '1'
+		switchstatus: '1',
+		timeout: 0
 	}
 
 	$scope.actions = [

@@ -5,7 +5,7 @@
 		<div class="panel-body">
 			<ul style=" overflow:auto">
 				<li ng-repeat="countdown in $root.countdowns">
-					<p>{{countdown.device[countdown.device.type].name}} ({{countdown.device[countdown.device.type].Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.status ? "ein" :  "aus"}}schalten
+					<p>{{countdown.device.name}} ({{countdown.device.Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.status ? "ein" :  "aus"}}schalten
 						<button class="btn btn-xs btn-danger" ng-click="remove('countdowns', {'id':countdown.id})" >Löschen</button>
 					</p>
 				</li>

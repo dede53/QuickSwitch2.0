@@ -79,7 +79,10 @@
 									<li class="list-group-item">Urls aufrufen</li>
 									<li class="list-group-item" ng-repeat="action in actions">
 										Url: {{action.url}}
-										<button class="pull-right btn btn-danger btn-xs" ng-click="removeAction({action:action, type:'urls'})">Löschen</button>
+										<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'urls'})">Löschen</button>
+									</li>
+									<li class="list-group-item">
+										Timeout: {{action.timeout}} Sekunden
 									</li>
 								</ul>
 							</div>
@@ -88,13 +91,19 @@
 									<li class="list-group-item">Speichere Variablen</li>
 									<li class="list-group-item" ng-repeat="action in actions">
 										Name: {{action.name}}
-										<button class="pull-right btn btn-danger btn-xs" ng-click="removeAction({action:action, type:'storeVariables'})">Löschen</button>
+										<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'storeVariables'})">Löschen</button>
 									</li>
 								</ul>
 							</div>
 							<div ng-switch-when="saveSensors">
 								<ul class="list-group">
-									<li class="list-group-item">Sensoren Speichern</li>
+									<li class="list-group-item">
+										Speichere Sensoren
+									<li>
+									<li class="list-group-item" ng-repeat="action in actions">
+										<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'saveSensors'})">Löschen</button>
+										Timeout: {{action.timeout}} Sekunden
+									</li>
 								</ul>
 							</div>
 							<div ng-switch-when="pushbullets">

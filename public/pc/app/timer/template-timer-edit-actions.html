@@ -57,13 +57,16 @@
 							ng-model="addAction.switchstatus" uib-btn-radio="'0'" >
 							Aus
 						</button>
+						<button type="button" class="btn btn-secondary"
+							ng-model="addAction.switchstatus" uib-btn-radio="'toggle'" >
+							Toggle
+						</button>
 					</div>
 				</fieldset>
 			</li>
 			<li class="list-group-item" ng-show="isSame(addAction, 'groups')">
 				<select
 						class="form-control"
-						ng-change=""
 						ng-model="addAction.group"
 						ng-options="value as value.name group by value.User for value in $root.groups">
 						<option value="">Wähle eine Gruppe</option>
@@ -80,6 +83,10 @@
 						<button type="button" class="btn btn-secondary"
 							ng-model="addAction.switchstatus" uib-btn-radio="'0'" >
 							Aus
+						</button>
+						<button type="button" class="btn btn-secondary"
+							ng-model="addAction.switchstatus" uib-btn-radio="'toggle'" >
+							Toggle
 						</button>
 					</div>
 				</fieldset>
@@ -104,6 +111,10 @@
 						<button type="button" class="btn btn-secondary"
 							ng-model="addAction.switchstatus" uib-btn-radio="'0'" >
 							Aus
+						</button>
+						<button type="button" class="btn btn-secondary"
+							ng-model="addAction.switchstatus" uib-btn-radio="'toggle'" >
+							Toggle
 						</button>
 					</div>
 				</fieldset>
@@ -130,9 +141,16 @@
 					</select>
 			</li>
 			<li class="list-group-item" ng-show="isSame(addAction, 'pushbullets')">
-					<input type="text" placeholder="Titel" ng-model="addAction.pushbullet.name">
-					<input type="text" placeholder="Nachricht" ng-model="addAction.pushbullet.message">
-					<input type="text" placeholder="Empfänger IDEN" ng-model="addAction.pushbullet.receiver">
+				<input type="text" placeholder="Titel" ng-model="addAction.pushbullet.name">
+				<input type="text" placeholder="Nachricht" ng-model="addAction.pushbullet.message">
+				<input type="text" placeholder="Empfänger IDEN" ng-model="addAction.pushbullet.receiver">
+			</li>
+			<li class="list-group-item">
+				<div class="input-group">
+					<span class="input-group-addon">
+						Verzögerung/Timeout in Sekunden
+					</span>
+					<input type="number" class="form-control" ng-model="addAction.timeout">
 				</div>
 			</li>
 		</div>

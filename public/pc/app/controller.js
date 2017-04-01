@@ -129,8 +129,6 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 				$rootScope[data.masterType].push(data.push);
 				break;
 			case "add":
-				// console.log($rootScope[data.masterType]);
-				// console.log($rootScope.chat.messages);
 				$rootScope[data.masterType][data.add.id] = data.add;
 				break;
 			case "remove":

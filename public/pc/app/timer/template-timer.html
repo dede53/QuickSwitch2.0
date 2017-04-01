@@ -72,11 +72,19 @@
 							<div ng-switch-when="groups">
 								<div timer-group-directive></div>
 							</div>
+							<div ng-switch-when="rooms">
+								<div timer-room-directive></div>
+							</div>
 							<div ng-switch-when="storeVariables">
 								Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
 							</div>
 							<div ng-switch-when="saveSensors">
-								Speichere Sensoren
+								<ul class="list-group">
+									<li class="list-group-item">
+										Speichere Sensoren
+										Timeout: {{action.timeout}} Sekunden
+									</li>
+								</ul>
 							</div>
 							<div ng-switch-when="pushbullets">
 								<div timer-pushbullet-directive></div>
@@ -86,6 +94,7 @@
 									<li class="list-group-item">Urls aufrufen</li>
 									<li class="list-group-item" ng-repeat="action in actions">
 										Url: {{action.url}}
+										Timeout: {{action.timeout}} Sekunden
 									</li>
 								</ul>
 							</div>
