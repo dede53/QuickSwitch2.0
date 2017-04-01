@@ -7,6 +7,7 @@ var messageFunctions 		= require('./functions/message.js');
 var variableFunctions 		= require('./functions/variable.js');
 var timerFunctions 			= require('./functions/timer.js');
 var SwitchServerFunctions 	= require('./functions/SwitchServer.js');
+var countdownFunctions	 	= require('./functions/countdown.js');
 /***********************************************************************************
 ├── dist/
 │   ├── bootstrap-clockpicker.css      # full code for bootstrap
@@ -219,8 +220,10 @@ module.exports = function(app, db){
 		var id = req.params.id;
 		if(req.params.status == "on" || req.params.status == 1){
 			var status = 1;
-		}else{
+		}else if(req.params.status == "off" || req.params.status == 0){
 			var status = 0;
+		}else{
+			var status = 'toggle'
 		}
 		var type = req.params.type;
 		switch(type){
@@ -275,7 +278,7 @@ module.exports = function(app, db){
 	**	alle Geräte	****************************************************************
 	*******************************************************************************/
 	app.get('/devices', function (req, res) {
-		deviceFunctions.getDevices('object',req, res, function(data){
+		deviceFunctions.getDevices('object', function(data){
 			if(!res.headersSent){
 				res.json(data);
 			}
@@ -494,7 +497,7 @@ module.exports = function(app, db){
 			switchstatus: 	Aktion wie geschaltet wird
 		}
 	*******************************/
-	app.post('countdown', function(req, res){
+	app.post('/countdown', function(req, res){
 		var data = {};
 		switch(req.data.switchstatus){
 			case "on":
@@ -536,4 +539,34 @@ module.exports = function(app, db){
 			}
 		});
 	});
+	app.get('/countdowns/:user', function(req, res){
+		countdownFunctions.getCountdowns(req.params.user, function(data){
+			if(data){
+				res.json(data);
+			}else{
+				res.json({});
+			}
+		});
+	});
+	app.get('/countdown/:id/:user', function(req, res){
+		var id = req.params.id;
+		countdownFunctions.deleteCountdown(id, function(status){
+			if(status == 200){
+				app.io.room(req.params.user).broadcast('change', new message('countdowns:remove', id));
+				res.send(200).end();
+			}else{
+				res.send(400).end();
+			}
+		});
+	});
+}
+
+
+function message(type, data){
+	var message = {};
+	var foo = type.split(':');
+	message.masterType = foo[0];
+	message.type = foo[1];
+	message[foo[1]] = data;
+	return message;
 }

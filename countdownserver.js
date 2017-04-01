@@ -82,7 +82,6 @@ console.log = function(d) {
 
 checkCountdowns();
 
-// var sched			=	later.parse.text('every 10 sec');
 var sched			=	later.parse.text('every 1 min');
 var tim				=	later.setInterval(checkCountdowns, sched);
 
@@ -101,7 +100,7 @@ function checkCountdowns(){
 
 	var now = hours + ':' + minutes;
 	log.debug("Es ist " + now + ". Prüfe Countdowntimer...");
-	var query ="SELECT countdowns.id as id, countdowns.type as typeid, time as date, switchid, status, countdowntypen.type as type FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id;";
+	var query ="SELECT countdowns.id as id, countdowns.type as typeid, time as date, switchid, status, countdowntypen.type as type, user FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id;";
 	db.all(query, function(err, countdowns){
 		if(err){
 			log.error(err);
@@ -129,10 +128,16 @@ function checkCountdowns(){
 				if(switchtime == now){
 					log.info("		Schalte Countdown!\n");
 					switchaction(countdown.type, countdown.switchid, countdown.status);
-					
-					var query="DELETE FROM countdowns WHERE id = " + countdown.id + ";";
-					db.run(query);
-					
+
+					request.get({
+						url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/countdown/' + countdown.id + "/" + countdown.user
+					},function( err, httpResponse, body){
+						if(err){
+							log.error( err , "error");
+						}else{
+							log.info("Erfolgreich an den SwitchServer gesendet");
+						}
+					});
 				}else{
 					log.info("		Stimmt nicht!\n");
 				}
@@ -145,10 +150,7 @@ function checkCountdowns(){
 
 function switchaction(type, id, action){
 	request.get({
-		url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action,
-		form:
-			{
-			}
+		url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action
 	},function( err, httpResponse, body){
 		if(err){
 			log.error( err , "error");
@@ -156,7 +158,6 @@ function switchaction(type, id, action){
 			log.info("Erfolgreich an den SwitchServer gesendet");
 		}
 	});
-	// console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
 }
 
 

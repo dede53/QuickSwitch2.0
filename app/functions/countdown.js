@@ -8,7 +8,7 @@ module.exports = {
 	* Liefert alle Countdowns
 	*****************************************/
 	getCountdowns: function(user, callback){
-		var query = "SELECT countdowns.id, countdowntypen.type, countdowns.switchid, countdowns.time, countdowns.status FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id AND countdowns.user = '"+ user +"';";
+		var query = "SELECT countdowns.id, countdowntypen.type, countdowns.switchid, countdowns.time, countdowns.status, countdowns.user FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id AND countdowns.user = '"+ user +"';";
 		db.all(query, function(err, row){
 			if(err){
 				helper.log.error(err, "error");

@@ -1,23 +1,23 @@
 var express					=	require('express.io');
 var app						=	express().http().io();
 
-var fs 						=	require('fs');
+var fs						=	require('fs');
 var fork					=	require('child_process').fork;
 var bodyParser				=	require('body-parser');
 var cookieParser			=	require('cookie-parser');
 
-var config 					=	require("./config.json");
-var switchServerFunctions 	=	require('./app/functions/SwitchServer.js');
-var db 						=	require('./app/functions/database.js');
-var countdownFunctions 		=	require('./app/functions/countdown.js');
-var deviceFunctions 		=	require('./app/functions/device.js');
-var groupFunctions 			=	require('./app/functions/group.js');
-var messageFunctions 		=	require('./app/functions/message.js');
-var roomFunctions 			=	require('./app/functions/room.js');
-var timerFunctions 			=	require('./app/functions/timer.js');
-var userFunctions 			=	require('./app/functions/user.js');
-var variableFunctions 		=	require('./app/functions/variable.js');
-var adapterFunctions 		=	require('./app/functions/adapter.js');
+var config					=	require("./config.json");
+var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
+var db						=	require('./app/functions/database.js');
+var countdownFunctions		=	require('./app/functions/countdown.js');
+var deviceFunctions			=	require('./app/functions/device.js');
+var groupFunctions			=	require('./app/functions/group.js');
+var messageFunctions		=	require('./app/functions/message.js');
+var roomFunctions			=	require('./app/functions/room.js');
+var timerFunctions			=	require('./app/functions/timer.js');
+var userFunctions			=	require('./app/functions/user.js');
+var variableFunctions		=	require('./app/functions/variable.js');
+var adapterFunctions		=	require('./app/functions/adapter.js');
 
 
 // app.use(express.logger('dev'));
@@ -290,7 +290,7 @@ app.io.route('countdowns', {
 	remove: function(req){
 		var id = req.data.remove;
 		countdownFunctions.deleteCountdown(id, function(data){
-			app.io.room(req.data.user.name).broadcast('change', new message('countdowns:remove', req.data.id));
+			app.io.room(req.data.user.name).broadcast('change', new message('countdowns:remove', id));
 		});
 	},
 	get: function(req){
@@ -445,7 +445,7 @@ app.io.route('timers', {
 		});
 	},
 	switchAll: function(req){
-		timerFunctions.switchActions(req.data.switchAll,true, true);
+		timerFunctions.switchActions(req.data.switchAll, true, true);
 	}
 });
 

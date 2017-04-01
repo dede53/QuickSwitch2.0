@@ -427,13 +427,13 @@ var switchActions = function(timer, status, switchtimer){
 		if(timer.actions.groups){
 			helper.log.debug('		Gruppe schalten!');
 			timer.actions.groups.forEach(function(group){
-				helper.switchaction('group', group.id, status, group.timeout);
+				helper.switchaction('group', group.id, group.action, group.timeout);
 			});
 		}
 		if(timer.actions.rooms){
 			helper.log.debug('		Raum schalten!');
 			timer.actions.rooms.forEach(function(room){
-				helper.switchaction('room', room.id, status, room.timeout);
+				helper.switchaction('room', room.id, room.action, room.timeout);
 			});
 		}
 		if(timer.actions.saveSensors){

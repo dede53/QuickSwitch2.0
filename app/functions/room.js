@@ -18,7 +18,12 @@ function getRoom(id, callback){
 
 module.exports = {
 	switchRoom: function (room, status, app, callback){
-		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff, type, devices.roomid, rooms.name AS Raum, switchserver FROM devices, rooms WHERE devices.roomid = '" + room.id + "' AND devices.roomid = rooms.id AND status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
+		if(status == 'toggle'){
+			var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff, type, devices.roomid, rooms.name AS Raum, switchserver FROM devices, rooms WHERE devices.roomid = '" + room.id + "' AND devices.roomid = rooms.id AND devices.type = 'device' AND devices.showStatus = '1';";
+		}else{
+			var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff, type, devices.roomid, rooms.name AS Raum, switchserver FROM devices, rooms WHERE devices.roomid = '" + room.id + "' AND devices.roomid = rooms.id AND status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
+		}
+
 		db.all(query , function(err, row) {
 			if (err) {
 				helper.log.error("switchRoom: " + err);

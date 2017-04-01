@@ -97,9 +97,9 @@ module.exports = {
 		return tag;
 	},
 	switchaction: function (type, id, action, timeout){
-		if(action == "on" || action == 'true'){
+		if(action == "on" || action == 'true' || action == 1 || action == '1'){
 			action = 1;
-		}if(action == "off" || action == 'false'){
+		}if(action == "off" || action == 'false'  || action == 0 || action == '0'){
 			action = 0;
 		}else{
 			action = action;
