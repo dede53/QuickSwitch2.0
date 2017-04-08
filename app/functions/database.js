@@ -22,7 +22,7 @@ module.exports = {
 			connection.query(query, function(err,rows){
 				connection.release();
 				if(err) {
-					console.log(err);
+					console.log(query + ":" + err);
 					callback(err, rows);
 					return;
 				}

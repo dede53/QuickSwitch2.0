@@ -42,8 +42,8 @@ module.exports = {
 			if (err) {
 				helper.log.error(err);
 			}else if(row == ""){
-				callback("Kein Benutzer mit der ID" + id);
-				helper.log.error("Kein Benutzer mit der ID" + id);
+				callback("Kein Benutzer mit der ID " + id);
+				helper.log.error("Kein Benutzer mit der ID " + id);
 			}else{
 				try{
 					row[0].favoritDevices = JSON.parse(row[0].favoritDevices);
@@ -112,7 +112,8 @@ module.exports = {
 			db.run(query);
 			callback(201);
 		}else{
-			var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"' WHERE id = '"+ data.id +"';";
+			var query = "INSERT INTO user ( name, favoritDevices, favoritVariables, varChart, chartHour, admin ) VALUES ('"+ data.name +"', '"+ JSON.stringify(data.favoritDevices) +"', '"+ JSON.stringify(data.favoritVariables) +"', '"+ JSON.stringify(data.varChart) +"', '"+ data.chartHour +"', '"+ data.admin +"');";
+			// var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"' WHERE id = '"+ data.id +"';";
 			db.run(query);
 			callback(201);
 		}

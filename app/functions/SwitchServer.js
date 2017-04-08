@@ -48,9 +48,8 @@ module.exports = {
 			status: action,
 			data: data
 		}
-		// console.log(formData);
 		request.post({
-			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/switch/',
+			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/switch',
 			form: formData
 		},function( err, httpResponse, body){
 			if(err){

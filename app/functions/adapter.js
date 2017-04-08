@@ -102,7 +102,7 @@ module.exports = {
 			if(status == "gestoppt"){
 				startAdapter(req.params.name, function(status){
 					if(status == "gestartet"){
-						res.json("reloaded");
+						callback("reloaded");
 					}
 				});
 			}
@@ -114,11 +114,11 @@ module.exports = {
 			console.log("Adapter läuft bereits!");
 		}else{
 			try{
-				var name = name.toLowerCase();
-				var path = './adapter/' + name + "/index.js";
-				var debugFile = __dirname + '/log/debug-' + name + '.log';
+				var name				= name.toLowerCase();
+				var path				= './adapter/' + name + "/index.js";
+				var debugFile			= __dirname + '/log/debug-' + name + '.log';
 				log_file[name]			=	fs.createWriteStream( debugFile, {flags : 'w', encoding: 'utf8'});
-				plugins[name] = cp.fork( path );
+				plugins[name]			= cp.fork( path );
 				// adapter.log.info(name + " wurde gestartet");
 				log_file[name].write(new Date() +": Der Adapter wurde gestartet!\n");
 				plugins[name].on('message', function(response) {

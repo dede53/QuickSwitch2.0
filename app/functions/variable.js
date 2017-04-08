@@ -299,6 +299,7 @@ module.exports = {
 		}
 	},
 	setVariable: function(variable, app, callback){
+		console.log(variable);
 		getVariableByNodeid(variable.id, function(fullVariable){
 			var query = "UPDATE variable SET status = '" + variable.status + "', lastChange = '" + new Date().getTime() + "' WHERE id = '" + variable.id + "';";
 			db.run(query);

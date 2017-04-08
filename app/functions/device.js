@@ -69,31 +69,31 @@ module.exports = {
 		});		
 	},
 	getDevice: getDevice,
-	saveNewDevice: function (data, callback) {
-		console.log("Speichere eine neues Gerät");
-		var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
-		db.all(query, function(err, res){
-			if(!err){
-				data.id = res.insertId;
-				callback(201, data);
-			}
-		});
-	},
-	saveEditDevice: function (data, callback) {
-		console.log("Speichere eine bearbeitetes Gerät");
-		var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
-		db.run(query);
-		callback(201, data);
-	},
+	// saveNewDevice: function (data, callback) {
+	// 	console.log("Speichere eine neues Gerät");
+	// 	var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
+	// 	db.all(query, function(err, res){
+	// 		if(!err){
+	// 			data.id = res.insertId;
+	// 			callback(201, data);
+	// 		}
+	// 	});
+	// },
+	// saveEditDevice: function (data, callback) {
+	// 	console.log("Speichere eine bearbeitetes Gerät");
+	// 	var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
+	// 	db.run(query);
+	// 	callback(201, data);
+	// },
 	saveDevice: function (data, callback){
 		if(data.deviceid){
-			var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.roomid +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
+			var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', showStatus = '"+ data.showStatus +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.roomid +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
 			db.run(query);
-			getDevice(data.id, function(dev){
+			getDevice(data.deviceid, function(dev){
 				callback(undefined, dev);
 			});
 		}else{
-			var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.roomid +"', '" + data.switchserver + "');";
+			var query = "INSERT INTO devices ( name, protocol, showStatus, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.showStatus +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.roomid +"', '" + data.switchserver + "');";
 			db.all(query, function(err, data){
 				if(err){
 					callback(err, undefined);
@@ -162,7 +162,6 @@ module.exports = {
 	},
 	favoritDevices: function (favoritDevices, callback){
 		if(favoritDevices == false){
-			helper.log.info("Keine Geräte gewählt!");
 			callback(false);
 		}
 

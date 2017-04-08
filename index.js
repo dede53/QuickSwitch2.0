@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express					=	require('express.io');
 var app						=	express().http().io();
 
@@ -565,7 +567,7 @@ data.forEach(function(file){
 	var splitedfile 			= file.split(".");
 	if(splitedfile[0].includes("/")){
 		var name 				= splitedfile[0].split("/");
-		var filename 			= name[name.length - 1];
+		var filename 			= name[name.length - 1].toLowerCase();
 	}else{
 		var filename 			= splitedfile[0];
 	}
@@ -573,7 +575,8 @@ data.forEach(function(file){
 	log_file[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
 
 	if(fs.existsSync(__dirname + "/SwitchServer/settings/" + filename.toLowerCase() + ".json")){
-		var bla 				= fs.readFileSync(__dirname + "/SwitchServer/settings/" + filename.toLowerCase() + ".json", "utf8");
+		var bla 				= fs.readFileSync(__dirname + "/SwitchServer/settings/" + filename + ".json", "utf8");
+		var bla 				= JSON.parse(bla);
 		var ich 				= [];
 		ich.push(bla);
 		plugins[filename] 		= fork( './' + file, ich );
@@ -584,6 +587,9 @@ data.forEach(function(file){
 	plugins[filename].on('message', function(response) {
 		if(response.log){
 			log_file[filename].write(response.log.toString() + "\n");
+		}
+		if(response.setVariable){
+			variableFunctions.setVariable(response.setVariable, app, function(){});
 		}
 	});
 });
