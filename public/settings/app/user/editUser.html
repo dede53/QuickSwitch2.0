@@ -34,7 +34,6 @@
 					</div>
 				</div>
 			</div>
-			{{favoritVariables}}
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="fav">Variablen</span>
@@ -58,6 +57,46 @@
 					</div>
 				</div>
 			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="fav">Variablen Diagram</span>
+					<div class="form-control" style="height:auto;" data-as-sortable="variableDragControlListeners"  data-ng-model="varChart">
+						<li data-ng-repeat="(key, variable) in varChart" data-as-sortable-item>
+							<div data-as-sortable-item-handle>
+								{{variable.id}} ({{variable.name}})
+								<ng-md-icon
+									icon="cancel"
+									style="fill:#D9534F"
+									size="15"
+									options='{"duration": 10, "rotation": "none"}'
+									ng-click="removeChartVariable(key)"
+									class="pull-right"
+								></ng-md-icon>
+							</div>
+						</li>
+						<select class="form-control" ng-model="addChart" ng-change="addChartVariable(addChart)">
+							<option ng-repeat="variable in variables" value="{{variable}}">{{variable.id}} ({{variable.name}})</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon">Diagram Zeitspanne</span>
+					<span class="form-control">
+						<input type="number" ng-model="user.chartHour">
+					</span>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon">Admin</span>
+					<span class="form-control" style="height:auto;" >
+						<input type="checkbox" aria-label="Checkbox for following text input" ng-model="user.admin" ng-true-value="1" ng-false-value="0">
+					</span>
+				</div>
+			</div>
+			{{user}}
 			<div class="panel-body">
 				<div class="pull-right">
 					<button class="btn btn-success" ng-click="saveUser()">Speichern</button>

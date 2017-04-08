@@ -15,11 +15,11 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 	}else{
 		$scope.title = "bearbeiten";
 		socket.emit('user:get', $routeParams.id);
+		socket.emit('devices:favoriten', $routeParams.id);
+		socket.emit('variables:favoriten', $routeParams.id);
 	}
 	socket.emit('devices:devicelist');
 	socket.emit('variables:get');
-	socket.emit('devices:favoriten', $routeParams.id);
-	socket.emit('variables:favoriten', $routeParams.id);
 	$scope.addDevice = function(test){
 		$scope.favoritDevices.push(JSON.parse(test));
 		$scope.user.favoritDevices.push(JSON.parse(test).deviceid);
@@ -38,6 +38,15 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 	$scope.removeVariable = function(index){
 		$scope.favoritVariables.splice(index, 1);
 		$scope.user.favoritVariables.splice(index, 1);
+	}
+	$scope.addChartVariable = function(test){
+		$scope.varChart.push(JSON.parse(test));
+		$scope.user.varChart.push(JSON.parse(test).id);
+		$scope.addChart = 'nonsense';
+	}
+	$scope.removeChartVariable = function(index){
+		$scope.varChart.splice(index, 1);
+		$scope.user.varChart.splice(index, 1);
 	}
 	$scope.devicesDragControlListeners = {
 		accept: function (sourceItemHandleScope, destSortableScope) {return true},//override to determine drag is allowed or not. default is true.

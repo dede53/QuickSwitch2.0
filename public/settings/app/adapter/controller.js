@@ -7,7 +7,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 			var socket = io.connect("http://" + server.ip + ":" + server.port);
 			socket.on("status", function(data){
 				$rootScope.$apply(function(){
-					// console.log(data);
+					console.log(data);
 					$scope.switchServers[server.id].status = data;
 					$scope.switchServers[server.id].message = "erreichbar";
 				});
@@ -17,6 +17,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 		}
 
 		list.forEach(function(server){
+			console.log(server);
 			server.message = "nicht erreichbar";
 			$scope.switchServers[server.id] = server;
 			bla(server);
