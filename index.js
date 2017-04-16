@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
 var express					=	require('express.io');
-var app						=	express().http().io();
 
 var fs						=	require('fs');
 var fork					=	require('child_process').fork;
 var bodyParser				=	require('body-parser');
 var cookieParser			=	require('cookie-parser');
+var crypto					=	require('crypto');
 
+var plugins 				=	{};
 var config					=	require("./config.json");
 var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
 var db						=	require('./app/functions/database.js');
@@ -20,6 +21,16 @@ var timerFunctions			=	require('./app/functions/timer.js');
 var userFunctions			=	require('./app/functions/user.js');
 var variableFunctions		=	require('./app/functions/variable.js');
 var adapterFunctions		=	require('./app/functions/adapter.js');
+
+if(config.useHTTPS){
+	var options = {
+		key: fs.readFileSync('./key.pem'),
+		cert: fs.readFileSync('./cert.pem')
+	}
+	var app						=	express().https(options).io();
+}else{
+	var app						=	express().http().io();
+}
 
 
 // app.use(express.logger('dev'));
@@ -106,6 +117,24 @@ app.io.route('room', {
 	}
 });
 
+app.io.route('settings', {
+	get: function(req){
+		req.io.emit('change', new message('settings:get', config));
+	},
+	save: function(req){
+		fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', function(err){
+			if(err){
+				error("Die Einstellungen konnten nicht gespeichert werden!");
+				error(err);
+			}else{
+				db						=	require('./app/functions/database.js');
+				console.log("Die Einstellungen wurden aktualisiert und werden nach einem Neustart übernommen!");
+				app.io.broadcast('change', new message('settings:get', req.data));
+			}
+		});
+	}
+});
+
 app.io.route('switchServer', {
 	get: function(req){
 		req.io.emit('switchServer', config.switchserver);
@@ -119,8 +148,8 @@ app.io.route('variable', {
 		});
 	},
 	remove: function(req){
-		variableFunctions.deleteVariable(req.data.remove, function(data){
-			app.io.broadcast('change', new message('variables:remove', req.data.remove));
+		variableFunctions.deleteVariable(req.data.remove.uid, function(data){
+			app.io.broadcast('change', new message('variables:remove', req.data.remove.id));
 		});
 	}
 });
@@ -153,8 +182,11 @@ app.io.route('variables', {
 		});
 	},
 	chart: function(req){
-		variableFunctions.getStoredVariables(req.data.user, req.data.hours, function(data){
-			req.io.emit('change', new message('varChart:get', data));
+		userFunctions.getUser(req.data, function(user){
+			console.log(user);
+			variableFunctions.getStoredVariables(user, req.data.hours, function(data){
+				req.io.emit('change', new message('varChart:get', data));
+			});
 		});
 	},
 	storedVariable: function(req){
@@ -165,21 +197,9 @@ app.io.route('variables', {
 });
 
 app.io.route('rooms', {
-	add: function(req){
-		roomFunctions.saveNewRoom(req.data.add, function(err, data){
-			if(err == 201){
-				app.io.broadcast('change', new message('rooms:add', data));
-			}
-		});
-	},
 	remove: function(req){
 		roomFunctions.deleteRoom(req.data.remove, function(err){
 			app.io.broadcast('change', new message('rooms:remove', req.data.remove));
-		});
-	},
-	edit: function(req){
-		roomFunctions.saveEditRoom(req.data.edit, function(err, data){
-			app.io.broadcast('change', new message('rooms:add', data));
 		});
 	},
 	get: function(req){
@@ -232,20 +252,6 @@ app.io.route('user', {
 	get: function(req){
 		userFunctions.getUser(req.data, function(data){
 			req.io.emit('change', new message('user:get', data));
-		});
-	},
-	edit: function(req){
-		userFunctions.saveEditUser(req.data, function(status){
-			userFunctions.getUsers(function(data){
-				req.io.broadcast('change', new message('users:get', data));
-			});
-		});
-	},
-	add: function(req){
-		userFunctions.saveNewUser(req.data, function(status){
-			userFunctions.getUsers(function(data){
-				req.io.broadcast('change', new message('users:get', data));
-			});
 		});
 	},
 	remove: function(req){
@@ -349,45 +355,8 @@ app.io.route('device', {
 			});
 		});
 	},
-	add: function(req){
-		var data = {
-			"name": req.data.add.name,
-			"buttonLabelOn": req.data.add.buttonLabelOn,
-			"buttonLabelOff": req.data.add.buttonLabelOff,
-			"CodeOn": req.data.add.CodeOn,
-			"CodeOff": req.data.add.CodeOff,
-			"protocol": req.data.add.protocol,
-			"room": req.data.add.roomid,
-			"switchserver": req.data.add.switchserver
-		};
-		deviceFunctions.saveNewDevice(data, req, res, function(data){
-			deviceFunctions.getDevices('object', req, res, function(data){
-				app.io.broadcast('change', new message('devices:get', data));
-			});
-		});
-	},
-	edit: function(req){
-		var data = 
-			{
-				"deviceid": req.data.edit.deviceid,
-				"name": req.data.edit.name,
-				"buttonLabelOn": req.data.edit.buttonLabelOn,
-				"buttonLabelOff": req.data.edit.buttonLabelOff,
-				"CodeOn": req.data.edit.CodeOn,
-				"CodeOff": req.data.edit.CodeOff,
-				"protocol": req.data.edit.protocol,
-				"room": req.data.edit.roomid,
-				"switchserver": req.data.edit.switchserver
-			};
-		deviceFunctions.saveEditDevice(data, function(data){
-			deviceFunctions.getDevices('object', function(data){
-				app.io.broadcast('change', new message('devices:get', data));
-			});
-		});
-	},
 	remove:function(req){
-		var id = req.data.remove;
-		deviceFunctions.deleteDevice(id, function(data){
+		deviceFunctions.deleteDevice(req.data.remove, function(data){
 			deviceFunctions.getDevices('object', function(data){
 				app.io.broadcast('change', new message('devices:get', data));
 			});
@@ -409,25 +378,18 @@ app.io.route('switchHistory', {
 });
 
 app.io.route('timers', {
-	add: function(req){
-		timerFunctions.saveNewTimer(req.data.add, function(err, data){
-			app.io.room(data.user).broadcast("change", new message("timers:add", data));
-		});
-	},
-	edit: function(req){
-		timerFunctions.saveEditTimer(req.data.edit, function(err, data){
-			app.io.broadcast("change", new message('timers:edit', data));
-		});
-	},
 	save: function(req){
 		timerFunctions.saveTimer(req.data.save, function(err, data){
 			app.io.room(req.data.user.name).broadcast('change', new message('timers:add', data));
 		});
 	},
 	remove: function(req){
-		timerFunctions.deleteTimer(req.data.remove, function(err, data){
-			app.io.broadcast("change", new message('timers:remove', req.data.remove));
-		});
+		plugins.timerserver.send({deaktivateInterval:req.data.remove});
+		setTimeout(function(){
+			timerFunctions.deleteTimer(req.data.remove, function(err, data){
+				app.io.broadcast("change", new message('timers:remove', req.data.remove));
+			});
+		}, 1000);
 	},
 	get: function(req){
 		timerFunctions.getTimer(req.data.get, function(timer){
@@ -445,6 +407,9 @@ app.io.route('timers', {
 				error("Der Timer mit der ID " + data.id + " konnte nicht geschaltet werden");
 			}
 		});
+		if(req.data.switch.active == false || req.data.switch.active == 'false'){
+			plugins.timerserver.send({deaktivateInterval:req.data.switch.id});
+		}
 	},
 	switchAll: function(req){
 		timerFunctions.switchActions(req.data.switchAll, true, true);
@@ -457,23 +422,18 @@ app.io.route('group', {
 			req.io.emit('change', new message('group:get', data));
 		});
 	},
-	add: function(req){
-		groupFunctions.saveNewGroup(req.data, function(err, data){
-			req.io.room(req.data.user.name).broadcast('change', new message('group:add', data));
-		});
-	},
-	edit: function(req){
-		groupFunctions.saveEditGroup(req.data.edit, function(err, data){
-			req.io.room(req.data.user.name).broadcast('change', new message('group:add', data));
-		});
-	},
 	remove: function(req){
 		groupFunctions.deleteGroup(req.data.remove, function(data){
 			if(data != 200){
 				error( "Die Gruppe mit der ID " + req.data.remove + " konnte nicht gelöscht werden!");
 			}else{
-				app.io.room(req.data.user).broadcast('change', new message('group:remove', req.data));
+				app.io.room(req.data.user).broadcast('change', new message('groups:remove', req.data.remove));
 			}
+		});
+	},
+	save: function(req){
+		groupFunctions.saveGroup(req.data.save, function(groups){
+			app.io.room(req.data.user).broadcast('change', new message('groups:get', groups));
 		});
 	}
 });
@@ -497,30 +457,6 @@ app.io.route('groups', {
 		});
 	}
 });
-
-// app.io.route('adapters', {
-// 	get:function(req){
-// 		adapterFunctions.get(function(data){
-// 			req.io.emit('change', new message('get', data));
-// 		});
-// 	},
-// 	remove:function(req){
-// 		adapterFunctions.remove(req.data, function(status){});
-// 	},
-// 	install:function(req){
-// 		adapterFunctions.install(req.data, function(status){});
-// 	},
-// 	restart:function(req){
-// 		adapterFunctions.restart(req.data, function(status){});
-// 	},
-// 	start:function(req){
-// 		adapterFunctions.start(req.data, function(status){});
-// 	},
-// 	stop:function(req){
-// 		adapterFunctions.stop(req.data, function(status){});
-// 	}
-// });
-
 
 app.get('/pc', function(req, res) {
 	res.sendfile(__dirname + '/public/pc/index.html');
@@ -574,19 +510,15 @@ data.forEach(function(file){
 	var debugFile 				= __dirname + '/log/debug-' + filename + '.log';
 	log_file[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
 
-	if(fs.existsSync(__dirname + "/SwitchServer/settings/" + filename.toLowerCase() + ".json")){
-		var bla 				= fs.readFileSync(__dirname + "/SwitchServer/settings/" + filename + ".json", "utf8");
-		var bla 				= JSON.parse(bla);
-		var ich 				= [];
-		ich.push(bla);
-		plugins[filename] 		= fork( './' + file, ich );
-	}else{
-		plugins[filename] 		= fork( './' + file);
-	}
+	plugins[filename] 		= fork( './' + file);
 
 	plugins[filename].on('message', function(response) {
 		if(response.log){
-			log_file[filename].write(response.log.toString() + "\n");
+			var now = new Date;
+			var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+			
+			log_file[filename].write(datum +":"+response.log.toString() + "\n");
+			console.log(datum +":"+ response.log.toString());
 		}
 		if(response.setVariable){
 			variableFunctions.setVariable(response.setVariable, app, function(){});
