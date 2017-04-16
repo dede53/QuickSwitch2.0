@@ -113,33 +113,6 @@ localip=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0
 
 
 echo "QuickSwitch-Konfiguration"
-echo
-echo "Soll ein Connairgateway eingerichtet werden? (y / n)"
-read connairanswer
-if [ $connairanswer == 'y' ]
-then
-	echo "Geben Sie die IP-Adresse ihres Connairgateways ein:"
-	read connairip
-	echo "Geben Sie den Port ihres Connairgateways ein (default: 49880):"
-	read connairport
-	echo "Das Connairgateway ist fertig konfiguriert!"
-fi
-echo
-echo 
-fritzboxuser="false"
-fritzboxpassword="false"
-echo "Soll eine Fritzbox eingerichtet werden? (y / n)"
-read fritzboxanswer
-if [ $fritzboxanswer == 'y' ]
-then
-	echo "Geben sie die IP-Adresse der Fritzbox ein:"
-	read fritzboxip
-	echo "Geben Sie den Benutzername der Fritzbox ein:"
-	read fritzboxuser
-	echo "Geben Sie das Passwort für den Fritzboxbenutzer ein:"
-	read fritzboxpassword
-	echo "Die Fritzbox ist fertig konfiguriert!"
-fi
 echo 
 echo "Wollen sie den SwitchServer manuell einrichten? (y / n) (default: n)"
 read switchserveranswer
@@ -165,32 +138,22 @@ echo
 
 echo "Die Koniguration wurde erfolgreich abgeschlossen!"
 echo
-echo '{
-	"connair": {
-		"ip":"'$connairip'",
-		"port":"'$connairport'"
-	},
-	"switchserver": [{
-		"id": "1",
+echo '"switchserver": [{
+		"id": "0",
 		"ip": "'$switchserverip'",
 		"port": "'$switchserverport'"
 	}],
-	"QuickSwitch": {
-		"ip": "'$localip'",
-		"port": "'$quickswitchport'"
-	},
-	"fritzbox": {
-		"ip": "'$fritzboxip'",
-		"user": "'$fritzboxuser'",
-		"password": "'$fritzboxpassword'"
-	},
 	"mysql": {
 		"host": "'$mysqlhost'",
 		"user": "'$mysqluser'",
 		"password": "'$mysqlpassword'"
+	},
+	"QuickSwitch": {
+		"ip": "'$localip'",
+		"port": "'$quickswitchport'"
 	}
 }' > config.json
 
 pwd
 echo
-echo "Sie können jetzt QuickSwitch starten indem sie 'node server.js' auf der konsole ausführen."
+echo "Sie können jetzt QuickSwitch starten indem sie 'node index.js' auf der konsole ausführen."
