@@ -265,7 +265,7 @@ INSERT INTO `user` (`id`, `name`, `favoritDevices`, `favoritVariables`, `varChar
 --
 
 CREATE TABLE `variable` (
-  `uid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
   `id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `status` varchar(20) NOT NULL,
