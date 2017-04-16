@@ -9,6 +9,7 @@
 		<table class="table">
 			<tr>
 				<th>Name</th>
+				<th>Version (installiert/verfügbar)</th>
 				<th>Loglevel</th>
 				<th>Status</th>
 				<th></th>
@@ -17,25 +18,36 @@
 				<th>Einstellungen</th>
 			</tr>
 			<tr ng-repeat="adapter in switchServer.status.adapter">
-				<td>{{adapter.name}}</td>
+				<td>{{adapter.info.name}}</td>
+				<td>{{adapter.status.installedVersion || "nicht installiert" }} / {{adapter.info.version}}</td>
 				<td>{{adapter.settings.loglevel}}</td>
 				<td>
-					<h3 class="label label-xl glyphicon" ng-class='adapter.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' aria-hidden="true">
-						<span title="{{adapter.statusMessage}}">
-							{{adapter.status}}
+					<h3 class="label label-xl glyphicon" ng-show="adapter.status.installedVersion" ng-class='adapter.status.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' aria-hidden="true">
+						<span title="{{adapter.status.statusMessage}}">
+							{{adapter.status.status}}
 						</span>
 					</h3>
 				</td>
 				<td>
-					{{adapter.statusMessage}}
+					{{adapter.status.statusMessage}}
 				</td>
-				<td>{{adapter.pid}}</td>
+				<td>{{adapter.status.pid}}</td>
 				<td>
-					<button type="button" ng-click="controlAdapter('start', switchServer, adapter.name)" class="btn btn-xs btn-success" href="">Start</button>
-					<button type="button" ng-click="controlAdapter('stop', switchServer, adapter.name)" class="btn btn-xs btn-danger" href="">Stop</button>
-					<button type="button" ng-click="controlAdapter('restart', switchServer, adapter.name)" class="btn btn-xs btn-warning" href="">Neustart</button>
+					<button ng-show="adapter.status.installedVersion" type="button" ng-click="controlAdapter('start', switchServer, adapter.info.name)" class="btn btn-xs btn-success" href="">Start</button>
+					<button ng-show="adapter.status.installedVersion" type="button" ng-click="controlAdapter('stop', switchServer, adapter.info.name)" class="btn btn-xs btn-danger" href="">Stop</button>
+					<button ng-show="adapter.status.installedVersion" type="button" ng-click="controlAdapter('restart', switchServer, adapter.info.name)" class="btn btn-xs btn-warning" href="">Neustart</button>
 				</td>
-				<td><button type="button" class="btn btn-xs btn-info" ng-click="openSettings(adapter)">Einstellungen</button></td>
+				<td><button  ng-show="adapter.status.installedVersion" type="button" class="btn btn-xs btn-info" ng-click="openSettings(adapter, switchServer)">Einstellungen</button></td>
+				<td>
+					<h3
+						class="label label-xl glyphicon"
+						ng-class='adapter.status.installedVersion == undefined ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"'
+						aria-hidden="true"
+						ng-click='controlAdapter(adapter.status.installedVersion == undefined ? "install" : "remove", switchServer, adapter.info.name)' 
+						>
+						{{adapter.status.installedVersion == undefined ? "installieren" :  "entfernen"}}
+					</h3>
+				</td>
 			</tr>
 		</table>
 	</div>

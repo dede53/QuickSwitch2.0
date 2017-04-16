@@ -1,16 +1,3 @@
-<!-- <div class="panel panel-default tile">
-	<div class="panel-heading">
-		<h3 class="panel-title">Informationen</h3>
-	</div>
-	<div class="panel-body">
-		<div class="pull-left">
-			Moin
-		</div>
-		<div class="pull-right">
-			Hallo!
-		</div>
-	</div>
-</div> -->
 <div class="panel panel-default tile">
 	<div class="panel-heading">
 		<h3 class="panel-title">MySQL</h3>
@@ -40,118 +27,49 @@
 
 <div class="panel panel-default tile">
 	<div class="panel-heading">
-		<h3 class="panel-title">Connair</h3>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="connair-ip">Connair-IP</span>
-			<input type="text" class="form-control" placeholder="192.178.197.12" ng-model="settings.connair.ip" id="connair-ip" aria-describedby="connair-ip">
-		</div>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="connair-port">Connair-Port</span>
-			<input type="text" class="form-control" placeholder="49880" ng-model="settings.connair.port" id="connair-port" aria-describedby="connair-port">
-		</div>
-	</div>
-	<div class="panel-body">
-		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
-	</div>
-</div>
-
-<div class="panel panel-default tile">
-	<div class="panel-heading">
-		<h3 class="panel-title">Pushbullet</h3>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="apikey">API-Key</span>
-			<input type="text" class="form-control" placeholder="API-Key" ng-model="settings.pushbullet.PushbulletAPIKey" id="apikey" aria-describedby="apikey">
-		</div>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="deviceiden">Pushbullet-Deviceid</span>
-			<input type="text" class="form-control" placeholder="deviceiden" ng-model="settings.pushbullet.source_device_iden" id="deviceiden" aria-describedby="deviceiden">
-		</div>
-	</div>
-	<div class="panel-body">
-		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
-	</div>
-</div>
-
-<div class="panel panel-default tile">
-	<div class="panel-heading">
-		<h3 class="panel-title">Fritzbox</h3>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="fb-ip">Fritzbox-IP</span>
-			<input type="text" class="form-control" placeholder="fb-ip" ng-model="settings.fritzbox.ip" id="fb-ip" aria-describedby="fb-ip">
-		</div>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="fb-user">Fritzbox-Benutzer</span>
-			<input type="text" class="form-control" placeholder="fb-user" ng-model="settings.fritzbox.user" id="fb-user" aria-describedby="fb-user">
-		</div>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="fb-password">Fritzbox-Passwort</span>
-			<input type="password" class="form-control" placeholder="fb-password" ng-model="settings.fritzbox.password" id="fb-password" aria-describedby="fb-password">
-		</div>
-	</div>
-	<div class="panel-body">
-		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
-	</div>
-</div>
-
-<div class="panel panel-default tile">
-	<div class="panel-heading">
-		<h3 class="panel-title">Homematic</h3>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="hm-ip">Homematic-IP</span>
-			<input type="text" class="form-control" placeholder="hm-ip" ng-model="settings.homematic.ip" id="hm-ip" aria-describedby="hm-ip">
-		</div>
-	</div>
-	<div class="panel-body">
-		<div class="input-group">
-			<span class="input-group-addon" id="hm-port">Homematic-Port</span>
-			<input type="text" class="form-control" placeholder="hm-port" ng-model="settings.homematic.port" id="hm-port" aria-describedby="hm-port">
-		</div>
-	</div>
-	<div class="panel-body">
-		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
-	</div>
-</div>
-
-<div class="panel panel-default tile">
-	<div class="panel-heading">
 		<h3 class="panel-title">SwitchServer</h3>
 	</div>
-	<div class="panel-body" ng-repeat="(key, switchserver) in settings.switchserver">
-		<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="panel panel-default" ng-repeat="(key, switchserver) in settings.switchserver">
 			<div class="panel-heading">
-				<h3 class="panel-title">SwitchServer {{key}}</h3>
+				<h3 class="panel-title">
+					SwitchServer {{key}}: {{switchserver.name}}
+					<ng-md-icon
+						icon="cancel"
+						style="fill:red"
+						size="25"
+						options='{"rotation": "none"}'
+						ng-click="removeSwitchserver(key)"
+						class="pull-right"
+						title="Löschen"
+						>
+					</ng-md-icon>	
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon" id="ss-name">SwitchServer-Name</span>
+					<input type="text" class="form-control" placeholder="ss-name" ng-model="switchserver.name" id="ss-name" aria-describedby="ss-name">
+				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="ss-ip">SwitchServer-IP</span>
-					<input type="text" class="form-control" placeholder="ss-ip" ng-model="settings.switchserver[key].ip" id="ss-ip" aria-describedby="ss-ip">
+					<input type="text" class="form-control" placeholder="ss-ip" ng-model="switchserver.ip" id="ss-ip" aria-describedby="ss-ip">
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="ss-port">SwitchServer-Port</span>
-					<input type="text" class="form-control" placeholder="ss-port" ng-model="settings.switchserver[key].port" id="ss-port" aria-describedby="ss-port">
+					<input type="text" class="form-control" placeholder="ss-port" ng-model="switchserver.port" id="ss-port" aria-describedby="ss-port">
 				</div>
 			</div>
+		</div>		
+		<div class="panel-body">
+			<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
+			<button class="btn btn-default pull-right" ng-click='addSwitchserver()'>
+				SwitchServer hinzufügen
+			</button>
 		</div>
-	</div>
-	<div class="panel-body">
-		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
 	</div>
 </div>

@@ -97,8 +97,8 @@ a:hover{
 	background: #F5F5F5;
 }
 .card-columns{
-	-webkit-column-count: 2!important; /* Chrome, Safari, Opera */
-	-moz-column-count: 2!important; /* Firefox */
+	-webkit-column-count: 2!important;
+	-moz-column-count: 2!important;
 	column-count: 2!important;
 }
 .card-header{

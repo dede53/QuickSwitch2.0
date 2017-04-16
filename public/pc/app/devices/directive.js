@@ -68,8 +68,7 @@ app.directive('slider2Directive', function ($rootScope) {
 app.directive('favoritenDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',
-		templateUrl: './app/devices/template-favorit.html',
-		controller: 'favoritDevices'
+		templateUrl: './app/devices/template-favorit.html'
 	};
 });
 

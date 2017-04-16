@@ -2,52 +2,59 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">Gruppe {{title}}</h3>
 	</div>
-	<div>
-			<input type="hidden" id="id" value="{{group.id}}">
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="name">Name</span>
-					<input type="text" class="form-control" placeholder="Name" ng-model="group.name" id="name" aria-describedby="name">
-				</div>
-			</div>
-			{{group | json}}
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="fav">Geräte</span>
-					<div class="form-control" style="height:auto;" data-as-sortable="devicesDragControlListeners" ng-model="group.groupDevices">
-						<li data-ng-repeat="(key, device) in group.groupDevices" data-as-sortable-item>
-							<div data-as-sortable-item-handle>
-								{{devicelist[device.id].name}} ({{devicelist[device.id].Raum}})
-								<input type="number" name="timeout" ng-model="device.timeout">
-								<ng-md-icon
-									icon="cancel"
-									style="fill:#D9534F"
-									size="25"
-									options='{"duration": 10, "rotation": "none"}'
-									ng-click="removeDevice(key)"
-									class="pull-right"
-								></ng-md-icon>
-							</div>
-						</li>
-						<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
-							<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
-						</select>
+	<input type="hidden" id="id" value="{{group.id}}">
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="name">Name</span>
+			<input type="text" class="form-control" placeholder="Name" ng-model="group.name" id="name" aria-describedby="name">
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="fav">Geräte</span>
+			<div class="form-control" style="height:auto;" data-as-sortable="devicesDragControlListeners" ng-model="group.groupDevices">
+				<li data-ng-repeat="(key, device) in group.groupDevices" data-as-sortable-item>
+					<div data-as-sortable-item-handle>
+						<span ng-show="device.type=='device'">
+							{{devicelist[device.id].name}} ({{devicelist[device.id].Raum}})
+						</span>
+						<span ng-show="device.type=='room'">
+							{{rooms[device.id].name}}
+						</span>
+						<input type="number" name="timeout" ng-model="device.timeout" value="0" min="0">
+						<ng-md-icon
+							icon="cancel"
+							style="fill:#D9534F"
+							size="25"
+							options='{"duration": 10, "rotation": "none"}'
+							ng-click="removeDevice(key)"
+							class="pull-right"
+						></ng-md-icon>
 					</div>
-				</div>
+				</li>
+				<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
+					<option value="nonsense">Gerät auswählen um es hinzuzufügen</option>
+					<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
+				</select>
+				<select class="form-control" ng-model="roomAdd" ng-change="addRoom(roomAdd)">
+					<option value="nonsense">Raum auswählen um ihn hinzuzufügen</option>
+					<option ng-repeat="room in rooms" value="{{room}}">{{room.name}}</option>
+				</select>
 			</div>
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="fav">Besitzer der Gruppe</span>
-					<select class="form-control" ng-model="group.user">
-						<option ng-repeat="user in users" value="{{user.name}}">{{user.name}}</option>
-					</select>
-				</div>
-			</div>
-			<div class="panel-body">
-				<div class="pull-right">
-					<button class="btn btn-success" ng-click="saveGroup()">Speichern</button>
-					<button class="btn btn-danger" ng-click="abort('/groups')">Abbrechen</button>
-				</div>
-			</div>
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="fav">Besitzer der Gruppe</span>
+			<select class="form-control" ng-model="group.user">
+				<option ng-repeat="user in users" value="{{user.name}}">{{user.name}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="pull-right">
+			<button class="btn btn-success" ng-click="saveGroup()">Speichern</button>
+			<button class="btn btn-danger" ng-click="abort('/groups')">Abbrechen</button>
+		</div>
 	</div>
 </div>

@@ -3,13 +3,16 @@
 	<li class="list-group-item" ng-repeat="action in actions">
 		<ul >
 			<li>
-				Titel: {{action.name}}
+				Titel: {{action.action.name}}
 				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'pushbullets'})">Löschen</button>
 			</li>
 			<li>
-				Nachricht: {{action.message}}
+				Nachricht: {{action.action.message}}
 			</li>
 			<li>
+				Empfänger: {{action.action.receiver}}
+			</li>
+			<li ng-show="action.activeTimeout">
 				Timeout: {{action.timeout}} Sekunden
 			</li>
 		</ul>

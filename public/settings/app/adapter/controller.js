@@ -1,13 +1,12 @@
 app.controller('adapterController',  function($scope, $rootScope, socket, $uibModal) {
 	$scope.switchServers = {};
 	socket.emit("switchServer:get");
-	socket.on("switchServer", function(list){
 
-		var bla = function(server){
+	socket.on("switchServer", function(list){
+		var connect = function(server){
 			var socket = io.connect("http://" + server.ip + ":" + server.port);
 			socket.on("status", function(data){
 				$rootScope.$apply(function(){
-					console.log(data);
 					$scope.switchServers[server.id].status = data;
 					$scope.switchServers[server.id].message = "erreichbar";
 				});
@@ -17,11 +16,9 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 		}
 
 		list.forEach(function(server){
-			console.log(server);
 			server.message = "nicht erreichbar";
 			$scope.switchServers[server.id] = server;
-			bla(server);
-			// $scope.switchServer[server.id].connection = bla(server);
+			connect(server);
 		});
 
 	});
@@ -31,7 +28,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 	$scope.reload = function () {
 		socket.emit("switchServer:get");
 	}
-	$scope.openSettings = function(adapter){
+	$scope.openSettings = function(adapter, switchServer){
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: "./app/adapter/template-settings.html",
@@ -42,7 +39,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 			}
 		});
 		modalInstance.result.then(function(data) {
-			console.log(data);
+			switchServer.connection.emit('adapter:saveSettings', {name: adapter.info.name, settings: data});
 		}, function () {
 			;
 		});
@@ -53,9 +50,7 @@ app.controller('adapterSettingsController', function($scope, adapter, $uibModalI
 	$scope.getTypeof = function(data){
 		return typeof data;
 	}
-	$scope.save = function (data) {
-		console.log($scope.adapter );
-		console.log(data);
+	$scope.saveSettings = function (data) {
 		$uibModalInstance.close(data);
 	};
 	$scope.cancel = function () {

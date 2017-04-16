@@ -45,15 +45,11 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 			fill:'lightgreen'
 		}
 	}
-	$scope.addAction = {
-		variable:{
-			id: Math.floor((Math.random() * 1000) + 1) * Math.floor((Math.random() * 1000) + 1)
-		}
-	};
 	$scope.addCondition = {
 		range:{},
 		weekdays:{}
 	};
+
 	$scope.openVariable = function(){
 		var modalInstance = $uibModal.open({
 			animation: true,
@@ -67,6 +63,7 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 				$scope.timer.variables = {};
 			}
 			if($scope.timer.variables[data.variable]){
+
 				$scope.timer.variables[data.variable].push({
 					name:data.variable,
 					mode:data.mode,
@@ -153,83 +150,36 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 			animation: false,
 			templateUrl: "./app/timer/template-timer-edit-actions.html",
 			controller: "editActionsController",
-			size: 'lg',
-			resolve: {}
+			size: 'lg'
 		});
 
 		modalInstance.result.then(function (data) {
 			if(!$scope.timer.actions){
 				$scope.timer.actions = {};
 			}
-			console.log(data);
-			switch(data.type){
-				case "devices":
-					var device = data.device;
-					var action = {
-						timeout: data.timeout,
-						name: device.name + ' (' + device.Raum + ' , ' + device.buttonLabelOn + '|' + device.buttonLabelOff + ')',
-						id: device.deviceid,
-						action: data.switchstatus
-					}
-					break;
-				case "groups":
-					var action = data.group;
-					action.action = data.switchstatus;
-					action.timeout = data.timeout;
-					break;
-				case "rooms":
-					var action = data.room;
-					action.action = data.switchstatus;
-					action.timeout = data.timeout;
-					break;
-				case "alerts":
-					var action = data.alert;
-					action.timeout = data.timeout;
-					break;
-				case "pushbullets":
-					var action = data.pushbullet;
-					action.timeout = data.timeout;
-					break;
-				case "storeVariables":
-					var action = {
-						name:data.saveVariable
-					}
-					action.timeout = data.timeout;
-					break;
-				case "intervals":
-					var action = data.interval;
-					action.timeout = data.timeout;
-					break;
-				case "urls":
-					var action = data.url;
-					action.timeout = data.timeout;
-					break;
-				case "saveSensors":
-					var action = {};
-					action.timeout = data.timeout;
-				default:
-					console.log(data);
-					break;
-			}
-			console.log(action);
-			if($scope.timer.actions[data.type]){
-				$scope.timer.actions[data.type].push(action);
-			}else{
-				$scope.timer.actions[data.type] = [];
-				$scope.timer.actions[data.type].push(action);
-			}
-			$scope.addAction = {
-				variable:{
-					id: Math.floor((Math.random() * 1000) + 1) * Math.floor((Math.random() * 1000) + 1)
+			if(data.activeInterval == true){
+				data.id			= Math.floor((Math.random() * 1000) + 1) * Math.floor((Math.random() * 1000) + 1);
+				if(!$scope.timer.actions.intervals){
+					$scope.timer.actions.intervals = [];
 				}
-			};
+				$scope.timer.actions.intervals.push(data);
+			}else{
+				if($scope.timer.actions[data.type]){
+					$scope.timer.actions[data.type].push(data);	
+				}else{
+					$scope.timer.actions[data.type] = [];
+					$scope.timer.actions[data.type].push(data);
+				}
+			}
 		}, function () {
 		});
 	};
 
 
 	$scope.removeAction = function(data){
+		console.log(data.action);
 		for(var i = 0; i<$scope.timer.actions[data.type].length; i++){
+			console.log($scope.timer.actions[data.type][i]);
 			if($scope.timer.actions[data.type][i] == data.action){
 				$scope.timer.actions[data.type].splice(i, 1);
 				if($scope.timer.actions[data.type].length == 0){
@@ -291,6 +241,7 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 app.controller('editActionsController', function($scope, $uibModalInstance, socket, $rootScope){
 	socket.emit('devices:devicelist');
 	socket.emit('rooms:get');
+	socket.emit('variables:get');
 	
 	$scope.alertTypen = [
 		{value:'primary', name:'Blau/Primary'},
@@ -301,26 +252,24 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 		{value:'default', name:'Weiß/Default'},
 	];
 	$scope.addAction = {
-		interval:{
-			type: false
-		},
-		switchstatus: '1',
-		timeout: 0
+		action:{},
+		timeout:0
 	}
 
 	$scope.actions = [
-		{value:"groups", name:"Gruppe"},
-		{value:"devices", name:"Geräte"},
-		{value:"rooms", name:"Räume"},
+		{value:"device", name:"Geräte"},
+		{value:"group", name:"Gruppe"},
+		{value:"room", name:"Räume"},
 		{value:"urls", name:"Url aufrufen"},
 		{value:"saveSensors", name:"Speichere Sensoren"},
 		{value:"alerts", name:"Alert"},
 		{value:"pushbullets", name:"Pushbulletbenachrichigung"},
-		{value:"storeVariables", name:"Variable speichern"},
-		{value:"intervals", name:"Interval"}
+		{value:"storeVariables", name:"Variable speichern"}
 	];
 	$scope.intervalActions = [
-		{value:"devices", name:"Gerät"},
+		{value:"device", name:"Gerät"},
+		{value:"group", name:"Gruppe"},
+		{value:"room", name:"Räume"},
 		{value:"urls", name:"Url aufrufen"},
 		{value:"saveSensors", name:"Speichere Sensor"},
 		{value:"alerts", name:"Alert"},
@@ -332,11 +281,25 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 		console.log($scope.addAction);
 		$uibModalInstance.close($scope.addAction);
 	};
+	$scope.addUrl = function(){
+		if($scope.url != "" && $scope.url != undefined && $scope.url != null){
+			if(!angular.isArray($scope.addAction.action)){
+				$scope.addAction.action = [];
+			}
+			$scope.addAction.action.push({ url: $scope.url, timeout: $scope.urlTimeout});
+			$scope.url = "";
+			$scope.urlTimeout = "";
+		}
+	}
+	$scope.removeUrl = function(id){
+		$scope.addAction.action.splice(id, 1);
+	}
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
+
 	$scope.isSame = function(addAction, pattern){
-		if(addAction.type == pattern || (addAction.interval.type == pattern && addAction.type == "intervals")){
+		if(addAction.type == pattern || (addAction.interval.action == pattern && addAction.type == "intervals")){
 			return true;		
 		}
 	}

@@ -66,6 +66,20 @@ app.directive('timerTimeDirective', function(){
 	}
 });
 
+app.directive('timerGroupDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-group.html'
+	}
+});
+
+app.directive('timerRoomDirective', function(){
+	return {
+		restrict: "EA",
+		templateUrl: './app/timer/template-timer-room.html'
+	}
+});
+
 app.directive('timerRandomDirective', function(){
 	return {
 		restrict: "EA",
@@ -94,12 +108,12 @@ app.directive('timerAlertDirective', function(){
 	}
 });
 
-app.directive('timerGroupDirective', function(){
-	return {
-		restrict: "EA",
-		templateUrl: './app/timer/template-timer-time.html'
-	}
-});
+// app.directive('timerGroupDirective', function(){
+// 	return {
+// 		restrict: "EA",
+// 		templateUrl: './app/timer/template-timer-time.html'
+// 	}
+// });
 
 app.directive('timerPushbulletDirective', function(){
 	return {

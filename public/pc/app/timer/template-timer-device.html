@@ -3,13 +3,13 @@
 	<li class="list-group-item" ng-repeat="action in actions">
 		<ul>
 			<li>
-				Titel: {{action.name}}
+				Titel: {{action.action.name}}
 				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'devices'})">Löschen</button>
 			</li>
 			<li>
-				Action: {{action.action | action}}
+				Action: {{action.action.switchstatus ? 'Einschalten' : 'Ausschalten'}}
 			</li>
-			<li>
+			<li ng-show="action.activeTimeout">
 				Timeout: {{action.timeout}} Sekunden
 			</li>
 		</ul>

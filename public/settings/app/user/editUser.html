@@ -2,107 +2,102 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">Benutzer {{title}}</h3>
 	</div>
-	<div>
-		<form ng-controller="saveUserController">
-			<input type="hidden" id="id" value="{{user.id}}">
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="name">Name</span>
-					<input type="text" class="form-control" placeholder="Name" ng-model="user.name" id="name" aria-describedby="name">
+	<form ng-controller="saveUserController">
+		<input type="hidden" id="id" value="{{user.id}}">
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon" id="name">Name</span>
+				<input type="text" class="form-control" placeholder="Name" ng-model="user.name" id="name" aria-describedby="name">
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon" id="fav">Geräte</span>
+				<div class="form-control" style="height:auto;" data-as-sortable="devicesDragControlListeners"  data-ng-model="favoritDevices">
+					<li data-ng-repeat="(key, device) in favoritDevices" data-as-sortable-item>
+						<div data-as-sortable-item-handle>
+							{{device.name}} ({{device.Raum}})
+							<ng-md-icon
+								icon="cancel"
+								style="fill:#D9534F"
+								size="15"
+								options='{"duration": 10, "rotation": "none"}'
+								ng-click="removeDevice(key)"
+								class="pull-right"
+							></ng-md-icon>
+						</div>
+					</li>
+					<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
+						<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
+					</select>
 				</div>
 			</div>
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="fav">Geräte</span>
-					<div class="form-control" style="height:auto;" data-as-sortable="devicesDragControlListeners"  data-ng-model="favoritDevices">
-						<li data-ng-repeat="(key, device) in favoritDevices" data-as-sortable-item>
-							<div data-as-sortable-item-handle>
-								{{device.name}} ({{device.Raum}})
-								<ng-md-icon
-									icon="cancel"
-									style="fill:#D9534F"
-									size="15"
-									options='{"duration": 10, "rotation": "none"}'
-									ng-click="removeDevice(key)"
-									class="pull-right"
-								></ng-md-icon>
-							</div>
-						</li>
-						<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
-							<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
-						</select>
-					</div>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon" id="fav">Variablen</span>
+				<div class="form-control" style="height:auto;" data-as-sortable="variableDragControlListeners"  data-ng-model="user.favoritVariables">
+					<li data-ng-repeat="(key, variable) in user.favoritVariables" data-as-sortable-item>
+						<div data-as-sortable-item-handle>
+							{{variables[variable].id}} ({{variables[variable].name}})
+							<ng-md-icon
+								icon="cancel"
+								style="fill:#D9534F"
+								size="15"
+								options='{"duration": 10, "rotation": "none"}'
+								ng-click="removeVariable(key)"
+								class="pull-right"
+							></ng-md-icon>
+						</div>
+					</li>
+					<select class="form-control" ng-model="addVariab" ng-change="addVariable(addVariab)">
+						<option ng-repeat="variable in variables" value="{{variable}}">{{variable.id}} ({{variable.name}})</option>
+					</select>
 				</div>
 			</div>
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="fav">Variablen</span>
-					<div class="form-control" style="height:auto;" data-as-sortable="variableDragControlListeners"  data-ng-model="favoritVariables">
-						<li data-ng-repeat="(key, variable) in favoritVariables" data-as-sortable-item>
-							<div data-as-sortable-item-handle>
-								{{variable.id}} ({{variable.name}})
-								<ng-md-icon
-									icon="cancel"
-									style="fill:#D9534F"
-									size="15"
-									options='{"duration": 10, "rotation": "none"}'
-									ng-click="removeVariable(key)"
-									class="pull-right"
-								></ng-md-icon>
-							</div>
-						</li>
-						<select class="form-control" ng-model="addVariab" ng-change="addVariable(addVariab)">
-							<option ng-repeat="variable in variables" value="{{variable}}">{{variable.id}} ({{variable.name}})</option>
-						</select>
-					</div>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon" id="fav">Chart-Variablen</span>
+				<div class="form-control" style="height:auto;" data-as-sortable="variableDragControlListeners"  data-ng-model="user.varChart">
+					<li data-ng-repeat="(key, vari) in user.varChart" data-as-sortable-item>
+						<div data-as-sortable-item-handle>
+							{{variables[vari].id}} ({{variables[vari].name}})
+							<ng-md-icon
+								icon="cancel"
+								style="fill:#D9534F"
+								size="15"
+								options='{"duration": 10, "rotation": "none"}'
+								ng-click="removeChartVariable(key)"
+								class="pull-right"
+							></ng-md-icon>
+						</div>
+					</li>
+					<select class="form-control" ng-model="addChart" ng-change="addChartVariable(addChart)">
+						<option ng-repeat="variable in variables" value="{{variable}}">{{variable.id}} ({{variable.name}})</option>
+					</select>
 				</div>
 			</div>
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon" id="fav">Variablen Diagram</span>
-					<div class="form-control" style="height:auto;" data-as-sortable="variableDragControlListeners"  data-ng-model="varChart">
-						<li data-ng-repeat="(key, variable) in varChart" data-as-sortable-item>
-							<div data-as-sortable-item-handle>
-								{{variable.id}} ({{variable.name}})
-								<ng-md-icon
-									icon="cancel"
-									style="fill:#D9534F"
-									size="15"
-									options='{"duration": 10, "rotation": "none"}'
-									ng-click="removeChartVariable(key)"
-									class="pull-right"
-								></ng-md-icon>
-							</div>
-						</li>
-						<select class="form-control" ng-model="addChart" ng-change="addChartVariable(addChart)">
-							<option ng-repeat="variable in variables" value="{{variable}}">{{variable.id}} ({{variable.name}})</option>
-						</select>
-					</div>
-				</div>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon">Diagram Zeitspanne</span>
+				<input type="number" class="form-control" ng-model="user.chartHour" min="1">
 			</div>
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon">Diagram Zeitspanne</span>
-					<span class="form-control">
-						<input type="number" ng-model="user.chartHour">
-					</span>
-				</div>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon">Admin</span>
+				<span class="form-control" style="height:auto;" >
+					<input type="checkbox" aria-label="Checkbox for following text input" ng-model="user.admin" ng-true-value="1" ng-false-value="0">
+				</span>
 			</div>
-			<div class="panel-body">
-				<div class="input-group">
-					<span class="input-group-addon">Admin</span>
-					<span class="form-control" style="height:auto;" >
-						<input type="checkbox" aria-label="Checkbox for following text input" ng-model="user.admin" ng-true-value="1" ng-false-value="0">
-					</span>
-				</div>
+		</div>
+		<div class="panel-body">
+			<div class="pull-right">
+				<button class="btn btn-success" ng-click="saveUser()">Speichern</button>
+				<button class="btn btn-danger" ng-click="abort('/user')">Abbrechen</button>
 			</div>
-			{{user}}
-			<div class="panel-body">
-				<div class="pull-right">
-					<button class="btn btn-success" ng-click="saveUser()">Speichern</button>
-					<button class="btn btn-danger" ng-click="abort('/user')">Abbrechen</button>
-				</div>
-			</div>
-		</form>
-	</div>
+		</div>
+	</form>
 </div>

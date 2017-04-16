@@ -70,7 +70,9 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 			buttonLabelOn: "An",
 			buttonLabelOff: "Aus",
 			status: "0",
-			switchserver: "0"
+			showStatus:1,
+			switchserver: "0",
+			roomid:1
 		}
 	}else{
 		socket.emit('device:get', $routeParams.id);
@@ -82,6 +84,3 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 		$location.url("/devices");
 	};
 });
-
-// app.controller('saveDeviceController', function($scope, socket, $location) {
-// });

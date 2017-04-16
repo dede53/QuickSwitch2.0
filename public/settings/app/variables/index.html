@@ -18,44 +18,12 @@
 			<ng-md-icon icon="edit" style="fill:#399BB0" size="25" options='{"duration": 10, "rotation": "none"}'
 				ng-click='switchPage("/editVariable/" + variable.id)'></ng-md-icon>
 
-			<ng-md-icon icon="delete" style="fill:#FF8000" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="deleteVariable(variable.uid)"></ng-md-icon>
-			<!--
-						<a type="button" class="btn btn-info" href="#/editVariable/{{key}}">Bearbeiten</a>
-						<button type="button" class="btn btn-danger" ng-click='deleteVariable({"name":key})'>Löschen</button>
-			-->
+			<ng-md-icon icon="delete" style="fill:#FF8000" size="25" options='{"duration": 10, "rotation": "none"}' ng-click="deleteVariable(variable)"></ng-md-icon>
 					</div>
 				</td>
 			</tr>
 	</table>
 </div>
-<!--
-<div class="panel panel-default tile">
-	<div class="panel-heading">
-		<h3 class="panel-title">System-Variablen</h3>
-	</div>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Variable</th>
-				<th>Wert</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="(key, variable) in variables  | filterVariableNames:'sys' ">
-				<td>{{key}}</td>
-				<td>{{variable}}</td>
-				<td>
-					<div class="box-btn-switch pull-right">
-						<a type="button" class="btn btn-info" href="#/editVariable/{{variable}}">Bearbeiten</a>
-						<button type="button" class="btn btn-danger" ng-click='deleteVariable({"name":key})'>Löschen</button>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
--->
 <div class="panel panel-default tile">
 	<div class="panel-heading">
 		<h3 class="panel-title">Neue Benutzer-Variable anlegen:</h3>

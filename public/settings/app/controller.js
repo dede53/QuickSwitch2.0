@@ -14,7 +14,6 @@ app.config(['$routeProvider', function($routeProvider) {
 		controller: 'homeController'
 	}).
 
-
 	when('/devices', {
 		templateUrl: './app/devices/index.html',
 		controller: 'devicesController'
@@ -23,7 +22,6 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl: './app/devices/editDevice.html',
 		controller: 'editDeviceController'
 	}).
-
 
 	when('/user/', {
 		templateUrl: './app/user/index.html',
@@ -34,7 +32,6 @@ app.config(['$routeProvider', function($routeProvider) {
 		controller: 'editUserController'
 	}).
 
-
 	when('/variables/', {
 		templateUrl: './app/variables/index.html',
 		controller: 'variableController'
@@ -44,11 +41,11 @@ app.config(['$routeProvider', function($routeProvider) {
 		controller: 'editVariableController'
 	}).
 
-
 	when('/adapters/', {
 		templateUrl: './app/adapter/index.html',
 		controller: 'adapterController'
 	}).
+
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
 		controller: 'groupController'
@@ -82,11 +79,8 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 		$location.url(data);
 	};
 	socket.on('change', function(data){
-		console.log(data);
-		// console.log($rootScope[data.masterType]);
 		switch(data.type){
 			case "push":
-				// console.log($rootScope[data.masterType]);
 				if ($rootScope[data.masterType] == undefined){
 					$rootScope[data.masterType] = [];
 				}
@@ -106,30 +100,10 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 					$rootScope[data.masterType][data.edit.id] = data.edit;
 				}
 				break;
-			// case "switch":
-			// 	for(var i = 0; i < $rootScope.favoritDevices.length; i++){
-			// 		if($rootScope.favoritDevices[i].deviceid == data.switch.device.deviceid){
-			// 			$rootScope.favoritDevices[i].status = parseInt(data.switch.status);
-			// 		}
-			// 	}
-			// 	if($rootScope.devices){
-			// 		$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
-			// 	}
-			// 	break;
-			// case "chart":
-			// 	if(data.chart == false){
-			// 		$rootScope[data.masterType] = false;	
-			// 	}else{
-			// 		$rootScope[data.masterType] = chartConfig;
-			// 		$rootScope[data.masterType].series = data.chart;
-			// 		$rootScope[data.masterType].loading = false;
-			// 	}
-			// 	break;
 		}
 	});
 
 	socket.on('serverError', function(data){
-		console.log(data);
 		alert(data);
 	});
 });

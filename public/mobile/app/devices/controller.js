@@ -1,7 +1,4 @@
 app.controller('devicesController', function($rootScope, $scope, socket){
-	/***********************************************
-	*	Daten anfordern
-	***********************************************/
 	socket.emit('devices:get');
 });
 

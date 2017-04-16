@@ -79,13 +79,9 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	socket.emit('room:join', $rootScope.activeUser);
 	socket.emit('users:get');
 	$scope.setUser = function(user){
-		console.log("leave:" + $rootScope.activeUser.name);
 		socket.emit('room:leave', $rootScope.activeUser);
-		
 		$rootScope.activeUser = user;
 		setCookie("username", JSON.stringify(user), 365);
-
-		console.log("join:" + $rootScope.activeUser.name);
 		socket.emit('room:join', user);
 	}
 
@@ -105,7 +101,6 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		socket.emit(type + ':switchAll', {user:$rootScope.activeUser, switchAll: data});	
 	}
 	$scope.refresh = function(){
-		console.log(socket);
 		socket.socket.connect();
 		socket.emit('room:join', $rootScope.activeUser);
 	}
@@ -119,10 +114,8 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		alert(data);
 	});
 	socket.on('change', function(data){
-		console.log(data);
 		switch(data.type){
 			case "push":
-				console.log($rootScope[data.masterType]);
 				if ($rootScope[data.masterType] == undefined){
 					$rootScope[data.masterType] = [];
 				}
@@ -154,9 +147,9 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 				break;
 		}
 		if(data.masterType == "variables"){
-				if($rootScope.favoritVariables[data.edit.id]){
-					$rootScope.favoritVariables[data.edit.id] = data.edit;
-				}
+			if($rootScope.favoritVariables[data.edit.id]){
+				$rootScope.favoritVariables[data.edit.id] = data.edit;
+			}
 		}
 	});
 	$rootScope.favorit = true;
