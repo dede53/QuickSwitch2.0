@@ -69,22 +69,6 @@ module.exports = {
 		});		
 	},
 	getDevice: getDevice,
-	// saveNewDevice: function (data, callback) {
-	// 	console.log("Speichere eine neues Gerät");
-	// 	var query = "INSERT INTO devices ( name, protocol, buttonLabelOn, buttonLabelOff, CodeOn, CodeOff, roomid, switchserver ) VALUES ('"+ data.name +"', '"+ data.protocol +"', '"+ data.buttonLabelOn +"', '"+ data.buttonLabelOff +"', '"+ data.CodeOn +"', '"+ data.CodeOff +"', '"+ data.room +"', '" + data.switchserver + "');";
-	// 	db.all(query, function(err, res){
-	// 		if(!err){
-	// 			data.id = res.insertId;
-	// 			callback(201, data);
-	// 		}
-	// 	});
-	// },
-	// saveEditDevice: function (data, callback) {
-	// 	console.log("Speichere eine bearbeitetes Gerät");
-	// 	var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.room +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
-	// 	db.run(query);
-	// 	callback(201, data);
-	// },
 	saveDevice: function (data, callback){
 		if(data.deviceid){
 			var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', showStatus = '"+ data.showStatus +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.roomid +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";
@@ -195,7 +179,6 @@ module.exports = {
 	},
 	getSwitchHistory: function(hours, callback){
 		var query = "SELECT * FROM `switch_history` WHERE time > '" + new Date(new Date().getTime() - (hours * 60000 * 60)).getTime() + "';";
-		// console.log(query);
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -206,7 +189,6 @@ module.exports = {
 	},
 	getSwitchHistoryByID: function(hours, callback){
 		var query = "SELECT * FROM `switch_history` WHERE time > '" + new Date(new Date().getTime() - (hours * 60000 * 60)).getTime() + "' GROUP BY deviceid;";
-		// console.log(query);
 		db.all(query, function(err, data){
 			if(err){
 				console.log(err);
@@ -245,11 +227,9 @@ module.exports = {
 							var sensor = new helper.Sensor(device.deviceid, device.place, sortedData, 'line', 'solid', '#ff00ff', '', 0, false, true, false);
 							sensor.id = device.deviceid;
 							sensor.color = undefined;
-							// console.log(sensor);
 							callback(sensor);
 						}
 					});
-				// }
 				});
 			}
 		});

@@ -12,7 +12,6 @@ function getVariables(callback){
 			console.log(err);
 			return;
 		}
-		// callback(variables);
 		var variab = {};
 		variables.map(function(variable){
 			variab[variable.id] = variable;
@@ -55,6 +54,7 @@ function favoritVariables(favoritVariables, mode, callback){
 		callback(favoriten);
 	});
 }
+
 function getVariableByNodeid(id, callback){
 	var query = "SELECT * FROM variable WHERE id = '" + id + "';";
 	db.all(query, function(err, data){
@@ -95,7 +95,6 @@ function getVariableByName(name, callback){
 	});
 }
 function loadStoredVariable(variable, hours, callback){
-	// console.log(variable);
 	if(variable.showall == 'true'){
 		var query = "SELECT * FROM stored_vars WHERE id = '" + variable.id + "' AND ROUND(time / 1000) <= UNIX_TIMESTAMP() AND ROUND(time / 1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + hours + " hour)) ORDER BY time ASC;";
 	}else{
@@ -124,9 +123,6 @@ function loadStoredVariable(variable, hours, callback){
 		if (err) {
 			helper.log.error(err);
 			return;
-		}else if(sensordata.length == 0){
-			helper.log.debug("Keine gespeicherten Daten aus den letzten " + hours + " Stunden für die Variable: " + variable.id + "/" + variable.name);
-			callback(false);
 		}else{
 			var bla = new Array;
 			sensordata.forEach(function(uff){
@@ -147,11 +143,8 @@ function loadStoredVariable(variable, hours, callback){
 	});
 }
 function getStoredVariable(id, hours, callback){
-	// console.log(id);
 	getVariableByNodeid(id, function(variable){
-		// console.log(variable);
 		loadStoredVariable(variable, hours, function(sensor){
-			// console.log(sensor);
 			callback(sensor);
 		});
 	});
@@ -166,12 +159,10 @@ function getStoredVariables(user, hours, callback){
 		}else{
 			var timeRange = 24;
 		}
-		// console.log(timeRange);
 		var series = [];
 		async.each(user.varChart,
 			function(id, callback){
 				getVariableByNodeid(id, function(variable){
-					// console.log(variable);
 					loadStoredVariable(variable, timeRange, function(sensor){
 						if(typeof sensor === 'object'){
 							sensor.user = user.name;
@@ -299,7 +290,6 @@ module.exports = {
 		}
 	},
 	setVariable: function(variable, app, callback){
-		console.log(variable);
 		getVariableByNodeid(variable.id, function(fullVariable){
 			var query = "UPDATE variable SET status = '" + variable.status + "', lastChange = '" + new Date().getTime() + "' WHERE id = '" + variable.id + "';";
 			db.run(query);

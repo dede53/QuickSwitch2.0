@@ -31,7 +31,6 @@ function addTime(strTime) {
 	var d = currentDate();
 	d.setHours(time[0]);
 	d.setMinutes(time[1]);
-	// d.setSeconds(time[2]);
 	return d;
 }
 function currentDate() {
@@ -135,7 +134,7 @@ module.exports = {
 				}
 			});
 		}
-		// console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
+		console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
 	},
 	calculateOffset:function(timer, condition){
 		var suntimes			= SunCalc.getTimes(new Date(), 51.5, -0.1);
@@ -179,102 +178,82 @@ module.exports = {
 				unit:true
 			}
 		}
-			var timeMin = time - (offset.numberMax * 60000);
-			var timeMax = time + (offset.numberMax * 60000);
 
-			// log.pure(timeMin);
-			// log.pure(timeMax);
-			// log.pure(timer.lastexec);
-			if(timer.lastexec > timeMin && timer.lastexec < timeMax){
+		var timeMin = time - (offset.numberMax * 60000);
+		var timeMax = time + (offset.numberMax * 60000);
+		if(timer.lastexec > timeMin && timer.lastexec < timeMax){
+			log.pure("		Timer schon ausgeführt");
+			return false;
+		}
+
+		// Offset verschiebung errechenen (früher/später)
+		switch(offset.unit){
+			case '+':
+			case 'true':
+			case true:
+				var newUnit = true;
+				break;
+			case '-':
+			case 'false':
+			case false:
+				var newUnit = false;
+				break;
+			case 'random':
+				var newUnit = getRandomBoolean();
+				if(new Date().getTime() > time){
+					var newUnit = true;
+				}
+				break;
+			default:
+				var newUnit = true;
+				break;
+		}
+
+		if(offset.mode == 'random'){
+			// log.pure('RANDOM:' + offset);
+			if(new Date().getTime() < timeMax && new Date().getTime() > timeMin){
+				if(newUnit == true){
+					// Später
+					var newOffsetNumber = Math.abs(Math.round((new Date().getTime() - time) / 60000));
+					log.pure(newOffsetNumber);
+					if(newOffsetNumber > offset.numberMin){
+						offset.numberMin = newOffsetNumber;
+					}
+				}else{
+					// Früher
+					var newOffsetNumber = Math.abs(Math.round((time - new Date().getTime()) / 60000));
+					if(newOffsetNumber < offset.numberMax){
+						offset.numberMax = newOffsetNumber;
+					}
+				}
+				
+			}else{
+				log.pure('		Zeit mit diesem Interval nicht erfüllbar');
+				return false;
+			}
+			// Zufällige Zeiten berechnen:
+			log.pure("		Interval: 		" + offset.numberMin  + "-" + offset.numberMax);
+			offset.number = getRandomInt(parseInt(offset.numberMin), parseInt(offset.numberMax));
+		}else{
+			if(timer.lastexec > new Date().getTime() - 60000){
 				log.pure("		Timer schon ausgeführt");
 				return false;
 			}
+		}
 
-			// Offset verschiebung errechenen (früher/später)
-			switch(offset.unit){
-				case '+':
-				case 'true':
-				case true:
-					var newUnit = true;
-					break;
-				case '-':
-				case 'false':
-				case false:
-					var newUnit = false;
-					break;
-				case 'random':
-					var newUnit = getRandomBoolean();
-					if(new Date().getTime() > time){
-						var newUnit = true;
-					}
-					break;
-				default:
-					var newUnit = true;
-					break;
-			}
-			// log.pure(newUnit);
-			// log.pure(offset.mode);
 
-			if(offset.mode == 'random'){
-				// log.pure('RANDOM:' + offset);
-				if(new Date().getTime() < timeMax && new Date().getTime() > timeMin){
-					if(newUnit == true){
-						// Später
-						var newOffsetNumber = Math.abs(Math.round((new Date().getTime() - time) / 60000));
-						log.pure(newOffsetNumber);
-						if(newOffsetNumber > offset.numberMin){
-							offset.numberMin = newOffsetNumber;
-						}
-						// else{
-							// return false;
-						// }
-					}else{
-						// Früher
-						var newOffsetNumber = Math.abs(Math.round((time - new Date().getTime()) / 60000));
-						if(newOffsetNumber < offset.numberMax){
-							offset.numberMax = newOffsetNumber;
-						}
-						// else{
-							// return false;
-						// }
-					}
-					
-				}else{
-					log.pure('		Zeit mit diesem Interval nicht erfüllbar');
-					return false;
-				}
-				// Zufällige Zeiten berechnen:
-				log.pure("		Interval: 		" + offset.numberMin  + "-" + offset.numberMax);
-				offset.number = getRandomInt(parseInt(offset.numberMin), parseInt(offset.numberMax));
+		if(offset && offset.number != ""){
+			if(newUnit == true){
+				log.pure("		Offset: 		" + offset.number + " Minuten später");
+				var newTime = new Date(time + (offset.number * 60000));
 			}else{
-				if(timer.lastexec > new Date().getTime() - 60000){
-					log.pure("		Timer schon ausgeführt");
-					return false;
-				}
+				log.pure("		Offset: 		" + offset.number + " Minuten früher");
+				var newTime = new Date(time - (offset.number * 60000));
 			}
+			var hours 		= newTime.getHours();
+			var minutes 	= newTime.getMinutes();
+		}
 
-
-			if(offset && offset.number != ""){
-				if(newUnit == true){
-					log.pure("		Offset: 		" + offset.number + " Minuten später");
-					var newTime = new Date(time + (offset.number * 60000));
-				}else{
-					log.pure("		Offset: 		" + offset.number + " Minuten früher");
-					var newTime = new Date(time - (offset.number * 60000));
-				}
-				var hours 		= newTime.getHours();
-				var minutes 	= newTime.getMinutes();
-			}
-		
-		// else{
-		// 	if(timer.lastexec > new Date().getTime() - 60000){
-		// 		log.pure("		Timer schon ausgeführt");
-		// 		return false;
-		// 	}else{
-		// 		log.pure(' 		Timer noch nicht ausgeführt');
-		// 	}
-		// }
-		
 		minutes = ("0" + minutes).slice(-2);
 		hours = ("0" + hours).slice(-2);
 
@@ -377,21 +356,9 @@ module.exports = {
 			}
 
 
-			log.pure(" 		Timer noch nicht geschaltet");
-
-
-					// var numberMax = Math.round(Math.round(new Date().getTime() - TimeTimestampMin) / 60000);
-					// // if(numberMax >= 0){
-					// 	if(new Date().getTime() < bla.getTime()){
-					// 		offset.numberMax = offset.numberMax - numberMax;
-					// 	}
-					// 	if(new Date().getTime() > bla.getTime()){
-					// 		offset.numberMin = offset.numberMin + (numberMax - offset.numberMax);
-					// 	}
-					// // }
-					
-					log.pure("		Interval: 		" + offset.numberMin  + "-" + offset.numberMax);
-					offset.number = getRandomInt(parseInt(offset.numberMin), parseInt(offset.numberMax));
+			log.pure(" 		Timer noch nicht geschaltet");					
+			log.pure("		Interval: 		" + offset.numberMin  + "-" + offset.numberMax);
+			offset.number = getRandomInt(parseInt(offset.numberMin), parseInt(offset.numberMax));
 		}
 
 		if(offset && offset.number != ""){

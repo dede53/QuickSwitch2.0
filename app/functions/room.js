@@ -74,7 +74,6 @@ module.exports = {
 	},
 	getRoom: getRoom,
 	saveRoom: function(data, callback){
-		console.log(data);
 		if(data.id){
 			var query = "UPDATE rooms SET name = '"+ data.name +"' WHERE id = '"+ data.id +"';";
 			db.run(query);

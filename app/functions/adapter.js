@@ -15,50 +15,47 @@ module.exports = {
 		});
 	},
 	install: function(name, callback){
-		// https://github.com/dede53/qs-fritzbox/archive/master.zip
-		// https://github.com/dede53/qs-fritzbox.git
 		var url = "git clone https://github.com/dede53/qs-" + name + ".git ./adapter/" + name;
 		adapter.log.error(url);
 		cp.exec(url, function(error, stdout, stderr){
 			if(error){
-				// adapter.log.error("Adapter konnte nicht installiert werden.");
-				// adapter.log.error(stderr);
+				adapter.log.error("Adapter konnte nicht installiert werden.");
+				adapter.log.error(stderr);
 				callback(stderr);
 				return;
 			}
-			// adapter.log.info(stdout);
 			try{
 				var package = fs.readFileSync('./adapter/' + name + '/package.json');
 				package = JSON.parse(package);
 			}catch(e){
-				// adapter.log.error("Fehler in der package.json von " + name);
+				adapter.log.error("Fehler in der package.json von " + name);
 				callback(404);
 			}
 
 			var dependencies = Object.keys(package.dependencies);
 			if(dependencies.length > 0 ){
-				// adapter.log.debug(name + ": Abhängigkeiten installieren!");
+				adapter.log.debug(name + ": Abhängigkeiten installieren!");
 				installDependencies(dependencies, function(status){
 					if(status != 200){
-						// adapter.log.error("Abhängigkeiten konnten nicht installiert werden!");
+						adapter.log.error("Abhängigkeiten konnten nicht installiert werden!");
 						return;
 					}
 					if(fs.existsSync("./adapter/" + name + "/" + name + ".json.example")){
-						// adapter.log.debug(name + ": config umbennen!");
+						adapter.log.debug(name + ": config umbennen!");
 						fs.rename("./adapter/" + name + "/" + name + '.json.example', "./adapter/" + name + "/" + name + '.json', function(err){
 							if(err){
-								// adapter.log.error(err);
+								adapter.log.error(err);
 								callback(404);
 								return;
 							}				
-							// adapter.log.info(stdout);
-							// adapter.log.debug(name + " installiert!");
+							adapter.log.info(stdout);
+							adapter.log.debug(name + " installiert!");
 							startAdapter(name, function(status){
 								callback(status);
 							});
 						});
 					}else{
-						// adapter.log.debug(name + " installiert!");
+						adapter.log.debug(name + " installiert!");
 						startAdapter(name, function(status){
 							callback(status);
 						});
@@ -66,21 +63,21 @@ module.exports = {
 				});
 			}else{
 				if(fs.existsSync("./adapter/" + name + "/" + name + ".json.example")){
-					// adapter.log.debug(name + ": config umbennen!");
+					adapter.log.debug(name + ": config umbennen!");
 					fs.rename("./adapter/" + name + "/" + name + '.json.example', "./adapter/" + name + "/" + name + '.json', function(err){
 						if(err){
 							adapter.log.error(err);
 							callback(404);
 							return;
 						}				
-						// adapter.log.info(stdout);
-						// adapter.log.debug(name + " installiert!");
+						adapter.log.info(stdout);
+						adapter.log.debug(name + " installiert!");
 						startAdapter(name, function(status){
 							callback(status);
 						});
 					});
 				}else{
-					// adapter.log.debug(name + " installiert!");
+					adapter.log.debug(name + " installiert!");
 					startAdapter(name, function(status){
 						callback(status);
 					});
@@ -91,7 +88,7 @@ module.exports = {
 	},
 	remove:function(name, callback){
 		stopAdapter(name, function(){
-			cp.exec("rm -r adapter/" + name, function(error, stdout, stderr){
+			cp.exec("rm -r " + __dirname + "/adapter/" + name, function(error, stdout, stderr){
 				adapter.log.info(name + " wurde entfernt");
 				callback("entfernt");
 			});
@@ -119,7 +116,7 @@ module.exports = {
 				var debugFile			= __dirname + '/log/debug-' + name + '.log';
 				log_file[name]			=	fs.createWriteStream( debugFile, {flags : 'w', encoding: 'utf8'});
 				plugins[name]			= cp.fork( path );
-				// adapter.log.info(name + " wurde gestartet");
+				adapter.log.info(name + " wurde gestartet");
 				log_file[name].write(new Date() +": Der Adapter wurde gestartet!\n");
 				plugins[name].on('message', function(response) {
 					if(response.log){
@@ -142,7 +139,7 @@ module.exports = {
 				});
 				callback("gestartet");
 			}catch(e){
-				// adapter.log.error(e);
+				adapter.log.error(e);
 				callback(404);
 			}
 		}
@@ -150,7 +147,7 @@ module.exports = {
 	stop:function(name, callback){
 		try{
 			plugins[name].kill('SIGHUP');
-			// adapter.log.info(name + " wurde gestoppt");
+			adapter.log.info(name + " wurde gestoppt");
 			plugins[name] = undefined;
 			callback("gestoppt");
 		}catch(e){

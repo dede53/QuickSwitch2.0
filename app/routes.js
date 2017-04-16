@@ -267,7 +267,7 @@ module.exports = function(app, db){
 			default:
 				console.log(type);
 				if(!res.headersSent){
-					res.json(data);
+					res.json(type);
 				}
 				break;
 		}

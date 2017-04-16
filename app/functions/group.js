@@ -24,6 +24,28 @@ function switchAction(dev, status, app, callback){
 			break;
 	}
 }
+var getGroups = function(user, callback){
+	var query = "SELECT id, name, devices as groupDevices, user FROM groups WHERE user = '" + user + "';";
+	db.all(query, function(err, data){
+		if(err){
+			callback(404);
+			helper.log.error(err);
+		}else{
+			var groups = {};
+			data.forEach(function(group){
+				try{
+					group.groupDevices = JSON.parse(group.groupDevices);
+				}catch(e){
+					console.log("Fehler beim parsen der Gruppe:");
+					console.log(e);
+				}
+				groups[group.id] = group;
+			});
+			callback(groups);
+		}
+	});
+}
+
 module.exports = {
 	switchGroup: function(app, group, status, callback){
 		var string = "";
@@ -69,27 +91,6 @@ module.exports = {
 			}
 		});
 	},
-	getGroups: function(user, callback){
-		var query = "SELECT id, name, devices as groupDevices, user FROM groups WHERE user = '" + user + "';";
-		db.all(query, function(err, data){
-			if(err){
-				callback(404);
-				helper.log.error(err);
-			}else{
-				var groups = {};
-				data.forEach(function(group){
-					try{
-						group.groupDevices = JSON.parse(group.groupDevices);
-					}catch(e){
-						console.log("Fehler beim parsen der Gruppe:");
-						console.log(e);
-					}
-					groups[group.id] = group;
-				});
-				callback(groups);
-			}
-		});
-	},
 	getGroup: function(id, callback){
 		var query = "SELECT id, name, devices as groupDevices, user FROM groups WHERE id = " + id + ";";
 		db.all(query, function(err, data){
@@ -112,19 +113,16 @@ module.exports = {
 			}
 		});
 	},
-	saveNewGroup: function(data, callback){
-		var query = "INSERT INTO groups (name, devices, user) VALUES ('" + data.name + "', '"+ JSON.stringify(data.groupDevices) +"', '"+ data.user +"');";
-		db.all(query, function(err, res){
-			if(!err){
-				data.id = res.insertId;
-				callback(201, data);
-			}
-		});
-	},
-	saveEditGroup: function(data, callback){
-		var query = "UPDATE groups SET name = '" + data.name + "', devices = '["+ data.devices +"]' WHERE id = '" + data.id + "';";
+	saveGroup: function(data, callback){
+		if(data.id){
+			var query = "UPDATE groups SET name = '" + data.name + "', devices = '"+ JSON.stringify(data.groupDevices) +"', user = '"+ data.user +"' WHERE id = '" + data.id + "';";
+		}else{
+			var query = "INSERT INTO groups (name, devices, user) VALUES ('" + data.name + "', '"+ JSON.stringify(data.groupDevices) +"', '"+ data.user +"');";
+		}
 		db.run(query);
-		callback(201, data);
+		getGroups(data.user, function(groups){
+			callback(groups);
+		});
 	},
 	deleteGroup: function(id, callback){
 		var query = "DELETE FROM groups WHERE id = '" + id + "';";
@@ -135,5 +133,6 @@ module.exports = {
 				callback("200");
 			}
 		});
-	}
+	},
+	getGroups: getGroups
 }

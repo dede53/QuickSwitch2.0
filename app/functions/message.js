@@ -33,9 +33,6 @@ module.exports = {
 			}else{
 				var messagesToSend = new Object;
 				messagesToSend.messages = new Object;
-				// messages.forEach(function(message){
-				// 	messagesToSend.messages[message.id] = message;
-				// });
 				messagesToSend.messages = messages;
 				if(messages == ""){
 					messagesToSend.moreMessagesAvailable = false;

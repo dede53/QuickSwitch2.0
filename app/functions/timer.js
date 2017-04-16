@@ -92,7 +92,16 @@ var fs						= require('fs');
 var async					= require("async");
 var request					= require('request');
 var later 					= require('later');
-var intervals				= {};
+var allIntervals				= {
+	setInterval: function(id, callback, sched){
+		this.intervals[id] = later.setInterval(callback, sched);
+	},
+	clearInterval: function(id){
+		this.intervals[id].clear();
+		delete this.intervals[id];
+	},
+	intervals: {}
+};
 var storedTimes 			= {};
 function isObjectEmpty(value){
     return Boolean(value && typeof value == 'object') && !Object.keys(value).length;
@@ -118,7 +127,23 @@ function createTime(time){
 		time: hours + ':' + minutes
 	}
 }
-
+function deaktivateInterval(id){
+	getTimer(id, function(timer){
+		if(timer.actions.intervals){
+			timer.actions.intervals.forEach(function(interval){
+				helper.log.debug("Interval mit der ID:" + interval.id + " deaktiviert");
+				allIntervals.intervals[interval.id].clear();
+				delete allIntervals.intervals[interval.id];
+			});
+		}
+	});
+}
+function deleteTimer(id, callback){
+	var query = "DELETE FROM timer WHERE id = '" + id + "';";
+	db.all(query, function(err, data){
+		callback(err, data);
+	});
+}
 var checkConditions = function(timer, switchToThis, switchtimer, callback){
 		// helper.log.debug(timer.conditions);
 		if(switchtimer == false || switchtimer == "false"){
@@ -295,7 +320,7 @@ var checkConditions = function(timer, switchToThis, switchtimer, callback){
 		}
 		callback(timer, switchToThis, switchtimer);
 }
-var getTimer = function(id, callback){
+function getTimer(id, callback){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE id = " + id + ";";
 	db.all(query, function(err, data){
 		if(err){
@@ -306,17 +331,24 @@ var getTimer = function(id, callback){
 			try{
 				if(data[0].variables != ""){
 					data[0].variables = JSON.parse(data[0].variables.trim());
+				}else{
+					data[0].variables = false;
 				}
 				if(data[0].conditions != ""){
 					data[0].conditions = JSON.parse(data[0].conditions.trim());
+				}else{
+					data[0].conditions = false;
 				}
 				if(data[0].actions){
 					data[0].actions = JSON.parse(data[0].actions.trim());
+				}else{
+					data[0].actions = false;
 				}
 				callback(data[0]);
 			}catch(e){
 				helper.log.pure("Fehler im Json des Timers!");
 				helper.log.pure(data[0]);
+				helper.log.pure(e);
 				return;
 			};
 		}
@@ -417,23 +449,23 @@ var checkVariables = function(timer, variable, switchToThis, switchtimer, callba
 var switchActions = function(timer, status, switchtimer){
 	if(timer.actions && switchtimer != false){
 		helper.log.pure("	Aktionen ausführen:");
-		if(timer.actions.devices){
+		if(timer.actions.device){
 			helper.log.debug('		Geräte schalten!');
 			timer.actions.devices.forEach(function(device){
-				helper.log.debug(device.name);
-				helper.switchaction('device', device.id, device.action, device.timeout);
+				helper.log.debug(device.action.name);
+				helper.switchaction('device', device.action.id, device.action.switchstatus, device.timeout);
 			});
 		}
-		if(timer.actions.groups){
+		if(timer.actions.group){
 			helper.log.debug('		Gruppe schalten!');
 			timer.actions.groups.forEach(function(group){
-				helper.switchaction('group', group.id, group.action, group.timeout);
+				helper.switchaction('group', group.action.id, group.action.switchstatus, group.timeout);
 			});
 		}
-		if(timer.actions.rooms){
+		if(timer.actions.room){
 			helper.log.debug('		Raum schalten!');
 			timer.actions.rooms.forEach(function(room){
-				helper.switchaction('room', room.id, room.action, room.timeout);
+				helper.switchaction('room', room.action.id, room.action.switchstatus, room.timeout);
 			});
 		}
 		if(timer.actions.saveSensors){
@@ -447,10 +479,10 @@ var switchActions = function(timer, status, switchtimer){
 		}
 		if(timer.actions.alerts){
 			timer.actions.alerts.forEach(function(alert){
-				if(alert.timeout){
+				if(alert.activeTimeout){
 					setTimeout(function(){
-						helper.log.pure("		Erzeuge Alert: " + alert.name + "|" + alert.message);	
-						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.name + "/" + alert.message + "/" + alert.user + "/" + alert.type;
+						helper.log.pure("		Erzeuge Alert: " + alert.action.name + "|" + alert.action.message);	
+						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.action.name + "/" + alert.action.message + "/" + alert.action.user + "/" + alert.action.type;
 						helper.log.pure(url);
 						request(url , function (error, response, body) {
 							if (error) {
@@ -459,8 +491,8 @@ var switchActions = function(timer, status, switchtimer){
 						});
 					}, parseInt(alert.timeout) * 1000);
 				}else{
-					helper.log.pure("		Erzeuge Alert: " + alert.name + "|" + alert.message);	
-					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.name + "/" + alert.message + "/" + alert.user + "/" + alert.type;
+					helper.log.pure("		Erzeuge Alert: " + alert.action.name + "|" + alert.action.message);	
+					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.action.name + "/" + alert.action.message + "/" + alert.action.user + "/" + alert.action.type;
 					helper.log.pure(url);
 					request(url , function (error, response, body) {
 						if (error) {
@@ -474,13 +506,13 @@ var switchActions = function(timer, status, switchtimer){
 			timer.actions.intervals.forEach(function(interval){
 				var sched			=	later.parse.text('every ' + interval.number + ' ' + interval.unit);
 				var id = parseInt(interval.id);
-				if(intervals[id] == undefined){
+				if(allIntervals.intervals[interval.id] == undefined){
 					helper.log.pure("		Setze ein Interval!");
-					switch(interval.action){
+					switch(interval.type){
 						case "saveSensors":
 							helper.log.pure("		Speichere Sensoren");
 							var url = 'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/saveSensors';
-							intervals[id] = later.setInterval( function(){
+							allIntervals.setInterval(id, function(){
 								request(url, function (error, response, body) {
 									if (error) {
 										helper.log.pure(error);
@@ -488,20 +520,22 @@ var switchActions = function(timer, status, switchtimer){
 								});
 							}, sched);
 							break;
-						case "device":
 						case "group":
 						case "room":
+							allIntervals.setInterval(id, function() { helper.switchaction(interval.type, interval.action.id, interval.action.switchstatus);} , sched);
+							break;
+						case "device":
 							helper.log.pure("		Schalte Gerät");
-							intervals[id] = later.setInterval(function() { helper.switchaction(interval.action, interval.actionid, "on");} , sched);
+							allIntervals.setInterval(id, function() { helper.switchaction(interval.type, interval.action.deviceid, interval.action.switchstatus);} , sched);
 							break;
 						case "storeVariable":
-							helper.log.pure("		Speichere Variable");
-							intervals[id] = later.setInterval(function() { variableFunctions.storeVariable(interval.name);} , sched);
+							helper.log.pure("		Speichere Variable: " + interval.action.name);
+							allIntervals.setInterval(id, function() { variableFunctions.storeVariable(interval.action.name);} , sched);
 							break;
 						case "urls":
 							helper.log.pure("		Rufe Url auf");
-							interval.urls.forEach(function(url){
-								intervals[id] = later.setInterval(function() {
+							interval.action.forEach(function(url){
+								allIntervals.setInterval(id, function() {
 									request(url, function (error, response, body) {
 										if (error) {
 											helper.log.pure(error);
@@ -509,31 +543,33 @@ var switchActions = function(timer, status, switchtimer){
 									});
 								} , sched);
 							});
+							break;
 						default:
+							helper.log.info("Keine Aktion für das Intervall ausgewählt:" + interval.type);
 							break;
 					}
 					helper.log.pure("		Neues Interval mit der id: " + id + " angelegt!\n");
 				}else{
-					helper.log.pure("		Interval wurde schon gesetzt!\n");
+					helper.log.pure("		Intervall wurde schon gesetzt!\n");
 				}
 			});
 		}
 		if(timer.actions.pushbullets){
-			timer.actions.pushbullets.forEach(function(action){
-				if(action.timeout){
+			timer.actions.pushbullets.forEach(function(pushbullet){
+				if(action.activeTimeout){
 					setInterval(function(){
-						helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
-						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet:send/" + action.name + "/" + action.message + "/" + action.receiver;
+						helper.log.pure("		Sende Pushbullet:" + pushbullet.action.name + "|" + pushbullet.action.message);
+						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet:send/" + pushbullet.action.name + "/" + pushbullet.action.message + "/" + pushbullet.action.receiver;
 						//helper.log.pure(url);
 						request(url , function (error, response, body) {
 							if (error) {
 								helper.log.pure(error);
 							}
 						});
-					}, parseInt(action.timeout) * 1000);
+					}, parseInt(pushbullet.timeout) * 1000);
 				}else{
-					helper.log.pure("		Sende Pushbullet:" + action.name + "|" + action.message);
-					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet:send/" + action.name + "/" + action.message + "/" + action.receiver;
+					helper.log.pure("		Sende Pushbullet:" + pushbullet.action.name + "|" + pushbullet.action.message);
+					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/pushbullet:send/" + pushbullet.action.name + "/" + pushbullet.action.message + "/" + pushbullet.action.receiver;
 					helper.log.pure(url);
 					request(url , function (error, response, body) {
 						if (error) {
@@ -545,28 +581,28 @@ var switchActions = function(timer, status, switchtimer){
 		}
 		if(timer.actions.storeVariables){
 			timer.actions.storeVariables.forEach(function(variable){
-				helper.log.pure("		Speichere Variable:" + variable.name);
-				if(variable.timeout){
+				helper.log.pure("		Speichere Variable:" + variable.action.name);
+				if(variable.activeTimeout){
 					setTimeout(function(){
-						variableFunctions.storeVariable(variable.name);
+						variableFunctions.storeVariable(variable.action.name);
 					}, parseInt(variable.timeout) * 1000);
 				}else{
-					variableFunctions.storeVariable(variable.name);
+					variableFunctions.storeVariable(variable.action.name);
 				}
 			});
 		}
 		if(timer.actions.urls){
 			timer.actions.urls.forEach(function(url){
-				if(url.timeout){
+				if(url.activeTimeout){
 					setTimeout(function(){
-						request(url.url , function (error, response, body) {
+						request(url.action.url , function (error, response, body) {
 							if (error) {
 								helper.log.pure(error);
 							}
 						});
 					}, parseInt(url.timeout) * 1000);
 				}else{
-					request(url.url , function (error, response, body) {
+					request(url.action.url , function (error, response, body) {
 						if (error) {
 							helper.log.pure(error);
 						}
@@ -702,34 +738,30 @@ module.exports = {
 			});
 		}
 	},
-	saveNewTimer: function(data, callback){
-		var query = "INSERT INTO timer (name, variables, conditions, actions, user) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "');";
-		db.all(query, function(err, data){
-			if(err){
-				callback(err, undefined);
-			}else{
-				getTimer(data.insertId, function(data){
-					callback( undefined, data);
-				});
-			}
-		});
-	},
-	saveEditTimer: function(data, callback){
-		var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + JSON.stringify(data.variables) + "', conditions = '" + JSON.stringify(data.conditions) + "', actions = '" + JSON.stringify(data.actions) + "' WHERE id = '" + data.id + "';";
-		db.run(query);
-		callback(undefined, data);
-	},
-	deleteTimer: function(id, callback){
-		var query = "DELETE FROM timer WHERE id = '" + id + "';";
-		db.all(query, function(err, data){
-			callback(err, data);
-		});
-	},
+	// saveNewTimer: function(data, callback){
+	// 	var query = "INSERT INTO timer (name, variables, conditions, actions, user) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "');";
+	// 	db.all(query, function(err, data){
+	// 		if(err){
+	// 			callback(err, undefined);
+	// 		}else{
+	// 			getTimer(data.insertId, function(data){
+	// 				callback( undefined, data);
+	// 			});
+	// 		}
+	// 	});
+	// },
+	// saveEditTimer: function(data, callback){
+	// 	var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + JSON.stringify(data.variables) + "', conditions = '" + JSON.stringify(data.conditions) + "', actions = '" + JSON.stringify(data.actions) + "' WHERE id = '" + data.id + "';";
+	// 	db.run(query);
+	// 	callback(undefined, data);
+	// },
+	deleteTimer: deleteTimer,
 	switchTimer: function(data, callback){
 		var query = "UPDATE timer SET active='" + data.active + "' WHERE id ='" + data.id + "';"
 		db.run(query);
 		callback(200);
 	},
 	checkTimer: checkTimer,
-	switchActions: switchActions
+	switchActions: switchActions,
+	deaktivateInterval: deaktivateInterval
 }
