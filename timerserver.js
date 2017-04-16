@@ -4,6 +4,12 @@ var later			= require('later');
 
 later.date.localTime();
 
+process.on('message', function(data){
+	if(data.deaktivateInterval){
+		timerFunctions.deaktivateInterval(data.deaktivateInterval);
+	}
+});
+
 // var sched			=	later.parse.text('every 10 sec');
 var sched				=	later.parse.text('every 1 min');
 var tim					=	later.setInterval(timerFunctions.checkTimer, sched);
