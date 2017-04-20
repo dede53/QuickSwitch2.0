@@ -38,6 +38,8 @@ module.exports = {
 	*****************************************/
 	getUser: function (id, callback){
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
+		console.log(query);
+		console.log(id);
 		db.all(query , function(err, row) {
 			if (err) {
 				helper.log.error(err);
@@ -109,13 +111,10 @@ module.exports = {
 	saveUser: function(data, callback){
 		if(data.id){
 			var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"' WHERE id = '"+ data.id +"';";
-			db.run(query);
-			callback(201);
 		}else{
 			var query = "INSERT INTO user ( name, favoritDevices, favoritVariables, varChart, chartHour, admin ) VALUES ('"+ data.name +"', '"+ JSON.stringify(data.favoritDevices) +"', '"+ JSON.stringify(data.favoritVariables) +"', '"+ JSON.stringify(data.varChart) +"', '"+ data.chartHour +"', '"+ data.admin +"');";
-			// var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"' WHERE id = '"+ data.id +"';";
-			db.run(query);
-			callback(201);
 		}
+		db.run(query);
+		callback(201);
 	}
 }

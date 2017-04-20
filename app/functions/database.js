@@ -22,7 +22,8 @@ module.exports = {
 						console.log("Zugriff auf die Datenbank verweigert! Passwort und Benutzername richtig geschrieben?");
 						// break;
 					default:
-						console.log(err);
+						// console.log(err);
+						throw(err);
 						break;
 				}
 				callback(err, null);
@@ -31,7 +32,8 @@ module.exports = {
 			connection.query(query, function(err,rows){
 				connection.release();
 				if(err) {
-					console.log(query + ":" + err);
+					console.log(err);
+					throw(err);
 					callback(err, rows);
 					return;
 				}
@@ -50,6 +52,7 @@ module.exports = {
 						console.log("Zugriff auf die Datenbank verweigert! Passwort und Benutzername richtig geschrieben?");
 						// break;
 					default:
+						throw(err);
 						console.log(err);
 						break;
 				}
@@ -59,6 +62,7 @@ module.exports = {
 
 			connection.query(query, function(err,rows){
 				if(err){
+						throw(err);
 					console.log(err);
 					return;
 				}
@@ -78,6 +82,7 @@ module.exports = {
 						console.log("Zugriff auf die Datenbank verweigert! Passwort und Benutzername richtig geschrieben?");
 						// break;
 					default:
+						throw(err);
 						console.log(err);
 						break;
 				}
