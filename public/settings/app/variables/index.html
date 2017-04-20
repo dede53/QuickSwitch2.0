@@ -10,7 +10,7 @@
 			</tr>
 			<tr ng-repeat="(key, variable) in variables">
 				<td>{{variable.name}}</td>
-				<td style="max-width: 300px;">{{variable.status}}</td>
+				<td style="max-width: 300px;">{{variable.status}}{{variable.suffix}}</td>
 				<td>
 					<div class="box-btn-switch pull-right">
 			<ng-md-icon icon="show_chart" ng-attr-style="fill: grey" size="25" ng-click="open({'size':'lg', 'variable':variable})"></ng-md-icon>
@@ -32,13 +32,13 @@
 		<ul>
 			<li>
 				<div style="text-align:right">
-					<form ng-controller="saveVariableController">
+					<form>
 						<ul>
 							<li>
 								<div class="panel-body">
 									<div class="input-group">
 										<span class="input-group-addon" id="name">Name</span>
-										<input type="text" class="form-control" ng-model="editVariable.variable.name" id="name" aria-describedby="name" />
+										<input type="text" class="form-control" ng-model="variable" id="name" aria-describedby="name" />
 									</div>
 								</div>
 							</li>

@@ -73,7 +73,7 @@ app.io.route('room', {
 		timerFunctions.getUserTimers(user.name, function(data){
 			req.io.emit('change', new message('timers:get', data));
 		});
-		
+
 		variableFunctions.favoritVariables(user.favoritVariables, "object", function(data){
 			req.io.emit('change', new message('favoritVariables:get', data));
 		});
@@ -151,6 +151,11 @@ app.io.route('variable', {
 		variableFunctions.deleteVariable(req.data.remove.uid, function(data){
 			app.io.broadcast('change', new message('variables:remove', req.data.remove.id));
 		});
+	},
+	save: function(req){
+		variableFunctions.saveVariable(req.data, function(data){
+			app.io.broadcast('change', new message('variables:edit', req.data));
+		});
 	}
 });
 app.io.route('variables', {
@@ -182,12 +187,12 @@ app.io.route('variables', {
 		});
 	},
 	chart: function(req){
-		userFunctions.getUser(req.data, function(user){
-			console.log(user);
-			variableFunctions.getStoredVariables(user, req.data.hours, function(data){
+		// userFunctions.getUser(req.data, function(user){
+			console.log(req.data);
+			variableFunctions.getStoredVariables(req.data, req.data.hours, function(data){
 				req.io.emit('change', new message('varChart:get', data));
 			});
-		});
+		// });
 	},
 	storedVariable: function(req){
 		variableFunctions.getStoredVariable(req.data.id, req.data.hours, function(data){

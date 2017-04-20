@@ -1,4 +1,4 @@
-app.controller('variableController', function($scope, $rootScope, socket, $uibModal){
+app.controller('variableController', function($scope, $rootScope, socket, $uibModal, $location){
 
 	socket.emit('variables:get');
 
@@ -20,8 +20,21 @@ app.controller('variableController', function($scope, $rootScope, socket, $uibMo
 		});
 		modalInstance.result.catch(function (selectedItem) {
 		});
-	}; 
-
+	};
+	$scope.saveVariable = function() {
+		if($scope.variable != ""){
+			console.log($scope.variable);
+			socket.emit('variable:save', {
+				"name": $scope.variable,
+				"status":false,
+				"suffix":""
+			});
+			$location.url("/variables");
+		}
+	};
+	$scope.abortNewVariable = function(){
+		$scope.variable = "";
+	}
 });
 
 app.controller('editVariableController', function($scope, $rootScope, socket, $routeParams){
@@ -68,22 +81,6 @@ app.controller('editVariableController', function($scope, $rootScope, socket, $r
 		$scope.title = "bearbeiten";
 		socket.emit('variable:get', $routeParams.id);
 	}
-});
-app.controller('saveVariableController', function($scope, socket, $location) {
-		$scope.saveVariable = function() {
-			console.log($scope.variable);
-			// Validierung!!
-			socket.emit('variables:edit', $scope.variable);
-			$location.url("/variables");
-		};
-		$scope.abortNewVariable = function(){
-			$scope.editVariable = {
-				title: "Bearbeiten",
-				variable: {
-					name: ""
-				}
-			}
-		}
 });
 
 app.controller('varChartController', function($scope, $rootScope, socket, variable){

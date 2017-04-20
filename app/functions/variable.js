@@ -325,6 +325,28 @@ module.exports = {
 			});
 		});
 	},
+	saveVariable: function(data, callback){
+		if(data.id){
+			var query = "UPDATE variable SET "
+						+ "name = '" + data.name + "', "
+						+ "status = '" + data.status + "', "
+						+ "charttype = '" + data.charttype + "', "
+						+ "linetype = '" + data.linetype + "', "
+						+ "linecolor = '" + data.linecolor + "', "
+						+ "error = '" + data.error + "', "
+						+ "lastChange = '" + new Date().getTime() + "', "
+						+ "suffix = '" + data.suffix + "', "
+						+ "step = '" + data.step + "', "
+						+ "showall = '" + data.showall + "', "
+						+ "user = '" + data.user + "' "
+						+ "WHERE id = '" + data.id + "';";
+		}else{
+			var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user) VALUES ('"+data.id+"', '"+data.name+"', '"+data.status+"', '"+data.charttype+"', '"+data.linetype+"', '"+data.linecolor+"', '"+data.error+"', '"+new Date().getTime()+"', '"+data.suffix+"', '"+data.step+"', '"+data.showall+"', '"+data.user+"')";
+		}
+		console.log(query);
+		db.run(query);
+		callback(201);
+	},
 	getStoredVariable: getStoredVariable,
 	getStoredVariables: getStoredVariables
 }
