@@ -153,8 +153,7 @@ echo '"switchserver": [{
 	"QuickSwitch": {
 		"ip": "'$localip'",
 		"port": "'$quickswitchport'"
-	}
-}' > config.json
+	}' > config.json
 
 pwd
 echo
