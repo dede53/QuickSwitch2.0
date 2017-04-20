@@ -140,7 +140,7 @@ echo
 
 echo "Die Koniguration wurde erfolgreich abgeschlossen!"
 echo
-echo '"switchserver": [{
+echo '{"switchserver": [{
 		"id": "0",
 		"ip": "'$switchserverip'",
 		"port": "'$switchserverport'"
@@ -153,7 +153,7 @@ echo '"switchserver": [{
 	"QuickSwitch": {
 		"ip": "'$localip'",
 		"port": "'$quickswitchport'"
-	}' > config.json
+	}}' > config.json
 
 pwd
 echo
