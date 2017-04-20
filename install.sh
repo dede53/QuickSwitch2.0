@@ -47,10 +47,12 @@ echo "Soll Node.js installiert werden? (y / n)"
 read nodeanswer
 if [ $nodeanswer == 'y' ]
 then
-	echo "Lade Node.js-latest herrunter"
-	wget http://node-arm.herokuapp.com/node_latest_armhf.deb
-	echo "installieren Node.js"
-	sudo dpkg -i node_latest_armhf.deb
+	# echo "Lade Node.js-latest herrunter"
+	# wget http://node-arm.herokuapp.com/node_latest_armhf.deb
+	echo "installiere Node.js"
+	# sudo dpkg -i node_latest_armhf.deb
+	curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+	sudo apt-get install -y nodejs
 fi
 
 
@@ -59,32 +61,32 @@ pwd
 cd ../
 pwd
 echo
-echo "Soll der pi-blaster-deamon zum dimmen der GPIO-Ports installiert werden? (y / n | default: y)"
-read piblaster
-if [ $piblaster == 'y' ]
-then
-	# echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
-	# git clone https://github.com/sarfata/pi-blaster.git
-	# cd pi-blaster
-	# ./autogen.sh
-	# ./configure
-	# make
-	# sudo make install
-	# sudo ./pi-blaster
-	# echo "Der pi-blaster-deamon wurde fertig installiert"
-	# echo
-	echo "Installiere pigpiod zum dimmen der GPIO-Ports"
-	wget https://github.com/joan2937/pigpio/archive/master.zip
-	unzip master.zip
-	cd pigpio-master
-	make -j4
-	sudo make install
+# echo "Soll der pi-blaster-deamon zum dimmen der GPIO-Ports installiert werden? (y / n | default: y)"
+# read piblaster
+# if [ $piblaster == 'y' ]
+# then
+# 	# echo "Installiere pi-blaster-deamon zum dimmen der GPIO-Ports"
+# 	# git clone https://github.com/sarfata/pi-blaster.git
+# 	# cd pi-blaster
+# 	# ./autogen.sh
+# 	# ./configure
+# 	# make
+# 	# sudo make install
+# 	# sudo ./pi-blaster
+# 	# echo "Der pi-blaster-deamon wurde fertig installiert"
+# 	# echo
+# 	echo "Installiere pigpiod zum dimmen der GPIO-Ports"
+# 	wget https://github.com/joan2937/pigpio/archive/master.zip
+# 	unzip master.zip
+# 	cd pigpio-master
+# 	make -j4
+# 	sudo make install
 
-	echo 'pigpiod wurde installiert'
-	echo
-	pwd
-	cd ../
-fi
+# 	echo 'pigpiod wurde installiert'
+# 	echo
+# 	pwd
+# 	cd ../
+# fi
 
 
 pwd
