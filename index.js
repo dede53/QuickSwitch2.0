@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var express					=	require('express.io');
+var express					=	require('express.oi');
 
 var fs						=	require('fs');
 var fork					=	require('child_process').fork;
