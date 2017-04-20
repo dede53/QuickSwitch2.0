@@ -115,6 +115,8 @@ localip=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0
 
 
 echo "QuickSwitch-Konfiguration"
+echo
+echo
 echo 
 echo "Wollen sie den SwitchServer manuell einrichten? (y / n) (default: n)"
 read switchserveranswer
@@ -130,6 +132,16 @@ else
 	switchserverip=$localip
 fi
 echo
+
+git clone https://github.com/dede53/qs-SwitchServer SwitchServer
+mkdir SwitchServer/settings/ 
+echo '{
+	"port":"'$switchserverport'",
+	"ip":"'$switchserverip'",
+	"name": "Switchserver",
+	"loglevel": 1
+}' > SwitchServer/settings/adapter.json
+
 echo
 echo "Ermittle die IP-Adresse des Servers..."
 echo "Folgende IP gefunden:"
@@ -140,7 +152,7 @@ echo
 
 echo "Die Koniguration wurde erfolgreich abgeschlossen!"
 echo
-echo '"switchserver": [{
+echo '{"switchserver": [{
 		"id": "0",
 		"ip": "'$switchserverip'",
 		"port": "'$switchserverport'"
@@ -153,7 +165,7 @@ echo '"switchserver": [{
 	"QuickSwitch": {
 		"ip": "'$localip'",
 		"port": "'$quickswitchport'"
-	}' > config.json
+	}}' > config.json
 
 pwd
 echo
