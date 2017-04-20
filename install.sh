@@ -159,3 +159,4 @@ echo '"switchserver": [{
 pwd
 echo
 echo "Sie können jetzt QuickSwitch starten indem sie 'node index.js' auf der konsole ausführen."
+echo "Im Browser ist sie dann unter http://"$localip":"$quickswitchport" erreichbar."
