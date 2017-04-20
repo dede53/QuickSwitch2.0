@@ -21,7 +21,7 @@
 						<span ng-show="device.type=='room'">
 							{{rooms[device.id].name}}
 						</span>
-						<input type="number" name="timeout" ng-model="device.timeout" value="0" min="0">
+						<input type="number" name="timeout" ng-model="device.timeout" value="0" min="0" title="Timeout: Verzögerung beim schalten">
 						<ng-md-icon
 							icon="cancel"
 							style="fill:#D9534F"
@@ -29,6 +29,7 @@
 							options='{"duration": 10, "rotation": "none"}'
 							ng-click="removeDevice(key)"
 							class="pull-right"
+							title="Aus der Gruppe entfernen"
 						></ng-md-icon>
 					</div>
 				</li>
