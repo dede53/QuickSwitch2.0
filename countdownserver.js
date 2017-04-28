@@ -74,12 +74,6 @@ var log = {
 	}
 }
 
-
-console.log = function(d) {
-	log_file.write(util.format(d) + '\n');
-	log_stdout.write(util.format(d) + '\n');
-};
-
 checkCountdowns();
 
 var sched			=	later.parse.text('every 1 min');
@@ -159,9 +153,3 @@ function switchaction(type, id, action){
 		}
 	});
 }
-
-
-
-
-
-
