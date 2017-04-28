@@ -58,7 +58,7 @@ var bla = [
 			]
 		},
 		'actions':{
-			'devices':[
+			'device':[
 				{
 					'name':'Schreibtisch',
 					'id':'1',
@@ -449,20 +449,21 @@ var checkVariables = function(timer, variable, switchToThis, switchtimer, callba
 var switchActions = function(timer, status, switchtimer){
 	if(timer.actions && switchtimer != false){
 		helper.log.pure("	Aktionen ausführen:");
-		if(timer.actions.device){
+		if(timer.actions.devices){
 			helper.log.debug('		Geräte schalten!');
 			timer.actions.devices.forEach(function(device){
-				helper.log.debug(device.action.name);
-				helper.switchaction('device', device.action.id, device.action.switchstatus, device.timeout);
+				helper.log.debug(device.action.name + device.action.Raum);
+				helper.switchaction('device', device.action.deviceid, device.action.switchstatus, device.timeout);
 			});
 		}
-		if(timer.actions.group){
+		if(timer.actions.groups){
 			helper.log.debug('		Gruppe schalten!');
 			timer.actions.groups.forEach(function(group){
+				helper.log.debug(group);
 				helper.switchaction('group', group.action.id, group.action.switchstatus, group.timeout);
 			});
 		}
-		if(timer.actions.room){
+		if(timer.actions.rooms){
 			helper.log.debug('		Raum schalten!');
 			timer.actions.rooms.forEach(function(room){
 				helper.switchaction('room', room.action.id, room.action.switchstatus, room.timeout);
@@ -481,8 +482,8 @@ var switchActions = function(timer, status, switchtimer){
 			timer.actions.alerts.forEach(function(alert){
 				if(alert.activeTimeout){
 					setTimeout(function(){
-						helper.log.pure("		Erzeuge Alert: " + alert.action.name + "|" + alert.action.message);	
-						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.action.name + "/" + alert.action.message + "/" + alert.action.user + "/" + alert.action.type;
+						helper.log.pure("		Erzeuge Alert: " + alert.action.title + "|" + alert.action.message);	
+						var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.action.title + "/" + alert.action.message + "/" + alert.action.user + "/" + alert.action.type;
 						helper.log.pure(url);
 						request(url , function (error, response, body) {
 							if (error) {
@@ -491,8 +492,8 @@ var switchActions = function(timer, status, switchtimer){
 						});
 					}, parseInt(alert.timeout) * 1000);
 				}else{
-					helper.log.pure("		Erzeuge Alert: " + alert.action.name + "|" + alert.action.message);	
-					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.action.name + "/" + alert.action.message + "/" + alert.action.user + "/" + alert.action.type;
+					helper.log.pure("		Erzeuge Alert: " + alert.action.title + "|" + alert.action.message);	
+					var url = "http://" + conf.QuickSwitch.ip + ":" + conf.QuickSwitch.port + "/send/alert/" + alert.action.title + "/" + alert.action.message + "/" + alert.action.user + "/" + alert.action.type;
 					helper.log.pure(url);
 					request(url , function (error, response, body) {
 						if (error) {
@@ -690,7 +691,6 @@ var checkTimer = function(variable){
 			if(timer.active == "false"){
 				return;
 			}
-			// helper.log.pure(timer.variables);
 			if(variable && typeof timer.variables == "object"){
 				if(timer.variables[variable.id]){
 					helper.log.debug("Prüfe Timer mit Variablen: " + timer.name);
@@ -732,6 +732,7 @@ module.exports = {
 					callback(err, undefined);
 				}else{
 					getTimer(data.insertId, function(data){
+						console.log(data);
 						callback( undefined, data);
 					});
 				}

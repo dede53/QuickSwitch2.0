@@ -68,12 +68,12 @@ function getVariableByNodeid(id, callback){
 						console.log(err);
 						return;
 					}else{
-						callback(data[0]);
+						callback(data[0], true);
 					}
 				});
 			});
 		}else{
-			callback(data[0]);
+			callback(data[0], false);
 		}
 	});
 }
@@ -143,7 +143,7 @@ function loadStoredVariable(variable, hours, callback){
 	});
 }
 function getStoredVariable(id, hours, callback){
-	getVariableByNodeid(id, function(variable){
+	getVariableByNodeid(id, function(variable, newAdded){
 		loadStoredVariable(variable, hours, function(sensor){
 			callback(sensor);
 		});
@@ -162,7 +162,7 @@ function getStoredVariables(user, hours, callback){
 		var series = [];
 		async.each(user.varChart,
 			function(id, callback){
-				getVariableByNodeid(id, function(variable){
+				getVariableByNodeid(id, function(variable, newAdded){
 					loadStoredVariable(variable, timeRange, function(sensor){
 						if(typeof sensor === 'object'){
 							sensor.user = user.name;
@@ -281,7 +281,7 @@ module.exports = {
 		if( string.includes("§") ){
 			var variable = string.split('§');
 			var variableID = variable[1];
-			getVariableByNodeid(variableID, function(variableValue){
+			getVariableByNodeid(variableID, function(variableValue, newAdded){
 				string = string.replace('§' + variableID + '§', variableValue.status);
 				cb(string);
 			});
@@ -290,13 +290,17 @@ module.exports = {
 		}
 	},
 	setVariable: function(variable, app, callback){
-		getVariableByNodeid(variable.id, function(fullVariable){
+		getVariableByNodeid(variable.id, function(fullVariable, newAdded){
 			var query = "UPDATE variable SET status = '" + variable.status + "', lastChange = '" + new Date().getTime() + "' WHERE id = '" + variable.id + "';";
 			db.run(query);
 			fullVariable.status = variable.status;
-			app.io.broadcast('change', new helper.message('variables:edit',fullVariable));
+			if(newAdded){
+				app.io.emit('change', new helper.message('variables:add',fullVariable));
+			}else{
+				app.io.emit('change', new helper.message('variables:edit',fullVariable));
+			}
 			// loadStoredVariable(fullVariable, '36', function(data){
-			// 	app.io.broadcast('storedVariable', data);
+			// 	app.io.emit('storedVariable', data);
 			// });
 			callback(200);
 		});
@@ -305,17 +309,17 @@ module.exports = {
 		// console.log(variable);
 		var query = "UPDATE variable SET status = '" + variable.status + "', lastChange = '" + new Date().getTime() + "' WHERE id = '" + variable.id + "';";
 		db.run(query);
-		getVariableByNodeid(variable.id, function(fullVariable){
+		getVariableByNodeid(variable.id, function(fullVariable, newAdded){
 			fullVariable.id = fullVariable.id;
-			app.io.broadcast('change', new helper.message('variables:edit',fullVariable));
+			app.io.emit('change', new helper.message('variables:edit',fullVariable));
 			// loadStoredVariable(fullVariable, '36', function(data){
-			// 	app.io.broadcast('storedVariable', data);
+			// 	app.io.emit('storedVariable', data);
 			// });
 			callback(fullVariable);
 		});
 	},
 	storeVariable: function(id){
-		getVariableByNodeid(id, function(data){
+		getVariableByNodeid(id, function(data, newAdded){
 			var now = Math.floor(Date.parse(new Date));
 			var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + data.id + "', '" + now + "', '" + data.status + "');";
 			db.all(query, function(err, row){

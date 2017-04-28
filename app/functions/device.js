@@ -69,6 +69,14 @@ module.exports = {
 		});		
 	},
 	getDevice: getDevice,
+	setDeviceStatus: function(id, status){
+		if(id == "all"){
+			var query = "UPDATE devices SET status = '"+ status +"';";
+		}else{
+			var query = "UPDATE devices SET status = '"+ status +"' WHERE deviceid = "+ id +";";
+		}
+		db.run(query);
+	},
 	saveDevice: function (data, callback){
 		if(data.deviceid){
 			var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', showStatus = '"+ data.showStatus +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.roomid +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";

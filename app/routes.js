@@ -273,7 +273,6 @@ module.exports = function(app, db){
 		}
 	});
 
-
 	/*******************************************************************************
 	**	alle Geräte	****************************************************************
 	*******************************************************************************/
@@ -442,7 +441,7 @@ module.exports = function(app, db){
 
 	app.get('/temperature/reloadTempData', function(req, res){
 		variableFunctions.getStoredVariables("all", function(variable){
-			app.io.broadcast('storedVariable', variable);
+			app.io.emit('storedVariable', variable);
 			if(!res.headersSent){
 				res.json(200);
 			}
@@ -465,7 +464,7 @@ module.exports = function(app, db){
 	app.get('/send/:type/:title/:message/:receiver/:messageType?', function(req, res){
 		var data = {};
 		data.title = req.params.title;
-		data.protocol = req.params.type;
+		data.type = req.params.messageType;
 		data.message = req.params.message;
 		data.receiver = req.params.receiver;
 		data.date = new Date();
@@ -479,9 +478,9 @@ module.exports = function(app, db){
 					data.message = message;
 					data.title = title;
 					if(req.params.receiver == "all"){
-						app.io.broadcast('change', new helper.message("alerts:add", data));
+						app.io.emit('change', new helper.message("alerts:add", data));
 					}else{
-						app.io.room(req.params.receiver).broadcast('change', new helper.message("alerts:add", data));
+						app.io.in(req.params.receiver).emit('change', new helper.message("alerts:add", data));
 					}
 					res.status(200).end();
 				});
@@ -534,7 +533,7 @@ module.exports = function(app, db){
 				helper.log.error( data );
 			}else{	
 				countdownFunctions.getCountdowns(req, res, function(data){
-					app.io.broadcast('countdowns', data);
+					app.io.emit('countdowns', data);
 				});
 			}
 		});
@@ -552,7 +551,7 @@ module.exports = function(app, db){
 		var id = req.params.id;
 		countdownFunctions.deleteCountdown(id, function(status){
 			if(status == 200){
-				app.io.room(req.params.user).broadcast('change', new message('countdowns:remove', id));
+				app.io.in(req.params.user).emit('change', new message('countdowns:remove', id));
 				res.send(200).end();
 			}else{
 				res.send(400).end();

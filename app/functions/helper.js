@@ -137,7 +137,7 @@ module.exports = {
 		console.log('http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action);
 	},
 	calculateOffset:function(timer, condition){
-		var suntimes			= SunCalc.getTimes(new Date(), 51.5, -0.1);
+		var suntimes			= SunCalc.getTimes(new Date(), conf.location.lat, conf.location.long);
 		// Wenn noch nie ausgeführt dann letzte Ausführung auf vor 12 Stunden setzten
 		timer.lastexec = parseInt(timer.lastexec);
 		if(!timer.lastexec){
@@ -261,127 +261,8 @@ module.exports = {
 		log.pure("		Errechnete Zeit: 	" + now);
 		return now;
 	},
-	calculateOffsetBefore4716: function(timer, condition){
-		var suntimes			= SunCalc.getTimes(new Date(), 51.5, -0.1);
-
-		if(condition.offset){
-			var offset = condition.offset;
-		}else{
-			var offset = {
-				mode:'normal',		// Random ja|nein
-				unit: '-',			// früher|später|random
-				numberMin:1, 			// Minuten mindestens	\___Random Zahl
-				numberMax:10, 			// Minuten Maximal		/
-				number:0 				// wenn mode=normal
-			};
-		}
-		switch(condition.time){
-			case "sunrise":
-				var time 		= new Date(suntimes.sunrise);
-				var hours 		= time.getHours();
-				var minutes 	= time.getMinutes();
-				log.pure("		Sonnenaufgang:	" + hours + ':' + minutes);
-				break;
-			case "sunset":
-				var time 		= new Date(suntimes.sunset);
-				var hours 		= time.getHours();
-				var minutes 	= time.getMinutes();
-				log.pure("		Sonnenuntergang:	" + hours + ':' + minutes);
-				break;
-			default:
-				var time 		= condition.time.split(':');
-				var hours 		= time[0];
-				var minutes 	= time[1];
-				break;
-		}
-
-		switch(offset.unit){
-			case '+':
-			case 'true':
-			case true:
-				var newUnit = true;
-				break;
-			case '-':
-			case 'false':
-			case false:
-				var newUnit = false;
-				break;
-			case 'random':
-				var newUnit = getRandomBoolean();
-				break;
-			default:
-				var newUnit = true;
-				break;
-		}
-
-		// Die Zeit wird zufällig berechnet:
-		if(offset.mode == 'random'){
-			log.pure("	Zufallstimer: 			" + hours + ':' + minutes + ' ' + newUnit + ' ' + offset.numberMin + '-' + offset.numberMax);
-			log.pure("	Dieser Timer schaltet zwischen:" + new Date(TimeTimestampMin) + " und " + new Date(TimeTimestampMax));
-
-			var bla = new Date();
-			bla.setHours(hours, minutes);
-
-			if(newUnit = false){
-				// Früher
-				var TimeMin = new Date(bla.getTime() - offset.numberMax * 60000).getTime();
-				var TimeMax = new Date(bla.getTime() - offset.numberMin * 60000).getTime();
-
-			}else{
-				// Später
-				var TimeMin = new Date(bla.getTime() - offset.numberMin * 60000).getTime();
-				var TimeMax = new Date(bla.getTime() - offset.numberMax * 60000).getTime();
-
-			}
-			if(timer.lastexec > TimeMin){
-				log.pure("		Timer schon ausgeführt");
-				return;
-			}
-			// letzte Ausführung kleiner als time - numberMax
-			// => noch nicht geschaltet
-			if(!timer.lastexec){
-				// Wenn noch nie ausgeführt dann letzte Ausführung auf vor 12 Stunden setzten 
-				timer.lastexec = new Date().getTime() - 12 * 60 * 60000;
-			}
-
-			// => sofort schalten, da abgelaufen
-			if( new Date().getTime() > TimeMax){
-				log.pure(" 		Timer sofort schalten, zeitraum um!");
-				offset.number = '0';
-				var hours 		= new Date().getHours();
-				var minutes 	= new Date().getMinutes();
-				minutes = ("0" + minutes).slice(-2);
-				hours = ("0" + hours).slice(-2);
-				return  hours + ':' + minutes;
-			}
-
-
-			log.pure(" 		Timer noch nicht geschaltet");					
-			log.pure("		Interval: 		" + offset.numberMin  + "-" + offset.numberMax);
-			offset.number = getRandomInt(parseInt(offset.numberMin), parseInt(offset.numberMax));
-		}
-
-		if(offset && offset.number != ""){
-			if(newUnit == "+" || newUnit == true || newUnit == 'true'){
-				log.pure("		Offset: 		" + offset.number + " Minuten später");
-				var newTime = new Date(bla.getTime() + (offset.number * 60000));
-			}else{
-				log.pure("		Offset: 		" + offset.number + " Minuten früher");
-				var newTime = new Date(bla.getTime() - (offset.number * 60000));
-			}
-			var hours 		= newTime.getHours();
-			var minutes 	= newTime.getMinutes();
-		}
-
-		minutes = ("0" + minutes).slice(-2);
-		hours = ("0" + hours).slice(-2);
-
-		var now = hours + ':' + minutes;
-		log.pure("		Neu errechnete Zeit: 	" + now);
-		return now;
-	},
 	getSuntime: function (type, offset){
-		var suntimes			= SunCalc.getTimes(new Date(), 51.5, -0.1);
+		var suntimes			= SunCalc.getTimes(new Date(), conf.location.lat, conf.location.long);
 		if(type == "sunrise"){
 			var suntime 		= new Date(suntimes.sunrise);
 			console.log("		Sonnenaufgang:	" + suntime.getHours() + ':' + suntime.getMinutes());

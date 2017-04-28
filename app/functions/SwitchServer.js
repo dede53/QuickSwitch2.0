@@ -10,7 +10,7 @@ function sendActiveDevices(app, callback){
 			helper.log.error(err);
 			callback(404);
 		}else{
-			app.io.broadcast('change', new helper.message('active:get', activedevices));
+			app.io.emit('change', new helper.message('active:get', activedevices));
 			callback(200);
 		}
 	});
@@ -23,7 +23,7 @@ function saveStatus(app, action, data, callback){
 			helper.log.error(err);
 			callback(404);
 		}else{
-			app.io.broadcast('change', new helper.message("devices:switch", {"device":data,"status":action}));
+			app.io.emit('change', new helper.message("devices:switch", {"device":data,"status":action}));
 			if(data.showStatus == 1 || data.showStatus == '1'){
 				var query = "INSERT INTO `switch_history` (`deviceid`, `time`, `status`, `place`) VALUES ('" + data.deviceid + "', " + new Date().getTime() + ", '" + action + "', '" + data.name + "(" + data.Raum + ")');";
 				db.run(query);
