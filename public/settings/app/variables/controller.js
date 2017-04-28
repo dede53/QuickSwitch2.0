@@ -37,7 +37,7 @@ app.controller('variableController', function($scope, $rootScope, socket, $uibMo
 	}
 });
 
-app.controller('editVariableController', function($scope, $rootScope, socket, $routeParams){
+app.controller('editVariableController', function($scope, $rootScope, socket, $routeParams, $location){
 	/***********************************************
 	*	Daten anfordern
 	***********************************************/
@@ -80,6 +80,16 @@ app.controller('editVariableController', function($scope, $rootScope, socket, $r
 	}else{
 		$scope.title = "bearbeiten";
 		socket.emit('variable:get', $routeParams.id);
+	}
+
+
+	$scope.saveVariable = function() {
+		console.log($scope.variable);
+		socket.emit('variable:save', $scope.variable);
+		$location.url("/variables");
+	};
+	$scope.abortNewVariable = function(){
+		$scope.variable = "";
 	}
 });
 

@@ -27,6 +27,52 @@
 
 <div class="panel panel-default tile">
 	<div class="panel-heading">
+		<h3 class="panel-title">QuickSwitch</h3>
+	</div>
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="">Port</span>
+			<input type="text" class="form-control" placeholder="port" ng-model="settings.QuickSwitch.port" id="" aria-describedby="">
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="mysql-user">lokale IP-Addresse</span>
+			<input type="text" class="form-control" placeholder="" ng-model="settings.QuickSwitch.ip" id="" aria-describedby="">
+		</div>
+	</div>
+	<div class="panel-body">
+		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
+	</div>
+</div>
+
+<div class="panel panel-default tile">
+	<div class="panel-heading">
+		<h3 class="panel-title">Standort</h3>
+	</div>
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="long">Longitude</span>
+			<input type="text" class="form-control" ng-model="settings.location.long" id="long" aria-describedby="long">
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="input-group">
+			<span class="input-group-addon" id="lat">Latitude</span>
+			<input type="text" class="form-control" ng-model="settings.location.lat" id="lat" aria-describedby="lat">
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="pull-right">
+			<button class="btn btn-info" ng-click="getGeo()">Standort bestimmen</button>
+			<button class="btn btn-success" ng-click="save(settings)">Speichern</button>
+		</div>
+	</div>
+</div>
+
+
+<div class="panel panel-default tile">
+	<div class="panel-heading">
 		<h3 class="panel-title">
 			SwitchServer
 			<span ng-show="changed" class="pull-right">

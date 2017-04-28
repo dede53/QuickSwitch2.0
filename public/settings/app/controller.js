@@ -79,6 +79,7 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 		$location.url(data);
 	};
 	socket.on('change', function(data){
+		console.log(data);
 		switch(data.type){
 			case "push":
 				if ($rootScope[data.masterType] == undefined){

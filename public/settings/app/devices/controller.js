@@ -51,12 +51,24 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 					id: 'set-telefunken-tv'
 				},
 				{ 
-					name: "Homematic",
-					id: 'send-homematic'
+					name: "Homegear - Rolladen",
+					id: 'homegear:shutter'
 				},
 				{ 
 					name: "Arduino-Infrarot",
 					id: 'arduino:ir'
+				},
+				{ 
+					name: "Arduino-Onewire",
+					id: 'arduino:saveTemp'
+				},
+				{
+					name: "Arduino-Digital-Pin",
+					id: 'arduino:pinDigital'
+				},
+				{ 
+					name: "Arduino-Analog-Pin",
+					id: 'arduino:pinAnalog'
 				},
 				{ 
 					name: "Arduino-344Mhz",

@@ -1,4 +1,4 @@
-app.controller('homeController', function($scope, socket, $timeout){
+app.controller('homeController', function($scope, socket, $timeout, geolocationSvc){
 	$scope.changed = false;
 	socket.emit('settings:get');
 	$scope.addSwitchserver = function(){
@@ -17,5 +17,14 @@ app.controller('homeController', function($scope, socket, $timeout){
 	$scope.save = function(data){
 		$scope.changed = false;
 		socket.emit('settings:save', data);
+	}
+	$scope.getGeo = function(){
+		geolocationSvc.getCurrentPosition().then(function(location){
+			console.log(location);
+			$scope.settings.location = {
+				"long": location.coords.longitude,
+				"lat": location.coords.latitude
+			}
+		});
 	}
 });

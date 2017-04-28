@@ -35,7 +35,7 @@
 				</li>
 				<select class="form-control" ng-model="deviceAdd" ng-change="addDevice(deviceAdd)">
 					<option value="nonsense">Gerät auswählen um es hinzuzufügen</option>
-					<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}})</option>
+					<option ng-repeat="device in devicelist" value="{{device}}">{{device.name}} ({{device.Raum}}: {{device.buttonLabelOn}}|{{device.buttonLabelOff}})</option>
 				</select>
 				<select class="form-control" ng-model="roomAdd" ng-change="addRoom(roomAdd)">
 					<option value="nonsense">Raum auswählen um ihn hinzuzufügen</option>
