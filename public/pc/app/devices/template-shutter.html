@@ -2,12 +2,15 @@
 	<p class="left">{{device.name}}</p>
 	<div style="text-align:right">
 		<div class="box-btn-switch">
+			<!-- {{device.status}} -->
+			{{device.status == 0 ? 'geschlossen' : 'geöffnet'}}
 			<button
 				class="buttonL"
 				ng-style="{'background-color': buttonOnColor}"
 				id="btnOn{{device.deviceid}}"
-				ng-click='switch("devices", {"id":device.deviceid,"status":"1"})' >
-					{{device.buttonLabelOn}}
+				ng-click='switch("devices", {"id":device.deviceid,"status":"1"})'
+			>
+				{{device.buttonLabelOn}}
 			</button>
 			<button
 				class="buttonL"
@@ -21,7 +24,7 @@
 				id="btnOff{{device.deviceid}}"
 				ng-click='switch("devices", {"id":device.deviceid,"status":"0"})'
 				ng-style="{'background-color': buttonOffColor}"
-				>
+			>
 				{{device.buttonLabelOff}}
 			</button>
 		</div>

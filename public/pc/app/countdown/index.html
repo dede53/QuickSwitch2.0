@@ -15,7 +15,7 @@
 	<form>
 		<ul style="text-align:right;" >
 			<fieldset class="form-group">
-				<label for="device" class="left">Gerät</label>
+				<label for="device" class="left">Gerät:</label>
 				<select
 						class="form-control"
 						ng-change=""
@@ -26,10 +26,18 @@
 			</fieldset>
 			<fieldset class="form-group">
 				<label for="minutes" class="left">Verzögerung: {{newCountdowntimer.time}} Minuten</label>
-				<input id="minutes" style="width:calc(100% - 17px);" type="range" min="1" max="180"	class="form-control" ng-model="newCountdowntimer.time"></input>
+				<input
+					id="minutes"
+					style="width:calc(100% - 17px);"
+					type="range"
+					min="1"
+					max="180"
+					class="form-control"
+					ng-model="newCountdowntimer.time">
+				</input>
 			</fieldset>
 			<fieldset class="form-group">
-				<label for="status">Status</label>
+				<label for="status">Status:</label>
 				<div class="btn-group btn-group-sm" role="group">
 					<button type="button" class="btn btn-secondary"
 						ng-model="newCountdowntimer.status" uib-btn-radio="1">

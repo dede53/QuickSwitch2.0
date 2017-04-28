@@ -118,6 +118,7 @@ button{
 	min-width:60px;
 	padding-top: 10px;
 	padding-bottom: 10px;
+	margin:1px;
 }
 .buttonM{
 	min-width:60px;
@@ -127,7 +128,6 @@ button{
 
 .btnOn{
 	width: 25%;
-	margin:1px;
 	background-color:#c0ffc0;
 /*
 	background-color:#95CAFF;
@@ -135,7 +135,6 @@ button{
 }
 .btnOff{
 	width: 25%;
-	margin:1px;
 	background-color:#ffc0c0;
 /*
 	background-color:#FF97FF;

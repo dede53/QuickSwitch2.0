@@ -11,7 +11,7 @@ app.filter('action', function() {
 			return 'aus';
 		}else if(x == 1){
 			return 'an';
-		}else if(x == 2){
+		}else if(x == 2 || x == 'toggle'){
 			return 'toggle';
 		}else{
 			return x;
@@ -20,6 +20,17 @@ app.filter('action', function() {
 	}
 });
 
+app.filter('returnStatus', function(){
+	return function(action){
+		if(action.action.switchstatus == 0){
+			return action.action.buttonLabelOff;
+		}else if(action.action.switchstatus == 1){
+			return action.action.buttonLabelOn; 
+		}else{
+			return "Umschalten"		
+		}
+	}
+});
 
 app.filter('isEmpty', function () {
 	var bar;

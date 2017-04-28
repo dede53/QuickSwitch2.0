@@ -12,7 +12,7 @@
 					</select>
 				</div>
 			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'device'">
+			<li class="list-group-item" ng-show="addAction.type == 'devices'">
 				<select
 						class="form-control"
 						ng-change=""
@@ -21,17 +21,17 @@
 						<option value="">Wähle ein Gerät</option>
 				</select>
 			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'device'">
+			<li class="list-group-item" ng-show="addAction.type == 'devices'">
 				<fieldset class="form-group">
-					<label for="status">Status</label>
-					<div class="btn-group btn-group-sm" role="group">
+					<label for="status">Status:</label>
+					<div class="btn-group btn-group-sm pull-right" role="group">
 						<button type="button" class="btn btn-secondary"
 							ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
-							An
+							{{addAction.action.buttonLabelOn || 'An'}}
 						</button>
 						<button type="button" class="btn btn-secondary"
 							ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
-							Aus
+							{{addAction.action.buttonLabelOff || 'Ein'}}
 						</button>
 						<button type="button" class="btn btn-secondary"
 							ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
@@ -40,7 +40,7 @@
 					</div>
 				</fieldset>
 			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'group'">
+			<li class="list-group-item" ng-show="addAction.type == 'groups'">
 				<select
 						class="form-control"
 						ng-model="addAction.action"
@@ -48,7 +48,7 @@
 						<option value="">Wähle eine Gruppe</option>
 				</select>
 			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'group'">
+			<li class="list-group-item" ng-show="addAction.type == 'groups'">
 				<fieldset class="form-group">
 					<label for="status">Status</label>
 					<div class="btn-group btn-group-sm" role="group">
@@ -67,7 +67,7 @@
 					</div>
 				</fieldset>
 			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'room'">
+			<li class="list-group-item" ng-show="addAction.type == 'rooms'">
 				<select
 						class="form-control"
 						ng-change=""
@@ -76,7 +76,7 @@
 						<option value="">Wähle einen Raum</option>
 				</select>
 			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'room'">
+			<li class="list-group-item" ng-show="addAction.type == 'rooms'">
 				<fieldset class="form-group">
 					<label for="status">Status</label>
 					<div class="btn-group btn-group-sm" role="group">
@@ -131,7 +131,7 @@
 					</select>
 			</li>
 			<li class="list-group-item" ng-show="addAction.type == 'alerts'">
-					<input type="text" placeholder="Titel" ng-model="addAction.action.name">
+					<input type="text" placeholder="Titel" ng-model="addAction.action.title">
 					<input type="text" placeholder="Nachricht" ng-model="addAction.action.message">
 					<select ng-model="addAction.action.type">
 						<option value="{{type.value}}" ng-repeat="type in alertTypen">{{type.name}}</option>

@@ -65,14 +65,14 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 			if($scope.timer.variables[data.variable]){
 
 				$scope.timer.variables[data.variable].push({
-					name:data.variable,
+					id:data.variable,
 					mode:data.mode,
 					status:data.status
 				});
 			}else{
 				$scope.timer.variables[data.variable] = [];
 				$scope.timer.variables[data.variable].push({
-					name:data.variable,
+					id:data.variable,
 					mode:data.mode,
 					status:data.status
 				});
@@ -249,7 +249,7 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 		{value:'success', name:'Grün/Success'},
 		{value:'warning', name:'Gelb/Warning'},
 		{value:'danger', name:'Rot/Danger'},
-		{value:'default', name:'Weiß/Default'},
+		{value:'secondary', name:'Weiß/Default'},
 	];
 	$scope.addAction = {
 		action:{},
@@ -257,9 +257,9 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 	}
 
 	$scope.actions = [
-		{value:"device", name:"Geräte"},
-		{value:"group", name:"Gruppe"},
-		{value:"room", name:"Räume"},
+		{value:"devices", name:"Geräte"},
+		{value:"groups", name:"Gruppe"},
+		{value:"rooms", name:"Räume"},
 		{value:"urls", name:"Url aufrufen"},
 		{value:"saveSensors", name:"Speichere Sensoren"},
 		{value:"alerts", name:"Alert"},

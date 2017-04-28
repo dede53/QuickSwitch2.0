@@ -111,9 +111,16 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		$rootScope.socketConnected = false;
 	});
 	socket.on('serverError', function(data){
-		alert(data);
+		var id = new Date().getTime();
+		$rootScope.alerts[id] = {
+			"title":"Error!",
+			"message":data,
+			"type":"danger",
+			"date": new Date(),
+		};
 	});
 	socket.on('change', function(data){
+		console.log(data);
 		switch(data.type){
 			case "push":
 				if ($rootScope[data.masterType] == undefined){
@@ -138,11 +145,11 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 			case "switch":
 				for(var i = 0; i < $rootScope.favoritDevices.length; i++){
 					if($rootScope.favoritDevices[i].deviceid == data.switch.device.deviceid){
-						$rootScope.favoritDevices[i].status = parseInt(data.switch.status);
+						$rootScope.favoritDevices[i].status = parseFloat(data.switch.status);
 					}
 				}
 				if($rootScope.devices){
-					$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
+					$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseFloat(data.switch.status);
 				}
 				break;
 		}

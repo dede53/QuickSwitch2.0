@@ -32,10 +32,18 @@
 	<form>
 		<input type="text" class="form-control"		id="message" 	ng-model="link.message" placeholder="Neue Nachricht eingeben" ></input>
 		<br>
-	    <div class="btn-group">
-	        <label class="btn btn-default" ng-model="link.type" uib-btn-radio="'1'" >Text</label>
-	        <label class="btn btn-default" ng-model="link.type" uib-btn-radio="'2'" >Link</label>
-	    </div>
-		<button class="btn btn-default" ng-click="sendMessage(link)">Senden!</button>
+		<div class="pull-right">
+			<div class="btn-group btn-group-sm" role="group">
+				<button type="button" class="btn btn-secondary"
+					ng-model="link.type" uib-btn-radio="1">
+					Text
+				</button>
+				<button type="button" class="btn btn-secondary"
+					ng-model="link.type" uib-btn-radio="0" >
+					Link
+				</button>
+			</div>
+			<button class="btn btn-secondary btn-sm" ng-click="sendMessage(link)">Senden!</button>
+		</div>
 	</form>
 </div>

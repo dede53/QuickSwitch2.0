@@ -1,7 +1,7 @@
 <div class="card-block list-group-item" ng-repeat="variable in variables">
 	<div ng-switch on="variable.mode">
 		<div ng-switch-when="match">
-			Löse aus sobald die Variable "{{variable.name}}" den Wert "{{variable.status}}" hat.
+			Löse aus sobald die Variable "{{variable.id}}" den Wert "{{variable.status}}" hat.
 		</div>
 		<div ng-switch-when="onChange">
 			Löse aus sobald die Variable "{{variable.name}}" ihren Wert ändert.

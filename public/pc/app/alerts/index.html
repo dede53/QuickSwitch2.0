@@ -2,10 +2,10 @@
 	<li ng-repeat="alert in $root.alerts" ng-click="remove('alerts', alert)">
 		<div class="card card-{{alert.type}}">
 			<div class="card-header">
-				<span class="" style="align:left;">
+				<span class="card-text" style="align:left;">
 					{{alert.title}}
 				</span>
-				<p class="pull-right grey">
+				<p class="pull-right card-text">
 					{{alert.date | date:'dd.MMM., H:mm'}}
 				</p>
 			</div>

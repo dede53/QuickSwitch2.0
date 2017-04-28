@@ -1,17 +1,18 @@
-<div>
-	<h3>Info</h3>
-	<div ng-show="favoritVariables" class="">
-		<ul>
-			<li ng-repeat="variable in favoritVariables" class="">
-				<p style="">
-					<span class="pull-left">
-						{{variable.name}}
-					</span>
-					<span class="pull-right" title="Letzte Änderung: {{variable.lastChange | date:'EEE, d. MMM., HH:mm'}}">
-						{{variable.status}}{{variable.suffix}}
-					</span>
-				</p>
-			</li>
-		</ul>
-	</div>
-</div>
+<ul>
+	<li>
+		<h3>Info</h3>
+	</li>
+	<li ng-hide="favoritVariables | isEmpty" ng-repeat="variable in favoritVariables">
+		<p style="">
+			<span class="pull-left">
+				{{variable.name}}
+			</span>
+			<span class="pull-right" title="Letzte Änderung: {{variable.lastChange | date:'EEE, d. MMM., HH:mm'}}">
+				{{variable.status}}{{variable.suffix}}
+			</span>
+		</p>
+	</li>
+	<li ng-show="favoritVariables | isEmpty" role="alert" class="alert alert-info">
+		Du hast noch keine Variablen zur Anzeige ausgewählt! Füge sie deinem Benutzer in den <a href="/settings/#/user" class="alert-link">Einstellungen</a> hinzu. 
+	</li>
+</ul>

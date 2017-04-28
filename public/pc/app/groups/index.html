@@ -4,7 +4,7 @@
 			Gruppen
 		</h3>
 	</li>
-	<li ng-hide="groups.length == 0" ng-repeat="group in groups" class="card">
+	<li ng-hide="groups | isEmpty" ng-repeat="group in groups" class="card">
 		<div class="card-header">
 			<h6 class="card-titlee" style="height:25px;">
 				<a href="" data-toggle="collapse" data-target="#group{{group.id}}" >
@@ -24,7 +24,7 @@
 			</ul>
 		</div>
 	</li>
-	<li ng-show="groups.length == 0" role="alert" class="alert alert-info">
-		Du hast noch keine Gruppen erstellt!
+	<li ng-show="groups | isEmpty" role="alert" class="alert alert-info">
+		Du hast noch keine Gruppen erstellt! Erstelle sie in den <a href="/settings/#/groups" class="alert-link">Einstellungen</a>
 	</li>
 </ul>

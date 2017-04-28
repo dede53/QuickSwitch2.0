@@ -65,13 +65,13 @@
 						<div ng-switch-when="alerts">
 							<div timer-alert-directive></div>
 						</div>
-						<div ng-switch-when="device">
+						<div ng-switch-when="devices">
 							<div timer-device-directive></div>
 						</div>
-						<div ng-switch-when="group">
+						<div ng-switch-when="groups">
 							<div timer-group-directive></div>
 						</div>
-						<div ng-switch-when="room">
+						<div ng-switch-when="rooms">
 							<div timer-room-directive></div>
 						</div>
 						<div ng-switch-when="urls">
@@ -177,6 +177,8 @@
 				</li>
 			</div>
 		</ul>
+	</div>
+	<div class="panel-body">
 		<div class="pull-right">
 			<button class="btn btn-success" ng-click="saveTimer()">Timer speichern</button>
 			<button class="btn btn-danger" ng-click="abort('/timer')">Abbrechen</button>

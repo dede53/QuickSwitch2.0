@@ -7,7 +7,7 @@
 				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'rooms'})">Löschen</button>
 			</li>
 			<li>
-				Action: {{action.action.switchstatus ? 'Einschalten' : 'Ausschalten'}}
+				Action: {{action.action.switchstatus | action}}
 			</li>
 			<li ng-show="action.activeTimeout">
 				Timeout: {{action.timeout}} Sekunden
