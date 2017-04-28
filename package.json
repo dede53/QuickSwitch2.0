@@ -7,7 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "quickswitch": "./index.js"
+    "quickswitch": "./daemons.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dede53/QuickSwitch2.0"
   },
   "author": "dede53",
   "license": "ISC",
@@ -16,6 +20,7 @@
     "async": "^2.1.2",
     "body-parser": "^1.15.2",
     "cookie-parser": "^1.4.3",
+    "daemonize2": "^0.4.2",
     "express.oi": "0.0.21",
     "later": "^1.2.0",
     "mysql": "^2.12.0",
