@@ -95,7 +95,6 @@ echo
 cd QuickSwitch2.0
 echo "Installiere abhängigkeiten"
 sudo npm install
-sudo npm install forever -g
 
 echo "lege die Datenbank an..."
 
