@@ -214,8 +214,8 @@ CREATE TABLE `sensors` (
 --
 
 CREATE TABLE `stored_vars` (
-  `id` int(11) NOT NULL,
-  `nodeid` varchar(20) NOT NULL,
+  -- `id` int(11) NOT NULL,
+  `id` varchar(20) NOT NULL,
   `time` varchar(20) NOT NULL,
   `value` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -234,7 +234,7 @@ CREATE TABLE `timer` (
   `conditions` varchar(500) NOT NULL,
   `actions` text NOT NULL,
   `user` varchar(20) NOT NULL DEFAULT 'system',
-  `lastexec` int(11) NOT NULL
+  `lastexec` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

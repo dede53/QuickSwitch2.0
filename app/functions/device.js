@@ -1,13 +1,12 @@
 var db 				= require('./database.js');
 var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
-var helper 			= require('./helper.js');
 
 function getDevice(id, callback){
 	var query = "SELECT devices.*, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.deviceid = " + id + ";";
 	db.all(query , function(err, row) {
 		if (err) {
-			helper.log.error(err);
+			log.error(err);
 			callback(404);
 		}else if(row == ""){
 			callback("Kein Gerät mit der ID " + id);
@@ -15,6 +14,25 @@ function getDevice(id, callback){
 			callback(row[0]);
 		}
 	});
+}
+
+function Sensor(id, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
+	this.id = id;
+	this.name = name;
+	this.data = data;
+	this.step = step;
+	// this.step = Boolean(step);
+	this.showAllData = showAll;
+	this.type = charttype;
+	this.dashStyle = linetype;
+	this.color = farbe;
+	this.yAxis = yAxis;
+	this.connectNulls = connectNulls;
+	this.marker = new Object;
+	this.marker.symbol = "diamond";
+	this.marker.radius = 3;
+	this.tooltip = new Object;
+	this.tooltip.valueSuffix = valueSuffix;
 }
 
 module.exports = {
@@ -27,7 +45,7 @@ module.exports = {
 		var query = "SELECT * FROM rooms;";
 		db.all(query, function(err, row){
 			if(err){
-				helper.log.error(err);
+				log.error(err);
 				callback(404);
 			}else{
 				async.each(row,
@@ -35,11 +53,12 @@ module.exports = {
 						var query = "SELECT rooms.name AS Raum, devices.* FROM devices, rooms WHERE devices.roomid = '" + row.id + "'     AND    devices.roomid = rooms.id AND devices.type = 'device';";
 						db.all(query , function(err, data) {
 							if(err){
-								helper.log.error(err);
+								log.error(err);
 							}else{
 								if(type == "object"){
 									var bla = new Object;
 									bla.room = row;
+									bla.room.isCollapsed = true;
 
 									bla.roomdevices = new Object;
 									data.forEach(function(dat){
@@ -59,7 +78,7 @@ module.exports = {
 					},
 					function(err){
 						if(err){
-							helper.log.error(err);
+							log.error(err);
 						}else{
 							callback(uff);
 						}
@@ -101,19 +120,19 @@ module.exports = {
 		var query = "SELECT * FROM devices WHERE deviceid = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
-				helper.log.error(err);
+				log.error(err);
 				callback('Error: ' + err);
 			}else if (row == "") {
 				callback("300");
-				helper.log.info("Kein Gerät mit der ID");
+				log.info("Kein Gerät mit der ID");
 			} else {
 				var query = "DELETE FROM devices WHERE deviceid = "+ id +";";
 				db.all(query ,function(err,rows){
 					if(err){
-						helper.log.error(err);
+						log.error(err);
 						callback(err);
 					}else{
-						helper.log.info('Delete switch with id: ' + id);
+						log.info('Delete switch with id: ' + id);
 						callback("200");
 					}
 				});
@@ -121,10 +140,11 @@ module.exports = {
 		});
 	},
 	switchDevice: function (app, id, status, callback) {
+		console.log(id, status);
 		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type, showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE deviceid = '" + id + "' AND devices.roomid = rooms.id;";
 		db.all(query , function(err, row) {
 			if (err) {
-				helper.log.error(err);
+				log.error(err);
 				callback(404);
 			}else if(row == ""){
 				callback(404);
@@ -139,7 +159,7 @@ module.exports = {
 		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type , showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
 		db.all(query , function(err, row) {
 			if (err) {
-				helper.log.error(err);
+				log.error(err);
 				callback(404);
 			}if(row.length == 0){
 				callback(200);
@@ -162,7 +182,7 @@ module.exports = {
 		var query 		= "SELECT rooms.name AS Raum, devices.* FROM devices, rooms WHERE devices.roomid = rooms.id AND devices.type = 'device';";
 		db.all(query , function(err, users) {
 			if(err){
-				helper.log.error(err);
+				log.error(err);
 			}else{
 				users.forEach(function(dat){
 					bla[dat.deviceid] = dat;								
@@ -178,7 +198,7 @@ module.exports = {
 		var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0 AND devices.type = 'device' AND showStatus = 1;";
 		db.all(query , function(err, activedevices){
 			if (err) {
-				helper.log.error(err);
+				log.error(err);
 				callback(404);
 			}else{
 				callback(activedevices);
@@ -232,7 +252,7 @@ module.exports = {
 							 	]);
 
 							}
-							var sensor = new helper.Sensor(device.deviceid, device.place, sortedData, 'line', 'solid', '#ff00ff', '', 0, false, true, false);
+							var sensor = new Sensor(device.deviceid, device.place, sortedData, 'line', 'solid', '#ff00ff', '', 0, false, true, false);
 							sensor.id = device.deviceid;
 							sensor.color = undefined;
 							callback(sensor);

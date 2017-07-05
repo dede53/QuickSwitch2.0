@@ -20,7 +20,7 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 		socket.emit('user:get', $routeParams.id);
 		socket.emit('devices:favoriten', $routeParams.id);
 		socket.emit('variables:favoriten', $routeParams.id);
-		socket.emit('variables:chart', $routeParams.id);
+		// socket.emit('variables:chart', $routeParams.id);
 	}
 
 	socket.emit('devices:devicelist');
@@ -46,12 +46,12 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 		$scope.user.favoritVariables.splice(index, 1);
 	}
 	$scope.addChartVariable = function(test){
-		$scope.varChart.push(JSON.parse(test));
+		// $scope.varChart.push(JSON.parse(test));
 		$scope.user.varChart.push(JSON.parse(test).id);
 		$scope.addChart = 'nonsense';
 	}
 	$scope.removeChartVariable = function(index){
-		$scope.varChart.splice(index, 1);
+		// $scope.varChart.splice(index, 1);
 		$scope.user.varChart.splice(index, 1);
 	}
 	$scope.devicesDragControlListeners = {

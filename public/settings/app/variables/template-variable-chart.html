@@ -1,13 +1,8 @@
-<div ng-show="tempNoData == true">
+<div>
 	<div class="modal-header">
-		<h3 class="modal-title alert alert-danger">Keine Daten in der Datenbank für diese Variable</h3>
-	</div>
-</div>
-<div ng-hide="tempNoData == true">
-	<div class="modal-header">
-		<h3 class="modal-title">{{chartConfigSettings.series[0].name}}</h3>
+		<h3 class="modal-title">{{chartConfigSettings.series[0].name || "Keine Daten in der Datenbank für diese Variable"}}</h3>
 	</div>
 	<div class="modal-body">
-		<highchart class="chart" config="chartConfigSettings" ></highchart>
+		<highchart ng-show="chartConfigSettings.series.length > 0" class="chart" config="chartConfigSettings" ></highchart>
 	</div>
 </div>

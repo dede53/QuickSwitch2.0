@@ -1,6 +1,5 @@
 var db 				= require('./database.js');
 var async 			= require("async");
-var helper 			= require('./helper.js');
 var deviceFunctions	= require('./device.js');
 var variableFunctions		= require('./variable.js');
 
@@ -12,7 +11,7 @@ module.exports = {
 		var query = "SELECT * FROM user;";
 		db.all(query, function(err, row){
 			if(err){
-				helper.log.error(err);
+				log.error(err);
 			}else{
 				var users = [];
 				row.forEach(function(user){
@@ -21,7 +20,7 @@ module.exports = {
 						user.favoritVariables = JSON.parse(user.favoritVariables);
 						user.varChart = JSON.parse(user.varChart);
 					}catch(e){
-						helper.log.error('Falsches Datenformat bei dem Benutzer: ' + user.name);
+						log.error('Falsches Datenformat bei dem Benutzer: ' + user.name);
 						user.favoritDevices = [];
 						user.favoritVariables = [];
 						user.varChart = [];
@@ -38,21 +37,19 @@ module.exports = {
 	*****************************************/
 	getUser: function (id, callback){
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
-		console.log(query);
-		console.log(id);
 		db.all(query , function(err, row) {
 			if (err) {
-				helper.log.error(err);
+				log.error(err);
 			}else if(row == ""){
 				callback("Kein Benutzer mit der ID " + id);
-				helper.log.error("Kein Benutzer mit der ID " + id);
+				log.error("Kein Benutzer mit der ID " + id);
 			}else{
 				try{
 					row[0].favoritDevices = JSON.parse(row[0].favoritDevices);
 					row[0].favoritVariables = JSON.parse(row[0].favoritVariables);
 					row[0].varChart = JSON.parse(row[0].varChart);
 				}catch(e){
-					helper.log.error('Falsches Datenformat bei dem Benutzer: ' + row[0].name);
+					log.error('Falsches Datenformat bei dem Benutzer: ' + row[0].name);
 					row[0].favoritDevices = [];
 					row[0].favoritVariables = [];
 					row[0].varChart = [];
@@ -72,19 +69,19 @@ module.exports = {
 		var query = "SELECT * FROM user WHERE id = " + id + ";";
 		db.all(query , function(err, row) {
 			if (err) {
-				helper.log.error(err);
+				log.error(err);
 				callback('Error: ' + err);
 			}else if (row == "") {
 				callback("300");
-				helper.log.error("Kein User mit der ID");
+				log.error("Kein User mit der ID");
 			} else {
 				var query = "DELETE FROM user WHERE id = "+ id +";";
 				db.all(query ,function(err,rows){
 					if(err){
-						helper.log.error(err);
+						log.error(err);
 						callback('Error: ' + err);
 					}else{
-						helper.log.info('Delete User with id: ' + id);
+						log.info('Delete User with id: ' + id);
 						callback("200");
 					}
 				});

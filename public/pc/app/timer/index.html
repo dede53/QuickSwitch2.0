@@ -8,9 +8,9 @@
 		</button>
 	</h3>
 	<div ng-show="timers | isEmpty" class="alert alert-info" role="alert">Du hast noch keine Timer gesetzt!</div>
-	<uib-accordion ng-if="timers.length != 0" close-others="true">
-		<uib-accordion-group ng-repeat="timer in timers"  is-open="timer.isOpen">
-			<div create-timer-directive></div>
-		</uib-accordion-group>
-	</uib-accordion>
+	<div ng-hide="timers | isEmpty" close-others="true" class="">
+		<div class="card" ng-repeat="timer in timers">
+			<div create-Timer-Directive></div>
+		</div>
+	</div>
 </div>

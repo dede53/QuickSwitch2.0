@@ -1,8 +1,14 @@
 #!/usr/bin/env node
+var child_process 			= require('child_process');
 var daemon = require("daemonize2").setup({
 	main: "index.js",
 	name: "quickswitch",
 	pidfile: "quickswitch.pid"
+});
+
+daemon.on('error', function(error){
+	console.log("Weitere Informationen sind in den Dateien in ./log und vielleicht ./SwitchServer/log zu finden!");
+	console.log(error);
 });
 
 switch (process.argv[2]) {
@@ -18,6 +24,18 @@ switch (process.argv[2]) {
 	case 'restart':
 		daemon.stop(function(err) {
 			daemon.start();
+		});
+		break;
+	case 'update':
+		daemon.stop(function(err) {
+			child_process.exec('git pull', function(error, stdout, stderr){
+				if(error){
+					console.log(error);
+				}else{
+					console.log(stdout);
+					daemon.start();
+				}
+			});
 		});
 		break;
     case 'status':

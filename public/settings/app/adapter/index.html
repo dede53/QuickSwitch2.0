@@ -1,12 +1,12 @@
 <div ng-repeat="switchServer in switchServers" class="">
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			{{switchServer.name}} ({{switchServer.ip}}:{{switchServer.port}}) - {{switchServer.status.server.status || switchServer.message}}
+			{{switchServer.name}} ({{switchServer.ip}}:{{switchServer.port}}) - <span class="label" ng-class="switchServer.active ? 'label-success' : 'label-danger'">{{switchServer.active ? 'erreichbar': 'nicht erreichbar'}}</span>
 			<div class="pull-right">
 				<button type="button" ng-click="reload()" class="btn btn-xs btn-success" href="">Aktualisieren</button>
 			</div>
 		</div>
-		<table class="table">
+		<table class="table" ng-show="switchServer.active">
 			<tr>
 				<th>Name</th>
 				<th>Version (installiert/verfügbar)</th>
@@ -50,5 +50,17 @@
 				</td>
 			</tr>
 		</table>
+		<uib-accordion>
+			<div uib-accordion-group is-open="switchServer.showLogging">
+				<uib-accordion-heading>
+					Logging<i class="pull-right glyphicon" ng-class="switchServer.showLogging?'glyphicon-chevron-down':'glyphicon-chevron-right'"></i>
+				</uib-accordion-heading>
+				<ul style="overflow-y: auto; max-height: 250px;">
+					<li ng-repeat="error in switchServer.logmessages track by $index">
+						{{error.time}}:{{error.message}}
+					</li>
+				</ul>
+			</div>
+		</uib-accordion>
 	</div>
 </div>

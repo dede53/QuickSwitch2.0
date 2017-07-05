@@ -46,6 +46,13 @@ app.config(['$routeProvider', function($routeProvider) {
 		controller: 'adapterController'
 	}).
 
+	when('/errors/', {
+		templateUrl: './app/errors/index.html'
+		,controller: function($scope, socket){
+			socket.emit('settings:errors');
+		}
+	}).
+
 	when('/groups', {
 		templateUrl: './app/groups/index.html',
 		controller: 'groupController'
@@ -79,7 +86,7 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 		$location.url(data);
 	};
 	socket.on('change', function(data){
-		console.log(data);
+		// console.log(data);
 		switch(data.type){
 			case "push":
 				if ($rootScope[data.masterType] == undefined){
@@ -103,8 +110,14 @@ app.controller('appController', function($rootScope, $scope, $location, socket){
 				break;
 		}
 	});
-
+	$scope.errors = [];
+	socket.on('serverErrors', function(data){
+		$scope.errors = data;
+	});
 	socket.on('serverError', function(data){
-		alert(data);
+		$scope.errors.push(data);
+		if($scope.errors.length > 200){
+			$scope.errors.splice(0,1);
+		}
 	});
 });

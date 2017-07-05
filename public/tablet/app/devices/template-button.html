@@ -44,11 +44,10 @@
         <!-- <md-subheader class="md-no-sticky">md-list</md-subheader> -->
         
 
-			<p>{{device.name}}</p>
-			<span>
+			<p>{{obj.data.name}}</p>
+			<span class="float-right">
 				
-				<md-button class="md-secondary">{{device.buttonLabelOn}}</md-button>
-				<md-button class="md-secondary">{{device.buttonLabelOff}}</md-button>
+				<md-button class="md-secondary">{{obj.data.status ? obj.data.buttonLabelOn : obj.data.buttonLabelOff}}</md-button>
 			</span>
 
 <!-- 

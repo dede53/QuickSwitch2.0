@@ -2,7 +2,7 @@
 <html lang="de">
 	<head>
 		<meta charset="utf-8">
-		<link rel="shortcut icon" href="assets/favicon.ico"/> 
+		<link rel="shortcut icon" href="./assets/favicon.ico?123"/> 
 		<meta http-equiv="x-ua-compatible" content="IE=edge" />
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,6 +46,9 @@
 						<a href="" ng-click="switchPage('/adapters')">SwitchServer</a>
 					</li>
 					<li role="presentation">
+						<a href="" ng-click="switchPage('/errors')">Servernachrichten</a>
+					</li>
+					<li role="presentation">
 						<div active-user-directive></div>
 					</li>
 				</ul>
@@ -61,8 +64,9 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
 		<script src='/socket.io/socket.io.js'></script>
 
-		<script src="http://code.angularjs.org/1.2.0rc1/angular-route.min.js"></script>
-		<script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>
+		<!-- <script src="http://code.angularjs.org/1.2.0rc1/angular-route.min.js"></script> -->
+		<script src="./assets/libs/angular-route.min.js"></script>
+		<!-- <script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script> -->
 
 		<script src="./assets/libs/highcharts-ng.js"></script>
 		<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>

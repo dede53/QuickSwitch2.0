@@ -1,7 +1,7 @@
 <div>
 	<h3>Chat</h3>
-	<div class="panel panel-default">
-		<div class="panel-body">
+	<div class="card">
+		<div class="card-block">
 		<ul style="max-height:230px; overflow:auto;">
 			<li class="" ng-hide="moreMessagesAvailable">
 				<div class="alert-sm alert-info" role="alert">Keine weiteren Nachrichten verfügbar!</div>
@@ -35,10 +35,14 @@
 		</fieldset>
 		<fieldset class="form-group">
 			<div class="btn-group">
-				<label class="btn btn-default" ng-model="link.type" uib-btn-radio="'1'" >Text</label>
-				<label class="btn btn-default" ng-model="link.type" uib-btn-radio="'2'" >Link</label>
+				<label class="btn btn-secondary" ng-model="link.type" uib-btn-radio="1">Text</label>
+				<label class="btn btn-secondary" ng-model="link.type" uib-btn-radio="2">Link</label>
 			</div>
-			<button class="btn btn-default" ng-click="sendMessage(link)">Senden!</button>
+			<div class="btn-group">
+				<label class="btn btn-secondary">
+					<a ng-click="sendMessage(link)">Senden!</a>
+				</label>
+			</div>
 		</fieldset>
 	</form>
 </div>

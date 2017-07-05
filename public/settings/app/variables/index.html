@@ -7,13 +7,18 @@
 				<th>Name</th>
 				<th>ID</th>
 				<th>Wert</th>
+				<th>Speichern</th>
 				<th></th>
 			</tr>
 			<tr ng-repeat="(key, variable) in variables">
 				<td>{{variable.name}}</td>
 				<td>{{variable.id}}</td>
 				<td style="max-width: 300px;" title="Letzte Änderung: {{variable.lastChange | date:'EEE, d. MMM., HH:mm'}}">
-					{{variable.status}}{{variable.suffix}}</td>
+					{{variable.status}}{{variable.suffix}}
+				</td>
+				<td>
+					{{variable.saveActive}}
+				</td>
 				<td>
 					<div class="box-btn-switch pull-right">
 			<ng-md-icon icon="show_chart" ng-attr-style="fill: grey" size="25" ng-click="open({'size':'lg', 'variable':variable})"></ng-md-icon>

@@ -19,18 +19,18 @@
 			<md-button class="md-icon-button" aria-label="Favoriten" ng-click="toggleLeft()" hide-gt-md="">
 				<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
 			</md-button>
-			<h2>
+			<!-- <h2> -->
 
 				<md-button class="md-icon-button" aria-label="Favoriten" ng-click="">
 					<md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
 				</md-button>
 				<md-button class="md-icon-button" aria-label="Favoriten" ng-click="">
-					<md-icon md-svg-icon="img/icons/done.svg"></md-icon>
+					<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
 				</md-button>
 				<md-button class="md-icon-button" aria-label="Favoriten" ng-click="">
 					<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
 				</md-button>
-			</h2>
+			<!-- </h2> -->
 			<span flex=""></span>
 			<md-button class="md-icon-button" aria-label="Favorite">
 				<md-icon md-svg-icon="img/icons/favorite.svg" style="color: greenyellow;"></md-icon>
@@ -79,7 +79,9 @@
 			md-cols-gt-md="12" md-cols="3" md-cols-md="8"
 			md-row-height-gt-md="1:1" md-row-height="4:3"
 			md-gutter-gt-md="16px" md-gutter-md="8px" md-gutter="4px">
-			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="3" md-rowspan-gt-sm=".1"></md-grid-tile>
+			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="3" md-rowspan-gt-sm=".1" ng-repeat="obj in objects">
+				<button-directive>
+			</md-grid-tile>
 			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="1" md-rowspan-gt-sm="1"></md-grid-tile>
 			<md-grid-tile ng-style="{'background': '#ff0'}"	md-colspan-gt-sm="1" md-rowspan-gt-sm="1"></md-grid-tile>
 		</md-grid-list>

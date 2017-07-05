@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="IE=edge" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="theme-color" content="#fff" />
+		
+		<title>SmartHome</title>
+
+		<link rel="shortcut icon" href="assets/favicon.ico?123" type="image/x-icon"/>
+		<!-- <link rel="manifest" href="manifest.json"> -->
+		<link rel='stylesheet' type='text/css' href='assets/css/mobile.css' />
+
+		<script src="assets/libs/snap.min.js"></script>
+	</head>
+	<body ng-app="jsbin" ng-controller="appController">
+
+
+
+		<div alerts-directive></div>
+
+		<snap-content snap-options="snapOptions">
+
+			<h1><span snap-toggle="left">Smart</span><span snap-toggle="right">Home</span></h1>
+			<div ng-view role="main">
+			</div>
+		</snap-content>
+
+		<snap-drawers>
+			<snap-drawer id="snap-drawer left" >
+				<ul>
+					<li><a ng-click="toggleMenu('/favoriten')">Home</a></li>
+					<li><a ng-click="toggleMenu('/devices')">Geräte</a></li>
+					<li><a ng-click="toggleMenu('/temperature')">Temperaturen</a></li>
+					<li><a ng-click="toggleMenu('/timer')">Timer</a></li>
+					<!-- <li ng-show="activeUser.admin" ><a href="../settings">Einstellungen</a></li> -->
+					<li><br></li>
+				</ul>
+				<group-directive></group-directive>
+			</snap-drawer>
+			<div snap-drawer="right" id="snap-drawer-right" style="width:300px;">
+				<div style="padding: 3px;">
+					<h3 class="left" style="padding-left: 5px;">Favoriten</h3>
+					<p style="padding-top: 5px;" class="right" active-user-directive></p>
+					
+					<div favoriten-directive></div>
+					<h3>Aktive Geräte</h3>
+					<div active-devices-directive></div>
+				</div>
+			</div>
+		</snap-drawers>
+
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>-->
+		<script src="assets/libs/angular.js"></script>
+
+
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>-->
+		<script src="assets/libs/angular-animate.js"></script>
+
+		<script src='/socket.io/socket.io.js'></script>
+
+		<!--<script src="http://code.angularjs.org/1.2.0rc1/angular-route.min.js"></script>-->
+		<script src="./assets/libs/angular-route.min.js"></script>
+
+		<!--<script src="http://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>-->
+		<script src="./assets/libs/angular-touch.min.js"></script>
+
+		<script src="./assets/libs/highcharts-ng.js"></script>
+
+		<!--<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>-->
+		<script src="assets/libs/standalone-framework.js"></script>
+
+		<!--<script src="http://code.highcharts.com/stock/highstock.src.js"></script>-->
+		<script src="assets/libs/highstock.src.js"></script>
+
+		<!--<script src="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.min.js"></script>-->
+		<script src="assets/libs/angular-snap.min.js"></script>
+
+		<!--	Soll das drin bleiben? (Nur fürs klappen der Räume notwendig!!!)	-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+		<script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.3.js"></script>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+
+		<!-- <link rel="stylesheet" href="http://rawgit.com/jtrussell/Snap.js/master/snap.css">-->
+		<link rel="stylesheet" href="assets/libs/snap.css">
+
+		<!--<link rel="stylesheet" href="http://rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.css">-->
+		<link rel="stylesheet" href="assets/libs/angular-snap.css">
+
+
+		
+	<!--
+	-->
+		<script src="assets/libs/angular-material-icons.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.1.8/svg-morpheus.js"></script>
+
+		<script type="text/javascript" src="./assets/js/helper.js"></script>
+		<script type="text/javascript" src="./app/mobile.controller.js"></script>
+
+		<script type="text/javascript" src="./app/filter.js"></script>
+		<!-- <script type="text/javascript" src="./app/home/directive.js"></script> -->
+
+		<script type="text/javascript" src="./app/devices/controller.js"></script>
+		<script type="text/javascript" src="./app/devices/directive.js"></script>
+
+		<script type="text/javascript" src="./app/timer/controller.js"></script>
+		<script type="text/javascript" src="./app/timer/directive.js"></script>
+
+		<script type="text/javascript" src="./app/groups/directive.js"></script>
+
+		<script type="text/javascript" src="./app/chat/controller.js"></script>
+		<script type="text/javascript" src="./app/chat/directive.js"></script>
+
+		<script type="text/javascript" src="./app/user/directive.js"></script>
+
+		<script type="text/javascript" src="./app/countdown/controller.js"></script>
+		<script type="text/javascript" src="./app/countdown/directive.js"></script>
+
+		<script type="text/javascript" src="./app/temperature/controller.js"></script>
+		<script type="text/javascript" src="./app/temperature/directive.js"></script>
+
+		<script type="text/javascript" src="./app/phone/controller.js"></script>
+		<script type="text/javascript" src="./app/phone/directive.js"></script>
+
+		<script type="text/javascript" src="./app/variables/directive.js"></script>
+		<script type="text/javascript" src="./app/variables/filter.js"></script>
+
+		<script type="text/javascript" src="./app/alerts/directive.js"></script>
+
+	</body>
+</html>

@@ -33,9 +33,8 @@ app.filter('returnStatus', function(){
 });
 
 app.filter('isEmpty', function () {
-	var bar;
 	return function (obj) {
-		for (bar in obj) {
+		for (var bar in obj) {
 			if (obj.hasOwnProperty(bar)) {
 				return false;
 			}

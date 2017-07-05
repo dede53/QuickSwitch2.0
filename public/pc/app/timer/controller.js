@@ -95,7 +95,6 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 			}
 			switch(data.type){
 				case "time":
-					console.log(data);
 					var condition = {}
 					switch(data.mode){
 						case 'sunset':
@@ -119,8 +118,8 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 					break;
 				case "range":
 					var condition = {
-						start:data.range.start.getHours() + ":" + data.range.start.getMinutes(),
-						stop:data.range.stop.getHours() + ":" + data.range.stop.getMinutes()
+						start: data.range.start.getHours() + ":" + data.range.start.getMinutes(),
+						stop: data.range.stop.getHours() + ":" + data.range.stop.getMinutes()
 					}
 					break;
 				case "weekdays":
@@ -133,6 +132,16 @@ app.controller('editTimerController', function($scope, $rootScope, socket, $rout
 						5:data.weekdays[5],
 						6:data.weekdays[6]
 					}
+				case "variables":
+					console.log(data);
+					var condition = {
+						value: data.value,
+						id: data.variable,
+						type: data.mode
+					}
+					break;
+				default:
+					console.log(data);
 					break;
 			}
 			if($scope.timer.conditions[data.type]){
@@ -257,7 +266,7 @@ app.controller('editActionsController', function($scope, $uibModalInstance, sock
 	}
 
 	$scope.actions = [
-		{value:"devices", name:"Geräte"},
+		{value:"device", name:"Geräte"},
 		{value:"groups", name:"Gruppe"},
 		{value:"rooms", name:"Räume"},
 		{value:"urls", name:"Url aufrufen"},
@@ -319,11 +328,13 @@ app.controller('editVariablesController', 	function($scope, $uibModalInstance, s
 });
 
 app.controller('editConditionsController', function($scope, $uibModalInstance, socket){
+	socket.emit('variables:get');
 	$scope.conditions = [
 		{value:"range", name:"Zeitraum"},
 		{value:"weekdays", name:"Wochentage"},
 		{value:"random", name:"Zufälliger Zeitpunkt in einem Zeitraum"},
 		{value:"time", name:"Zeitpunkt", offset:{mode:'normal'}},
+		{value:"variables", name:"Zustand einer Variablen"},
 	];
 
 	$scope.addCondition = {

@@ -1,42 +1,40 @@
-<div>
-	<p class="left">{{device.name}}</p>
-	<div style="text-align:right">
-		<div>
-			<button
-				class="btnOn buttonL"
-				id="btnOn{{device.deviceid}}"
-				ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"1"})'
-
-				ng-mousedown='switchdeviceMouseDown({"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"1"})'
-				ng-mouseup="switchdeviceMouseUp(device)"
-				ng-style="{'background-color': buttonOnColor}"
-				>
-				<input 
-					type='checkbox' 
-					ng-hide="device.showStatus == 0" 
-					ng-model='device.status' 
-					ng-true-value="1" 
-					ng-false-value="0"
-				>
+<div class="test d-flex justify-content-end p-0">
+	<div class="mr-auto devicename">{{device.name}}</div>
+	<div style="display: flex;">
+		<div
+			class="btnOn unselectable"
+			id="btnOn{{device.deviceid}}"
+			ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"1"})'
+			ng-style="{'background-color': buttonOnColor}"
+			>
+				<!-- style="fill:#389B20" -->
+			<ng-md-icon 
+				icon="{{device.status ? 'check_box' : 'check_box_outline_blank'}}"
+				style="fill:#4dad4d"
+				class="mt-3 ml-3 float-left"
+				size="20"
+				ng-hide="device.showStatus == 0">
+			</ng-md-icon>
+			<p class="mt-3 float-right mr-3">
 				{{device.buttonLabelOn}}
-			</button>
-			<button
-				class="btnOff buttonL" 
-				id="btnOff{{device.deviceid}}"
-				ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
-				ng-mousedown='switchdeviceMouseDown({"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
-				ng-mouseup="switchdeviceMouseUp(device)"
-				ng-style="{'background-color': buttonOffColor}"
-				>
-				<input
-					type='checkbox'
-					ng-hide="device.showStatus == 0"
-					ng-model='device.status'
-					ng-true-value="0"
-					ng-false-value="1"
-				>
+			</p>
+		</div>
+		<div
+			class="btnOff unselectable" 
+			id="btnOff{{device.deviceid}}"
+			ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
+			ng-style="{'background-color': buttonOffColor}"
+			>
+			<ng-md-icon
+				icon="{{device.status ? 'check_box_outline_blank' : 'check_box'}}"
+				style="fill:#fc6b6b;"
+				class="mt-3 ml-3 float-left"
+				size="20"
+				ng-hide="device.showStatus == 0">
+			</ng-md-icon>
+			<p class="mt-3 float-right mr-3">
 				{{device.buttonLabelOff}}
-			</button>
+			</p>
 		</div>
 	</div>
 </div>

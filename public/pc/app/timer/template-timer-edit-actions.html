@@ -1,194 +1,200 @@
-<div class="modal-header">
-	<h3 class="modal-title">Aktionen</h3>
-</div>
-<div class="modal-body">
-	<ul class="list-group">
-		<div class="panel panel-default tile">
-			<li class="list-group-item">
-				<div class="input-group">
-					<span class="input-group-addon" id="basic-addon1">Aktion</span>
-					<select ng-model="addAction.type" class="form-control">
-						<option value="{{act.value}}" ng-repeat="act in actions">{{act.name}}</option>
-					</select>
-				</div>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'devices'">
-				<select
-						class="form-control"
-						ng-change=""
-						ng-model="addAction.action"
-						ng-options="value as value.name group by value.Raum for value in $root.devicelist">
-						<option value="">Wähle ein Gerät</option>
-				</select>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'devices'">
-				<fieldset class="form-group">
-					<label for="status">Status:</label>
-					<div class="btn-group btn-group-sm pull-right" role="group">
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
-							{{addAction.action.buttonLabelOn || 'An'}}
-						</button>
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
-							{{addAction.action.buttonLabelOff || 'Ein'}}
-						</button>
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
-							Toggle
-						</button>
+<div class="modal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title">Aktionen</h3>
+			</div>
+<!-- 			<div class="modal-body">
+				<ul class="list-group">
+					<div class="panel panel-default tile">
+						<li class="list-group-item">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon1">Aktion</span>
+								<select ng-model="addAction.type" class="form-control">
+									<option value="{{act.value}}" ng-repeat="act in actions">{{act.name}}</option>
+								</select>
+							</div>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'device'">
+							<select
+									class="form-control"
+									ng-change=""
+									ng-model="addAction.action"
+									ng-options="value as value.name group by value.Raum for value in $root.devicelist">
+									<option value="">Wähle ein Gerät</option>
+							</select>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'device'">
+							<fieldset class="form-group">
+								<label for="status">Status:</label>
+								<div class="btn-group btn-group-sm pull-right" role="group">
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
+										{{addAction.action.buttonLabelOn || 'An'}}
+									</button>
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
+										{{addAction.action.buttonLabelOff || 'Ein'}}
+									</button>
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
+										Toggle
+									</button>
+								</div>
+							</fieldset>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'groups'">
+							<select
+									class="form-control"
+									ng-model="addAction.action"
+									ng-options="value as value.name group by value.User for value in $root.groups">
+									<option value="">Wähle eine Gruppe</option>
+							</select>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'groups'">
+							<fieldset class="form-group">
+								<label for="status">Status</label>
+								<div class="btn-group btn-group-sm" role="group">
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
+										An
+									</button>
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
+										Aus
+									</button>
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
+										Toggle
+									</button>
+								</div>
+							</fieldset>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'rooms'">
+							<select
+									class="form-control"
+									ng-change=""
+									ng-model="addAction.action"
+									ng-options="value.name for value in $root.rooms">
+									<option value="">Wähle einen Raum</option>
+							</select>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'rooms'">
+							<fieldset class="form-group">
+								<label for="status">Status</label>
+								<div class="btn-group btn-group-sm" role="group">
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
+										An
+									</button>
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
+										Aus
+									</button>
+									<button type="button" class="btn btn-secondary"
+										ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
+										Toggle
+									</button>
+								</div>
+							</fieldset>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'urls'">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon1">Urls</span>
+								<span class="list-group-item" ng-repeat="(key, url) in addAction.action">
+									<div class="input-group">
+										<span class="input-group-addon">
+											{{url.url}}
+										</span>
+										<span class="input-group-addon">
+											Timeout:
+										</span>
+										<span class="input-group-item">
+											<input type="number" id="timeout" class="form-control" value="0" ng-model="url.timeout" min="0" placeholder="Timeout">
+										</span>
+									</div>
+									<ng-md-icon icon="cancel" style="fill:#D9534F" size="15" options='{"rotation": "none"}' ng-click="removeUrl(key)"></ng-md-icon>
+								</span>
+								<div class="input-group-item">
+									<div class="input-group">
+										<span class="input-group-item">
+											<input type="text" class="form-control" ng-model="url" placeholder="Url eingeben, Timout wählen und hinzufügen...">
+										</span>
+										<span class="input-group-btn">
+											<button class="btn btn-secondary" ng-click="addUrl()" type="button">Hinzufügen!</button>
+										</span>
+									</div>
+								</div>
+							</div>
+			    			{{$scope.addAction.action}}
+			    		</li>
+						<li class="list-group-item" ng-show="addAction.type == 'storeVariables'">
+								<select ng-model="addAction.action" class="form-control">
+									<option value="{{variable.id}}	" ng-repeat="variable in variables">{{variable.name}}</option>
+								</select>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'alerts'">
+								<input type="text" placeholder="Titel" ng-model="addAction.action.title">
+								<input type="text" placeholder="Nachricht" ng-model="addAction.action.message">
+								<select ng-model="addAction.action.type">
+									<option value="{{type.value}}" ng-repeat="type in alertTypen">{{type.name}}</option>
+								</select>
+								<select ng-model="addAction.action.user">
+									<option value="{{user.name}}" ng-repeat="user in users">{{user.name}}</option>
+									<option value="all">Alle</option>
+								</select>
+						</li>
+						<li class="list-group-item" ng-show="addAction.type == 'pushbullets'">
+							<input type="text" placeholder="Titel" ng-model="addAction.action.name">
+							<input type="text" placeholder="Nachricht" ng-model="addAction.action.message">
+							<input type="text" placeholder="Empfänger IDEN" ng-model="addAction.action.receiver">
+						</li>
+						<li class="list-group-item">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon1">Interval</span>
+								<span class="input-group-addon">
+									<input type="checkbox" name="interval" ng-model="addAction.activeInterval" ng-init="addAction.activeInterval = false">
+								</span>
+								<span class="input-group-addon">
+									<input class="form-control" type="number"  min="1" ng-model="addAction.number" ng-disabled="!addAction.activeInterval">
+								</span>
+								<span class="input-group-addon">
+									<select class="form-control" ng-model="addAction.unit" ng-disabled="!addAction.activeInterval"> -->
+										<!--
+											https://bunkat.github.io/later/parsers.html#text
+										 -->
+<!-- 										<option value="sec">Sekunden</option>
+										<option value="min">Minuten</option>
+										<option value="hours">Stunden</option>
+										<option value="day">Tag</option>
+										<option value="month">Monat</option>
+										<option value="year">Jahr</option>
+										<option value="day">Tag</option>
+										<option value="day of the week">Tag der Woche</option>
+										<option value="day of the year">Tag des Jahres</option>
+										<option value="week of the year">Woche des Jahres</option>
+									</select>
+								</span>
+							</div>
+						</li>
+						<li class="list-group-item">
+							<div class="input-group">
+								<span class="input-group-addon">
+									Verzögerung/Timeout in Sekunden
+								</span>
+								<span class="input-group-addon">
+									<input type="checkbox" name="" ng-model="addAction.activeTimeout" ng-init="addAction.activeTimeout = false">
+								</span>
+								<input type="number" class="form-control" ng-disabled="!addAction.activeTimeout" min="0" ng-model="addAction.timeout">
+							</div>
+						</li>
 					</div>
-				</fieldset>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'groups'">
-				<select
-						class="form-control"
-						ng-model="addAction.action"
-						ng-options="value as value.name group by value.User for value in $root.groups">
-						<option value="">Wähle eine Gruppe</option>
-				</select>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'groups'">
-				<fieldset class="form-group">
-					<label for="status">Status</label>
-					<div class="btn-group btn-group-sm" role="group">
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
-							An
-						</button>
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
-							Aus
-						</button>
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
-							Toggle
-						</button>
-					</div>
-				</fieldset>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'rooms'">
-				<select
-						class="form-control"
-						ng-change=""
-						ng-model="addAction.action"
-						ng-options="value.name for value in $root.rooms">
-						<option value="">Wähle einen Raum</option>
-				</select>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'rooms'">
-				<fieldset class="form-group">
-					<label for="status">Status</label>
-					<div class="btn-group btn-group-sm" role="group">
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'1'">
-							An
-						</button>
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'0'" >
-							Aus
-						</button>
-						<button type="button" class="btn btn-secondary"
-							ng-model="addAction.action.switchstatus" uib-btn-radio="'toggle'" >
-							Toggle
-						</button>
-					</div>
-				</fieldset>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'urls'">
-				<div class="input-group">
-					<span class="input-group-addon" id="basic-addon1">Urls</span>
-					<span class="list-group-item" ng-repeat="(key, url) in addAction.action">
-						<div class="input-group">
-							<span class="input-group-addon">
-								{{url.url}}
-							</span>
-							<span class="input-group-addon">
-								Timeout:
-							</span>
-							<span class="input-group-item">
-								<input type="number" id="timeout" class="form-control" value="0" ng-model="url.timeout" min="0" placeholder="Timeout">
-							</span>
-						</div>
-						<ng-md-icon icon="cancel" style="fill:#D9534F" size="15" options='{"rotation": "none"}' ng-click="removeUrl(key)"></ng-md-icon>
-					</span>
-					<div class="input-group-item">
-						<div class="input-group">
-							<span class="input-group-item">
-								<input type="text" class="form-control" ng-model="url" placeholder="Url eingeben, Timout wählen und hinzufügen...">
-							</span>
-							<span class="input-group-btn">
-								<button class="btn btn-secondary" ng-click="addUrl()" type="button">Hinzufügen!</button>
-							</span>
-						</div>
-					</div>
-				</div>
-    			{{$scope.addAction.action}}
-    		</li>
-			<li class="list-group-item" ng-show="addAction.type == 'storeVariables'">
-					<select ng-model="addAction.action" class="form-control">
-						<option value="{{variable.name}}	" ng-repeat="variable in variables">{{variable.name}}</option>
-					</select>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'alerts'">
-					<input type="text" placeholder="Titel" ng-model="addAction.action.title">
-					<input type="text" placeholder="Nachricht" ng-model="addAction.action.message">
-					<select ng-model="addAction.action.type">
-						<option value="{{type.value}}" ng-repeat="type in alertTypen">{{type.name}}</option>
-					</select>
-					<select ng-model="addAction.action.user">
-						<option value="{{user.name}}" ng-repeat="user in users">{{user.name}}</option>
-						<option value="all">Alle</option>
-					</select>
-			</li>
-			<li class="list-group-item" ng-show="addAction.type == 'pushbullets'">
-				<input type="text" placeholder="Titel" ng-model="addAction.action.name">
-				<input type="text" placeholder="Nachricht" ng-model="addAction.action.message">
-				<input type="text" placeholder="Empfänger IDEN" ng-model="addAction.action.receiver">
-			</li>
-			<li class="list-group-item">
-				<div class="input-group">
-					<span class="input-group-addon" id="basic-addon1">Interval</span>
-					<span class="input-group-addon">
-						<input type="checkbox" name="interval" ng-model="addAction.activeInterval" ng-init="addAction.activeInterval = false">
-					</span>
-					<span class="input-group-addon">
-						<input class="form-control" type="number"  min="1" ng-model="addAction.number" ng-disabled="!addAction.activeInterval">
-					</span>
-					<span class="input-group-addon">
-						<select class="form-control" ng-model="addAction.unit" ng-disabled="!addAction.activeInterval">
-							<!--
-								https://bunkat.github.io/later/parsers.html#text
-							 -->
-							<option value="sec">Sekunden</option>
-							<option value="min">Minuten</option>
-							<option value="hours">Stunden</option>
-							<option value="day">Tag</option>
-							<option value="month">Monat</option>
-							<option value="year">Jahr</option>
-							<option value="day">Tag</option>
-							<option value="day of the week">Tag der Woche</option>
-							<option value="day of the year">Tag des Jahres</option>
-							<option value="week of the year">Woche des Jahres</option>
-						</select>
-					</span>
-				</div>
-			</li>
-			<li class="list-group-item">
-				<div class="input-group">
-					<span class="input-group-addon">
-						Verzögerung/Timeout in Sekunden
-					</span>
-					<span class="input-group-addon">
-						<input type="checkbox" name="" ng-model="addAction.activeTimeout" ng-init="addAction.activeTimeout = false">
-					</span>
-					<input type="number" class="form-control" ng-disabled="!addAction.activeTimeout" min="0" ng-model="addAction.timeout">
-				</div>
-			</li>
+				</ul>
+			</div> -->
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button" ng-click="save()">Weiter</button>
+				<button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+			</div>
 		</div>
-	</ul>
-</div>
-<div class="modal-footer">
-	<button class="btn btn-primary" type="button" ng-click="save()">Weiter</button>
-	<button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+	</div>
 </div>

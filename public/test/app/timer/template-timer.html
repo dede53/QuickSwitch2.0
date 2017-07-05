@@ -1,0 +1,168 @@
+<div class="">
+	<div class="card-header">
+		<h6>
+			<span
+				data-toggle="collapse"
+				data-target="#timer{{timer.id}}"
+				title="Zuletzt ausgeführt: {{timer.lastexec | date:'EEE, d. MMM., HH:mm'}}">
+				{{timer.name}}
+			</span>
+			<div class="float-right">
+				<span title="Aktivieren/Deaktivieren">
+					<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
+				</span>
+<!-- 				<span title="Bearbeiten">
+					<ng-md-icon icon="edit" style="fill:#399BB0" size="25" options='{"rotation": "none"}' ng-click='$event.stopPropagation();$event.preventDefault();switchPage("/editTimer/" + timer.id)'></ng-md-icon>
+				</span>
+ -->				<span title="Löschen">
+					<ng-md-icon icon="delete" style="fill:#FF8000" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();remove('timers', timer)"></ng-md-icon>
+				</span>
+			</div>
+		</h6>
+	</div>
+	<div class="card-block collapse" id="timer{{timer.id}}">					
+		<div ng-show="timer.variables != false" class="card">
+			<div class="card-header">
+				Variablen/Events
+			</div>
+			<div class="card-block">
+				<div class="" ng-repeat="(type, variables) in timer.variables">
+					<div timer-variable-directive></div>
+				</div>
+			</div>
+		</div>
+		<div ng-show="timer.conditions != false" class="card">
+			<div class="card-header">Bedingungen</div>
+			<div class="card-block ">
+				<div class="" ng-repeat="(type, conditions) in timer.conditions">
+					<div ng-switch on="type">
+						<div ng-switch-when="range">
+							<div timer-range-directive></div>
+						</div>
+						<div ng-switch-when="time">
+							<div timer-time-directive></div>
+						</div>
+						<div ng-switch-when="random">
+							<div timer-random-directive></div>
+						</div>
+						<div ng-switch-when="variables">
+							<div ng-repeat="condition in conditions">
+								{{condition.id}} {{condition.type}} als {{condition.value}}
+							</div>
+						</div>
+						<div ng-switch-when="weekdays">
+							<div timer-weekdays-directive></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ng-show="timer.actions != false" class="card">
+			<div class="card-header">
+				Aktionen
+				<ng-md-icon 
+					icon="play_arrow"
+					style="fill:lightgreen"
+					class="float-right"
+					size="25"
+					title="Aktionen zum testen ausführen"
+					ng-click='switchAll("timers", timer)'>	
+				</ng-md-icon>
+			</div>
+			<div class="card-block">
+				<div ng-show="timer.actions" class="" ng-repeat="(type, actions) in timer.actions">
+					<div ng-switch on="type">
+						<div ng-switch-when="alerts">
+							<div timer-alert-directive></div>
+						</div>
+						<div ng-switch-when="devices">
+							<div timer-device-directive></div>
+						</div>
+						<div ng-switch-when="groups">
+							<div timer-group-directive></div>
+						</div>
+						<div ng-switch-when="rooms">
+							<div timer-room-directive></div>
+						</div>
+						<div ng-switch-when="storeVariables">
+							Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
+						</div>
+						<div ng-switch-when="saveSensors">
+							Speichere Sensoren
+						</div>
+						<div ng-switch-when="pushbullets">
+							<div timer-pushbullet-directive></div>
+						</div>
+						<div ng-switch-when="urls">
+							<ul class="list-group">
+								<li class="list-group-item">
+									Urls aufrufen
+								</li>
+								<li class="list-group-item" ng-repeat="url in actions">
+									<div>
+										Url: {{url.action.url}}
+										<span ng-show="url.timeout > 0">
+											Timeout: {{url.timeout}} Sekunden
+										</span>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div ng-switch-when="intervals">
+							<ul class="list-group">
+								<li class="list-group-item">
+									Intervalle
+								</li>
+								<li class="list-group-item">
+									<div class="w-100" ng-repeat="(index, actions) in actions">
+										<span ng-switch on="index">
+											<span ng-switch-when="alerts">
+											</span>
+											<span ng-switch-when="devices">
+												<div timer-device-directive></div>
+											</span>
+											<div ng-switch-when="groups">
+												<div timer-group-directive></div>
+											</div>
+											<div ng-switch-when="rooms">
+												<div timer-room-directive></div>
+											</div>
+											<div ng-switch-when="storeVariables">
+												Speichere Variablen:<span ng-repeat="action in actions"> {{action.name}}</span>
+											</div>
+											<div ng-switch-when="url">
+												<ul class="list-group">
+													<li class="list-group-item">
+														Urls aufrufen
+													</li>
+													<li class="list-group-item" ng-repeat="url in actions">
+														Url: {{url.action.url}}
+														<span ng-show="url.timeout > 0">
+															Timeout: {{url.timeout}} Sekunden
+														</span>
+														<span ng-show="url.activeInterval">
+															 Interval: {{url.number}} {{url.unit}}
+														</span>
+													</li>
+												</ul>
+											</div>
+											<span ng-switch-when="saveSensors">
+												Speichere Sensoren
+											</span>
+											<span ng-switch-default>
+												<div>{{type}}{{interval}}</div>
+											</span>
+										</span>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div ng-switch-default>
+							<div>{{type}}{{action}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

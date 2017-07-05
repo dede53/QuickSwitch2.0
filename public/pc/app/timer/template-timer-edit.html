@@ -47,6 +47,17 @@
 						<div ng-switch-when="weekdays">
 							<div timer-weekdays-directive></div>
 						</div>
+						<div ng-switch-when="variables">
+							<div ng-repeat="condition in conditions">
+								{{condition.id}} {{condition.type}} als {{condition.value}}
+								<button 
+									class="pull-right btn btn-danger btn-sm"
+									ng-click="removeCondition({condition:condition, type:'variables'})"
+								>
+									Löschen
+								</button>
+							</div>
+						</div>
 					</div>
 				</li>
 				<li class="list-group-item">
@@ -54,13 +65,15 @@
 				</li>
 			</div>
 		</ul>
-		<ul class="list-group">
-			<div class="panel panel-primary">
-				<div class="panel-heading">Aktionen</div>
-				<li class="list-group-item" ng-hide="timer.actions">
+		<div class="card">
+			<!-- <div class="panel panel-primary"> -->
+			<div class="card-header">Aktionen</div>
+			<div class="card-block">
+				
+<!-- 				<li class="list-group-item" ng-hide="timer.actions">
 					Dieser Timer enthält keine Aktionen
-				</li>
-				<li class="list-group-item" ng-repeat="(type, actions) in timer.actions">
+				</li> -->
+				<div class="" ng-repeat="(type, actions) in timer.actions">
 					<div ng-switch on="type">
 						<div ng-switch-when="alerts">
 							<div timer-alert-directive></div>
@@ -76,21 +89,28 @@
 						</div>
 						<div ng-switch-when="urls">
 							<ul class="list-group">
-								<li class="list-group-item">Urls aufrufen</li>
-								<li class="list-group-item" ng-repeat="url in action">
-									Url: {{url.url}}
-									<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'urls'})">Löschen</button>
-								</li>
 								<li class="list-group-item">
-									Timeout: {{url.timeout}} Sekunden
+									Urls aufrufen
 								</li>
+								<span ng-repeat="action in actions">
+									<li class="list-group-item">
+									<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'urls'})">Löschen</button>
+										<span ng-repeat="url in action.action">
+											Url: {{url.url}}
+											<span ng-show="url.timeout">Timeout: {{url.timeout}} Sekunden</span>
+										</span>
+									</li>
+									<li class="list-group-item" ng-show="action.timeout">
+										Timeout: {{action.timeout}} Sekunden
+									</li>
+								</span>
 							</ul>
 						</div>
 						<div ng-switch-when="storeVariables">
 							<ul class="list-group">
 								<li class="list-group-item">Speichere Variablen</li>
 								<li class="list-group-item" ng-repeat="action in actions">
-									Name: {{action.name}}
+									Name: {{action}}
 									<button class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'storeVariables'})">Löschen</button>
 								</li>
 							</ul>
@@ -169,14 +189,12 @@
 							<div>{{type}}{{action}}</div>
 						</div>
 					</div>
-				</li>
-				<li class="list-group-item">
-					<button type="button" class="btn btn-default" ng-click="openAction()">
-						Aktion Hinzufügen
-					</button>
-				</li>
+				</div>
+				<button type="button" class="btn btn-default" ng-click="openAction()">
+					Aktion Hinzufügen
+				</button>
 			</div>
-		</ul>
+		</div>
 	</div>
 	<div class="panel-body">
 		<div class="pull-right">

@@ -1,23 +1,21 @@
 <ul class="list-group">
 	<li class="list-group-item">Alerts</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul >
-			<li>
+	<li class="list-group-item align-items-start flex-column" ng-repeat="action in actions">
+		<div class="d-flex w-100 justify-content-between">
 				Titel: {{action.action.title}}
-				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'alerts'})">Löschen</button>
-			</li>
-			<li>
-				Nachricht: {{action.action.message}}
-			</li>
-			<li>
-				Type: {{action.action.type}}
-			</li>
-			<li>
-				Benutzer: {{action.action.user}}
-			</li>
-			<li ng-show="action.activeTimeout">
-				Timeout: {{action.timeout}} Sekunden
-			</li>
-		</ul>
+				<button ng-show="timerEditMode" class="btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'alerts'})">Löschen</button>
+		</div>
+		<small class="mb-1">
+			Nachricht: {{action.action.message}}
+		</small>
+		<small class="mb-1">
+			Type: {{action.action.type}}
+		</small>
+		<small class="mb-1">
+			Benutzer: {{action.action.user}}
+		</small>
+		<small class="mb-1" ng-show="action.activeTimeout">
+			Timeout: {{action.timeout}} Sekunden
+		</small>
 	</li>
 </ul>

@@ -12,6 +12,7 @@ var log_stdout			=	process.stdout;
 var settings 		= {
 	loglevel: 4
 }
+
 /********************************
 Log-Level:
 more	|	info	1	| =  1
@@ -142,6 +143,8 @@ function checkCountdowns(){
 	});
 }
 
+
+// Auf process.send umbauen!!
 function switchaction(type, id, action){
 	request.get({
 		url:'http://' + conf.QuickSwitch.ip + ':' + conf.QuickSwitch.port + '/switch/' + type + '/' + id + '/' + action

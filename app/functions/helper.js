@@ -73,24 +73,6 @@ module.exports = {
 		return false;
 	},
 	log: log,
-	Sensor: function(id, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
-		this.id = id;
-		this.name = name;
-		this.data = data;
-		this.step = step;
-		// this.step = Boolean(step);
-		this.showAllData = showAll;
-		this.type = charttype;
-		this.dashStyle = linetype;
-		this.color = farbe;
-		this.yAxis = yAxis;
-		this.connectNulls = connectNulls;
-		this.marker = new Object;
-		this.marker.symbol = "diamond";
-		this.marker.radius = 3;
-		this.tooltip = new Object;
-		this.tooltip.valueSuffix = valueSuffix;
-	},
 	wochentag: function(i){
 		var tag = (typeof(i) == 'object') ? i.getDay() : i ;
 		return tag;

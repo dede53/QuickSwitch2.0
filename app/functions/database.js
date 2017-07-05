@@ -33,9 +33,8 @@ module.exports = {
 				connection.release();
 				if(err) {
 					console.log(err);
-					throw(err);
-					callback(err, rows);
-					return;
+					// throw(err);
+					// return;
 				}
 				callback(err, rows);
 			});

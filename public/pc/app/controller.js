@@ -26,7 +26,7 @@ app.factory('socket', function ($rootScope) {
 				});
 			})
 		},
-		socket: socket.socket
+		socket: socket
 	};
 });
 app.config(['$routeProvider', function($routeProvider) {
@@ -60,7 +60,7 @@ app.config(['$routeProvider', function($routeProvider) {
 }]);
 
 app.controller('appController', function($scope, socket, $rootScope, $location){
-	var oldUser = "system";
+	var oldUser = "Admin";
 	var newUser;
 	$rootScope.storedUser = getCookie("username");
 	$rootScope.list = [];
@@ -71,12 +71,12 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	
 	if ($scope.storedUser != "") {
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
+		$scope.bla = $rootScope.activeUser;
+		socket.emit('room:join', $rootScope.activeUser);
 	}else{
-		$rootScope.activeUser = {name:"system",favoritDevices: [], variables:[], admin:true};
+		$rootScope.activeUser = {name:"Admin",favoritDevices: [], variables:[], admin:true};
 	}
-	$scope.bla = $rootScope.activeUser;
 
-	socket.emit('room:join', $rootScope.activeUser);
 	socket.emit('users:get');
 	$scope.setUser = function(user){
 		socket.emit('room:leave', $rootScope.activeUser);
@@ -102,22 +102,16 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	}
 	$scope.refresh = function(){
 		socket.socket.connect();
-		socket.emit('room:join', $rootScope.activeUser);
+		setTimeout(function(){
+			socket.emit('room:join', $rootScope.activeUser);
+		}, 2000);
 	}
 	socket.on('connect', function(data){
+		socket.emit('room:join', $rootScope.activeUser);
 		$rootScope.socketConnected = true;
 	});
 	socket.on('disconnect', function(data){
 		$rootScope.socketConnected = false;
-	});
-	socket.on('serverError', function(data){
-		var id = new Date().getTime();
-		$rootScope.alerts[id] = {
-			"title":"Error!",
-			"message":data,
-			"type":"danger",
-			"date": new Date(),
-		};
 	});
 	socket.on('change', function(data){
 		console.log(data);
@@ -153,7 +147,7 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 				}
 				break;
 		}
-		if(data.masterType == "variables"){
+		if(data.masterType == "variables" && data.type == "edit"){
 			if($rootScope.favoritVariables[data.edit.id]){
 				$rootScope.favoritVariables[data.edit.id] = data.edit;
 			}

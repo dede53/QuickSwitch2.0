@@ -20,6 +20,25 @@ function getVariables(callback){
 	});
 }
 
+function Sensor(id, name, data, charttype, linetype, farbe, valueSuffix, yAxis, step, showAll, connectNulls){
+	this.id = id;
+	this.name = name;
+	this.data = data;
+	this.step = step;
+	// this.step = Boolean(step);
+	this.showAllData = showAll;
+	this.type = charttype;
+	this.dashStyle = linetype;
+	this.color = farbe;
+	this.yAxis = yAxis;
+	this.connectNulls = connectNulls;
+	this.marker = new Object;
+	this.marker.symbol = "diamond";
+	this.marker.radius = 3;
+	this.tooltip = new Object;
+	this.tooltip.valueSuffix = valueSuffix;
+}
+
 function favoritVariables(favoritVariables, mode, callback){
 	var query = "SELECT uid, id, name, status, charttype, linetype, linecolor, suffix, error, step, showall, user, lastChange FROM variable;";
 	db.all(query, function(err, variab){
@@ -31,6 +50,7 @@ function favoritVariables(favoritVariables, mode, callback){
 		variab.forEach(function(variable){
 			variablen[variable.id] = variable;
 		});
+		console.log(favoritVariables);
 		if(mode == "array"){
 			if(favoritVariables == undefined){
 				callback([]);
@@ -121,7 +141,7 @@ function loadStoredVariable(variable, hours, callback){
 			*/
 	db.all(query , function(err, sensordata) {
 		if (err) {
-			helper.log.error(err);
+			log.error(err);
 			return;
 		}else{
 			var bla = new Array;
@@ -137,7 +157,8 @@ function loadStoredVariable(variable, hours, callback){
 				asd.push(parseFloat(uff.value));
 				bla.push(asd);
 			});
-			var data = new helper.Sensor(variable.id, variable.name, bla, variable.charttype, variable.linetype, variable.linecolor, variable.suffix, 0, variable.step, variable.showall);
+			var data = new Sensor(variable.id, variable.name, bla, variable.charttype, variable.linetype, variable.linecolor, variable.suffix, 0, variable.step, variable.showall);
+			// console.log(data);
 			callback(data);
 		}
 	});
@@ -212,7 +233,7 @@ module.exports = {
 	getVariable: function(name, cb){
 		client.get(name, function(err, data){
 			if(err){
-				helper.log.error(err);
+				log.error(err);
 				return;
 			}
 			helper.debug(data);
@@ -271,7 +292,7 @@ module.exports = {
 		var query = "DELETE FROM variable WHERE uid = '" + uid + "';";
 		db.all(query, function(err, data){
 			if(err){
-				helper.log.error(err);
+				log.error(err);
 				return;
 			}
 			callback(200);
@@ -299,10 +320,10 @@ module.exports = {
 			}else{
 				app.io.emit('change', new helper.message('variables:edit',fullVariable));
 			}
+			callback(200);
 			// loadStoredVariable(fullVariable, '36', function(data){
 			// 	app.io.emit('storedVariable', data);
 			// });
-			callback(200);
 		});
 	},
 	setVariableByNodeid: function(variable, app, callback){
@@ -324,13 +345,14 @@ module.exports = {
 			var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + data.id + "', '" + now + "', '" + data.status + "');";
 			db.all(query, function(err, row){
 				if(err){
-					helper.log.error(err);
+					log.error(err);
 				}
 			});
 		});
 	},
 	saveVariable: function(data, callback){
 		if(data.id){
+			var newVariable = false;
 			var query = "UPDATE variable SET "
 						+ "name = '" + data.name + "', "
 						+ "status = '" + data.status + "', "
@@ -342,14 +364,17 @@ module.exports = {
 						+ "suffix = '" + data.suffix + "', "
 						+ "step = '" + data.step + "', "
 						+ "showall = '" + data.showall + "', "
-						+ "user = '" + data.user + "' "
+						+ "user = '" + data.user + "', "
+						+ "saveActive = '" + data.saveActive + "' "
+						+ "saveType = '" + data.saveType + "' "
+						+ "saveInterval = '" + data.saveInterval + "' "
 						+ "WHERE id = '" + data.id + "';";
 		}else{
-			var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user) VALUES ('"+data.id+"', '"+data.name+"', '"+data.status+"', '"+data.charttype+"', '"+data.linetype+"', '"+data.linecolor+"', '"+data.error+"', '"+new Date().getTime()+"', '"+data.suffix+"', '"+data.step+"', '"+data.showall+"', '"+data.user+"')";
+			var newVariable = true;
+			var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+data.name+"', '"+data.status+"', '"+data.charttype+"', '"+data.linetype+"', '"+data.linecolor+"', '"+data.error+"', '"+new Date().getTime()+"', '"+data.suffix+"', '"+data.step+"', '"+data.showall+"', '"+data.user+"', '"+data.saveActive+"', '"+data.saveType+"', '"+data.saveInterval+"')";
 		}
-		console.log(query);
 		db.run(query);
-		callback(201);
+		callback(201, newVariable);
 	},
 	getStoredVariable: getStoredVariable,
 	getStoredVariables: getStoredVariables

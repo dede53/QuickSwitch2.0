@@ -1,21 +1,23 @@
 <ul>
 	<li>
 		<h3>
-			Gruppen
+			<a ng-click="switchPage('/devices')">
+				Gruppen
+			</a>
 		</h3>
 	</li>
 	<li ng-hide="groups | isEmpty" ng-repeat="group in groups" class="card">
-		<div class="card-header">
-			<h6 class="card-titlee" style="height:25px;">
-				<a href="" data-toggle="collapse" data-target="#group{{group.id}}" >
-					{{group.name}}
-				</a>
-				<div class="pull-right">
+		<h4 class="card-header">
+			<div class="d-flex justify-content-end">
+				<div data-toggle="collapse" data-parent="#accordion" data-target="#group{{group.id}}" class="devicename" style="text-overflow:ellipsis; overflow:hidden;cursor:pointer; margin:auto auto auto 0 !important;">
+						{{group.name}}
+				</div>
+				<div style="display: flex;">
 					<button class="btnOn buttonM" id="btnOn{{group.id}}" ng-click='switch("groups", {"group":group,"status":"1"})' >An</button>
 					<button class="btnOff buttonM" id="btnOff{{group.id}}" ng-click='switch("groups", {"group":group,"status":"0"})' >Aus</button>
 				</div>
-			</h6>
-		</div>
+			</div>
+		</h4>
 		<div class="card-block collapse" ng-hide="devicelist | isEmpty" id="group{{group.id}}">
 			<ul>
 				<li ng-repeat="device in group.groupDevices">

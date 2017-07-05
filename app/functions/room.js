@@ -1,15 +1,14 @@
 var db 				= require('./database.js');
 var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
-var helper 			= require('./helper.js');
 
 function getRoom(id, callback){
 	var query = "SELECT * FROM rooms WHERE id = "+ id +";";
 	db.all(query, function(err, data){
 		if(err){
-			helper.log.error(err);
+			log.error(err);
 		}else if(data == ""){
-			helper.log.info("Kein Raum mit der ID: " + id);
+			log.info("Kein Raum mit der ID: " + id);
 		}else{
 			callback(data[0]);
 		}
@@ -26,7 +25,7 @@ module.exports = {
 
 		db.all(query , function(err, row) {
 			if (err) {
-				helper.log.error("switchRoom: " + err);
+				log.error("switchRoom: " + err);
 				callback(404);
 			} else {
 				var callbackSend = false;
@@ -52,7 +51,7 @@ module.exports = {
 			async.each(data,
 				function(data, callback){
 					if(err){
-						helper.log.error(err);
+						log.error(err);
 					}else{
 						if(type == "object"){
 							uff[data.id] = data;
@@ -64,7 +63,7 @@ module.exports = {
 				},
 				function(err){
 					if(err){
-						helper.log.error(err);
+						log.error(err);
 					}else{
 						callback(uff);
 					}
@@ -99,7 +98,7 @@ module.exports = {
 				var query = "DELETE FROM rooms WHERE id = "+ id +";";
 				db.all(query ,function(err,rows){
 					if(err){
-						helper.log.error(err);
+						log.error(err);
 						callback(err);
 					}else{
 						callback(200);

@@ -1,17 +1,18 @@
 <ul class="list-group">
 	<li class="list-group-item">Geräte</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul>
-			<li>
-				Titel: {{action.action.name}} ({{action.action.Raum}})
-				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'device'})">Löschen</button>
-			</li>
-			<li>
-				Action: {{action | returnStatus}}
-			</li>
-			<li ng-show="action.activeTimeout">
-				Timeout: {{action.timeout}} Sekunden
-			</li>
-		</ul>
+	<li class="list-group-item align-items-start flex-column" ng-repeat="action in actions">
+		<div class="d-flex w-100 justify-content-between">
+			{{action.action.name}} ({{action.action.Raum}})
+			<button ng-show="timerEditMode" class="btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'devices'})">Löschen</button>
+		</div>
+		<span class="small">
+			Action: {{action | returnStatus}}
+		</span>
+		<span class="small" ng-show="action.activeTimeout">
+			Timeout: {{action.timeout}} Sekunden
+		</span>
+		<span class="small" ng-show="action.activeInterval">
+			 Interval: {{action.number}} {{action.unit}}
+		</span>
 	</li>
 </ul>

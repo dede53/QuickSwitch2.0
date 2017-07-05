@@ -50,7 +50,7 @@ app.factory('socket', function ($rootScope) {
 				});
 			})
 		},
-		socket: socket.socket
+		socket: socket
 	};
 });
 app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, socket, $rootScope) {
@@ -86,7 +86,7 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, socket, 
 	$scope.bla = $rootScope.activeUser;
 
 	socket.emit('room:join', $rootScope.activeUser);
-	socket.emit('user:get');	
+	socket.emit('users:get');	
 	$scope.setUser = function(user){
 		console.log("leave:" + $rootScope.activeUser.name);
 		socket.emit('room:leave', $rootScope.activeUser);
@@ -96,6 +96,7 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, socket, 
 
 		console.log("join:" + $rootScope.activeUser.name);
 		socket.emit('room:join', user);
+		socket.emit('objects:get', user);
 	}
 	$scope.add = function(type, data){
 		socket.emit(type + ':add', {user:$rootScope.activeUser, add: data});	
@@ -123,7 +124,7 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log, socket, 
 	});
 	socket.on('change', function(data){
 		$scope.progress = false;
-		// console.log(data);
+		console.log(data);
 		switch(data.type){
 			case "add":
 				$scope[data.masterType][data.add.id] = data.add;

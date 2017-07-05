@@ -1,20 +1,18 @@
 <ul class="list-group">
 	<li class="list-group-item">Pushbullet Benachrichtigungen</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul >
-			<li>
+	<li class="list-group-item align-items-start flex-column" ng-repeat="action in actions">
+			<div class="d-flex w-100 justify-content-between">
 				Titel: {{action.action.name}}
 				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'pushbullets'})">Löschen</button>
-			</li>
-			<li>
+			</div>
+			<span class="small">
 				Nachricht: {{action.action.message}}
-			</li>
-			<li>
+			</span>
+			<span class="small">
 				Empfänger: {{action.action.receiver}}
-			</li>
-			<li ng-show="action.activeTimeout">
+			</span>
+			<span class="small" ng-show="action.activeTimeout">
 				Timeout: {{action.timeout}} Sekunden
-			</li>
-		</ul>
+			</span>
 	</li>
 </ul>

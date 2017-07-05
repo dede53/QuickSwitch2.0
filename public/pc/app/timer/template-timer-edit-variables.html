@@ -8,8 +8,8 @@
 		</li>
 		<li class="list-group-item">
 			<select class="form-control" name="variables" ng-model="addVariable.variable">
-		    	<option value="" disabled selected>Variable wählen</option>
-				<option ng-repeat="option in variables" >{{option.name}}</option>
+				<option value="" disabled selected>Variable wählen</option>
+				<option value="{{option.id}}" ng-repeat="option in variables" >{{option.name}}</option>
 			</select>
 		</li>
 		<li class="list-group-item">

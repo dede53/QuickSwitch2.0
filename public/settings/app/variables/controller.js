@@ -94,7 +94,6 @@ app.controller('editVariableController', function($scope, $rootScope, socket, $r
 });
 
 app.controller('varChartController', function($scope, $rootScope, socket, variable){
-	$scope.tempNoData = false;	
 	var chartConfig = {
 			options:{
 				chart: {
@@ -247,10 +246,9 @@ app.controller('varChartController', function($scope, $rootScope, socket, variab
 	$scope.$watch('$root.storedVariable', function(newValue, oldValue){
 		if(newValue != undefined){
 			if(newValue != false){
+				$scope.chartConfigSettings.series = [];
 				$scope.chartConfigSettings.series.push(newValue);
 				$scope.chartConfigSettings.loading = false;
-			}else{
-				$scope.tempNoData = true;
 			}
 		}
 	}, 1000);
@@ -267,5 +265,6 @@ app.controller('varChartController', function($scope, $rootScope, socket, variab
 	setTimeout(function(){
 		var chart = $rootScope.chartConfigSettings.getHighcharts();
 		chart.reflow();
-	}, 20);
+		console.log("reflow");
+	}, 1000);
 });

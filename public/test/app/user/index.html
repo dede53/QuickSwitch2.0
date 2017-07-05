@@ -1,0 +1,5 @@
+<select
+	ng-options="item.name for item in users track by item.id"
+	ng-model="bla"
+	ng-change="setUser(bla)"
+></select>

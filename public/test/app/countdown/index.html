@@ -1,0 +1,42 @@
+<h3>Countdowns</h3>
+<div ng-show="$root.countdowns | isEmpty" class="alert alert-info" role="alert">Keine Countdowns gesetzt!</div>
+<div class="card" ng-hide="$root.countdowns | isEmpty">
+	<div class="card-block">
+		<ul style=" overflow:auto">
+			<li ng-repeat="countdown in $root.countdowns">
+				<p>{{countdown.device.name}} ({{countdown.device.Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.status ? "ein" :  "aus"}}schalten
+					<button class="btn btn-xs btn-danger" ng-click="remove('countdowns', {'id':countdown.id})" >Löschen</button>
+				</p>
+			</li>
+		</ul>
+	</div>
+</div>
+<form>
+	<ul style="text-align:right;" >
+		<fieldset class="form-group">
+			<label for="device" class="left">Gerät</label>
+			<select
+					class="form-control"
+					ng-change=""
+					ng-model="newCountdowntimer.device"
+					ng-options="value as value.name group by value.Raum for value in devicelist">
+					<option value="">Wähle ein Gerät</option>
+			</select>
+		</fieldset>
+		<fieldset class="form-group">
+			<label for="minutes" class="left">Verzögerung: {{newCountdowntimer.time}} Minuten</label>
+			<input id="minutes" style="width:calc(100% - 17px);" type="range" min="1" max="180"	class="form-control" ng-model="newCountdowntimer.time"></input>
+		</fieldset>
+		<fieldset class="form-group">
+			<div class="btn-group">
+				<label class="btn btn-secondary" ng-model="newCountdowntimer.status" uib-btn-radio="1">{{newCountdowntimer.device.buttonLabelOn || 'An'}}</label>
+				<label class="btn btn-secondary" ng-model="newCountdowntimer.status" uib-btn-radio="0">{{newCountdowntimer.device.buttonLabelOff || 'Aus'}}</label>
+			</div>
+			<div class="btn-group">
+				<label class="btn btn-secondary">
+					<a ng-click="add('countdowns', newCountdowntimer)">Senden!</a>
+				</label>
+			</div>
+		</fieldset>
+	</ul>
+</form>

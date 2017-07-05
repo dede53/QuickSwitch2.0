@@ -73,6 +73,10 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				{ 
 					name: "Arduino-344Mhz",
 					id: 'arduino:344'
+				},
+				{ 
+					name: "Arduino-PilightRaw",
+					id: 'arduino:pilightRaw'
 				}
 			];
 

@@ -1,7 +1,6 @@
 var db 				= require('./database.js');
 var async 			= require("async");
 var deviceFunctions = require('./device.js');
-var helper 			= require('./helper.js');
 
 module.exports = {
 	/*****************************************
@@ -11,7 +10,7 @@ module.exports = {
 		var query = "SELECT countdowns.id, countdowntypen.type, countdowns.switchid, countdowns.time, countdowns.status, countdowns.user FROM countdowns, countdowntypen WHERE countdowns.type = countdowntypen.id AND countdowns.user = '"+ user +"';";
 		db.all(query, function(err, row){
 			if(err){
-				helper.log.error(err, "error");
+				log.error(err, "error");
 			}else{
 				var bla = {};
 				async.each(row,
@@ -24,7 +23,7 @@ module.exports = {
 					},
 					function(err){
 						if(err){
-							helper.log.error(err, "error");
+							log.error(err, "error");
 						}else{
 							callback(bla);
 						}
@@ -40,10 +39,10 @@ module.exports = {
 		var query = "DELETE FROM countdowns WHERE id = "+ id +";";
 		db.all(query ,function(err,rows){
 			if(err){
-				helper.log.error(err, "error");
+				log.error(err, "error");
 				callback('Error: ' + err);
 			}else{
-				helper.log.info('Delete Countdown with id: ' + id, "info");
+				log.info('Delete Countdown with id: ' + id, "info");
 				callback("200");
 			}
 		});
@@ -60,16 +59,13 @@ module.exports = {
 				error bei fehler
 	*****************************************/
 	setNewCountdown: function (data, callback){
-		var query = "INSERT INTO countdowns (type, time, switchid, status, user) VALUES ('1','"+ data.time +"','"+ data.device +"','"+ data.status +"', '" + data.user + "');";
+		var query = "INSERT INTO countdowns (type, time, switchid, status, user) VALUES ('1','"+ data.time +"','"+ data.device.deviceid +"','"+ data.status +"', '" + data.user + "');";
 		db.all(query, function(err, res){
 			if(err){
 				callback(err);
 			}else{
 				data.id = res.insertId;
-				deviceFunctions.getDevice(data.device, function(device){
-					data.device = device;
-					callback("200", data);
-				});
+				callback("200", data);
 			}
 		});
 	}

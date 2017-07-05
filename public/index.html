@@ -7,29 +7,12 @@
 		<meta name="apple-touch-fullscreen" content="yes">
 		<style type="text/css">
 			@media (max-width: 250px) {
-				li{
-					width: 30%;
-					padding: 20px;
-					margin:0px auto;
-					min-width: 120px;
-				}
-
 				.content {
 					margin-top: 50px;
-					/*max-width: 600px;*/
-					/*margin: 20px;*/
 					padding: 30px 10px;
-					/*margin-top: 50px;*/
 				}
 			}
 			@media (min-width: 250px) and (max-width: 60em) {
-				li{
-					width: 30%;
-					padding: 20px;
-					margin:0px auto;
-					min-width: 120px;
-				}
-
 				.content {
 					padding: 30px 10px;
 					width: calc(100% - 50px);
@@ -79,24 +62,32 @@
 			}
 			li{
 				width: 30%;
-				padding: 20px;
 				margin:0px auto;
 				min-width: 120px;
-				margin:20px auto;
-				background-color: #c7c7fc;
+				padding: 10px 0;
+				margin:0px auto;
+				/*min-width: 120px;*/
+				/*margin:20px auto;*/
 				font-family: inherit;
 				color: inherit;
-				border: solid 3px;
-				border-radius: 3px;
-				border-color: #c7c7fc;
 			}
-			a {
-				/*padding: 10px;*/
-				margin: 0px;
+			a{
+				/*border: solid 3px;*/
+				/*border-radius: 3px;*/
+				/*border-color: #c7c7fc;*/
+				/*width: 300px;*/
+				/*padding: 20px;*/
+				/*margin: 20px;*/
 				text-decoration: none;
 			}
 			a:hover {
-				color: #55b;
+				/*color: #55b;*/
+			}
+			p{
+				width: auto;
+				margin: 0 auto;
+				padding: 20px 0;
+				background-color: #c7c7fc;
 			}
 			ul{
 				/*padding-right: 6.5%;*/
@@ -113,9 +104,9 @@
 			<h1>QuickSwitch 2.0</h1>
 			<h4>Bitte wählen Sie:</h4>
 			<ul class="links">
-				<li><a href="/mobile/#/devices">Handy</a></li>
-				<li><a href="/pc">Computer</a></li>
-				<li><a href="/settings">Einstellungen</a></li>
+				<li><a href="/mobile/#/devices"><p>Handy</p></a></li>
+				<li><a href="/pc"><p>Computer</p></a></li>
+				<li><a href="/settings"><p>Einstellungen</p></a></li>
 			</ul>
 		</div>
 	</body>
