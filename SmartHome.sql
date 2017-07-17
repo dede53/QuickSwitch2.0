@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 05. Jul 2017 um 23:42
+-- Erstellungszeit: 17. Jul 2017 um 12:56
 -- Server-Version: 5.5.55-0+deb8u1
 -- PHP-Version: 5.6.30-0+deb8u1
 
@@ -15,8 +15,6 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `SmartHome`
 --
-CREATE DATABASE IF NOT EXISTS `SmartHome` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `SmartHome`;
 
 -- --------------------------------------------------------
 
@@ -29,10 +27,6 @@ CREATE TABLE `charttypen` (
   `chart` varchar(20) NOT NULL,
   `name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `charttypen`:
---
 
 --
 -- Daten für Tabelle `charttypen`
@@ -63,10 +57,6 @@ CREATE TABLE `countdowns` (
   `user` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `countdowns`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -77,10 +67,6 @@ CREATE TABLE `countdowntypen` (
   `id` int(11) NOT NULL,
   `type` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `countdowntypen`:
---
 
 --
 -- Daten für Tabelle `countdowntypen`
@@ -112,10 +98,6 @@ CREATE TABLE `devices` (
   `type` varchar(30) NOT NULL DEFAULT 'device'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `devices`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -129,10 +111,6 @@ CREATE TABLE `groups` (
   `user` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `groups`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -144,10 +122,6 @@ CREATE TABLE `linetypen` (
   `name` varchar(30) NOT NULL,
   `line` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `linetypen`:
---
 
 --
 -- Daten für Tabelle `linetypen`
@@ -180,10 +154,6 @@ CREATE TABLE `messages` (
   `message` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `messages`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -194,10 +164,6 @@ CREATE TABLE `messagetypen` (
   `id` int(11) NOT NULL,
   `type` varchar(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `messagetypen`:
---
 
 --
 -- Daten für Tabelle `messagetypen`
@@ -219,10 +185,6 @@ CREATE TABLE `objects` (
   `data` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `objects`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -233,10 +195,6 @@ CREATE TABLE `rooms` (
   `id` int(11) NOT NULL,
   `name` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `rooms`:
---
 
 -- --------------------------------------------------------
 
@@ -253,10 +211,6 @@ CREATE TABLE `sensors` (
   `linecolor` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `sensors`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -269,10 +223,6 @@ CREATE TABLE `stored_vars` (
   `time` varchar(20) NOT NULL,
   `value` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `stored_vars`:
---
 
 -- --------------------------------------------------------
 
@@ -287,10 +237,6 @@ CREATE TABLE `switch_history` (
   `status` varchar(20) NOT NULL,
   `place` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `switch_history`:
---
 
 -- --------------------------------------------------------
 
@@ -309,10 +255,6 @@ CREATE TABLE `timer` (
   `lastexec` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- RELATIONEN DER TABELLE `timer`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -322,17 +264,13 @@ CREATE TABLE `timer` (
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
-  `favoritDevices` varchar(200) NOT NULL DEFAULT '[]',
-  `favoritVariables` varchar(200) NOT NULL DEFAULT '[]',
-  `varChart` varchar(200) NOT NULL DEFAULT '[]',
+  `favoritDevices` varchar(20000) NOT NULL DEFAULT '[]',
+  `favoritVariables` varchar(20000) NOT NULL DEFAULT '[]',
+  `varChart` varchar(20000) NOT NULL DEFAULT '[]',
   `admin` tinyint(1) NOT NULL DEFAULT '0',
   `chartHour` int(20) NOT NULL DEFAULT '24',
   `background` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `user`:
---
 
 -- --------------------------------------------------------
 
@@ -359,10 +297,6 @@ CREATE TABLE `variable` (
   `saveType` varchar(20) NOT NULL DEFAULT 'onchange',
   `saveInterval` int(10) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELATIONEN DER TABELLE `variable`:
---
 
 --
 -- Indizes der exportierten Tabellen
@@ -459,7 +393,7 @@ ALTER TABLE `switch_history`
 -- Indizes für die Tabelle `timer`
 --
 ALTER TABLE `timer`
-  ADD PRIMARY KEY (`name`),
+  ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`);
 
 --
@@ -489,7 +423,7 @@ ALTER TABLE `charttypen`
 -- AUTO_INCREMENT für Tabelle `countdowns`
 --
 ALTER TABLE `countdowns`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT für Tabelle `countdowntypen`
 --
@@ -499,12 +433,12 @@ ALTER TABLE `countdowntypen`
 -- AUTO_INCREMENT für Tabelle `devices`
 --
 ALTER TABLE `devices`
-  MODIFY `deviceid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `deviceid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT für Tabelle `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT für Tabelle `linetypen`
 --
@@ -514,7 +448,7 @@ ALTER TABLE `linetypen`
 -- AUTO_INCREMENT für Tabelle `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT für Tabelle `messagetypen`
 --
@@ -539,17 +473,17 @@ ALTER TABLE `sensors`
 -- AUTO_INCREMENT für Tabelle `stored_vars`
 --
 ALTER TABLE `stored_vars`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40846;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75768;
 --
 -- AUTO_INCREMENT für Tabelle `switch_history`
 --
 ALTER TABLE `switch_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4633;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4965;
 --
 -- AUTO_INCREMENT für Tabelle `timer`
 --
 ALTER TABLE `timer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT für Tabelle `user`
 --
@@ -559,4 +493,4 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT für Tabelle `variable`
 --
 ALTER TABLE `variable`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;COMMIT;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;COMMIT;
