@@ -3,26 +3,23 @@
 	<div class="card">
 		<div class="card-block">
 		<ul style="max-height:230px; overflow:auto;">
+			<li class="tile" ng-repeat="message in chatMessages | orderBy:'-id'">
+				<p class="sliderText" id="{{message.time}}">
+					<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>{{message.author}}:
+					<span ng-if="message.type == '1'">
+						{{message.message}}
+					</span>
+					<span ng-if="message.type == '2'">
+						<a target="_blank" href="{{message.message}}">{{message.message}}</a>
+					</span>
+				</p>
+			</li>
 			<li class="" ng-hide="moreMessagesAvailable">
 				<div class="alert-sm alert-info" role="alert">Keine weiteren Nachrichten verfügbar!</div>
 			</li>
 			<li class="" ng-show="moreMessagesAvailable">
 				<div class="alert-sm alert-info" role="alert">
 					<a href="" class="alert-link" ng-click = "loadOldMessages()" >ältere Nachrichten Laden</a>
-				</div>
-			</li>
-			<li class="tile" ng-repeat="message in chatMessages track by $index">
-				<div ng-if="message.type == '1'">
-					<p class="sliderText" id="{{message.time}}">
-						<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>  {{message.author}}: {{message.message}}
-					</p>
-				</div>
-				<div ng-if="message.type == '2'">
-					<p class="sliderText" id="{{message.time}}">
-						<span id="italic">{{message.time | date:'d. MMM | HH:mm'}}</span>
-						{{message.author}}: 
-						<a target-blank ng-href="{{message.message}}">{{message.message}}</a>
-					</p>
 				</div>
 			</li>
 		</ul>

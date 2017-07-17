@@ -53,6 +53,18 @@ module.exports = {
 			form: formData
 		},function( err, httpResponse, body){
 			if(err){
+				app.io.emit('change', {
+					masterType : "alerts",
+					type : "add",
+					add :{
+						title: 'Servererror!',
+						message: 'Der SwitchServer ist nicht erreichbar! Frage deinen Admin um Rat.',
+						user: 'all',
+						type: 'danger',
+						date: new Date(),
+						id: 43 
+					}
+				});
 				log.error("Error! \n SwitchServer ist nicht erreichbar!");
 				log.error(err);
 			}else{

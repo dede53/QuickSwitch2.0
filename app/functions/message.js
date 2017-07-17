@@ -33,7 +33,7 @@ module.exports = {
 				var messagesToSend = new Object;
 				messagesToSend.messages = new Object;
 				messagesToSend.messages = messages;
-				if(messages == ""){
+				if(messages == "" || messages.length < 10){
 					messagesToSend.moreMessagesAvailable = false;
 				}else{
 					messagesToSend.moreMessagesAvailable = true;

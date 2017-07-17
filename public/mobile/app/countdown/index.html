@@ -4,7 +4,7 @@
 	<div class="card-block">
 		<ul style=" overflow:auto">
 			<li ng-repeat="countdown in $root.countdowns">
-				<p>{{countdown.device.name}} ({{countdown.device.Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.status ? "countdown.device.buttonLabelOn :  countdown.device.buttonLabelOff}}
+				<p>{{countdown.device.name}} ({{countdown.device.Raum}}) um {{countdown.time | date:'HH:mm'}} {{countdown.status ? countdown.device.buttonLabelOn :  countdown.device.buttonLabelOff}}
 					<button class="btn btn-xs btn-danger" ng-click="remove('countdowns', {'id':countdown.id})" >Löschen</button>
 				</p>
 			</li>

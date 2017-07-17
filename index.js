@@ -8,6 +8,21 @@ var bodyParser				=	require('body-parser');
 var cookieParser			=	require('cookie-parser');
 var crypto					=	require('crypto');
 
+var config					=	require("./config.json");
+var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
+var db						=	require('./app/functions/database.js');
+var countdownFunctions		=	require('./app/functions/countdown.js');
+var deviceFunctions			=	require('./app/functions/device.js');
+var groupFunctions			=	require('./app/functions/group.js');
+var messageFunctions		=	require('./app/functions/message.js');
+var roomFunctions			=	require('./app/functions/room.js');
+var timerFunctions			=	require('./app/functions/timer.js');
+var userFunctions			=	require('./app/functions/user.js');
+var adapterFunctions		=	require('./app/functions/adapter.js');
+var variableFunctions		=	require('./app/functions/variable.js');
+var createVariable			=	require('./app/functions/newVariable.js');
+var createTimer				=	require('./app/functions/newTimer.js');
+
 var server;
 var errors					=	[];
 var sockets					=	[];
@@ -41,20 +56,6 @@ log = {
 	}
 }
 
-var config					=	require("./config.json");
-var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
-var db						=	require('./app/functions/database.js');
-var countdownFunctions		=	require('./app/functions/countdown.js');
-var deviceFunctions			=	require('./app/functions/device.js');
-var groupFunctions			=	require('./app/functions/group.js');
-var messageFunctions		=	require('./app/functions/message.js');
-var roomFunctions			=	require('./app/functions/room.js');
-var timerFunctions			=	require('./app/functions/timer.js');
-var userFunctions			=	require('./app/functions/user.js');
-var adapterFunctions		=	require('./app/functions/adapter.js');
-var variableFunctions		=	require('./app/functions/variable.js');
-var createVariable			=	require('./app/functions/newVariable.js');
-var createTimer				=	require('./app/functions/newTimer.js');
 var later 					=	require('later');
 var request					=	require('request');
 logFiles.master				=	fs.createWriteStream( "./log/debug-master.log", {flags : 'w'});
@@ -252,7 +253,6 @@ function startDependend(data){
 					variableFunctions.replaceVar(data.title, function(title){
 						data.message = content;
 						data.title = title;
-						console.log(data);
 						if(data.user == "all"){
 							app.io.emit('change', new message("alerts:add", data));
 						}else{
@@ -341,11 +341,11 @@ function loadVariables(){
 			return;
 		}
 		variables.forEach(function(variable){
-			allVariables[variable.id] = new createVariable(variable);
+			allVariables[variable.id] = new createVariable(variable, config);
 		});
 	});
 }
-
+/*
 function loadTimers(){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
 	db.all(query, function(err, timers){
@@ -367,7 +367,7 @@ function loadTimers(){
 		}
 	});
 }
-
+*/
 
 process.on('SIGINT', function(code){
 	stopServer();

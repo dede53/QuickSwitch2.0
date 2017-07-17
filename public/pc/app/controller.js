@@ -66,7 +66,7 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	$rootScope.list = [];
 	$rootScope.alerts = {};
 	$rootScope.countdowns = {};
-	$rootScope.chatMessages = {};
+	$rootScope.chatMessages = [];
 	$rootScope.moreMessagesAvailable = true;
 	
 	if ($scope.storedUser != "") {

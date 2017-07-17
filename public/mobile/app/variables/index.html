@@ -1,0 +1,20 @@
+<h3>Info</h3>
+<div ng-show="favoritVariables | isEmpty" class="alert alert-info" role="alert">
+	Du hast noch keine Variablen zur Anzeige ausgewählt! Füge sie deinem Benutzer in den <a href="/settings/#/user" class="alert-link">Einstellungen</a> hinzu. 
+</div>
+<div class="card" ng-hide="favoritVariables | isEmpty">
+	<div class="card-block">
+		<ul style=" overflow:auto">
+			<li ng-hide="favoritVariables | isEmpty" ng-repeat="variable in favoritVariables">
+				<p style="">
+					<span class="pull-left">
+						{{variable.name}}
+					</span>
+					<span class="float-right" title="Letzte Änderung: {{variable.lastChange | date:'EEE, d. MMM., HH:mm'}}">
+						{{variable.status}}{{variable.suffix}}
+					</span>
+				</p>
+			</li>
+		</ul>
+	</div>
+</div>

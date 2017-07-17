@@ -8,10 +8,35 @@ var stopSaveVariable = function(){
 	}
 }
 
-var createVariable = function (variable){
+var createVariable = function (variable, config){
 	this.variable = variable;
 	this.dependendTimer = [];
 	this.setSaveActive(this.variable.saveActive);
+	this.log = {
+		"info": function(data){
+			if(config.loglevel == 1 ){
+				process.send({"log":data});
+			}
+		},
+		"debug": function(data){
+			if(config.loglevel <= 2){
+				process.send({"log":data});
+			}
+		},
+		"warning": function(data){
+			if(config.loglevel <= 3){
+				process.send({"log":data});
+			}
+		},
+		"error": function(data){
+			if(config.loglevel <= 4){
+				process.send({"log":data});
+			}
+		},
+		"pure": function(data){
+			process.send({"log":data});
+		}
+	}
 }
 
 createVariable.prototype = new events.EventEmitter();
@@ -43,28 +68,32 @@ createVariable.prototype.saveVariable = function(data){
 }
 
 createVariable.prototype.setVariable = function(status, callback){
-	var toDatabase = function(variable){
-		console.log("Variable speichern(onchange):" + variable.id, variable.status);
-		var now = Math.floor(Date.parse(new Date));
-		var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + variable.id + "', '" + now + "', '" + variable.status + "');";
-		db.run(query);
-	}
-	if(this.variable.saveActive == true || this.variable.saveActive == 'true'){
-		if(this.variable.saveType == "onchange" && this.variable.status != status){
-			this.variable.status = status;
-			toDatabase(this.variable);
+	var that = this;
+	// Nur wenn auch ein neuer Wert vorliegt!
+	if(status != this.variable.status){	
+		var toDatabase = function(variable){
+			that.log.info("Variable speichern(onchange):" + variable.id, variable.status);
+			var now = Math.floor(Date.parse(new Date));
+			var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + variable.id + "', '" + now + "', '" + variable.status + "');";
+			db.run(query);
+		}
+		if(this.variable.saveActive == true || this.variable.saveActive == 'true'){
+			if(this.variable.saveType == "onchange" && this.variable.status != status){
+				this.variable.status = status;
+				toDatabase(this.variable);
+			}else{
+				this.variable.status = status;
+			}
 		}else{
 			this.variable.status = status;
 		}
-	}else{
-		this.variable.status = status;
-	}
-	for(var id in this.dependendTimer){
-		if(callback){
-			callback(this.dependendTimer[id], this.variable);
+		for(var id in this.dependendTimer){
+			if(callback){
+				callback(this.dependendTimer[id], this.variable);
+			}
 		}
+		this.emit('variable', this.variable);
 	}
-	this.emit('variable', this.variable);
 };
 
 createVariable.prototype.setSaveActive = function(status){

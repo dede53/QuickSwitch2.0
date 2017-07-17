@@ -32,7 +32,7 @@ process.on('message', function(data){
 	if(data.setVariable){
 		try{
 			allVariables[data.setVariable.id].setVariable(data.setVariable.status, function(id, variable){
-				console.log(id, variable.status);
+				// console.log(id, variable.status);
 				allTimers[id].checkTimer(variable);
 			});
 		}catch(e){
@@ -44,7 +44,21 @@ process.on('message', function(data){
 	}
 
 	if(data.setTimerActive){
-		allTimers[data.setTimerActive.id].setActive(data.setTimerActive.active);
+		if(allTimers[data.setTimerActive.id].timer.variables){
+			if(data.setTimerActive.active == true || data.setTimerActive.active == "true"){
+				var variables = Object.keys(allTimers[data.setTimerActive.id].timer.variables);
+				variables.forEach(function(variable){
+					allVariables[variable].dependendTimer.push(data.setTimerActive.id);
+				});
+			}else{
+				var variables = Object.keys(allTimers[data.setTimerActive.id].timer.variables);
+				variables.forEach(function(variable){
+					allVariables[variable].dependendTimer.splice(allVariables[variable].dependendTimer.indexOf(data.setTimerActive.id), 1);
+				});
+			}
+		}else{ 
+			allTimers[data.setTimerActive.id].setActive(data.setTimerActive.active);
+		}
 	}
 	if(data.deleteTimer){
 		allTimers[data.deleteTimer.id].deleteTimer(function(){});
@@ -77,7 +91,7 @@ function loadVariables(){
 			return;
 		}
 		variables.forEach(function(variable){
-			allVariables[variable.id] = new createVariable(variable);
+			allVariables[variable.id] = new createVariable(variable, config);
 		});
 		console.log("Alle Variablen geladen");
 	});

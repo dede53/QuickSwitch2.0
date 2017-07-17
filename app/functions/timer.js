@@ -350,7 +350,7 @@ function getTimer(id, callback){
 				}
 				callback(data[0]);
 			}catch(e){
-				helper.log.pure("Fehler im Json des Timers!");
+				helper.log.pure("Fehler im JSON des Timers!");
 				helper.log.pure(data[0]);
 				helper.log.pure(e);
 				return;

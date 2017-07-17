@@ -14,12 +14,12 @@
 				size="20"
 				ng-hide="device.showStatus == 0">
 			</ng-md-icon>
-			<p class="mt-3 float-right mr-3">
+			<p class="mt-3 float-right mr-3 unselectable">
 				{{device.buttonLabelOn}}
 			</p>
 		</div>
 		<div
-			class="btnOff unselectable" 
+			class="btnOff" 
 			id="btnOff{{device.deviceid}}"
 			ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
 			ng-style="{'background-color': buttonOffColor}"
@@ -31,7 +31,7 @@
 				size="20"
 				ng-hide="device.showStatus == 0">
 			</ng-md-icon>
-			<p class="mt-3 float-right mr-3">
+			<p class="mt-3 float-right mr-3 unselectable">
 				{{device.buttonLabelOff}}
 			</p>
 		</div>

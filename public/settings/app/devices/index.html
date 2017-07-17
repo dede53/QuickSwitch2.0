@@ -8,6 +8,16 @@
 		</div>
 		<div class="pull-right">
 			<div class="box-btn-switch">
+				<button
+					type="button" 
+					class="btn btn-default"
+					ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"1"})'
+				>{{device.buttonLabelOn}}</button>
+				<button
+					type="button" 
+					class="btn btn-default"
+					ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
+				>{{device.buttonLabelOff}}</button>
 				<a type="button" class="btn btn-info" href="#/editDevice/{{device.deviceid}}">Bearbeiten</a>
 				<button type="button" class="btn btn-danger" ng-click='deleteDevice(device.deviceid)'>Löschen</button>
 			</div>

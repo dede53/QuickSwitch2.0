@@ -1,14 +1,16 @@
 <h3>Gruppen</h3>
 <div ng-repeat="group in groups" class="card">
 	<h4 class="card-header">
-		<span data-toggle="collapse" data-target="#group{{group.id}}" class="left">{{group.name}}</span>
-		<div class="right">
-			<button class="btnOn-s" id="btnOn{{group.id}}" ng-click='switch("groups", {"group":group,"status":"1"})'>An</button>
-			<button class="btnOff-s" id="btnOff{{group.id}}" ng-click='switch("groups", {"group":group,"status":"0"})'>Aus</button>
+		<div class="test d-flex justify-content-end p-0">
+			<div data-toggle="collapse" data-target="#group{{group.id}}" class="mr-auto devicename">{{group.name}}</div>
+			<div style="display: flex;">
+				<button class="btnOn" ng-click='switch("groups", {"group":group,"status":"1"})'>An</button>
+				<button class="btnOff" ng-click='switch("groups", {"group":group,"status":"0"})'>Aus</button>
+			</div>
 		</div>
 	</h4>
 	<div class="class-block collapse" ng-hide="devicelist | isEmpty" id="group{{group.id}}">
-		<ul class="list-group">
+		<ul class="list-group list-group-flush">
 			<li class="list-group-item" ng-repeat="device in group.groupDevices">
 				{{devicelist[device.id].name}} ({{devicelist[device.id].Raum}})
 			</li>

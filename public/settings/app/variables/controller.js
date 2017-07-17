@@ -19,6 +19,7 @@ app.controller('variableController', function($scope, $rootScope, socket, $uibMo
 			}
 		});
 		modalInstance.result.catch(function (selectedItem) {
+		}, function(){
 		});
 	};
 	$scope.saveVariable = function() {
@@ -263,7 +264,7 @@ app.controller('varChartController', function($scope, $rootScope, socket, variab
 		}
 	});
 	setTimeout(function(){
-		var chart = $rootScope.chartConfigSettings.getHighcharts();
+		var chart = $scope.chartConfigSettings.getHighcharts();
 		chart.reflow();
 		console.log("reflow");
 	}, 1000);

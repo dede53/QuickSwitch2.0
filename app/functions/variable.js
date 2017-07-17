@@ -50,7 +50,7 @@ function favoritVariables(favoritVariables, mode, callback){
 		variab.forEach(function(variable){
 			variablen[variable.id] = variable;
 		});
-		console.log(favoritVariables);
+		// console.log(favoritVariables);
 		if(mode == "array"){
 			if(favoritVariables == undefined){
 				callback([]);

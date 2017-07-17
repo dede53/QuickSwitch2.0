@@ -3,6 +3,10 @@ app.controller('devicesController',  function($scope, $rootScope, socket) {
 	$scope.deleteDevice = function(id) {
 		socket.emit('device:remove', {"remove":id});	
 	}
+
+	$scope.switch = function(type, data){
+		socket.emit(type + ':switch', {user:$rootScope.activeUser, switch: data});	
+	}
 });
 
 app.controller('editDeviceController',  function($scope, $rootScope, socket, $routeParams, $location) {

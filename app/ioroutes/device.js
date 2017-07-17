@@ -227,14 +227,14 @@ module.exports = function(app, db, plugins, errors, log, allObjects, allVariable
 			data.author = req.data.user.name;
 			data.time = new Date().getTime();
 			messageFunctions.saveMessage(data, function(err, savedMessage){
-				app.io.emit('change', new message('chatMessages:add', savedMessage));
+				app.io.emit('change', new message('chatMessages:push', savedMessage));
 			});
 		},
 		loadOld: function(req){
 			messageFunctions.loadOldMessages(req.data, function(data){
 
 				data.messages.forEach(function(mess){
-					req.socket.emit('change', new message('chatMessages:add', mess));
+					req.socket.emit('change', new message('chatMessages:push', mess));
 				});
 				req.socket.emit('change', new message('moreMessagesAvailable:get', data.moreMessagesAvailable));
 			});
@@ -380,8 +380,8 @@ module.exports = function(app, db, plugins, errors, log, allObjects, allVariable
 	app.io.route('timers', {
 		save: function(req){
 			timerFunctions.saveTimer(req.data.save, function(err, data){
+				app.io.in(req.data.save.user).emit('change', new message('timers:add', data));
 				plugins.timerserver.send({"loadTimers":true});
-				req.io.in(req.data.user.name).emit('change', new message('timers:add', data));
 			});
 		},
 		remove: function(req){
@@ -393,8 +393,9 @@ module.exports = function(app, db, plugins, errors, log, allObjects, allVariable
 			}, 1000);
 		},
 		get: function(req){
+			console.log(req.data.get);
 			timerFunctions.getTimer(req.data.get, function(timer){
-				req.socket.emit('change', new message('timers:get', data));
+				req.socket.emit('change', new message('timer:get', timer));
 			});
 		},
 		switch: function(req){

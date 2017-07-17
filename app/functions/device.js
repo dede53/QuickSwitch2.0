@@ -140,7 +140,6 @@ module.exports = {
 		});
 	},
 	switchDevice: function (app, id, status, callback) {
-		console.log(id, status);
 		var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, switchserver, CodeOn, CodeOff, type, showStatus, devices.roomid, rooms.name AS Raum FROM devices, rooms WHERE deviceid = '" + id + "' AND devices.roomid = rooms.id;";
 		db.all(query , function(err, row) {
 			if (err) {
