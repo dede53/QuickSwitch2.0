@@ -8,11 +8,6 @@ var bodyParser				=	require('body-parser');
 var cookieParser			=	require('cookie-parser');
 var crypto					=	require('crypto');
 
-
-var server;
-var sockets					=	[];
-var log_file				=	{};
-var plugins 				=	{};
 var config					=	require("./config.json");
 var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
 var db						=	require('./app/functions/database.js');
@@ -23,8 +18,72 @@ var messageFunctions		=	require('./app/functions/message.js');
 var roomFunctions			=	require('./app/functions/room.js');
 var timerFunctions			=	require('./app/functions/timer.js');
 var userFunctions			=	require('./app/functions/user.js');
-var variableFunctions		=	require('./app/functions/variable.js');
 var adapterFunctions		=	require('./app/functions/adapter.js');
+var variableFunctions		=	require('./app/functions/variable.js');
+var createVariable			=	require('./app/functions/newVariable.js');
+var createTimer				=	require('./app/functions/newTimer.js');
+var createAlerts 			=  	require('./app/functions/newAlerts.js');
+
+var server;
+var errors					=	[];
+var sockets					=	[];
+var allTimers				=	{};
+var allVariables			=	{};
+var logFiles				=	{};
+var plugins 				=	{};
+log = {
+	"info": function(data){
+		if(config.loglevel == 1 ){
+			newMessage(1,data);
+		}
+	},
+	"debug": function(data){
+		if(config.loglevel <= 2){
+			newMessage(2,data);
+		}
+	},
+	"warning": function(data){
+		if(config.loglevel <= 3){
+			newMessage(3,data);
+		}
+	},
+	"error": function(data){
+		if(config.loglevel <= 4){
+			if(typeof data == 'object'){
+				switch(data.code){
+					case "EHOSTUNREACH":
+						newMessage(4, "Ziel nicht erreichbar: " + data.address + ":" + data.port);
+						break;
+					case "ECONNREFUSED":
+						newMessage(4, "Ziel hat die Anfrage abgelehnt: " + data);
+						break;
+					default:
+						newMessage(4,data.code + ":" + data.address+ ":" + data.port);
+						break;
+				}
+			}else{
+				newMessage(4,data);
+			}
+		}
+	},
+	"pure": function(data){
+		newMessage(data);
+	}
+}
+
+var later 					=	require('later');
+var request					=	require('request');
+logFiles.master				=	fs.createWriteStream( "./log/debug-master.log", {flags : 'w'});
+var allIntervals			=	{
+									setInterval: function(id, callback, sched){
+										this.intervals[id] = later.setInterval(callback, sched);
+									},
+									clearInterval: function(id){
+										this.intervals[id].clear();
+										delete this.intervals[id];
+									},
+									intervals: {}
+								};
 
 if(config.useHTTPS){
 	var options = {
@@ -36,6 +95,67 @@ if(config.useHTTPS){
 	var app						=	express().http().io();
 }
 
+var allAlerts = {
+	add: function(alert){
+		alert.id = Math.floor((Math.random() * 100) + 1);
+		if(!this.alerts[alert.user]){
+			this.alerts[alert.user] = {};
+		}
+		this.alerts[alert.user][alert.id] = new createAlerts(alert);
+		this.alerts[alert.user][alert.id].show(app);
+	},
+	remove: function(alert){
+		var that = this;
+		if(this.alerts[alert.user] && this.alerts[alert.user][alert.id]){
+			this.alerts[alert.user][alert.id].remove(app, function(){
+				delete that.alerts[alert.user][alert.id];
+			});
+		}else{
+			app.io.in(alert.user).emit('change', new message('alerts:remove', alert.id));
+		}
+	},
+	removeAll: function(user){
+		var alerts = Object.keys(this.alerts[user] || new Array());
+		var that = this;
+		alerts.forEach(function(alert){
+			if(that.alerts[user] && that.alerts[user][alert]){
+				that.alerts[user][alert].remove(app, function(){
+					delete that.alerts[user][alert];
+				});
+			}else{
+				app.io.in(user).emit('change', new message('alerts:remove', alert));
+			}
+		});
+	},
+	addAll: function(alert){
+		userFunctions.getUsers(function(users){
+			users.forEach(function(user){
+				if(alert.toAdmin){
+					if(user.admin == true || user.admin == "true"){
+						alert.user = user.name;
+						allAlerts.add(alert);
+					}
+				}else{
+					alert.user = user.name;
+					allAlerts.add(alert);
+				}
+			});
+		});
+	},
+	alerts: {}
+}
+// allAlerts.add({
+// 	user:"Daniel",
+// 	title:"Moin",
+// 	message:"Arbeitet das?",
+// 	type:"info"
+// });
+// allAlerts.addAll({
+// 	title:"Moin",
+// 	message:"Arbeitet das bei euch?",
+// 	type:"info"
+// });
+
 
 // app.use(express.logger('dev'));
 app.use(bodyParser.json()); 						// for parsing application/json
@@ -46,80 +166,81 @@ app.use(express.static(__dirname + '/public'));		// provides static htmls
 if(!fs.existsSync("./log")){
 	fs.mkdirSync("./log", 0766, function(err){
 		if(err){
-			console.log("mkdir ./log: failed: " + err);
+			log.debug("mkdir ./log: failed: " + err);
 		}
 	});
 }
 
-var error = function(data){
-	app.io.emit("serverError", data);
+
+function newMessage(type, message){
+	var now = new Date;
+	var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
+	
+	if(typeof message === "object"){
+		var message = JSON.stringify(message);
+	}else{
+		var message = message.toString();
+	}
+	var data = {
+		"time": datum,
+		"message": message,
+		"type":type
+	};
+	logFiles.master.write(datum +":"+ message + "\n");
+	console.log(datum +":"+ message);
+	errors.push(data);
+	if(errors.length > 100){
+		errors.splice(0,1);
+	}
+	if(type == 4){
+		allAlerts.addAll({
+			title: "Servererror!",
+			message: message,
+			type: "danger",
+			toAdmin: true
+		});
+		// app.io.emit("serverError", data);
+	}
 }
 
-// Setup the ready route, join room and broadcast to room.
-app.io.route('room', {
-	join: function(req) {
-		var user = req.data;
-		console.log("join:" + user.name);
-		req.socket.join(user.name);
 
-		countdownFunctions.getCountdowns(user.name, function(data){
-			req.socket.emit('change', new message('countdowns:get', data));
-		});
+loadVariables();
+// loadTimers();
 
-		deviceFunctions.favoritDevices(user.favoritDevices, function(data){
-			req.socket.emit('change', new message('favoritDevices:get', data));
-		});
-		
-		groupFunctions.getGroups(user.name, function(data){
-			req.socket.emit('change', new message('groups:get', data));
-		});
-		
-		timerFunctions.getUserTimers(user.name, function(data){
-			req.socket.emit('change', new message('timers:get', data));
-		});
-
-		variableFunctions.favoritVariables(user.favoritVariables, "object", function(data){
-			req.socket.emit('change', new message('favoritVariables:get', data));
-		});
-	},
-	leave: function(req) {
-		console.log("leave:" + req.data.name);
-		req.socket.leave(req.data.name);
-	},
-	get: function(req){
-		roomFunctions.getRoom(req.data, function(data){
-			req.socket.emit('change', new message('room:get', data));
-		});
-	},
-	save: function(req){
-		roomFunctions.saveRoom(req.data.save, function(room){
-			roomFunctions.getRooms( "object", function(data){
-				app.io.emit('change', new message('rooms:get', data));
-			});
-		});
-	},
-	remove: function(req){
-		roomFunctions.deleteRoom(req.data.remove, function(status){
-			switch(status){
-				case 200:
-					roomFunctions.getRooms('object', function(data){
-						req.socket.emit('change', new message('rooms:get', data));			
-					});
-					deviceFunctions.getDevices('object', function(data){
-						app.io.emit('change', new message('devices:get', data));
-					});
-					break;
-				case 409:
-					error(req, "Der Raum enthält Geräte und kann nicht gelöscht werden!");
-					break;
-				default:
-					error(req, status);
-					break;
-			}
-
-		});
-	}
+app.get('/pc', function(req, res) {
+	res.sendFile(__dirname + '/public/pc/index.html');
 });
+
+app.get('/settings', function(req, res) {
+	res.sendFile(__dirname + '/public/settings/index.html');
+});
+
+app.get('/mobile', function(req, res) {
+	res.sendFile(__dirname + '/public/mobile/index.html');
+});
+
+app.get('/mobil', function(req, res) {
+	res.redirect('/mobile');
+});
+
+app.get('/tablet', function(req, res) {
+	res.sendFile(__dirname + '/public/tablet/index.html');
+});
+
+app.get('/test', function(req, res) {
+	res.sendFile(__dirname + '/public/test/mobile.html');
+});
+
+app.get('/test1', function(req, res) {
+	res.sendFile(__dirname + '/public/test/pc.html');
+});
+
+app.io.on('connect', function(socket){
+	log.debug("Neuer Client verbunden: " + socket.id);
+	socket.on('disconnect', function(reason){
+		log.debug("Client getrennt: " + socket.id);
+	})
+})
 
 app.io.route('settings', {
 	get: function(req){
@@ -128,378 +249,35 @@ app.io.route('settings', {
 	save: function(req){
 		fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', function(err){
 			if(err){
-				error("Die Einstellungen konnten nicht gespeichert werden!");
-				error(err);
+				log.error("Die Einstellungen konnten nicht gespeichert werden!");
+				log.error(err);
 			}else{
 				// db	=	require('./app/functions/database.js');
 				app.io.emit('change', new message('settings:get', req.data));
-				if(req.data.QuickSwitch.port != config.QuickSwitch.port){
-					error("Die Einstellungen wurden geändert! Die aussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
+				if(req.data.mysql != config.mysql || req.data.QuickSwitch != config.QuickSwitch){
+					log.error("Die Einstellungen wurden geändert! Die Haussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
 					stopServer(function(){
 						startServer(req.data.QuickSwitch.port);
 					});
-				}else{
-					config = req.data;
 				}
-			}
-		});
-	}
-});
-
-app.io.route('switchServer', {
-	get: function(req){
-		req.socket.emit('switchServer', config.switchserver);
-	}
-});
-
-app.io.route('variable', {
-	get: function(req){
-		variableFunctions.getVariable(req.data, function(data){
-			req.socket.emit('change', new message('variable:get', data));
-		});
-	},
-	remove: function(req){
-		variableFunctions.deleteVariable(req.data.remove.uid, function(data){
-			app.io.emit('change', new message('variables:remove', req.data.remove.id));
-		});
-	},
-	save: function(req){
-		variableFunctions.saveVariable(req.data, function(data){
-			app.io.emit('change', new message('variables:edit', req.data));
-		});
-	}
-});
-app.io.route('variables', {
-	add: function(req){
-		variableFunctions.saveNewVariable(req.data.add, function(err, data){
-			app.io.emit('change', new message('variables:add', data));
-		});
-	},
-	remove: function(req){
-		variableFunctions.deleteVariable(req.data.remove, function(data){
-			app.io.emit('change', new message('variables:remove', req.data.remove));
-		});
-	},
-	edit: function(req){
-		variableFunctions.saveEditVariable(req.data, function(err, data){
-			app.io.emit('change', new message('variables:edit', data));
-		});
-	},
-	get: function(req){
-		variableFunctions.getVariables(function(data){
-			req.socket.emit('change', new message('variables:get', data));
-		});
-	},
-	favoriten: function(req){
-		userFunctions.getUser(req.data, function(user){
-			variableFunctions.favoritVariables(user.favoritVariables, "array", function(data){
-				req.socket.emit('change', new message('favoritVariables:get', data));
-			});
-		});
-	},
-	chart: function(req){
-		// userFunctions.getUser(req.data, function(user){
-			console.log(req.data);
-			variableFunctions.getStoredVariables(req.data, req.data.hours, function(data){
-				req.socket.emit('change', new message('varChart:get', data));
-			});
-		// });
-	},
-	storedVariable: function(req){
-		variableFunctions.getStoredVariable(req.data.id, req.data.hours, function(data){
-			req.socket.emit('change', new message('storedVariable:get', data));
-		});
-	}
-});
-
-app.io.route('rooms', {
-	remove: function(req){
-		roomFunctions.deleteRoom(req.data.remove, function(err){
-			app.io.emit('change', new message('rooms:remove', req.data.remove));
-		});
-	},
-	get: function(req){
-		roomFunctions.getRooms('object', function(data){
-			req.socket.emit('change', new message('rooms:get', data));			
-		});
-	},
-	switch: function(req){
-		roomFunctions.switchRoom(req.data.switch.room, req.data.switch.status, app, function(err){
-			if(err != 200){
-				error(err + "Raum konnte nicht geschaltet werden");
-			}
-		});
-	}
-});
-
-app.io.route('alerts', {
-	add: function(req){
-		app.io.in(req.data.user.name).emit('change', new message('alerts:add', req.data));
-	},
-	remove: function(req){
-		app.io.in(req.data.user.name).emit('change', new message('alerts:remove', req.data.remove));
-	},
-	addAll: function(req){
-		app.io.emit('change', new message('alerts:add', req.data));
-	}
-});
-
-app.io.route('messages', {
-	add: function(req){
-		var data = req.data.add;
-		data.author = req.data.user.name;
-		data.time = new Date().getTime();
-		messageFunctions.saveMessage(data, function(err, savedMessage){
-			app.io.emit('change', new message('chatMessages:add', savedMessage));
-		});
-	},
-	loadOld: function(req){
-		messageFunctions.loadOldMessages(req.data, function(data){
-
-			data.messages.forEach(function(mess){
-				req.socket.emit('change', new message('chatMessages:add', mess));
-			});
-			req.socket.emit('change', new message('moreMessagesAvailable:get', data.moreMessagesAvailable));
-		});
-	},
-});
-
-app.io.route('user', {
-	get: function(req){
-		userFunctions.getUser(req.data, function(data){
-			req.socket.emit('change', new message('user:get', data));
-		});
-	},
-	remove: function(req){
-		userFunctions.deleteUser(req.data.remove, function(status){
-			if(status == "200"){
-				userFunctions.getUsers(function(data){
-					req.socket.broadcast.emit('change', new message('users:get', data));
-				});
+				config = req.data;
 			}
 		});
 	},
-	save: function(req){
-		userFunctions.saveUser(req.data.save, function(status){
-			userFunctions.getUsers(function(data){
-				req.socket.broadcast.emit('change', new message('users:get', data));
-			});
-		});
+	errors: function(req){
+		req.socket.emit('serverErrors', errors);
 	}
 });
 
-app.io.route('users', {
-	get: function(req){
-		userFunctions.getUsers(function(data){
-			req.socket.emit('change', new message('users:get', data));
-		});
-	}
-});
+startServer();
+startDependend([
+	// "SwitchServer/adapter.js",
+	"countdownserver.js",
+	"timerserver.js"
+]);
 
-app.io.route('countdowns', {
-	add: function(req){
-		var data = req.data.add;
-		data.settime = new Date().getTime();		
-		data.time = data.settime + (data.time * 60000);
-		countdownFunctions.setNewCountdown(data, function(err, savedCountdown){
-			if(err != "200"){
-				error("Countdown konnte nicht gespeichert werden!");
-				console.log("Countdown konnte nicht gespeichert werden!");
-				console.log( err );
-			}else{
-				app.io.in(req.data.user.name).emit('change', new message('countdowns:add', savedCountdown));
-			}
-		});
-	},
-	remove: function(req){
-		var id = req.data.remove;
-		countdownFunctions.deleteCountdown(id, function(data){
-			app.io.in(req.data.user.name).emit('change', new message('countdowns:remove', id));
-		});
-	},
-	get: function(req){
-		countdownFunctions.getCountdowns(user.name, function(data){
-			req.socket.emit('change', new message('countdowns:get', data));
-		});
-	}
-});
-
-app.io.route('devices', {
-	get: function(req){
-		deviceFunctions.getDevices('object', function(data){
-			req.socket.emit('change', new message('devices:get', data));
-		});
-	},
-	favoriten: function(req){
-		userFunctions.getUser(req.data, function(user){
-			deviceFunctions.favoritDevices(user.favoritDevices, function(data){
-				req.socket.emit('change', new message('favoritDevices:get', data));
-			});
-		});
-	},
-	active:function(req){
-		switchServerFunctions.sendActiveDevices(app, function(){});
-	},
-	switch:function(req){
-		var id = req.data.switch.id;
-		var status = req.data.switch.status;
-		deviceFunctions.switchDevice(app, id, status, function(err){
-			if(err != 200){
-				error( "Gerät mit der ID " + id + " konnte nicht geschaltet werden!");
-			}
-		});
-	},
-	switchAll: function(req){
-		deviceFunctions.switchDevices(app, req.data.switchAll, req, function(err){
-			if(err != 200){
-				error("Die Geräte konnten nicht geschaltet werden: " + req.data.switchAll);
-			}
-		});
-	},
-	devicelist: function(req){
-		deviceFunctions.getDevices('array', function(data){
-			req.socket.emit('change', new message('devicelist:get', data));
-		});
-	}
-});
-
-app.io.route('device', {
-	save: function(req){
-		deviceFunctions.saveDevice(req.data.save, function(err, device){
-			deviceFunctions.getDevices('object', function(data){
-				req.socket.emit('change', new message('devices:get', data));
-			});
-		});
-	},
-	remove:function(req){
-		deviceFunctions.deleteDevice(req.data.remove, function(data){
-			deviceFunctions.getDevices('object', function(data){
-				app.io.emit('change', new message('devices:get', data));
-			});
-		});
-	},
-	get: function(req){
-		deviceFunctions.getDevice(req.data, function(data){
-			req.socket.emit('change', new message('device:get', data));
-		});
-	}
-});
-
-app.io.route('switchHistory', {
-	get: function(req){
-		deviceFunctions.getSwitchHistoryByID(req.data, function(data){
-			req.socket.emit('change', new message('switchHistory:push', data));
-		});
-	}
-});
-
-app.io.route('timers', {
-	save: function(req){
-		timerFunctions.saveTimer(req.data.save, function(err, data){
-			app.io.in(req.data.user.name).emit('change', new message('timers:add', data));
-		});
-	},
-	remove: function(req){
-		plugins.timerserver.send({deaktivateInterval:req.data.remove});
-		setTimeout(function(){
-			timerFunctions.deleteTimer(req.data.remove, function(err, data){
-				app.io.emit("change", new message('timers:remove', req.data.remove));
-			});
-		}, 1000);
-	},
-	get: function(req){
-		timerFunctions.getTimer(req.data.get, function(timer){
-			req.socket.emit('change', new message('timers:get', data));
-		});
-	},
-	switch: function(req){
-		var data = req.data.switch;
-		timerFunctions.switchTimer(data, function(status){
-			if(status == 200){
-				timerFunctions.getTimer(data.id, function(timer){
-					app.io.in(req.data.user.name).emit('change', new message('timers:add', timer));
-				});
-			}else{
-				error("Der Timer mit der ID " + data.id + " konnte nicht geschaltet werden");
-			}
-		});
-		if(req.data.switch.active == false || req.data.switch.active == 'false'){
-			plugins.timerserver.send({deaktivateInterval:req.data.switch.id});
-		}
-	},
-	switchAll: function(req){
-		timerFunctions.switchActions(req.data.switchAll, true, true);
-	}
-});
-
-app.io.route('group', {
-	get:function(req){
-		groupFunctions.getGroup(req.data, function(data){
-			req.socket.emit('change', new message('group:get', data));
-		});
-	},
-	remove: function(req){
-		groupFunctions.deleteGroup(req.data.remove, function(data){
-			if(data != 200){
-				error( "Die Gruppe mit der ID " + req.data.remove + " konnte nicht gelöscht werden!");
-			}else{
-				app.io.in(req.data.user).emit('change', new message('groups:remove', req.data.remove));
-			}
-		});
-	},
-	save: function(req){
-		groupFunctions.saveGroup(req.data.save, function(groups){
-			app.io.in(req.data.user).emit('change', new message('groups:get', groups));
-		});
-	}
-});
-
-app.io.route('groups', {
-	get: function(req){
-		groupFunctions.getGroups(user.name, function(data){
-			req.socket.emit('change', new message('groups:get', data));
-		});
-	},
-	getAll:function(req){
-		groupFunctions.getAllGroups(function(data){
-			req.socket.emit('change', new message('groups:get', data));
-		});
-	},
-	switch: function(req){
-		groupFunctions.switchGroup(app, req.data.switch.group, req.data.switch.status, function(err){
-			if(err != 200){
-				error( err + ":Die Gruppe mit der ID " + req.data.switch.group.id + " konnte nicht geschaltet werden!");
-			}
-		});
-	}
-});
-
-app.get('/pc', function(req, res) {
-	res.sendfile(__dirname + '/public/pc/index.html');
-})
-
-app.get('/settings', function(req, res) {
-	res.sendfile(__dirname + '/public/settings/index.html');
-})
-
-app.get('/mobile', function(req, res) {
-	res.sendfile(__dirname + '/public/mobile/index.html');
-})
-
-app.get('/mobil', function(req, res) {
-	res.redirect('/mobile');
-})
-
-app.get('/tablet', function(req, res) {
-	res.sendfile(__dirname + '/public/tablet/index.html');
-})
-
-app.get('/', function(req, res) {
-	res.sendfile(__dirname + '/public/index.html');
-})
-
-
-require('./app/routes')(app, db);
+require('./app/routes.js')(app, db, plugins, allAlerts);
+require('./app/ioroutes/device.js')(app, db, plugins, errors, log, allAlerts);
 
 
 function stopDependend(data){
@@ -510,7 +288,9 @@ function stopDependend(data){
 
 function startDependend(data){
 	// Andere Dateien starten
-	data.forEach(function(file){
+	// data.forEach(function(file){
+	for(var file in data){
+		var file = data[file];
 		var splitedfile 			= file.split(".");
 		if(splitedfile[0].includes("/")){
 			var name 				= splitedfile[0].split("/");
@@ -519,21 +299,94 @@ function startDependend(data){
 			var filename 			= splitedfile[0];
 		}
 		var debugFile 				= __dirname + '/log/debug-' + filename + '.log';
-		log_file[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
-
-		plugins[filename] 		= fork( './' + file);
+		logFiles[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
+		plugins[filename] 			= fork( './' + file);
 
 		plugins[filename].on('message', function(response) {
 			if(response.log){
 				var now = new Date;
 				var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
 				
-				log_file[filename].write(datum +":"+response.log.toString() + "\n");
-				console.log(datum +":"+ response.log.toString());
+				logFiles[filename].write(datum +":"+response.log + "\n");
+				log.debug(response.log);
 			}
+			// console.log(response);
 			if(response.setVariable){
-				timerFunctions.checkTimer(response.setVariable);
-				variableFunctions.setVariable(response.setVariable, app, function(){});
+				// Workaround, notwendig? Kein Ahnung 04.09.17
+				if(response.setVariable.action){
+					variableFunctions.setVariable(response.setVariable.action, app, function(status){});
+					plugins['timerserver'].send({"setVariable":response.setVariable.action});
+				}else{
+					variableFunctions.setVariable(response.setVariable, app, function(status){});
+					plugins['timerserver'].send({"setVariable":response.setVariable});
+				}
+				// plugins.timerserver.send({"setVariable":response.setVariable});
+			}
+			if(response.room){
+				roomFunctions.switchRoom(response.room.action, response.room.switchstatus, app, function(err){
+					if(err != 200){
+						log.debug(err + "Raum konnte nicht geschaltet werden");
+					}
+				});
+			}
+			if(response.group){
+				groupFunctions.switchGroup(app, response.group.action, response.group.switchstatus, function(err){
+					if(err != 200){
+						log.debug( err + ":Die Gruppe mit der ID " + req.data.switch.group.id + " konnte nicht geschaltet werden!");
+					}
+				});
+			}
+			if(response.device){
+				deviceFunctions.switchDevice(app, response.device.action.deviceid, response.device.switchstatus, function(err){
+					if(err != 200){
+						log.debug( "Gerät mit der ID " + response.device.action.deviceid + " konnte nicht geschaltet werden!");
+					}
+				});
+			}
+			if(response.url){
+				var action = response.url;
+				if(parseInt(action.timeout)){
+					setTimeout(function(){
+						request(action.action.url, function (err, response, body) {
+							if (err) {
+								log.error(err);							}
+						});
+					}, action.timeout * 1000);
+				}else{
+					request(action.action.url, function (err, response, body) {
+						if (err) {
+							log.error(err);
+						}
+					});
+				}
+			}
+			if(response.alert){
+				var data = response.alert.action;
+				if(!data.date){
+					data.date = new Date();
+				}
+				if(!data.id){
+					data.id = Math.floor((Math.random() * 100) + 1);
+				}
+				variableFunctions.replaceVar(data.message, function(content){
+					variableFunctions.replaceVar(data.title, function(title){
+						data.message = content;
+						data.title = title;
+						if(data.user == "all"){
+							allAlerts.addAll(data);
+						}else{
+							allAlerts.add(data);
+						}
+					});
+				});
+			}
+			if(response.saveSensors){
+				log.debug("Sensoren speichern");
+				var onewire = {
+					"protocol": "onewire",
+					"switchserver":0
+				}
+				switchServerFunctions.sendto(app, "save", onewire);
 			}
 			if(response.setDeviceStatus){
 				var id = parseInt(response.setDeviceStatus.id);
@@ -542,8 +395,12 @@ function startDependend(data){
 					app.io.emit('change', new message("devices:switch", {"device":device,"status":response.setDeviceStatus.status}));
 				});
 			}
+			if (response.getUserTimers){
+				response.req.socket.emit('change', new message('timers:get', response.getUserTimers));
+			}
 		});
-	});
+	// });
+	}
 }
 
 function message(type, data){
@@ -559,7 +416,7 @@ function startServer(port, callback){
 	var port = port || config.QuickSwitch.port || 1230;
 	try{
 		server = app.listen(port, function(){
-			console.log("Erfolgreich gestartet!", port);
+			log.debug("Der Server wurde erfolgreich gestartet!", port);
 			if(callback){
 				callback(200);
 			}
@@ -571,46 +428,73 @@ function startServer(port, callback){
 		if(callback){
 			callback(404);
 		}
-		console.log(e);
+		log.debug(e);
 	}
 }
 
 function stopServer(callback){
 	try{
-		error("Der Server wurde gestoppt!");
+		log.debug("Der Server wurde gestoppt!");
 		server.close();
-		setTimeout(function(){	
-			// delete server;
-			for(var i=0; i < sockets.length; i++){
-				sockets[i].destroy();
-			}
-			console.log("Der Server wurde gestoppt!");
-			if(callback){
-				callback(200);
-			}
-		}, 1000);
+		for(var i=0; i < sockets.length; i++){
+			sockets[i].destroy();
+		}
+		log.debug("Der Server wurde gestoppt!");
+		if(callback){
+			callback(200);
+		}
 	}catch(e){
-		console.log("Fehler: Der Server konnte nicht gestoppt werden!");
-		console.log(e);
+		log.debug("Fehler: Der Server konnte nicht gestoppt werden!");
+		log.debug(e);
 		if (callback){
 			callback(404);
 		}
 	}
 }
 
-startServer();
-startDependend([
-	"SwitchServer/adapter.js",
-	"countdownserver.js",
-	"timerserver.js"
-]);
+function loadVariables(){
+	var query = "SELECT * FROM variable;";
+	db.all(query, function(err, variables){
+		if(err){
+			log.debug(err);
+			return;
+		}
+		variables.forEach(function(variable){
+			allVariables[variable.id] = new createVariable(variable, config);
+		});
+	});
+}
+/*
+function loadTimers(){
+	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
+	db.all(query, function(err, timers){
+		if(err){
+			log.debug(err);
+			return;
+		}else{
+			timers.forEach(function(timer){
+				allTimers[timer.id] 			= new createTimer(timer, config);
+				if(allTimers[timer.id].timer.variables){
+					var variables = Object.keys(allTimers[timer.id].timer.variables);
+					variables.forEach(function(variable){
+						allVariables[variable].dependendTimer.push(timer.id);
+					});
+				}else{
+					allTimers[timer.id].setActive(true);
+				}
+			});
+		}
+	});
+}
+*/
 
 process.on('SIGINT', function(code){
+	log.info("SIGINT");
 	stopServer();
 	stopDependend([
 		"timerserver.js",
 		"countdownserver.js",
-		"SwitchServer/adapter.js",
+		// "SwitchServer/adapter.js",
 	]);
 	process.exit(1);
 });
