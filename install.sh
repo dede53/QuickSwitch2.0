@@ -152,10 +152,11 @@ echo
 echo "Die Koniguration wurde erfolgreich abgeschlossen!"
 echo
 echo '{"switchserver": [{
-		"id": "0",
+		"id": 0,
 		"ip": "'$switchserverip'",
 		"port": "'$switchserverport'"
 	}],
+	"loglevel":1,
 	"mysql": {
 		"host": "'$mysqlhost'",
 		"user": "'$mysqluser'",
