@@ -1,13 +1,17 @@
-<ul class="list-group">
-	<li class="list-group-item">Pushbullet Benachrichtigungen</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul >
-			<li>
-				Titel: {{action.name}}
-			</li>
-			<li>
-				Nachricht: {{action.message}}
-			</li>
-		</ul>
-	</li>
-</ul>
+Pushbullet mit dem Titel {{actions.action.name}} und dem Inhalt {{actions.action.message}}
+<small ng-if="actions.activeInterval">
+	<br>
+	<span>jede {{actions.number}} {{actions.unit}}</span>
+</small>
+<small ng-if="actions.offset.active">
+	<br>
+	<span ng-if="actions.offset.random">
+		zufällig zwischen {{actions.offset.min}} und {{actions.offset.max}} Minuten
+	</span>
+	<span ng-if="!actions.offset.random">
+		{{actions.offset.minutes}} Minuten
+	</span>
+	<span>
+		{{actions.offset.after ? 'später': 'früher'}}
+	</span>
+</small>

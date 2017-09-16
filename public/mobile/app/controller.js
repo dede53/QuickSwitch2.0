@@ -84,26 +84,34 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	$scope.bla = $rootScope.activeUser;
 
 	socket.emit('room:join', $rootScope.activeUser);
+	socket.socket.on("connect", function(data){
+		socket.emit('room:join', $rootScope.activeUser);
+	})
 	socket.emit('users:get');
 	$scope.setUser = function(user){
 		console.log("leave:" + $rootScope.activeUser.name);
 		socket.emit('room:leave', $rootScope.activeUser);
 		
 		$rootScope.activeUser = user;
+		$scope.alerts = {};
 		setCookie("username", JSON.stringify(user), 365);
 
 		console.log("join:" + $rootScope.activeUser.name);
 		socket.emit('room:join', user);
+		socket.emit('variables:chart', {user: user.id, hours: user.chartHour});
 	}
 
 	$scope.add = function(type, data){
 		socket.emit(type + ':add', {user:$rootScope.activeUser, add: data});	
 	}
 	$scope.addAll = function(type, data){
-		socket.emit(type + ':addAll', {user:$rootScope.activeUser, add:data});	
+		socket.emit(type + ':addAll', {user:$rootScope.activeUser, add:data});
+	}
+	$scope.removeAll = function(type, data){
+		socket.emit(type + ':removeAll', {user:$rootScope.activeUser, remove:data});
 	}
 	$scope.remove = function(type, data){
-		socket.emit(type + ':remove', {user:$rootScope.activeUser, remove: data.id});
+		socket.emit(type + ':remove', {user:$rootScope.activeUser, remove: data});
 	}
 	$scope.switch = function(type, data){
 		socket.emit(type + ':switch', {user:$rootScope.activeUser, switch: data});	
@@ -112,7 +120,6 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		socket.emit(type + ':switchAll', {user:$rootScope.activeUser, switchAll: data});	
 	}
 	$scope.refresh = function(){
-		console.log(socket);
 		socket.socket.connect();
 		socket.emit('room:join', $rootScope.activeUser);
 	}
@@ -120,7 +127,6 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 		console.log(data);
 		switch(data.type){
 			case "push":
-				console.log($rootScope[data.masterType]);
 				if ($rootScope[data.masterType] == undefined){
 					$rootScope[data.masterType] = [];
 				}
@@ -143,11 +149,11 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 			case "switch":
 				for(var i = 0; i < $rootScope.favoritDevices.length; i++){
 					if($rootScope.favoritDevices[i].deviceid == data.switch.device.deviceid){
-						$rootScope.favoritDevices[i].status = parseInt(data.switch.status);
+						$rootScope.favoritDevices[i].status = parseFloat(data.switch.status);
 					}
 				}
 				if($rootScope.devices){
-					$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseInt(data.switch.status);
+					$rootScope.devices[data.switch.device.Raum].roomdevices[data.switch.device.deviceid].status = parseFloat(data.switch.status);
 				}
 				break;
 		}

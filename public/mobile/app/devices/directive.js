@@ -40,6 +40,13 @@ app.directive('shutterDirective', function ($rootScope) {
 	};
 });
 
+app.directive('dimmerDirective', function ($rootScope) {
+	return {
+		restrict: 'EA',
+		templateUrl: './app/devices/template-dimmer.html'
+	};
+});
+
 app.directive('sliderDirective', function ($rootScope) {
 	return {
 		restrict: 'EA',

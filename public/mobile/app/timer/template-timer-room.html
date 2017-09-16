@@ -1,22 +1,17 @@
-<ul class="list-group">
-	<li class="list-group-item">
-		Räume
-	</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul>
-			<li>
-				Raumname: {{action.action.name}}
-				<button ng-show="timerEditMode" class="pull-right btn btn-danger btn-sm" ng-click="removeAction({action:action, type:'rooms'})">Löschen</button>
-			</li>
-			<li ng-show="action.activeInterval">
-				Intervall: jede {{action.number}} {{action.unit}}
-			</li>
-			<li>
-				Action: {{action.action.switchstatus ? 'Einschalten' : 'Ausschalten'}}
-			</li>
-			<li ng-show="action.activeTimeout">
-				Timeout: {{action.timeout}} Sekunden
-			</li>
-		</ul>
-	</li>
-</ul>
+Raum {{actions.action.room.name}} {{actions | returnStatus}}
+<small ng-if="actions.activeInterval">
+	<br>
+	<span>jede {{actions.number}} {{actions.unit}}</span>
+</small>
+<small ng-if="actions.offset.active">
+	<br>
+	<span ng-if="actions.offset.random">
+		zufällig zwischen {{actions.offset.min}} und {{actions.offset.max}} Minuten
+	</span>
+	<span ng-if="!actions.offset.random">
+		{{actions.offset.minutes}} Minuten
+	</span>
+	<span>
+		{{actions.offset.after ? 'später': 'früher'}}
+	</span>
+</small>

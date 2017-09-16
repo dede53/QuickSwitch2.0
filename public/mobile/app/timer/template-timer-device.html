@@ -1,14 +1,17 @@
-<ul class="list-group">
-	<li class="list-group-item">Geräte</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul >
-			<li>
-				Titel: {{action.name}}
-				<button class="pull-right btn btn-danger btn-xs" ng-click="removeAction({action:action, type:'devices'})">Löschen</button>
-			</li>
-			<li>
-				Action: {{action.action | action}}
-			</li>
-		</ul>
-	</li>
-</ul>
+Gerät: {{actions.action.name}} ({{actions.action.Raum}}) {{actions | returnStatus}}
+<small ng-if="actions.activeInterval">
+	<br>
+	<span>jede {{actions.number}} {{actions.unit}}</span>
+</small>
+<small ng-if="actions.offset.active">
+	<br>
+	<span ng-if="actions.offset.random">
+		zufällig zwischen {{actions.offset.min}} und {{actions.offset.max}} Minuten
+	</span>
+	<span ng-if="!actions.offset.random">
+		{{actions.offset.minutes}} Minuten
+	</span>
+	<span>
+		{{actions.offset.after ? 'später': 'früher'}}
+	</span>
+</small>

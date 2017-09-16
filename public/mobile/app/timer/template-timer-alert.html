@@ -1,16 +1,32 @@
-<ul class="list-group">
-	<li class="list-group-item">Alerts</li>
-	<li class="list-group-item" ng-repeat="action in actions">
-		<ul >
-			<li>
-				Titel: {{action.name}}
-			</li>
-			<li>
-				Nachricht: {{action.message}}
-			</li>
-			<li>
-				Type: {{action.type}}
-			</li>
-		</ul>
+<ul >
+	<li>
+		Titel: {{actions.action.title}}
+	</li>
+	<li>
+		Nachricht: {{actions.action.message}}
+	</li>
+	<li>
+		Type: {{actions.action.type}}
+	</li>
+	<li>
+		Benutzer: {{actions.action.user}}
+	</li>
+	<li ng-if="actions.offset.active">
+		<small>
+			<span ng-if="actions.offset.random">
+				zufällig zwischen {{actions.offset.min}} und {{actions.offset.max}} Minuten
+			</span>
+			<span ng-if="!actions.offset.random">
+				{{actions.offset.minutes}} Minuten
+			</span>
+			<span>
+				{{actions.offset.after ? 'später': 'früher'}}
+			</span>
+		</small>
+	</li>
+	<li ng-if="actions.activeInterval">
+		<small>
+			<span>jede {{actions.number}} {{actions.unit}}</span>
+		</small>
 	</li>
 </ul>

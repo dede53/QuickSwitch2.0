@@ -4,17 +4,30 @@ app.filter('split', function() {
 		return input.split(splitChar)[splitIndex];
 	}
 });
-app.filter('action', function() {
-	return function(x) {
-		if(x == 0){
-			return 'aus';
+app.filter('returnStatus', function(){
+	return function(action){
+		if(action.switchstatus == 0 || action.switchstatus == "0"){
+			return action.action.buttonLabelOff || "aus";
+		}else if(action.switchstatus == 1 || action.switchstatus == "1"){
+			return action.action.buttonLabelOn || "an"; 
 		}else{
-			return 'an';
+			return "Umschalten"		
 		}
-		// do some bounds checking here to ensure it has that index
 	}
 });
-app.filter('isEmpty', function () {
+
+
+app.filter('twilight', function(){
+	return function(sun){
+		if(sun == "sunrise"){
+			return "Sonnenaufgang";
+		}else{
+			return "Sonnenuntergang";		
+		}
+	}
+});
+
+app.filter('isEmpty', function (){
 	var bar;
 	return function (obj) {
 		for (bar in obj) {

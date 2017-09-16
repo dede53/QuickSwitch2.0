@@ -3,16 +3,16 @@ app.controller('temperatureController', function($scope,$rootScope, socket){
 		$scope.value = hours;
 		$rootScope.varChart = [];
 		$scope.varChart.loading = true;
-		socket.emit('variables:chart', {user:$rootScope.activeUser, hours: hours});
+		socket.emit('variables:chart', {user:$rootScope.activeUser.id, hours: hours});
 	}
-	$scope.value = 24;
-	$scope.getTempHistory(24);
+	
+	$scope.getTempHistory($rootScope.activeUser.chartHour);
 
 	var chartConfig = {
 		options:{
 			chart: {
 				backgroundColor: 'transparent',
-				renderTo:"container",
+				renderTo:"chart",
 				zoomType:"x"
 			},
 			plotOptions: {

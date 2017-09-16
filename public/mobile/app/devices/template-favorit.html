@@ -1,4 +1,4 @@
-<ul>
+<ul class="list-group mb-1">
 	<li ng-repeat="device in favoritDevices">
 		<div ng-switch="device.protocol">
 			<div ng-switch-when="set-gpio">
@@ -9,6 +9,9 @@
 			</div>
 			<div ng-switch-when="homegear:shutter">
 				<div shutter-directive></div>
+			</div>
+			<div ng-switch-when="homegear:dimmer">
+				<div dimmer-directive></div>
 			</div>
 			<div ng-switch-default>
 				<div button-directive></div>

@@ -1,15 +1,17 @@
-<h3 ng-click="toggleMenu('/temperature')">
-	Temperaturen
-</h3>
-<div ng-show="varChart == false">
-	<p class="alert alert-info">Du hast keine Datenpunkte für das Diagramm ausgewählt. Füge sie in den Einstellungen (Einstellungen -> Benutzer -> Diagram) hinzu.</p>
-</div>
-<div ng-hide="varChart == false">
-	<highchart 
-		style="min-height: 600px; min-width: 310px;" 
-		class="chart" 
-		config="varChart" 
-		class="span9" 
-		data-snap-ignore="true" >
-	</highchart>
+<div ng-hide="$root.activeUser.varChart.length == 0">
+	<h3 ng-click="toggleMenu('/temperature')">
+		Temperaturen
+	</h3>
+	<div ng-show="varChart.series == false">
+		<p class="alert alert-info">Du hast keine Datenpunkte für das Diagramm ausgewählt. Füge sie in den <a href="/settings/#/user" class="alert-link">Einstellungen</a>  (Einstellungen -> Benutzer -> Diagram) hinzu.</p>
+	</div>
+	<div ng-hide="varChart.series == false">
+		<highchart 
+			style="min-height: 600px; min-width: 310px;" 
+			class="chart" 
+			config="varChart" 
+			class="span9" 
+			data-snap-ignore="true" >
+		</highchart>
+	</div>
 </div>

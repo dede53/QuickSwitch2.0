@@ -1,7 +1,1 @@
-<ul class="list-group">
-	<li class="list-group-item">Uhrzeiten</li>
-	<li class="list-group-item" ng-repeat="time in conditions">
-		Zwischen {{time.start}} und {{time.stop}}
-		<button class="pull-right btn btn-danger btn-xs" ng-click="removeCondition({condition:time, type:'random'})">Löschen</button>
-	</li>
-</ul>
+Zwischen {{conditions.start.hour}}:{{conditions.start.minute}} und {{conditions.stop.hour}}:{{conditions.start.minute}}
