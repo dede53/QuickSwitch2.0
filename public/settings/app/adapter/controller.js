@@ -8,7 +8,19 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 			socket.on("status", function(data){
 				$rootScope.$apply(function(){
 					$scope.switchServers[server.id].status = data;
-					$scope.switchServers[server.id].message = "erreichbar";
+					$scope.switchServers[server.id].active = true;
+				});
+			});
+			socket.on("log", function(data){
+				$scope.switchServers[server.id].logmessages = data;
+			});
+			socket.on("connect_error", function(err){
+				console.log("connect_error");
+				console.log(err);
+				$rootScope.$apply(function(){
+					$scope.switchServers[server.id].status = "";
+					$scope.switchServers[server.id].active = false;
+					$scope.switchServers[server.id].showLogging = true;
 				});
 			});
 			socket.emit("get:status", {}, function(){});
@@ -16,6 +28,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 		}
 
 		list.forEach(function(server){
+			server.logmessages = [];
 			server.message = "nicht erreichbar";
 			$scope.switchServers[server.id] = server;
 			connect(server);
@@ -27,6 +40,12 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 	}
 	$scope.reload = function () {
 		socket.emit("switchServer:get");
+	}
+	$scope.restartSwitchServer = function(switchServer){
+		switchServer.connection.emit('SwitchServer:restart');
+	}
+	$scope.updateAdapterList = function(switchServer){
+		switchServer.connection.emit('SwitchServer:updateAdapterList');
 	}
 	$scope.openSettings = function(adapter, switchServer){
 		var modalInstance = $uibModal.open({

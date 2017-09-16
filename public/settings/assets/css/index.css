@@ -26,12 +26,17 @@ ul, ol{
 }
 .menu {
 	background-color: #ddf;
-	padding:20px;
+	padding:10px 20px;
 	position: fixed;
 	top: 0;
 	width: 100%;
 	z-index:200;
 	color: #2A6496 ;
+}
+.chart{
+	min-height: 500px;
+	padding:0px;
+	margin:10px;
 }
 a{
 	cursor:pointer;
@@ -61,4 +66,15 @@ a:hover{
 }
 .span9{
 	height:700px;
+}
+
+#mainContent{
+	margin-top:120px;
+	padding: 0 20px;
+}
+
+h1{
+	color: red;
+	text-align: center;
+	margin: 0;
 }

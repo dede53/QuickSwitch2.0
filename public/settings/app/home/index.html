@@ -30,18 +30,28 @@
 		<h3 class="panel-title">QuickSwitch</h3>
 	</div>
 	<div class="panel-body">
+<!-- 		<div class="row">
+			<div class="col-lg-2">
+				<div class="input-group">
+					<span class="input-group-addon" id="">HTTPS</span>
+					<input type="checkbox" class="form-control" ng-model="settings.useHTTPS" id="" aria-describedby="">
+					<span class="input-group-addon">
+						<input type="checkbox" aria-label="Checkbox for following text input">
+					</span>
+				</div>
+			</div>
+		</div>
+		<br> -->
 		<div class="input-group">
 			<span class="input-group-addon" id="">Port</span>
 			<input type="text" class="form-control" placeholder="port" ng-model="settings.QuickSwitch.port" id="" aria-describedby="">
 		</div>
-	</div>
-	<div class="panel-body">
+		<br>
 		<div class="input-group">
 			<span class="input-group-addon" id="mysql-user">lokale IP-Addresse</span>
 			<input type="text" class="form-control" placeholder="" ng-model="settings.QuickSwitch.ip" id="" aria-describedby="">
 		</div>
-	</div>
-	<div class="panel-body">
+		<br>
 		<button class="btn btn-success pull-right" ng-click="save(settings)">Speichern</button>
 	</div>
 </div>

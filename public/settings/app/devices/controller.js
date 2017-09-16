@@ -3,11 +3,19 @@ app.controller('devicesController',  function($scope, $rootScope, socket) {
 	$scope.deleteDevice = function(id) {
 		socket.emit('device:remove', {"remove":id});	
 	}
+
+	$scope.switch = function(type, data){
+		socket.emit(type + ':switch', {user:$rootScope.activeUser, switch: data});	
+	}
 });
 
 app.controller('editDeviceController',  function($scope, $rootScope, socket, $routeParams, $location) {
 	socket.emit('rooms:get');
+	socket.emit("switchServer:get");
 
+	socket.on("switchServer", function(list){
+		$scope.switchServer = list;
+	});
 	// Maybe in die Datenbank auslagern??
 	$scope.options = 	[
 				{
@@ -73,6 +81,10 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 				{ 
 					name: "Arduino-344Mhz",
 					id: 'arduino:344'
+				},
+				{ 
+					name: "Arduino-PilightRaw",
+					id: 'arduino:pilightRaw'
 				}
 			];
 

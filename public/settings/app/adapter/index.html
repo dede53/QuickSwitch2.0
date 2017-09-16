@@ -1,12 +1,21 @@
 <div ng-repeat="switchServer in switchServers" class="">
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			{{switchServer.name}} ({{switchServer.ip}}:{{switchServer.port}}) - {{switchServer.status.server.status || switchServer.message}}
+			{{switchServer.name}} ({{switchServer.ip}}:{{switchServer.port}}) - <span class="label" ng-class="switchServer.active ? 'label-success' : 'label-danger'">{{switchServer.active ? 'erreichbar': 'nicht erreichbar'}}</span>
+				<button type="button" title="switchServer neustarten" ng-click="restartSwitchServer(switchServer)" class="btn btn-default btn-xs">
+					<span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+				</button>
+				<button type="button" title="Adapterliste neu herrunterladen" ng-click="updateAdapterList(switchServer)" class="btn btn-default btn-xs">
+					<span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+				</button>
 			<div class="pull-right">
-				<button type="button" ng-click="reload()" class="btn btn-xs btn-success" href="">Aktualisieren</button>
+				<button type="button" ng-click="reload()" class="btn btn-xs btn-success">
+					<span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+					Ansicht aktualisieren
+				</button>
 			</div>
 		</div>
-		<table class="table">
+		<table class="table" ng-show="switchServer.active">
 			<tr>
 				<th>Name</th>
 				<th>Version (installiert/verfügbar)</th>
@@ -15,7 +24,6 @@
 				<th></th>
 				<th>Pid</th>
 				<th>Steuern</th>
-				<th>Einstellungen</th>
 			</tr>
 			<tr ng-repeat="adapter in switchServer.status.adapter">
 				<td>{{adapter.info.name}}</td>
@@ -33,11 +41,21 @@
 				</td>
 				<td>{{adapter.status.pid}}</td>
 				<td>
-					<button ng-show="adapter.status.installedVersion" type="button" ng-click="controlAdapter('start', switchServer, adapter.info.name)" class="btn btn-xs btn-success" href="">Start</button>
-					<button ng-show="adapter.status.installedVersion" type="button" ng-click="controlAdapter('stop', switchServer, adapter.info.name)" class="btn btn-xs btn-danger" href="">Stop</button>
-					<button ng-show="adapter.status.installedVersion" type="button" ng-click="controlAdapter('restart', switchServer, adapter.info.name)" class="btn btn-xs btn-warning" href="">Neustart</button>
+					<div ng-show="adapter.status.installedVersion">
+						<button type="button" ng-click="controlAdapter('start',switchServer, adapter.info.name)" title="Start" class="btn btn-xs btn-success">
+							<span class="glyphicon glyphicon-play"></span>
+						</button>
+						<button type="button" ng-click="controlAdapter('stop',switchServer, adapter.info.name)" title="Stop" class="btn btn-xs btn-danger">
+							<span class="glyphicon glyphicon-stop"></span>
+						</button>
+						<button type="button" ng-click="controlAdapter('restart',switchServer, adapter.info.name)" title="Neustart" class="btn btn-xs btn-warning">
+							<span class="glyphicon glyphicon-repeat"></span>
+						</button>
+						<button type="button" ng-click="openSettings(adapter, switchServer)" class="btn btn-xs btn-info" title="Einstellungen">
+							<span class="glyphicon glyphicon-cog"></span>
+						</button>
+					</div>
 				</td>
-				<td><button  ng-show="adapter.status.installedVersion" type="button" class="btn btn-xs btn-info" ng-click="openSettings(adapter, switchServer)">Einstellungen</button></td>
 				<td>
 					<h3
 						class="label label-xl glyphicon"
@@ -50,5 +68,17 @@
 				</td>
 			</tr>
 		</table>
+		<uib-accordion>
+			<div uib-accordion-group is-open="switchServer.showLogging">
+				<uib-accordion-heading>
+					Logging<i class="pull-right glyphicon" ng-class="switchServer.showLogging?'glyphicon-chevron-down':'glyphicon-chevron-right'"></i>
+				</uib-accordion-heading>
+				<ul style="overflow-y: auto; max-height: 100%;">
+					<li ng-repeat="error in switchServer.logmessages track by $index">
+						{{error.time}}:{{error.message}}
+					</li>
+				</ul>
+			</div>
+		</uib-accordion>
 	</div>
 </div>

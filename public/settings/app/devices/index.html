@@ -2,17 +2,63 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">{{room.room.name}}</h3>
 	</div>
-	<div class="panel-body" ng-repeat="device in room.roomdevices">
+	<table class="table">
+		<tr>
+			<th>Name</th>
+			<th>Master</th>
+			<th>Slave</th>
+			<th></th>
+			<th></th>
+		</tr>
+		<tr ng-repeat="device in room.roomdevices">
+			<td style="width: 200px; max-width: 200px; overflow:hidden;">{{device.name}}</td>
+			<td style="width: 200px; max-width: 200px; overflow:hidden;">{{device.CodeOn}}</td>
+			<td style="width: 200px; max-width: 200px; overflow:hidden;">{{device.CodeOff}}</td>
+			<td>
+				<button
+					type="button" 
+					class="btn btn-default"
+					ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"1"})'
+				>
+					{{device.buttonLabelOn}}
+				</button>
+				<button
+					type="button" 
+					class="btn btn-default"
+					ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
+				>
+					{{device.buttonLabelOff}}
+				</button>
+			</td>
+			<td class="right">
+				<a type="button" class="btn btn-info" href="#/editDevice/{{device.deviceid}}">Bearbeiten</a>
+				<button type="button" class="btn btn-danger" ng-click='deleteDevice(device.deviceid)'>Löschen</button>
+			</td>
+		</tr>
+	</table>
+<!-- 	<div class="panel-body" ng-repeat="device in room.roomdevices">
 		<div class="pull-left">
 			<a href="" data-toggle="tooltip" title="Masterdip:{{device.CodeOn}}|Slavedip:{{device.CodeOff}}">{{device.name}} ({{device.buttonLabelOn}}|{{device.buttonLabelOff}})</a>
 		</div>
 		<div class="pull-right">
 			<div class="box-btn-switch">
+				{{device.CodeOn}}
+				{{device.CodeOff}}
+				<button
+					type="button" 
+					class="btn btn-default"
+					ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"1"})'
+				>{{device.buttonLabelOn}}</button>
+				<button
+					type="button" 
+					class="btn btn-default"
+					ng-click='switch("devices", {"id":device.deviceid,"sendMultiple":device.sendMultiple,"status":"0"})'
+				>{{device.buttonLabelOff}}</button>
 				<a type="button" class="btn btn-info" href="#/editDevice/{{device.deviceid}}">Bearbeiten</a>
 				<button type="button" class="btn btn-danger" ng-click='deleteDevice(device.deviceid)'>Löschen</button>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </div>
 <a href="#/editDevice/" class="btn btn-success" style="text-align: center;position: fixed;bottom:0;margin:10px auto;width: 20%;left:40%;z-index:200;">
 	Neues Gerät hinzufügen

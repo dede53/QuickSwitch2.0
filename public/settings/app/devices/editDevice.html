@@ -58,7 +58,13 @@
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-addon" id="switchserver">Switchserver</span>
-					<input type="text" class="form-control" placeholder="default: 0" ng-model="device.switchserver" id="switchserver" aria-describedby="switchserver">
+					<select
+						class="form-control"
+						ng-model="device.switchserver"
+						ng-options="server.id as server.name for server in switchServer"
+						aria-describedby="switchserver"
+						>
+					</select>
 				</div>
 			</div>
 			<div class="panel-body">

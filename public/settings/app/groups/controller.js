@@ -1,8 +1,8 @@
 app.controller('groupController', function($scope, $rootScope, socket, $timeout){
 	socket.emit('groups:getAll');
 
-	$scope.deleteGroup = function(data) {
-		socket.emit('group:remove', {user:$rootScope.activeUser, remove: data.id});	
+	$scope.deleteGroup = function(group) {
+		socket.emit('group:remove', {user: group.user, remove: group.id});	
 	}
 });
 app.controller('editGroupController', function($scope, $rootScope, socket, $routeParams, $location){

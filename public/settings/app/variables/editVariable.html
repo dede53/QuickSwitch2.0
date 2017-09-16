@@ -60,6 +60,46 @@
 							<li>
 								<div class="panel-body">
 									<div class="input-group">
+										<span class="input-group-addon" id="type">Zeige alle Werte</span>
+										<span class="input-group-addon">
+											<input 
+												type="checkbox" 
+												class="form-control" 
+												id="type" 
+												ng-model="variable.showall"
+												ng-true-value="'true'" 
+												ng-false-value="'false'">
+											</input>
+										</span>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
+										<span class="input-group-addon">Speichern</span>
+										<span  class="input-group-addon">
+											<input 
+												type="checkbox"
+												ng-model="variable.saveActive"
+												ng-true-value="'true'" 
+												ng-false-value="'false'"
+											>
+										</span>
+										<select ng-model="variable.saveType" class="form-control">
+											<option value="onchange">Bei Veränderung</option>
+											<option value="interval">Interval</option>
+										</select>
+											<!-- <input type="select" aria-label="Text input with checkbox" ng-model="variable.save.interval"> -->
+										<span  class="input-group-addon" ng-show="variable.saveType == 'interval'">
+											<input type="number" name="timeout" min="0" ng-model="variable.saveInterval">Minuten
+										</span>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="panel-body">
+									<div class="input-group">
 										<span class="input-group-addon" id="type">Benutzer</span>
 										<input type="text" class="form-control" id="type" ng-model="variable.user" readonly></input>
 									</div>
