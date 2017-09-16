@@ -72,7 +72,17 @@ app.controller('appController', function($scope, socket, $rootScope, $location){
 	if ($scope.storedUser != "") {
 		$rootScope.activeUser = JSON.parse($scope.storedUser);
 	}else{
-		$rootScope.activeUser = {name:"system",favoritDevices: [], variables:[], admin:true};
+		$rootScope.activeUser = {
+			name: 'Admin',
+			favoritDevices: [],
+			favoritVariables: [],
+			varChart: [],
+			variables: [],
+			admin: '1',
+			chartHour: 24,
+			background: ''
+		};
+
 	}
 	$scope.bla = $rootScope.activeUser;
 
