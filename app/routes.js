@@ -176,7 +176,7 @@ ip:port/
 
 
 ***********************************************************************************/
-module.exports = function(app, db){
+module.exports = function(app, db, plugins, allAlerts){
 
 	/*******************************************************************************
 	**	Auswahl zwischen Mobile und PC	********************************************
@@ -273,6 +273,20 @@ module.exports = function(app, db){
 		}
 	});
 
+	app.post('/setDeviceStatus', function(req, res){
+		var id = parseInt(req.body.id);
+		deviceFunctions.setDeviceStatus(id, req.body.status);
+		deviceFunctions.getDevice(id, function(device){
+			app.io.emit('change', new message("devices:switch", {"device":device,"status":req.body.status}));
+		});
+	});
+
+	app.post('/setDeviceStatusByCode', function(req, res){
+		var id = parseInt(req.body.id);
+		deviceFunctions.setDeviceStatusByCode(req.body.masterDip, req.body.slaveDip, req.body.status, function(device){
+			app.io.emit('change', new message("devices:switch", {"device":device,"status":req.body.status}));
+		});
+	});
 	/*******************************************************************************
 	**	alle Geräte	****************************************************************
 	*******************************************************************************/
@@ -351,11 +365,11 @@ module.exports = function(app, db){
 			"switchserver": "(int) switchserverid"
 		}
 	*******************************************************************************/
-	app.post('/devices', function (req, res) {
-		deviceFunctions.saveNewDevice(data, req, res, function(data){
-			res.json(data);
-		});
-	});
+	// app.post('/devices', function (req, res) {
+	// 	deviceFunctions.saveNewDevice(data, req, res, function(data){
+	// 		res.json(data);
+	// 	});
+	// });
 
 	/*******************************************************************************
 	**	alle Gruppen	************************************************************
@@ -450,23 +464,23 @@ module.exports = function(app, db){
 
 	app.get('/setVariable/:id/:status', function(req, res){
 		variableFunctions.setVariable(req.params, app, function(data){
-			timerFunctions.checkTimer(req.params);
+			plugins['timerserver'].send({"setVariable":req.params});
 			res.json(data);
 		});
 	});
 
 	app.post('/setVariable', function(req, res){
 		variableFunctions.setVariable(req.body, app, function(data){
-			timerFunctions.checkTimer(req.body);
+			plugins['timerserver'].send({"setVariable":req.body});
 			res.json(data);
 		});
 	});
-	app.get('/send/:type/:title/:message/:receiver/:messageType?', function(req, res){
+	app.get('/send/:type/:title/:message/:user/:messageType?', function(req, res){
 		var data = {};
 		data.title = req.params.title;
 		data.type = req.params.messageType;
 		data.message = req.params.message;
-		data.receiver = req.params.receiver;
+		data.user = req.params.user;
 		data.date = new Date();
 		data.id = Math.floor((Math.random() * 100) + 1);
 		if(req.params.type.includes(":")){
@@ -477,10 +491,10 @@ module.exports = function(app, db){
 				variableFunctions.replaceVar(data.title, function(title){
 					data.message = message;
 					data.title = title;
-					if(req.params.receiver == "all"){
-						app.io.emit('change', new helper.message("alerts:add", data));
+					if(req.params.user == "all"){
+						allAlerts.addAll(data);
 					}else{
-						app.io.in(req.params.receiver).emit('change', new helper.message("alerts:add", data));
+						allAlerts.add(data);
 					}
 					res.status(200).end();
 				});
@@ -552,10 +566,8 @@ module.exports = function(app, db){
 		countdownFunctions.deleteCountdown(id, function(status){
 			if(status == 200){
 				app.io.in(req.params.user).emit('change', new message('countdowns:remove', id));
-				res.send(200).end();
-			}else{
-				res.send(400).end();
 			}
+			res.sendStatus(status);
 		});
 	});
 }

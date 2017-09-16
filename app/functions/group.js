@@ -19,7 +19,7 @@ function switchAction(dev, status, app, callback){
 			});
 			break;
 		default:
-			helper.log.error("Falscher Gruppen type:" + dev.type);
+			log.error("Falscher Gruppen type:" + dev.type);
 			callback(404);	
 			break;
 	}
@@ -29,15 +29,15 @@ var getGroups = function(user, callback){
 	db.all(query, function(err, data){
 		if(err){
 			callback(404);
-			helper.log.error(err);
+			log.error(err);
 		}else{
 			var groups = {};
 			data.forEach(function(group){
 				try{
 					group.groupDevices = JSON.parse(group.groupDevices);
 				}catch(e){
-					console.log("Fehler beim parsen der Gruppe:");
-					console.log(e);
+					log.error("Fehler beim parsen der Gruppe:");
+					log.error(e);
 				}
 				groups[group.id] = group;
 			});
@@ -75,15 +75,15 @@ module.exports = {
 		db.all(query, function(err, data){
 			if(err){
 				callback(404);
-				helper.log.error(err);
+				log.error(err);
 			}else{
 				var groups = {};
 				data.forEach(function(group){
 					try{
 						group.groupDevices = JSON.parse(group.groupDevices);
 					}catch(e){
-						console.log("Fehler beim parsen der Gruppe:");
-						console.log(e);
+						log.error("Fehler beim parsen der Gruppe:");
+						log.error(e);
 					}
 					groups[group.id] = group;
 				});
@@ -95,18 +95,18 @@ module.exports = {
 		var query = "SELECT id, name, devices as groupDevices, user FROM groups WHERE id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
-				helper.log.error(err);
+				log.error(err);
 				callback(404);
 			}else if(data == ""){
-				helper.log.info("Keine Gruppe mit der ID: " + id);
+				log.info("Keine Gruppe mit der ID: " + id);
 				callback(404);
 			}else{
 				var data = data[0];
 				try{
 					data.groupDevices = JSON.parse(data.groupDevices);
 				}catch(e){
-					console.log("Fehler beim parsen der Gruppe:");
-					console.log(e);
+					log.error("Fehler beim parsen der Gruppe:");
+					log.error(e);
 					callback(404);
 				}
 				callback(data);

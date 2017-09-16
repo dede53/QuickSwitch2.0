@@ -92,19 +92,19 @@ var fs						= require('fs');
 var async					= require("async");
 var request					= require('request');
 var later 					= require('later');
-var allIntervals				= {
-	setInterval: function(id, callback, sched){
-		this.intervals[id] = later.setInterval(callback, sched);
-	},
-	clearInterval: function(id){
-		this.intervals[id].clear();
-		delete this.intervals[id];
-	},
-	intervals: {}
-};
+// var allIntervals				= {
+// 	setInterval: function(id, callback, sched){
+// 		this.intervals[id] = later.setInterval(callback, sched);
+// 	},
+// 	clearInterval: function(id){
+// 		this.intervals[id].clear();
+// 		delete this.intervals[id];
+// 	},
+// 	intervals: {}
+// };
 var storedTimes 			= {};
 function isObjectEmpty(value){
-    return Boolean(value && typeof value == 'object') && !Object.keys(value).length;
+	return Boolean(value && typeof value == 'object') && !Object.keys(value).length;
 }
 
 function getRandomInt(min, max) {
@@ -127,6 +127,7 @@ function createTime(time){
 		time: hours + ':' + minutes
 	}
 }
+/*
 function deaktivateInterval(id){
 	getTimer(id, function(timer){
 		if(timer.actions.intervals){
@@ -138,188 +139,191 @@ function deaktivateInterval(id){
 		}
 	});
 }
+*/
 function deleteTimer(id, callback){
 	var query = "DELETE FROM timer WHERE id = '" + id + "';";
 	db.all(query, function(err, data){
 		callback(err, data);
 	});
 }
+/*
 var checkConditions = function(timer, switchToThis, switchtimer, callback){
-		// helper.log.debug(timer.conditions);
-		if(switchtimer == false || switchtimer == "false"){
-			return;
-		}
-		if(!timer.conditions){
-			helper.log.pure("	Keine Bedingungen für diesen Timer");
-			helper.log.pure("		Ergebnis: 	stimmt");
-			callback(timer, switchToThis, switchtimer);
-			return;
-		}
-		
-		// Wenn noch nie ausgeführt dann letzte Ausführung auf vor 12 Stunden setzten
-		if(!timer.lastexec){
-			timer.lastexec = new Date().getTime() - 12 * 60 * 60000;
-		}else{
-			timer.lastexec = parseInt(timer.lastexec);
-		}
+	// helper.log.debug(timer.conditions);
+	if(switchtimer == false || switchtimer == "false"){
+		return;
+	}
+	if(!timer.conditions){
+		helper.log.pure("	Keine Bedingungen für diesen Timer");
+		helper.log.pure("		Ergebnis: 	stimmt");
+		callback(timer, switchToThis, switchtimer);
+		return;
+	}
+	
+	// Wenn noch nie ausgeführt dann letzte Ausführung auf vor 12 Stunden setzten
+	if(!timer.lastexec){
+		timer.lastexec = new Date().getTime() - 12 * 60 * 60000;
+	}else{
+		timer.lastexec = parseInt(timer.lastexec);
+	}
 
-		var switchNow = null;
+	var switchNow = null;
 
-		if(timer.conditions.range){
-			helper.log.pure("	Prüfe Zeitraum...");
-			timer.conditions.range.forEach(function(condition){
-				helper.log.pure("		" + condition.start + " - " + condition.stop);
-				var startTime = parseTime(condition.start);
-				var stopTime = parseTime(condition.stop);
-				
-				if(helper.isTimeInRange(startTime.timestamp, stopTime.timestamp)){
-					switchNow = true;
-					helper.log.pure("		Ergebnis: 	stimmt \n");
-				}else{
-					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
-					switchtimer = false;
-				}
-			});
-		}
+	if(timer.conditions.range){
+		helper.log.pure("	Prüfe Zeitraum...");
+		timer.conditions.range.forEach(function(condition){
+			helper.log.pure("		" + condition.start + " - " + condition.stop);
+			var startTime = parseTime(condition.start);
+			var stopTime = parseTime(condition.stop);
+			
+			if(helper.isTimeInRange(startTime.timestamp, stopTime.timestamp)){
+				switchNow = true;
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+				switchtimer = false;
+			}
+		});
+	}
 
-		if(timer.conditions.time){
-			var now = createTime(new Date().getTime());
+	if(timer.conditions.time){
+		var now = createTime(new Date().getTime());
 
 
-			console.log("Prüfe Zeit...");
+		console.log("Prüfe Zeit...");
 
-			timer.conditions.time.forEach(function(condition){
-				switch(condition.time){
-					case "sunset":
-						console.log("	Sonnenuntergang:");
-						var newTime = helper.getSuntime("sunset", condition.offset);
-						console.log("		Schaltzeit: 	" + newTime.time);
-						if(newTime.time == now.time){
-							if(timer.lastexec < newTime.timestamp){
-								console.log("		Ergebnis: 	stimmt \n");
-								switchNow = true;
-								switchToThis = condition.action;
-							}else{
-								helper.log.pure('Timer wurde schon geschaltet');
-								switchtimer = false;
-							}
-						}else{
-							console.log("		Ergebnis: 	stimmt nicht \n");
-							switchtimer = false;
-						}
-						break;
-					case "sunrise":
-						console.log("	Sonnenaufgang:");
-						var newTime = helper.getSuntime("sunrise", condition.offset);
-						console.log("		Schaltzeit: 	" + newTime.time);
-						if(newTime.time == now.time){
-							if(timer.lastexec < newTime.timestamp){
-								console.log("		Ergebnis: 	stimmt \n");
-								switchNow = true;
-								switchToThis = condition.action;
-							}else{
-								helper.log.pure('Timer wurde schon geschaltet');
-								switchtimer = false;
-							}
-						}else{
-							console.log("		Ergebnis: 	stimmt nicht \n");
-							switchtimer = false;
-						}
-						break;
-					default:
-						condition.time = parseTime(condition.time);
-						console.log("	Schaltzeit..." + condition.time.time);
-						if(condition.time.time == now.time){
-							if(timer.lastexec < condition.time.timestamp){
-								console.log("		Ergebnis: 	stimmt \n");
-								switchNow = true;
-								switchToThis = condition.action;
-							}else{
-								helper.log.pure('Timer wurde schon geschaltet');
-								switchtimer = false;
-							}
-						}else{
-							console.log("		Ergebnis: 	stimmt nicht \n");
-							switchtimer = false;
-						}
-						break;
-				}
-			});
-		}
-		if(timer.conditions.random){
-			helper.log.pure("Prüfe Zufallszeit...");
-
-			timer.conditions.random.forEach(function(condition){
-				var now = createTime(new Date().getTime());
-				var startTime = parseTime(condition.start);
-				var stopTime = parseTime(condition.stop);
-
-				// Zeitraum prüfen
-				if(startTime.timestamp <= now.timestamp && stopTime.timestamp >= now.timestamp){
-					if(timer.lastexec > startTime.timestamp && timer.lastexec < stopTime.timestamp){
-						// schon ausgeführt!
-						helper.log.pure("	Timer schon ausgeführt");
-						helper.log.pure("		Ergebnis: 	stimmt nicht \n");
-						switchtimer = false;
-					}else{
-						// Noch nicht ausgeführt!
-						if(!storedTimes[timer.id]){
-							// Timestamp zum Schalten generieren
-							var minutes = getRandomInt(now.timestamp, stopTime.timestamp);
-							// helper.log.pure(new Date(minutes));
-							storedTimes[timer.id] = createTime(minutes);
-							helper.log.pure('	Neue Schaltzeit berechnet!');
-						}
-						helper.log.pure('	Schaltzeit:' + new Date(storedTimes[timer.id].timestamp));
-						if(storedTimes[timer.id].time == now.time){
-							// Schalten!!
-							helper.log.pure('	Jetzt schalten!');
-							storedTimes[timer.id] = false;
-							helper.log.pure("		Ergebnis: 	stimmt \n");
+		timer.conditions.time.forEach(function(condition){
+			switch(condition.time){
+				case "sunset":
+					console.log("	Sonnenuntergang:");
+					var newTime = helper.getSuntime("sunset", condition.offset);
+					console.log("		Schaltzeit: 	" + newTime.time);
+					if(newTime.time == now.time){
+						if(timer.lastexec < newTime.timestamp){
+							console.log("		Ergebnis: 	stimmt \n");
 							switchNow = true;
 							switchToThis = condition.action;
 						}else{
-							helper.log.pure('		Ergebnis: 	stimmt nicht \n');
+							helper.log.pure('Timer wurde schon geschaltet');
 							switchtimer = false;
 						}
+					}else{
+						console.log("		Ergebnis: 	stimmt nicht \n");
+						switchtimer = false;
 					}
-				}else{
-					helper.log.pure("	Uhrzeit nicht zwischen " + startTime.time + " und " + stopTime.time);
+					break;
+				case "sunrise":
+					console.log("	Sonnenaufgang:");
+					var newTime = helper.getSuntime("sunrise", condition.offset);
+					console.log("		Schaltzeit: 	" + newTime.time);
+					if(newTime.time == now.time){
+						if(timer.lastexec < newTime.timestamp){
+							console.log("		Ergebnis: 	stimmt \n");
+							switchNow = true;
+							switchToThis = condition.action;
+						}else{
+							helper.log.pure('Timer wurde schon geschaltet');
+							switchtimer = false;
+						}
+					}else{
+						console.log("		Ergebnis: 	stimmt nicht \n");
+						switchtimer = false;
+					}
+					break;
+				default:
+					condition.time = parseTime(condition.time);
+					console.log("	Schaltzeit..." + condition.time.time);
+					if(condition.time.time == now.time){
+						if(timer.lastexec < condition.time.timestamp){
+							console.log("		Ergebnis: 	stimmt \n");
+							switchNow = true;
+							switchToThis = condition.action;
+						}else{
+							helper.log.pure('Timer wurde schon geschaltet');
+							switchtimer = false;
+						}
+					}else{
+						console.log("		Ergebnis: 	stimmt nicht \n");
+						switchtimer = false;
+					}
+					break;
+			}
+		});
+	}
+	if(timer.conditions.random){
+		helper.log.pure("Prüfe Zufallszeit...");
+
+		timer.conditions.random.forEach(function(condition){
+			var now = createTime(new Date().getTime());
+			var startTime = parseTime(condition.start);
+			var stopTime = parseTime(condition.stop);
+
+			// Zeitraum prüfen
+			if(startTime.timestamp <= now.timestamp && stopTime.timestamp >= now.timestamp){
+				if(timer.lastexec > startTime.timestamp && timer.lastexec < stopTime.timestamp){
+					// schon ausgeführt!
+					helper.log.pure("	Timer schon ausgeführt");
 					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
 					switchtimer = false;
-				}
-					
-			});
-		}
-
-		// if(timer.conditions.variables){
-		// 	timer.conditions.variables.forEach(function(varToCheck){
-		// 		variableFunctions.getVariableByName(varToCheck.name, function(fullVariable){
-		// 			compareVariables(varToCheck, fullVariable);
-		// 		});
-		// 	});
-		// }
-		if(switchNow == true){
-			switchtimer = true;
-		}
-
-		if(timer.conditions.weekdays){
-			var datum = new Date();
-			var tag = datum.getDay();
-
-			helper.log.pure("	Prüfe Wochentag...");
-			timer.conditions.weekdays.forEach(function(condition){
-				if(condition[tag] == 1){					
-					// switchNow = true;
-					helper.log.pure("		Ergebnis: 	stimmt \n");
 				}else{
-					helper.log.pure("		Ergebnis: 	stimmt nicht \n");
-					switchtimer = false;
+					// Noch nicht ausgeführt!
+					if(!storedTimes[timer.id]){
+						// Timestamp zum Schalten generieren
+						var minutes = getRandomInt(now.timestamp, stopTime.timestamp);
+						// helper.log.pure(new Date(minutes));
+						storedTimes[timer.id] = createTime(minutes);
+						helper.log.pure('	Neue Schaltzeit berechnet!');
+					}
+					helper.log.pure('	Schaltzeit:' + new Date(storedTimes[timer.id].timestamp));
+					if(storedTimes[timer.id].time == now.time){
+						// Schalten!!
+						helper.log.pure('	Jetzt schalten!');
+						storedTimes[timer.id] = false;
+						helper.log.pure("		Ergebnis: 	stimmt \n");
+						switchNow = true;
+						switchToThis = condition.action;
+					}else{
+						helper.log.pure('		Ergebnis: 	stimmt nicht \n');
+						switchtimer = false;
+					}
 				}
-			});
-		}
-		callback(timer, switchToThis, switchtimer);
+			}else{
+				helper.log.pure("	Uhrzeit nicht zwischen " + startTime.time + " und " + stopTime.time);
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+				switchtimer = false;
+			}
+				
+		});
+	}
+
+	// if(timer.conditions.variables){
+	// 	timer.conditions.variables.forEach(function(varToCheck){
+	// 		variableFunctions.getVariableByName(varToCheck.name, function(fullVariable){
+	// 			compareVariables(varToCheck, fullVariable);
+	// 		});
+	// 	});
+	// }
+	if(switchNow == true){
+		switchtimer = true;
+	}
+
+	if(timer.conditions.weekdays){
+		var datum = new Date();
+		var tag = datum.getDay();
+
+		helper.log.pure("	Prüfe Wochentag...");
+		timer.conditions.weekdays.forEach(function(condition){
+			if(condition[tag] == 1){					
+				// switchNow = true;
+				helper.log.pure("		Ergebnis: 	stimmt \n");
+			}else{
+				helper.log.pure("		Ergebnis: 	stimmt nicht \n");
+				switchtimer = false;
+			}
+		});
+	}
+	callback(timer, switchToThis, switchtimer);
 }
+*/
 function getTimer(id, callback){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE id = " + id + ";";
 	db.all(query, function(err, data){
@@ -346,7 +350,7 @@ function getTimer(id, callback){
 				}
 				callback(data[0]);
 			}catch(e){
-				helper.log.pure("Fehler im Json des Timers!");
+				helper.log.pure("Fehler im JSON des Timers!");
 				helper.log.pure(data[0]);
 				helper.log.pure(e);
 				return;
@@ -354,6 +358,7 @@ function getTimer(id, callback){
 		}
 	});
 }
+/*
 var getTimers = function(callback){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
 	db.all(query, function(err, data){
@@ -387,6 +392,7 @@ var getTimers = function(callback){
 		}
 	});
 }
+*/
 var getUserTimers = function(user, callback){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE user = '" + user + "';";
 	db.all(query, function(err, data){
@@ -422,6 +428,7 @@ var getUserTimers = function(user, callback){
 		}
 	});
 }
+/*
 var checkVariables = function(timer, variable, switchToThis, switchtimer, callback){
 	timer.variables[variable.id].forEach(function(variab){
 		switch(variab.mode){
@@ -445,7 +452,8 @@ var checkVariables = function(timer, variable, switchToThis, switchtimer, callba
 	});
 	callback(timer, switchToThis, switchtimer);
 }
-
+*/
+/*
 var switchActions = function(timer, status, switchtimer){
 	if(timer.actions && switchtimer != false){
 		helper.log.pure("	Aktionen ausführen:");
@@ -453,6 +461,7 @@ var switchActions = function(timer, status, switchtimer){
 			helper.log.debug('		Geräte schalten!');
 			timer.actions.devices.forEach(function(device){
 				helper.log.debug(device.action.name + device.action.Raum);
+				// process.send({"switchaction":{"type":'device', "action":device}});
 				helper.switchaction('device', device.action.deviceid, device.action.switchstatus, device.timeout);
 			});
 		}
@@ -460,12 +469,14 @@ var switchActions = function(timer, status, switchtimer){
 			helper.log.debug('		Gruppe schalten!');
 			timer.actions.groups.forEach(function(group){
 				helper.log.debug(group);
+				// process.send({"switchaction":{"type":'group', "action":group}});
 				helper.switchaction('group', group.action.id, group.action.switchstatus, group.timeout);
 			});
 		}
 		if(timer.actions.rooms){
 			helper.log.debug('		Raum schalten!');
 			timer.actions.rooms.forEach(function(room){
+				// process.send({"switchaction":{"type":'room', "action":room}});
 				helper.switchaction('room', room.action.id, room.action.switchstatus, room.timeout);
 			});
 		}
@@ -615,6 +626,7 @@ var switchActions = function(timer, status, switchtimer){
 		db.run(query);
 	}
 }
+*/
 
 /*
 var compareVariables = function(condition, variable){
@@ -672,6 +684,7 @@ var compareVariables = function(condition, variable){
 	}
 }
 */
+/*
 var checkTimer = function(variable){
 	var datum = new Date();
 	var tag = datum.getDay();
@@ -709,8 +722,9 @@ var checkTimer = function(variable){
 		});
 	});
 }
+*/
 module.exports = {
-	getTimers: getTimers,
+	// getTimers: getTimers,
 	getUserTimers: getUserTimers,
 	getTimer: getTimer,
 	saveTimer: function(data, callback){
@@ -739,30 +753,13 @@ module.exports = {
 			});
 		}
 	},
-	// saveNewTimer: function(data, callback){
-	// 	var query = "INSERT INTO timer (name, variables, conditions, actions, user) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "');";
-	// 	db.all(query, function(err, data){
-	// 		if(err){
-	// 			callback(err, undefined);
-	// 		}else{
-	// 			getTimer(data.insertId, function(data){
-	// 				callback( undefined, data);
-	// 			});
-	// 		}
-	// 	});
-	// },
-	// saveEditTimer: function(data, callback){
-	// 	var query = "UPDATE timer SET name = '" + data.name + "', variables = '" + JSON.stringify(data.variables) + "', conditions = '" + JSON.stringify(data.conditions) + "', actions = '" + JSON.stringify(data.actions) + "' WHERE id = '" + data.id + "';";
-	// 	db.run(query);
-	// 	callback(undefined, data);
-	// },
 	deleteTimer: deleteTimer,
 	switchTimer: function(data, callback){
 		var query = "UPDATE timer SET active='" + data.active + "' WHERE id ='" + data.id + "';"
 		db.run(query);
 		callback(200);
 	},
-	checkTimer: checkTimer,
-	switchActions: switchActions,
-	deaktivateInterval: deaktivateInterval
+	// checkTimer: checkTimer,
+	switchActions: function(){}
+	// deaktivateInterval: deaktivateInterval
 }

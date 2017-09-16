@@ -7,7 +7,7 @@ function sendActiveDevices(app, callback){
 	var query = "SELECT devices.name, rooms.name AS room FROM devices, rooms WHERE devices.roomid = rooms.id AND status != 0 AND devices.type = 'device' AND showStatus = 1;";
 	db.all(query , function(err, activedevices) {
 		if (err) {
-			helper.log.error(err);
+			log.error(err);
 			callback(404);
 		}else{
 			app.io.emit('change', new helper.message('active:get', activedevices));
@@ -20,7 +20,7 @@ function saveStatus(app, action, data, callback){
 	var query = "UPDATE devices SET status = '"+ action +"' WHERE deviceid = "+ data.deviceid +";";
 	db.all(query, function(err, response){
 		if(err){
-			helper.log.error(err);
+			log.error(err);
 			callback(404);
 		}else{
 			app.io.emit('change', new helper.message("devices:switch", {"device":data,"status":action}));
@@ -29,7 +29,7 @@ function saveStatus(app, action, data, callback){
 				db.run(query);
 			}
 			sendActiveDevices(app, function(res){
-				helper.log.info("Erfolgreich an den SwitchServer gesendet: /switch/device/" + data.deviceid + "/" + action);
+				log.info("Erfolgreich an den SwitchServer gesendet: /switch/device/" + data.deviceid + "/" + action);
 				callback(res);
 			});
 		}
@@ -53,11 +53,10 @@ module.exports = {
 			form: formData
 		},function( err, httpResponse, body){
 			if(err){
-				helper.log.error("Error! \n SwitchServer ist nicht erreichbar!");
-				helper.log.error(err);
+				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
 			}else{
 				if(body !== '200'){
-					helper.log.error("Der SwitchServer [" + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + "] meldet einen Fehler mit dem Adapter: " + action);
+					log.error("Der SwitchServer [" + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + "] meldet einen Fehler mit dem Adapter: " + action);
 					if(callback){
 						callback(body);
 					}
@@ -70,7 +69,7 @@ module.exports = {
 						}
 					});
 				}else{
-					helper.log.info("Erfolgreich an den SwitchServer gesendet");
+					log.info("Erfolgreich an den SwitchServer gesendet");
 					if(callback){
 						callback(200);
 					}
