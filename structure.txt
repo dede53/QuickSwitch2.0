@@ -1,0 +1,475 @@
+.
+├── app
+│   ├── functions
+│   │   ├── adapter.js
+│   │   ├── countdown.js
+│   │   ├── database.js
+│   │   ├── device.js
+│   │   ├── group.js
+│   │   ├── helper.js
+│   │   ├── message.js
+│   │   ├── newObject.js
+│   │   ├── newSwitchServer.js
+│   │   ├── newTimer.js
+│   │   ├── newVariable.js
+│   │   ├── room.js
+│   │   ├── SwitchServer.js
+│   │   ├── timer.js
+│   │   ├── user.js
+│   │   └── variable.js
+│   ├── ioroutes
+│   │   ├── config.json
+│   │   └── device.js
+│   └── routes.js
+├── cert.pem
+├── config.json
+├── countdownserver.js
+├── daemon.js
+├── index.js
+├── install.sh
+├── key.pem
+├── LICENSE.txt
+├── log
+│   ├── debug-adapter.log
+│   ├── debug-countdownserver.log
+│   ├── debug-master.log
+│   ├── debug-testTimerObject.log
+│   └── debug-timerserver.log
+├── newIndex.js
+├── package.json
+├── public
+│   ├── index.html
+│   ├── mobile
+│   │   ├── app
+│   │   │   ├── alerts
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── chat
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── countdown
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── devices
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── editDevice.html
+│   │   │   │   ├── index.html
+│   │   │   │   ├── template-active.html
+│   │   │   │   ├── template-button2.html
+│   │   │   │   ├── template-button.html
+│   │   │   │   ├── template-colorpicker.html
+│   │   │   │   ├── template-favorit.html
+│   │   │   │   ├── template-room.html
+│   │   │   │   ├── template-shutter.html
+│   │   │   │   └── template-slider.html
+│   │   │   ├── factory.js
+│   │   │   ├── filter.js
+│   │   │   ├── groups
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── home
+│   │   │   │   ├── activedevicelist.html
+│   │   │   │   ├── devicelist.html
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── index.html
+│   │   │   │   └── user.html
+│   │   │   ├── menu
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── favorits.html
+│   │   │   │   └── menu.html
+│   │   │   ├── mobile.controller.js
+│   │   │   ├── phone
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── rooms
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── temperature
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── index.html
+│   │   │   │   └── template-chart.html
+│   │   │   ├── timer
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── index.html
+│   │   │   │   ├── template-timer-alert.html
+│   │   │   │   ├── template-timer-device.html
+│   │   │   │   ├── template-timer-group.html
+│   │   │   │   ├── template-timer.html
+│   │   │   │   ├── template-timer-pushbullet.html
+│   │   │   │   ├── template-timer-random.html
+│   │   │   │   ├── template-timer-range.html
+│   │   │   │   ├── template-timer-room.html
+│   │   │   │   ├── template-timer-time.html
+│   │   │   │   ├── template-timer-variable.html
+│   │   │   │   └── template-timer-weekdays.html
+│   │   │   ├── user
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   └── variables
+│   │   │       ├── directive.js
+│   │   │       └── index.html
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   │   └── index.css
+│   │   │   ├── favicon.ico
+│   │   │   ├── fonts
+│   │   │   │   ├── glyphicons-halflings-regular.eot
+│   │   │   │   ├── glyphicons-halflings-regular.svg
+│   │   │   │   ├── glyphicons-halflings-regular.ttf
+│   │   │   │   ├── glyphicons-halflings-regular.woff
+│   │   │   │   └── glyphicons-halflings-regular.woff2
+│   │   │   ├── img
+│   │   │   │   └── loading.gif
+│   │   │   ├── js
+│   │   │   │   └── helper.js
+│   │   │   └── libs
+│   │   │       ├── angular-animate.js
+│   │   │       ├── angular.js
+│   │   │       ├── angular-material-icons.min.js
+│   │   │       ├── angular-route.min.js
+│   │   │       ├── angular-snap.css
+│   │   │       ├── angular-snap.min.js
+│   │   │       ├── angular-touch.min.js
+│   │   │       ├── bootstrap.min.css
+│   │   │       ├── bootstrap.min.js
+│   │   │       ├── highcharts-ng.js
+│   │   │       ├── highstock.src.js
+│   │   │       ├── ng-sortable.min.css
+│   │   │       ├── ng-sortable.min.js
+│   │   │       ├── snap.css
+│   │   │       ├── snap.min.js
+│   │   │       ├── standalone-framework.js
+│   │   │       └── ui-bootstrap-tpls-0.14.2.js
+│   │   ├── index.html
+│   │   └── manifest.json
+│   ├── pc
+│   │   ├── app
+│   │   │   ├── alerts
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── chat
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── controller.js
+│   │   │   ├── countdown
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── devices
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── editDevice.html
+│   │   │   │   ├── index.html
+│   │   │   │   ├── template-active.html
+│   │   │   │   ├── template-button.html
+│   │   │   │   ├── template-buttonWithoutStatus.html
+│   │   │   │   ├── template-colorpicker.html
+│   │   │   │   ├── template-favorit.html
+│   │   │   │   ├── template-pushButton.html
+│   │   │   │   ├── template-room.html
+│   │   │   │   ├── template-shutter.html
+│   │   │   │   ├── template-slider2.html
+│   │   │   │   └── template-slider.html
+│   │   │   ├── filter.js
+│   │   │   ├── groups
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── home
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── menu
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── favorits.html
+│   │   │   │   └── menu.html
+│   │   │   ├── phone
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── rooms
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── switchHistory
+│   │   │   │   ├── controller.js
+│   │   │   │   └── index.html
+│   │   │   ├── temperature
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── index.html
+│   │   │   │   └── template-highchart.html
+│   │   │   ├── timer
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── directive.js
+│   │   │   │   ├── editTimer.html
+│   │   │   │   ├── index.html
+│   │   │   │   ├── template-timer-alert.html
+│   │   │   │   ├── template-timer-device.html
+│   │   │   │   ├── template-timer-edit-actions.html
+│   │   │   │   ├── template-timer-edit-conditions.html
+│   │   │   │   ├── template-timer-edit.html
+│   │   │   │   ├── template-timer-edit-variables.html
+│   │   │   │   ├── template-timer-group.html
+│   │   │   │   ├── template-timer.html
+│   │   │   │   ├── template-timer-pushbullet.html
+│   │   │   │   ├── template-timer-random.html
+│   │   │   │   ├── template-timer-range.html
+│   │   │   │   ├── template-timer-room.html
+│   │   │   │   ├── template-timer-time.html
+│   │   │   │   ├── template-timer-variable.html
+│   │   │   │   └── template-timer-weekdays.html
+│   │   │   ├── user
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   ├── variables
+│   │   │   │   ├── directive.js
+│   │   │   │   └── index.html
+│   │   │   └── weather
+│   │   │       ├── controller.js
+│   │   │       ├── directive.js
+│   │   │       └── index.html
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   │   └── index.css
+│   │   │   ├── favicon.ico
+│   │   │   ├── fonts
+│   │   │   │   ├── glyphicons-halflings-regular.eot
+│   │   │   │   ├── glyphicons-halflings-regular.svg
+│   │   │   │   ├── glyphicons-halflings-regular.ttf
+│   │   │   │   ├── glyphicons-halflings-regular.woff
+│   │   │   │   └── glyphicons-halflings-regular.woff2
+│   │   │   ├── img
+│   │   │   │   ├── cork.png
+│   │   │   │   ├── pin1.png
+│   │   │   │   ├── pin2.png
+│   │   │   │   ├── pin3.png
+│   │   │   │   ├── pin4.png
+│   │   │   │   ├── pin5.png
+│   │   │   │   ├── purty_wood.jpg
+│   │   │   │   └── purty_wood.png
+│   │   │   ├── js
+│   │   │   │   └── helper.js
+│   │   │   └── libs
+│   │   │       ├── angular-animate.js
+│   │   │       ├── angular.js
+│   │   │       ├── angular-material-icons.min.js
+│   │   │       ├── angular-route.min.js
+│   │   │       ├── angular-snap.css
+│   │   │       ├── angular-snap.min.js
+│   │   │       ├── angular-touch.min.js
+│   │   │       ├── bootstrap.min.css
+│   │   │       ├── bootstrap.min.js
+│   │   │       ├── highcharts-ng.js
+│   │   │       ├── highstock.src.js
+│   │   │       ├── jquery.min.js
+│   │   │       ├── ng-sortable.min.css
+│   │   │       ├── ng-sortable.min.js
+│   │   │       ├── snap.css
+│   │   │       ├── snap.min.js
+│   │   │       ├── standalone-framework.js
+│   │   │       └── ui-bootstrap-tpls-0.14.2.js
+│   │   └── index.html
+│   ├── settings
+│   │   ├── app
+│   │   │   ├── adapter
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── index.html
+│   │   │   │   └── template-settings.html
+│   │   │   ├── controller.js
+│   │   │   ├── devices
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── editDevice.html
+│   │   │   │   └── index.html
+│   │   │   ├── errors
+│   │   │   │   └── index.html
+│   │   │   ├── factory.js
+│   │   │   ├── groups
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── editGroup.html
+│   │   │   │   └── index.html
+│   │   │   ├── home
+│   │   │   │   ├── controller.js
+│   │   │   │   └── index.html
+│   │   │   ├── rooms
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── editRoom.html
+│   │   │   │   └── index.html
+│   │   │   ├── user
+│   │   │   │   ├── controller.js
+│   │   │   │   ├── editUser.html
+│   │   │   │   └── index.html
+│   │   │   └── variables
+│   │   │       ├── controller.js
+│   │   │       ├── directive.js
+│   │   │       ├── editVariable.html
+│   │   │       ├── filter.js
+│   │   │       ├── index.html
+│   │   │       └── template-variable-chart.html
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   │   └── index.css
+│   │   │   ├── img
+│   │   │   │   ├── cork.png
+│   │   │   │   ├── pin1.png
+│   │   │   │   ├── pin2.png
+│   │   │   │   ├── pin3.png
+│   │   │   │   ├── pin4.png
+│   │   │   │   ├── pin5.png
+│   │   │   │   └── purty_wood.png
+│   │   │   ├── js
+│   │   │   │   └── helper.js
+│   │   │   └── libs
+│   │   │       ├── angular-material-icons.min.js
+│   │   │       ├── angular-route.min.js
+│   │   │       ├── highcharts-ng.js
+│   │   │       ├── ng-sortable.min.css
+│   │   │       └── ng-sortable.min.js
+│   │   └── index.html
+│   └── tablet
+│       ├── app
+│       │   ├── devices
+│       │   │   ├── controller.js
+│       │   │   ├── directive.js
+│       │   │   ├── editDevice.html
+│       │   │   ├── geräte.html
+│       │   │   ├── index.html
+│       │   │   ├── template-active.html
+│       │   │   ├── template-button.html
+│       │   │   ├── template-buttonWithoutStatus.html
+│       │   │   ├── template-colorpicker.html
+│       │   │   ├── template-favorit.html
+│       │   │   ├── template-pushButton.html
+│       │   │   ├── template-room.html
+│       │   │   ├── template-shutter.html
+│       │   │   ├── template-slider2.html
+│       │   │   └── template-slider.html
+│       │   └── home
+│       │       ├── controller.js
+│       │       ├── directive.js
+│       │       └── index.html
+│       ├── assets
+│       │   ├── css
+│       │   │   └── index.css
+│       │   └── js
+│       │       └── index.js
+│       ├── controller.js
+│       ├── factory.js
+│       └── index.html
+├── quickswitch.pid
+├── README.md
+├── SmartHome.sql
+├── structure.txt
+├── SwitchServer
+│   ├── adapter
+│   │   ├── arduino
+│   │   │   ├── arduino.json.example
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   └── package.json
+│   │   ├── connair
+│   │   │   ├── connair.json.example
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   └── package.json
+│   │   ├── exec
+│   │   │   ├── exec.json.example
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   └── package.json
+│   │   ├── fritzbox
+│   │   │   ├── callmonitor.js
+│   │   │   ├── fritzbox.json.example
+│   │   │   ├── index.js
+│   │   │   └── package.json
+│   │   ├── funksensoren
+│   │   │   ├── funksensoren.json.example
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   └── README.md
+│   │   ├── homegear
+│   │   │   ├── homegear.json.example
+│   │   │   ├── index.js
+│   │   │   └── package.json
+│   │   ├── onewire
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   ├── onewire.json.example
+│   │   │   └── package.json
+│   │   ├── ping
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   ├── package.json
+│   │   │   └── ping.json.example
+│   │   ├── sayit
+│   │   │   ├── index.js
+│   │   │   ├── mp3
+│   │   │   │   └── test.mp3
+│   │   │   ├── package.json
+│   │   │   └── www
+│   │   │       ├── controller.js
+│   │   │       └── index.html
+│   │   ├── url
+│   │   │   ├── index.js
+│   │   │   ├── LICENSE
+│   │   │   └── package.json
+│   │   └── webview
+│   │       ├── dist
+│   │       │   ├── 0.65eaabb68f89a0208d03.chunk.js
+│   │       │   ├── assets
+│   │       │   │   └── img
+│   │       │   │       └── purty_wood.jpg
+│   │       │   ├── favicon.ico
+│   │       │   ├── index.html
+│   │       │   ├── inline.1529626776d6bdc7d93f.bundle.js
+│   │       │   ├── main.0fa64b220273580e312a.bundle.js
+│   │       │   ├── polyfills.2325e1e76a77a6de931f.bundle.js
+│   │       │   ├── purty_wood.ec97f70d8dbd2d7a6291.jpg
+│   │       │   ├── styles.ece9af3214fb687c25a7.bundle.css
+│   │       │   └── vendor.a205d959a25e02a3195e.bundle.js
+│   │       ├── index.js
+│   │       ├── LICENSE
+│   │       ├── package.json
+│   │       └── README.md
+│   ├── adapter.js
+│   ├── adapter-lib.js
+│   ├── adapterList.json
+│   ├── daemon.js
+│   ├── log
+│   │   ├── debug-adapter.log
+│   │   ├── debug-arduino.log
+│   │   ├── debug-connair.log
+│   │   ├── debug-exec.log
+│   │   ├── debug-fritzbox.log
+│   │   ├── debug-funksensoren.log
+│   │   ├── debug-homegear.log
+│   │   ├── debug-onewire.log
+│   │   ├── debug-ping.log
+│   │   ├── debug-sayit.log
+│   │   ├── debug-url.log
+│   │   └── debug-webview.log
+│   ├── package.json
+│   ├── README.md
+│   ├── settings
+│   │   ├── adapter.json
+│   │   ├── arduino.json
+│   │   ├── connair.json
+│   │   ├── exec.json
+│   │   ├── fritzbox.json
+│   │   ├── funksensoren.json
+│   │   ├── homegear.json
+│   │   ├── onewire.json
+│   │   ├── ping.json
+│   │   ├── sayit.json
+│   │   └── webview.json
+│   ├── switchserver.pid
+│   └── temp
+│       └── adapterList.json
+└── timerserver.js
+
+92 directories, 380 files
