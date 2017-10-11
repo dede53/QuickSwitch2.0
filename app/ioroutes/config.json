@@ -1,1 +1,0 @@
-{"loglevel":1,"switchserver":[{"id":"0","ip":"192.168.2.47","port":"4040","name":"Raspi","$$hashKey":"object:460"}],"mysql":{"host":"localhost","user":"root","password":"daniel"},"QuickSwitch":{"ip":"","port":"1230"}}

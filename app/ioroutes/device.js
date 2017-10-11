@@ -96,6 +96,34 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		}
 	});
 
+	app.io.route('settings', {
+		get: function(req){
+			req.socket.emit('change', new message('settings:get', config));
+		},
+		save: function(req){
+			fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', function(err){
+				if(err){
+					error("Die Einstellungen konnten nicht gespeichert werden!");
+					error(err);
+				}else{
+					// db	=	require('./app/functions/database.js');
+					app.io.emit('change', new message('settings:get', req.data));
+					if(req.data.QuickSwitch.port != config.QuickSwitch.port){
+						error("Die Einstellungen wurden geändert! Die aussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
+						stopServer(function(){
+							startServer(req.data.QuickSwitch.port);
+						});
+					}else{
+						config = req.data;
+					}
+				}
+			});
+		},
+		errors: function(req){
+			req.socket.emit('serverErrors', errors);
+		}
+	});
+
 	app.io.route('switchServer', {
 		get: function(req){
 			req.socket.emit('switchServer', config.switchserver);
@@ -283,6 +311,12 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		}
 	});
 
+	/*app.io.route('objects', {
+		get: function(req){
+			req.socket.emit('change', new message('objects:get', allObjects));
+		}
+	});*/
+
 	app.io.route('devices', {
 		get: function(req){
 			deviceFunctions.getDevices('object', function(data){
@@ -307,6 +341,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 					error( "Gerät mit der ID " + id + " konnte nicht geschaltet werden!");
 				}
 			});
+			// allObjects[req.data.switch.id].switch(req.data.switch.status, app);
 		},
 		switchAll: function(req){
 			deviceFunctions.switchDevices(app, req.data.switchAll, req, function(err){
@@ -394,11 +429,9 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 				if(data != 200){
 					error( "Die Gruppe mit der ID " + req.data.remove.id + " konnte nicht gelöscht werden!");
 				}else{
-					console.log(req.data.user);
 					groupFunctions.getAllGroups(function(data){
 						req.socket.emit("change", new message('groups:get', data));
 					});
-					// app.io.in(req.data.user).emit('change', new message('groups:remove', req.data.remove));
 					groupFunctions.getGroups(req.data.user, function(data){
 						app.io.in(req.data.user).emit('change', new message('groups:get', data));
 					});
