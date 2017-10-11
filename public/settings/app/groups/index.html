@@ -4,12 +4,12 @@
 	</div>
 	<div class="panel-body" ng-repeat="group in groups">
 		<div class="pull-left">
-			{{group.name}} ({{group.user}})
+			{{group.name}}
 		</div>
 		<div class="pull-right">
 			<div class="box-btn-switch">
 				<a type="button" class="btn btn-info" href="#/editGroup/{{group.id}}">Bearbeiten</a>
-				<button type="button" class="btn btn-danger" ng-click='deleteGroup(group)'>Löschen</button>
+				<button type="button" class="btn btn-danger" ng-click='deleteGroup({"id":group.id})'>Löschen</button>
 			</div>
 		</div>
 	</div>

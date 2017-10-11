@@ -1,8 +1,7 @@
 app.controller('userController', function($scope, $rootScope, socket){
 	socket.emit('users:get');
 	$scope.deleteUser = function(data) {
-		console.log("user:remove:" + data.id);
-		socket.emit('user:remove', {"remove":data.id});	
+		socket.emit('deleteUser', {"id":data.id});	
 	}
 });
 app.controller('editUserController', function($scope, $rootScope, socket, $routeParams){
@@ -11,7 +10,8 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 		$scope.user = {
 			favoritDevices:[],
 			favoritVariables:[],
-			varChart:[]
+            varChart:[],
+            chartHour: 24
 		}
 		$scope.favoritDevices = [];
 		$scope.favoritVariables = [];

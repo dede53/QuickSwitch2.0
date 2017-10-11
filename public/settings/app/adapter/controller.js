@@ -14,9 +14,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 			socket.on("log", function(data){
 				$scope.switchServers[server.id].logmessages = data;
 			});
-			socket.on("connect_error", function(err){
-				console.log("connect_error");
-				console.log(err);
+			socket.on("connect_error", function(){
 				$rootScope.$apply(function(){
 					$scope.switchServers[server.id].status = "";
 					$scope.switchServers[server.id].active = false;
