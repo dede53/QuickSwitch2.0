@@ -6,6 +6,32 @@ var createVariable				=	require('./app/functions/newVariable.js');
 var createTimer					=	require('./app/functions/newTimer.js');
 var later 						=	require('later');
 
+log = {
+	"info": function(data){
+		if(config.loglevel == 1 ){
+			process.send({log:data});
+		}
+	},
+	"debug": function(data){
+		if(config.loglevel <= 2){
+			process.send({log:data});
+		}
+	},
+	"warning": function(data){
+		if(config.loglevel <= 3){
+			process.send({log:data});
+		}
+	},
+	"error": function(data){
+		if(config.loglevel <= 4){
+			process.send({log:data});
+		}
+	},
+	"pure": function(data){
+        process.send({log:data});
+	}
+}
+
 var allTimers					=	{};
 var allVariables				=	{};
 var allIntervals				=	{
@@ -32,13 +58,11 @@ process.on('message', function(data){
 	if(data.setVariable){
 		try{
 			allVariables[data.setVariable.id].setVariable(data.setVariable.status, function(id, variable){
-				// console.log(id, variable.status);
 				allTimers[id].checkTimer(variable);
 			});
 		}catch(e){
 			allVariables[data.setVariable.id] = new createVariable(data.setVariable, config);
 			allVariables[data.setVariable.id].setVariable(data.setVariable.status, function(id, variable){
-				// console.log(id, variable.status);
 				allTimers[id].checkTimer(variable);
 			});
 		}
@@ -49,7 +73,6 @@ process.on('message', function(data){
 		}else{
 			allVariables[data.saveVariable.id] = new createVariable(data.saveVariable, config);
 			allVariables[data.saveVariable.id].setVariable(data.saveVariable.status, function(id, variable){
-				// console.log(id, variable.status);
 				allTimers[id].checkTimer(variable);
 			});
 		}
@@ -103,13 +126,13 @@ function loadVariables(){
 	var query = "SELECT * FROM variable;";
 	db.all(query, function(err, variables){
 		if(err){
-			console.log(err);
+			log.error(err);
 			return;
 		}
 		variables.forEach(function(variable){
 			allVariables[variable.id] = new createVariable(variable, config);
 		});
-		console.log("Alle Variablen geladen");
+		log.info("Alle Variablen geladen");
 	});
 }
 
@@ -117,7 +140,7 @@ function loadTimers(){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
 	db.all(query, function(err, timers){
 		if(err){
-			console.log(err);
+			log.error(err);
 			return;
 		}else{
 			timers.forEach(function(timer){
@@ -140,7 +163,7 @@ function loadTimers(){
 				}
 			});
 		}
-		console.log("Alle Timer geladen");
+		log.info("Alle Timer geladen");
 	});
 }
 
@@ -158,12 +181,6 @@ function unLoadTimers(cb){
 	allTimers = {};
 	cb();
 }
-
-// setTimeout(function(){
-// 	allVariables['fritzbox.status'].on('variable', function(data){
-// 		// console.log(data.id);
-// 	});
-// }, 1000);
 
 process.on('disconnect', function(error){
 	process.exit();
