@@ -20,7 +20,7 @@
 						class="form-control"
 						ng-change=""
 						ng-model="newCountdowntimer.device"
-						ng-options="value.deviceid as value.name group by value.Raum for value in devicelist">
+						ng-options="value as value.name group by value.Raum for value in devicelist">
 						<option value="">Wähle ein Gerät</option>
 				</select>
 			</fieldset>
