@@ -68,13 +68,14 @@ process.on('message', function(data){
 		}
 	}
 	if(data.saveVariable){
-		if(allVariables[data.saveVariable.id]){
+		if(allVariables[data.saveVariable.uid]){
 			allVariables[data.saveVariable.id].saveVariable(data.saveVariable);
 		}else{
-			allVariables[data.saveVariable.id] = new createVariable(data.saveVariable, config);
+            allVariables[data.saveVariable.id] = new createVariable(data.saveVariable, config);
+			allVariables[data.saveVariable.id].saveVariable(data.saveVariable);
 			allVariables[data.saveVariable.id].setVariable(data.saveVariable.status, function(id, variable){
 				allTimers[id].checkTimer(variable);
-			});
+            });
 		}
 	}
 
