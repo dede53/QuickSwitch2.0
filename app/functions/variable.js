@@ -367,12 +367,12 @@ module.exports = {
 						+ "user = '" + data.user + "', "
 						+ "saveActive = '" + data.saveActive + "' "
 						+ "saveType = '" + data.saveType + "' "
-						+ "saveInterval = '" + data.saveInterval + "' "
+						+ "saveInterval = '" + parseInt(data.saveInterval) || 5 + "' "
 						+ "WHERE id = '" + data.id + "';";
 		}else{
 			var newVariable = true;
-			var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+data.name+"', '"+data.status+"', '"+data.charttype+"', '"+data.linetype+"', '"+data.linecolor+"', '"+data.error+"', '"+new Date().getTime()+"', '"+data.suffix+"', '"+data.step+"', '"+data.showall+"', '"+data.user+"', '"+data.saveActive+"', '"+data.saveType+"', '"+data.saveInterval+"')";
-		}
+			var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+data.name+"', '"+data.status+"', '"+data.charttype+"', '"+data.linetype+"', '"+data.linecolor+"', '"+data.error+"', '"+new Date().getTime()+"', '"+data.suffix+"', '"+data.step+"', '"+data.showall+"', '"+data.user+"', '"+data.saveActive+"', '"+data.saveType+"', " + parseInt(data.saveInterval) || 5 + ")";
+        }
 		db.run(query);
 		callback(201, newVariable);
 	},
