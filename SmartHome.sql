@@ -34,6 +34,21 @@ CREATE TABLE IF NOT EXISTS `charttypen` (
 -- --------------------------------------------------------
 
 --
+-- Daten für Tabelle `charttypen`
+--
+
+INSERT INTO `charttypen` (`id`, `chart`, `name`) VALUES
+(1, 'line', 'Linie'),
+(2, 'spline', 'gerundete Linie'),
+(3, 'area', 'Area'),
+(4, 'areaspline', 'Area, gerundet'),
+(5, 'column', 'Column'),
+(6, 'bar', 'Bar'),
+(7, 'pie', 'Torte'),
+(8, 'scatter', 'Scatter');
+
+-- --------------------------------------------------------
+--
 -- Tabellenstruktur für Tabelle `countdowns`
 --
 
@@ -60,6 +75,18 @@ CREATE TABLE IF NOT EXISTS `countdowntypen` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+
+--
+-- Daten für Tabelle `countdowntypen`
+--
+
+INSERT INTO `countdowntypen` (`id`, `type`) VALUES
+(1, 'device'),
+(2, 'room'),
+(3, 'group');
+
+-- --------------------------------------------------------
+
 
 --
 -- Tabellenstruktur für Tabelle `devices`
@@ -111,6 +138,25 @@ CREATE TABLE IF NOT EXISTS `linetypen` (
 -- --------------------------------------------------------
 
 --
+-- Daten für Tabelle `linetypen`
+--
+
+INSERT INTO `linetypen` (`id`, `name`, `line`) VALUES
+(1, 'durchgezogen', 'Solid'),
+(2, 'ShortDash', 'ShortDash'),
+(3, 'ShortDot', 'ShortDot'),
+(4, 'ShortDashDot', 'ShortDashDot'),
+(5, 'ShortDashDotDot', 'ShortDashDotDot'),
+(6, 'Dot', 'Dot'),
+(7, 'Dash', 'Dash'),
+(8, 'LongDash', 'LongDash'),
+(9, 'DashDot', 'DashDot'),
+(10, 'LongDashDot', 'LongDashDot'),
+(11, 'LongDashDotDot', 'LongDashDotDot');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `messages`
 --
 
@@ -119,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `time` varchar(20) NOT NULL DEFAULT '',
   `type` int(11) NOT NULL DEFAULT 1,
   `author` varchar(20) NOT NULL DEFAULT '',
-  `message` varchar(200) NOT NULL DEFAULT '',
+  `message` varchar(20000) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
@@ -250,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `variable` (
   `user` varchar(20) NOT NULL DEFAULT 'system',
   `saveActive` varchar(20) NOT NULL DEFAULT 'false',
   `saveType` varchar(20) NOT NULL DEFAULT 'onchange',
-  `saveInterval` int(11) NOT NULL DEFAULT '5',
+  `saveInterval` int(11) NOT NULL DEFAULT 5,
   `lastChange` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`uid`),
   UNIQUE KEY `uid` (`uid`)
