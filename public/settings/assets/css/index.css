@@ -18,6 +18,9 @@ ul, ol{
 	margin: auto;
 	margin-top: 20px;
 }
+.mt-2{
+	margin-top: 20px;
+}
 .grey{
 	color:#bbb;
 }
