@@ -1,5 +1,6 @@
 app.controller('variableController', function($scope, $rootScope, socket, $uibModal, $location){
-
+    
+    $scope.variable = "";
 	socket.emit('variables:get');
 
 	$scope.deleteVariable = function(data) {
@@ -24,13 +25,11 @@ app.controller('variableController', function($scope, $rootScope, socket, $uibMo
 	};
 	$scope.saveVariable = function() {
 		if($scope.variable != ""){
-			console.log($scope.variable);
 			socket.emit('variable:save', {
 				"name": $scope.variable,
-				"status":false,
-				"suffix":""
+				"id": $scope.variable
 			});
-			$location.url("/variables");
+            $scope.variable = "";
 		}
 	};
 	$scope.abortNewVariable = function(){
