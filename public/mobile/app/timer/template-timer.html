@@ -1,26 +1,17 @@
 <div class="">
 	<div class="card-header">
-		<!-- <h6> -->
-			<span
-				style="margin:auto auto auto 0 !important;"
-				data-toggle="collapse"
-				data-target="#timer{{timer.id}}"
-				title="Zuletzt ausgeführt: {{timer.lastexec | date:'EEE, d. MMM., HH:mm'}}">
-				{{timer.name}}
-			</span>
-			<div class="float-right">
-				<span title="Aktivieren/Deaktivieren">
-					<ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
-				</span>
-<!-- 				<span title="Bearbeiten">
-					<ng-md-icon icon="edit" style="fill:#399BB0" size="25" options='{"rotation": "none"}' ng-click='$event.stopPropagation();$event.preventDefault();switchPage("/editTimer/" + timer.id)'></ng-md-icon>
-				</span>
-				<span title="Löschen">
-					<ng-md-icon icon="delete" style="fill:#FF8000" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();remove('timers', timer)"></ng-md-icon>
-				</span>
--->	
-			</div>
-		<!-- </h6> -->
+        <a
+            style="margin:auto auto auto 0 !important;"
+            data-toggle="collapse"
+            data-target="#timer{{timer.id}}"
+            title="Zuletzt ausgeführt: {{timer.lastexec | date:'EEE, d. MMM., HH:mm'}}">
+            {{timer.name}}
+        </a>
+        <div class="float-right">
+            <span title="Aktivieren/Deaktivieren">
+                <ng-md-icon icon="{{timer.clickIcon}}" ng-attr-style="fill: {{timer.fill}}" size="25" options='{"rotation": "none"}' ng-click="$event.stopPropagation();$event.preventDefault();switchTimer(timer)"></ng-md-icon>
+            </span>
+        </div>
 	</div>
 	<div class="card-block p-2 collapse" id="timer{{timer.id}}">					
 		<div ng-show="timer.variables != false" class="card">

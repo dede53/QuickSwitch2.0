@@ -3,9 +3,9 @@
 	<div class="card" ng-repeat="room in devices">
 		<h4 class="card-header p-1">
 		<div class="d-flex test p-0 m-0 justify-content-end">
-			<div data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{room.room.id}}" class="mr-auto my-auto devicename">
+			<a data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{room.room.id}}" class="mr-auto my-auto devicename">
 					{{room.room.name}}
-			</div>
+            </a>
 			<div class="d-flex" style="max-width: 100%; text-align: center;">
 				<div
 					class="btnC btnOn devicename"
