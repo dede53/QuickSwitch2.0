@@ -85,10 +85,10 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 						});
 						break;
 					case 409:
-						error(req, "Der Raum enthält Geräte und kann nicht gelöscht werden!");
+						log.error(req, "Der Raum enthält Geräte und kann nicht gelöscht werden!");
 						break;
 					default:
-						error(req, status);
+						log.error(req, status);
 						break;
 				}
 
@@ -103,13 +103,13 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		save: function(req){
 			fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', function(err){
 				if(err){
-					error("Die Einstellungen konnten nicht gespeichert werden!");
-					error(err);
+					log.error("Die Einstellungen konnten nicht gespeichert werden!");
+					log.error(err);
 				}else{
 					// db	=	require('./app/functions/database.js');
 					app.io.emit('change', new message('settings:get', req.data));
 					if(req.data.QuickSwitch.port != config.QuickSwitch.port){
-						error("Die Einstellungen wurden geändert! Die aussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
+						log.error("Die Einstellungen wurden geändert! Die aussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
 						stopServer(function(){
 							startServer(req.data.QuickSwitch.port);
 						});
@@ -142,13 +142,13 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			});
 		},
 		save: function(req){
-				plugins.timerserver.send({"saveVariable": req.data});
+			plugins.timerserver.send({"saveVariable": req.data});
 			// variableFunctions.saveVariable(req.data, function(data, newVariable){
-				// if(newVariable){
-					// app.io.emit('change', new message('variables:add', req.data));
-				// }else{
-					app.io.emit('change', new message('variables:edit', req.data));
-				// }
+            if(req.data.id){
+                app.io.emit('change', new message('variables:add', req.data));
+            }else{
+                app.io.emit('change', new message('variables:edit', req.data));
+            }
 			// });
 		}
 	});
@@ -208,7 +208,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		switch: function(req){
 			roomFunctions.switchRoom(req.data.switch.room, req.data.switch.status, app, function(err){
 				if(err != 200){
-					error(err + "Raum konnte nicht geschaltet werden");
+					log.error(err + "Raum konnte nicht geschaltet werden");
 				}
 			});
 		}
@@ -262,7 +262,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 						app.io.emit('change', new message('users:get', data));
 					});
 				}else{
-					error("User mit der ID " + req.data.remove.id + "konnte nicht gelöscht werden!");
+					log.error("User mit der ID " + req.data.remove.id + "konnte nicht gelöscht werden!");
 				}
 			});
 		},
@@ -290,7 +290,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			data.time = data.settime + (data.time * 60000);
 			countdownFunctions.setNewCountdown(data, function(err, savedCountdown){
 				if(err != "200"){
-					error("Countdown konnte nicht gespeichert werden!");
+					log.error("Countdown konnte nicht gespeichert werden!");
 					console.log("Countdown konnte nicht gespeichert werden!");
 					console.log( err );
 				}else{
@@ -338,7 +338,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			var status = req.data.switch.status;
 			deviceFunctions.switchDevice(app, id, status, function(err){
 				if(err != 200){
-					error( "Gerät mit der ID " + id + " konnte nicht geschaltet werden!");
+					//log.error( "Gerät mit der ID " + id + " konnte nicht geschaltet werden!");
 				}
 			});
 			// allObjects[req.data.switch.id].switch(req.data.switch.status, app);
@@ -346,7 +346,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		switchAll: function(req){
 			deviceFunctions.switchDevices(app, req.data.switchAll, req, function(err){
 				if(err != 200){
-					error("Die Geräte konnten nicht geschaltet werden: " + req.data.switchAll);
+					log.error("Die Geräte konnten nicht geschaltet werden: " + req.data.switchAll);
 				}
 			});
 		},
@@ -427,7 +427,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		remove: function(req){
 			groupFunctions.deleteGroup(req.data.remove.id, function(data){
 				if(data != 200){
-					error( "Die Gruppe mit der ID " + req.data.remove.id + " konnte nicht gelöscht werden!");
+					log.error( "Die Gruppe mit der ID " + req.data.remove.id + " konnte nicht gelöscht werden!");
 				}else{
 					groupFunctions.getAllGroups(function(data){
 						req.socket.emit("change", new message('groups:get', data));
@@ -459,7 +459,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		switch: function(req){
 			groupFunctions.switchGroup(app, req.data.switch.group, req.data.switch.status, function(err){
 				if(err != 200){
-					error( err + ":Die Gruppe mit der ID " + req.data.switch.group.id + " konnte nicht geschaltet werden!");
+					log.error( err + ":Die Gruppe mit der ID " + req.data.switch.group.id + " konnte nicht geschaltet werden!");
 				}
 			});
 		}
