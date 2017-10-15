@@ -1,4 +1,4 @@
-<div ng-repeat="switchServer in switchServers" class="">
+<div ng-repeat="switchServer in switchServers" class="mt-2">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			{{switchServer.name}} ({{switchServer.ip}}:{{switchServer.port}}) - <span class="label" ng-class="switchServer.active ? 'label-success' : 'label-danger'">{{switchServer.active ? 'erreichbar': 'nicht erreichbar'}}</span>
@@ -6,7 +6,7 @@
 					<span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
 				</button>
 				<button type="button" title="Adapterliste neu herrunterladen" ng-click="updateAdapterList(switchServer)" class="btn btn-default btn-xs">
-					<span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 				</button>
 			<div class="pull-right">
 				<button type="button" ng-click="reload()" class="btn btn-xs btn-success">
