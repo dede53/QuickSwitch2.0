@@ -19,8 +19,14 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 					$scope.switchServers[server.id].status = "";
 					$scope.switchServers[server.id].active = false;
 					$scope.switchServers[server.id].showLogging = true;
-				});
-			});
+                });
+                $scope.interval = setInterval(function(){
+                    connect(server);
+                }, 5000);
+            });
+            socket.on('connect', function(){
+                clearInterval($scope.interval);
+            });
 			socket.emit("get:status", {}, function(){});
 			$scope.switchServers[server.id].connection = socket;
 		}
@@ -28,8 +34,8 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 		list.forEach(function(server){
 			server.logmessages = [];
 			server.message = "nicht erreichbar";
-			$scope.switchServers[server.id] = server;
-			connect(server);
+            $scope.switchServers[server.id] = server;
+            connect(server);
 		});
 
 	});
