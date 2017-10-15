@@ -7,6 +7,8 @@ var fork					=	require('child_process').fork;
 var bodyParser				=	require('body-parser');
 var cookieParser			=	require('cookie-parser');
 var crypto					=	require('crypto');
+var later 					=	require('later');
+var request					=	require('request');
 
 var config					=	require("./config.json");
 var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
@@ -25,65 +27,34 @@ var createTimer				=	require('./app/functions/newTimer.js');
 var createAlerts 			=  	require('./app/functions/newAlerts.js');
 
 var server;
-var errors					=	[];
 var sockets					=	[];
 var allTimers				=	{};
 var allVariables			=	{};
 var logFiles				=	{};
 var plugins 				=	{};
-log = {
-	"info": function(data){
-		if(config.loglevel == 1 ){
-			newMessage(1,data);
-		}
-	},
-	"debug": function(data){
-		if(config.loglevel <= 2){
-			newMessage(2,data);
-		}
-	},
-	"warning": function(data){
-		if(config.loglevel <= 3){
-			newMessage(3,data);
-		}
-	},
-	"error": function(data){
-		if(config.loglevel <= 4){
-			if(typeof data == 'object'){
-				switch(data.code){
-					case "EHOSTUNREACH":
-						newMessage(4, "Ziel nicht erreichbar: " + data.address + ":" + data.port);
-						break;
-					case "ECONNREFUSED":
-						newMessage(4, "Ziel hat die Anfrage abgelehnt: " + data);
-						break;
-					default:
-						newMessage(4,data.code + ":" + data.address+ ":" + data.port);
-						break;
-				}
-			}else{
-				newMessage(4,data);
-			}
-		}
-	},
-	"pure": function(data){
-		newMessage(data);
-	}
-}
 
-var later 					=	require('later');
-var request					=	require('request');
-logFiles.master				=	fs.createWriteStream( "./log/debug-master.log", {flags : 'w'});
+var logging                 =   require('./app/functions/logger.js');
+log                         =   new logging(config);
+
+log.on('error', function(data){
+    allAlerts.addAll({
+        title: "Servererror!",
+        message: data,
+        type: "danger",
+        toAdmin: true
+    });
+});
+
 var allIntervals			=	{
-									setInterval: function(id, callback, sched){
-										this.intervals[id] = later.setInterval(callback, sched);
-									},
-									clearInterval: function(id){
-										this.intervals[id].clear();
-										delete this.intervals[id];
-									},
-									intervals: {}
-								};
+                                    setInterval: function(id, callback, sched){
+                                        this.intervals[id] = later.setInterval(callback, sched);
+                                    },
+                                    clearInterval: function(id){
+                                        this.intervals[id].clear();
+                                        delete this.intervals[id];
+                                    },
+                                    intervals: {}
+                                };
 
 if(config.useHTTPS){
 	var options = {
@@ -94,6 +65,12 @@ if(config.useHTTPS){
 }else{
 	var app						=	express().http().io();
 }
+
+// app.use(express.logger('dev'));
+app.use(bodyParser.json()); 						// for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
+app.use(cookieParser());							// for parsing cookies
+app.use(express.static(__dirname + '/public'));		// provides static htmls
 
 var allAlerts = {
 	add: function(alert){
@@ -144,65 +121,6 @@ var allAlerts = {
 	},
 	alerts: {}
 }
-// allAlerts.add({
-// 	user:"Daniel",
-// 	title:"Moin",
-// 	message:"Arbeitet das?",
-// 	type:"info"
-// });
-// allAlerts.addAll({
-// 	title:"Moin",
-// 	message:"Arbeitet das bei euch?",
-// 	type:"info"
-// });
-
-
-// app.use(express.logger('dev'));
-app.use(bodyParser.json()); 						// for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
-app.use(cookieParser());							// for parsing cookies
-app.use(express.static(__dirname + '/public'));		// provides static htmls
-
-if(!fs.existsSync("./log")){
-	fs.mkdirSync("./log", 0766, function(err){
-		if(err){
-			log.debug("mkdir ./log: failed: " + err);
-		}
-	});
-}
-
-
-function newMessage(type, message){
-	var now = new Date;
-	var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
-	
-	if(typeof message === "object"){
-		var message = JSON.stringify(message);
-	}else{
-		var message = message.toString();
-	}
-	var data = {
-		"time": datum,
-		"message": message,
-		"type":type
-	};
-	logFiles.master.write(datum +":"+ message + "\n");
-	console.log(datum +":"+ message);
-	errors.push(data);
-	if(errors.length > 100){
-		errors.splice(0,1);
-	}
-	if(type == 4){
-		allAlerts.addAll({
-			title: "Servererror!",
-			message: message,
-			type: "danger",
-			toAdmin: true
-		});
-		// app.io.emit("serverError", data);
-	}
-}
-
 
 loadVariables();
 // loadTimers();
@@ -236,9 +154,9 @@ app.get('/test1', function(req, res) {
 });
 
 app.io.on('connect', function(socket){
-	log.debug("Neuer Client verbunden: " + socket.id);
+	log.info("Neuer Client verbunden: " + socket.id);
 	socket.on('disconnect', function(reason){
-		log.debug("Client getrennt: " + socket.id);
+		log.info("Client getrennt: " + socket.id);
 	})
 })
 
@@ -255,7 +173,7 @@ app.io.route('settings', {
 				// db	=	require('./app/functions/database.js');
 				app.io.emit('change', new message('settings:get', req.data));
 				if(req.data.mysql != config.mysql || req.data.QuickSwitch != config.QuickSwitch){
-					log.error("Die Einstellungen wurden geändert! Die Haussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
+					log.error("Die Einstellungen wurden geändert! Die Haussteuerung ist nun unter folgender Addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
 					stopServer(function(){
 						startServer(req.data.QuickSwitch.port);
 					});
@@ -265,7 +183,7 @@ app.io.route('settings', {
 		});
 	},
 	errors: function(req){
-		req.socket.emit('serverErrors', errors);
+		req.socket.emit('serverErrors', log.errors);
 	}
 });
 
@@ -277,7 +195,7 @@ startDependend([
 ]);
 
 require('./app/routes.js')(app, db, plugins, allAlerts);
-require('./app/ioroutes/device.js')(app, db, plugins, errors, log, allAlerts);
+require('./app/ioroutes/device.js')(app, db, plugins, log.errors, log, allAlerts);
 
 
 function stopDependend(data){
@@ -287,10 +205,7 @@ function stopDependend(data){
 }
 
 function startDependend(data){
-	// Andere Dateien starten
-	// data.forEach(function(file){
-	for(var file in data){
-		var file = data[file];
+	data.forEach(function(file){
 		var splitedfile 			= file.split(".");
 		if(splitedfile[0].includes("/")){
 			var name 				= splitedfile[0].split("/");
@@ -306,11 +221,15 @@ function startDependend(data){
 			if(response.log){
 				var now = new Date;
 				var datum =  now.getDate() + "." + (now.getMonth() + 1) + "." + now.getFullYear() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-				
-				logFiles[filename].write(datum +":"+response.log + "\n");
-				log.debug(response.log);
+
+				if(typeof response.log === "object"){
+					response.log = JSON.stringify(response.log);
+				}else{
+					response.log = response.log.toString();
+				}
+				logFiles[filename].write(datum +": "+response.log + "\n");
+				// log.debug(response.log);
 			}
-			// console.log(response);
 			if(response.setVariable){
 				// Workaround, notwendig? Kein Ahnung 04.09.17
 				if(response.setVariable.action){
@@ -339,7 +258,7 @@ function startDependend(data){
 			if(response.device){
 				deviceFunctions.switchDevice(app, response.device.action.deviceid, response.device.switchstatus, function(err){
 					if(err != 200){
-						log.debug( "Gerät mit der ID " + response.device.action.deviceid + " konnte nicht geschaltet werden!");
+						// log.debug( "Gerät mit der ID " + response.device.action.deviceid + " konnte nicht geschaltet werden!");
 					}
 				});
 			}
@@ -397,19 +316,14 @@ function startDependend(data){
 			}
 			if (response.getUserTimers){
 				response.req.socket.emit('change', new message('timers:get', response.getUserTimers));
-			}
+            }
+            if(response.deleteCountdown){
+                countdownFunctions.deleteCountdown(response.deleteCountdown.id, function(){
+                    app.io.in(response.deleteCountdown.user).emit('change', new message('countdowns:remove', response.deleteCountdown.id));
+                });
+            }
 		});
-	// });
-	}
-}
-
-function message(type, data){
-	var message = {};
-	var foo = type.split(':');
-	message.masterType = foo[0];
-	message.type = foo[1];
-	message[foo[1]] = data;
-	return message;
+	});
 }
 
 function startServer(port, callback){
@@ -434,7 +348,6 @@ function startServer(port, callback){
 
 function stopServer(callback){
 	try{
-		log.debug("Der Server wurde gestoppt!");
 		server.close();
 		for(var i=0; i < sockets.length; i++){
 			sockets[i].destroy();
@@ -444,8 +357,8 @@ function stopServer(callback){
 			callback(200);
 		}
 	}catch(e){
-		log.debug("Fehler: Der Server konnte nicht gestoppt werden!");
-		log.debug(e);
+		log.error("Fehler: Der Server konnte nicht gestoppt werden!");
+		log.error(e);
 		if (callback){
 			callback(404);
 		}
@@ -464,29 +377,15 @@ function loadVariables(){
 		});
 	});
 }
-/*
-function loadTimers(){
-	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
-	db.all(query, function(err, timers){
-		if(err){
-			log.debug(err);
-			return;
-		}else{
-			timers.forEach(function(timer){
-				allTimers[timer.id] 			= new createTimer(timer, config);
-				if(allTimers[timer.id].timer.variables){
-					var variables = Object.keys(allTimers[timer.id].timer.variables);
-					variables.forEach(function(variable){
-						allVariables[variable].dependendTimer.push(timer.id);
-					});
-				}else{
-					allTimers[timer.id].setActive(true);
-				}
-			});
-		}
-	});
+
+function message(type, data){
+	var message = {};
+	var foo = type.split(':');
+	message.masterType = foo[0];
+	message.type = foo[1];
+	message[foo[1]] = data;
+	return message;
 }
-*/
 
 process.on('SIGINT', function(code){
 	log.info("SIGINT");
