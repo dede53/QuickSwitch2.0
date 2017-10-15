@@ -42,26 +42,26 @@ var createVariable = function (variable, config){
 createVariable.prototype = new events.EventEmitter();
 
 createVariable.prototype.saveVariable = function(data){
-	if(data.id){
+	if(data.uid){
 		var query = "UPDATE variable SET "
-					+ "name = '" + data.name + "', "
-					+ "status = '" + data.status + "', "
-					+ "charttype = '" + data.charttype + "', "
-					+ "linetype = '" + data.linetype + "', "
-					+ "linecolor = '" + data.linecolor + "', "
-					+ "error = '" + data.error + "', "
+					+ "name = '" + ( data.name || data.id ) + "', "
+					+ "status = '" + ( data.status || false ) + "', "
+					+ "charttype = '" + ( data.charttype || 'line' ) + "', "
+					+ "linetype = '" + ( data.linetype || 'Solid' ) + "', "
+					+ "linecolor = '" + ( data.linecolor || '#ff0' ) + "', "
+					+ "error = '" + (data.error || '') + "', "
 					+ "lastChange = '" + new Date().getTime() + "', "
-					+ "suffix = '" + data.suffix + "', "
-					+ "step = '" + data.step + "', "
-					+ "showall = '" + data.showall + "', "
-					+ "user = '" + data.user + "', "
-					+ "saveActive = '" + data.saveActive + "', "
-					+ "saveType = '" + data.saveType + "', "
-					+ "saveInterval = '" + data.saveInterval + "' "
+					+ "suffix = '" + ( data.suffix || '' ) + "', "
+					+ "step = '" + ( data.step || false ) + "', "
+					+ "showall = '" + ( data.showall || false ) + "', "
+					+ "user = '" + ( data.user  || '' ) + "', "
+					+ "saveActive = '" + ( data.saveActive || false ) + "', "
+					+ "saveType = '" + ( data.saveType  || 'onChange' )+ "', "
+					+ "saveInterval = '" + ( parseInt(data.saveInterval) || 5 ) + "' "
 					+ "WHERE id = '" + data.id + "';";
 	}else{
-		var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+data.name+"', '"+data.status+"', '"+data.charttype+"', '"+data.linetype+"', '"+data.linecolor+"', '"+data.error+"', '"+new Date().getTime()+"', '"+data.suffix+"', '"+data.step+"', '"+data.showall+"', '"+data.user+"', '"+data.saveActive+"', '"+data.saveType+"', '"+data.saveInterval+"')";
-	}
+		var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+(data.name|| data.id)+"', '"+(data.status|| false)+"', '"+(data.charttype|| "line")+"', '"+(data.linetype|| "Solid")+"', '"+(data.linecolor || "#9f4444")+"', '"+(data.error||'')+"', '"+new Date().getTime()+"', '"+(data.suffix|| '')+"', '"+(data.step|| false)+"', '"+(data.showall||false)+"', '"+(data.user||'')+"', '"+(data.saveActive|| false)+"', '"+(data.saveType||"onChange")+"', '" + (data.saveInterval || 5) + "');";
+    }
 	this.variable = data;
 	db.run(query);
 	this.setSaveActive(data.saveActive);
