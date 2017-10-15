@@ -55,25 +55,36 @@ module.exports = {
 			if(err){
 				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
 			}else{
-				if(body !== '200'){
-					log.error("Der SwitchServer [" + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + "] meldet einen Fehler mit dem Adapter: " + action);
-					if(callback){
-						callback(body);
-					}
-					return;
-				}
-				if(data.type == "device"){
-					saveStatus(app, action, data, function(data){
-						if(callback){
-							callback(data);
-						}
-					});
-				}else{
-					log.info("Erfolgreich an den SwitchServer gesendet");
-					if(callback){
-						callback(200);
-					}
-				}
+                switch(body){
+                    case '400':
+                        log.error("Kein Protocol für das Gerät " + data.name + "|" + data.Raum + " ausgewählt!");
+                        break;
+                    case '401':
+                        log.error("Der SwitchServer (" + conf.switchserver[data.switchserver].ip + ":" + conf.switchserver[data.switchserver].port + ") hat keinen Adapter zum schalten installiert: " + data.protocol);
+                        break;
+                    default:
+                        if(data.type == "device"){
+                            saveStatus(app, action, data, function(data){
+                                if(callback){
+                                    callback(data);
+                                }
+                            });
+                        }else{
+                            log.info("Erfolgreich an den SwitchServer gesendet");
+                            if(callback){
+                                callback(200);
+                            }
+                        }
+                        break;
+                }
+				// if(body !== '200'){
+                //     console.log(body);
+				// 	log.error("Der SwitchServer [" + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + "] meldet einen Fehler mit dem Adapter: " + data.protocol);
+				// 	if(callback){
+				// 		callback(body);
+				// 	}
+				// 	return;
+                // }
 			}
 		});
 	},
