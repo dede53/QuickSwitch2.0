@@ -60,3 +60,4 @@ typings/
 todo
 config.json
 SwitchServer
+quickswitch.pid
