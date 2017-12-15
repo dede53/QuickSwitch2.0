@@ -110,7 +110,7 @@ echo "Datenbank angelegt"
 sleep 3
 clear
 quickswitchport="1230"
-localip=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+localip=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 
 
 echo "QuickSwitch-Konfiguration"
@@ -138,7 +138,12 @@ echo '{
 	"port":"'$switchserverport'",
 	"ip":"'$switchserverip'",
 	"name": "Switchserver",
-	"loglevel": 1
+	"loglevel": 1,
+    "maxLogMessages": 200,
+    "QuickSwitch":{
+        "ip":"'$localip'",
+        "port":'$quickswitchport'
+    }
 }' > SwitchServer/settings/adapter.json
 
 echo
