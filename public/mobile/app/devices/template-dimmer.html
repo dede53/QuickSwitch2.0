@@ -4,15 +4,16 @@
 	<div class="d-flex" style="max-width: 100%; text-align: center;" >
 		<div
 			class="btnC btnGrey"
-			ng-style="{'background-color': buttonOnColor}"
-			ng-click='switch("devices", {"id":device.deviceid,"status":"1"})' >
-			{{device.buttonLabelOn}}
+			ng-click='switch("devices", {"id":device.deviceid,"status":"0"})'
+			ng-style="{'background-color': buttonOffColor}"
+			>
+			{{device.buttonLabelOff}}
 		</div>
 		<div
 			class="btnC btnGrey"
 			ng-style="{'background-color': buttonOnColor}"
-			ng-click='switch("devices", {"id":device.deviceid,"status":"0.7"})' >
-			70%
+			ng-click='switch("devices", {"id":device.deviceid,"status":"0.2"})' >
+			20%
 		</div>
 		<div
 			class="btnC btnGrey"
@@ -23,15 +24,14 @@
 		<div
 			class="btnC btnGrey"
 			ng-style="{'background-color': buttonOnColor}"
-			ng-click='switch("devices", {"id":device.deviceid,"status":"0.2"})' >
-			20%
+			ng-click='switch("devices", {"id":device.deviceid,"status":"0.7"})' >
+			70%
 		</div>
 		<div
 			class="btnC btnGrey"
-			ng-click='switch("devices", {"id":device.deviceid,"status":"0"})'
-			ng-style="{'background-color': buttonOffColor}"
-			>
-			{{device.buttonLabelOff}}
+			ng-style="{'background-color': buttonOnColor}"
+			ng-click='switch("devices", {"id":device.deviceid,"status":"1"})' >
+			{{device.buttonLabelOn}}
 		</div>
 	</div>
 </div>
