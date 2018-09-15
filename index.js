@@ -128,33 +128,33 @@ var allAlerts = {
 loadVariables();
 // loadTimers();
 
-app.get('/pc', function(req, res) {
-	res.sendFile(__dirname + '/public/pc/index.html');
-});
+// app.get('/pc', function(req, res) {
+// 	res.sendFile(__dirname + '/public/pc/index.html');
+// });
 
 app.get('/settings', function(req, res) {
 	res.sendFile(__dirname + '/public/settings/index.html');
 });
 
-app.get('/mobile', function(req, res) {
-	res.sendFile(__dirname + '/public/mobile/index.html');
-});
+// app.get('/mobile', function(req, res) {
+// 	res.sendFile(__dirname + '/public/mobile/index.html');
+// });
 
-app.get('/mobil', function(req, res) {
-	res.redirect('/mobile');
-});
+// app.get('/mobil', function(req, res) {
+// 	res.redirect('/mobile');
+// });
 
-app.get('/tablet', function(req, res) {
-	res.sendFile(__dirname + '/public/tablet/index.html');
-});
+// app.get('/tablet', function(req, res) {
+// 	res.sendFile(__dirname + '/public/tablet/index.html');
+// });
 
-app.get('/test', function(req, res) {
-	res.sendFile(__dirname + '/public/test/mobile.html');
-});
+// app.get('/test', function(req, res) {
+// 	res.sendFile(__dirname + '/public/test/mobile.html');
+// });
 
-app.get('/test1', function(req, res) {
-	res.sendFile(__dirname + '/public/test/pc.html');
-});
+// app.get('/test1', function(req, res) {
+// 	res.sendFile(__dirname + '/public/test/pc.html');
+// });
 
 app.io.on('connect', function(socket){
 	log.info("Neuer Client verbunden: " + socket.id);
@@ -331,10 +331,10 @@ function startDependend(data){
 }
 
 function startServer(port, callback){
-	var port = port || config.QuickSwitch.port || 1230;
+	var port = port || config.QuickSwitch.port || 3333;
 	try{
 		server = app.listen(port, function(){
-			log.debug("Der Server wurde erfolgreich gestartet!", port);
+			log.debug("Der Server wurde erfolgreich auf Port " + port + " gestartet!", port);
 			if(callback){
 				callback(200);
 			}
