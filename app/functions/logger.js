@@ -48,23 +48,27 @@ function log(config){
                 if(this.loglevel == '1'){
                     logNow = true;
                     console.log(datum +": "+ message);
+                    this.emit("info", data);
                 }
                 break;
             case 2:
                 if(this.loglevel <= 2){
                     logNow = true;
                     console.log(datum +": "+ message);
+                    this.emit("debug", data);
                 }
                 break;
             case 3:
                 if(this.loglevel <= 3){
                     logNow = true;
                     console.log('\x1b[33m' ,datum +": "+ message, "\x1b[0m");
+                    this.emit("warning", data);
                 }
                 break;
             default:
                 console.log('\x1b[31m' , datum +": "+ message, "\x1b[0m");
-                loglevel = true;
+                logNow = true;
+                this.emit("error", data);
                 break;
         }
         

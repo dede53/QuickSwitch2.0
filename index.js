@@ -44,6 +44,9 @@ log.on('error', function(data){
         toAdmin: true
     });
 });
+log.on('all', function(data){
+    app.io.emit("serverError", data);
+})
 
 var allIntervals			=	{
                                     setInterval: function(id, callback, sched){
@@ -158,7 +161,7 @@ app.io.on('connect', function(socket){
 	socket.on('disconnect', function(reason){
 		log.info("Client getrennt: " + socket.id);
 	})
-})
+});
 
 app.io.route('settings', {
 	get: function(req){
@@ -268,7 +271,8 @@ function startDependend(data){
 					setTimeout(function(){
 						request(action.action.url, function (err, response, body) {
 							if (err) {
-								log.error(err);							}
+                                log.error(err);
+							}
 						});
 					}, action.timeout * 1000);
 				}else{
