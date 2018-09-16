@@ -109,7 +109,7 @@ mysql -u root -p$mysqlpassword < SmartHome.sql
 echo "Datenbank angelegt"
 sleep 3
 clear
-quickswitchport="1230"
+quickswitchport="3333"
 localip=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 
 

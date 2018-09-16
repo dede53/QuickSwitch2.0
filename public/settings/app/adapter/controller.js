@@ -22,7 +22,7 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
                 });
                 $scope.interval = setInterval(function(){
                     connect(server);
-                }, 5000);
+                }, 10000);
             });
             socket.on('connect', function(){
                 clearInterval($scope.interval);

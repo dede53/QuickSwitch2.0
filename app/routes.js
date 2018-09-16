@@ -32,7 +32,7 @@ var countdownFunctions	 	= require('./functions/countdown.js');
 You only have to go through a path of the tree and you have to connect the words with a slash (/). Only the id needs to be replaced.
 eg: 
 Switch Device with ID 1 on
-http://192.187.4.23:1230/switch/device/1/on
+http://192.187.4.23:3333/switch/device/1/on
 
 ip:port/
 ├──	switch
@@ -281,6 +281,14 @@ module.exports = function(app, db, plugins, allAlerts){
 		});
 	});
 
+    app.post('/addChatMessage', function(req, res){
+        var data = req.data.add;
+        data.author = req.data.user.name;
+        data.time = new Date().getTime();
+        messageFunctions.saveMessage(data, function(err, savedMessage){
+            app.io.emit('change', new message('chatMessages:unshift', savedMessage));
+        });
+    });
 	app.post('/setDeviceStatusByCode', function(req, res){
 		var id = parseInt(req.body.id);
 		deviceFunctions.setDeviceStatusByCode(req.body.masterDip, req.body.slaveDip, req.body.status, function(device){
