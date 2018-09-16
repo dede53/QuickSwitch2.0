@@ -282,13 +282,17 @@ module.exports = function(app, db, plugins, allAlerts){
 	});
 
     app.post('/addChatMessage', function(req, res){
-        var data = req.data.add;
-        data.author = req.data.user.name;
+        var data = {};
+        data.author = req.body.user;
+        data.message = req.body.message;
+        data.type = 1;
         data.time = new Date().getTime();
         messageFunctions.saveMessage(data, function(err, savedMessage){
             app.io.emit('change', new message('chatMessages:unshift', savedMessage));
+            res.json(savedMessage);
         });
     });
+
 	app.post('/setDeviceStatusByCode', function(req, res){
 		var id = parseInt(req.body.id);
 		deviceFunctions.setDeviceStatusByCode(req.body.masterDip, req.body.slaveDip, req.body.status, function(device){
