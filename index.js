@@ -163,33 +163,6 @@ app.io.on('connect', function(socket){
 	})
 });
 
-app.io.route('settings', {
-	get: function(req){
-		req.socket.emit('change', new message('settings:get', config));
-	},
-	save: function(req){
-		fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', function(err){
-			if(err){
-				log.error("Die Einstellungen konnten nicht gespeichert werden!");
-				log.error(err);
-			}else{
-				// db	=	require('./app/functions/database.js');
-				app.io.emit('change', new message('settings:get', req.data));
-				if(req.data.mysql != config.mysql || req.data.QuickSwitch != config.QuickSwitch){
-					log.error("Die Einstellungen wurden geändert! Die Haussteuerung ist nun unter folgender Addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
-					stopServer(function(){
-						startServer(req.data.QuickSwitch.port);
-					});
-				}
-				config = req.data;
-			}
-		});
-	},
-	errors: function(req){
-		req.socket.emit('serverErrors', log.errors);
-	}
-});
-
 startServer();
 startDependend([
 	// "SwitchServer/adapter.js",
@@ -390,7 +363,32 @@ function message(type, data){
 	message[foo[1]] = data;
 	return message;
 }
-
+app.io.route('settings', {
+	get: function(req){
+		req.socket.emit('change', new message('settings:get', config));
+	},
+	save: (req) => {
+		fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', (err) => {
+			if(err){
+				log.error("Die Einstellungen konnten nicht gespeichert werden!");
+				log.error(err);
+			}else{
+				// db	=	require('./app/functions/database.js');
+				app.io.emit('change', new message('settings:get', req.data));
+				if(req.data.mysql != config.mysql || req.data.QuickSwitch != config.QuickSwitch){
+					log.error("Die Einstellungen wurden geändert! Die Haussteuerung ist nun unter folgender Addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
+					stopServer(function(){
+						startServer(req.data.QuickSwitch.port);
+					});
+				}
+				config = req.data;
+			}
+		});
+	},
+	errors: function(req){
+		req.socket.emit('serverErrors', log.errors);
+	}
+});
 process.on('SIGINT', function(code){
 	log.info("SIGINT");
 	stopServer();
