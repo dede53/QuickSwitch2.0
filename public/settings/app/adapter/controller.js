@@ -67,6 +67,21 @@ app.controller('adapterController',  function($scope, $rootScope, socket, $uibMo
 			;
 		});
 	}
+	$scope.openLog = function(adapter){
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: "./app/adapter/template-log.html",
+			controller: "adapterLogController",
+			size: 'lg',
+			resolve: {
+				adapter: function(){return adapter}
+			}
+		});
+		modalInstance.result.then(function(data) {
+		}, function () {
+			;
+		});
+	}
 });
 app.controller('adapterSettingsController', function($scope, adapter, $uibModalInstance){
 	$scope.adapter = adapter;
@@ -76,6 +91,12 @@ app.controller('adapterSettingsController', function($scope, adapter, $uibModalI
 	$scope.saveSettings = function (data) {
 		$uibModalInstance.close(data);
 	};
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+app.controller('adapterLogController', function($scope, adapter, $uibModalInstance){
+	$scope.adapter = adapter;
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
