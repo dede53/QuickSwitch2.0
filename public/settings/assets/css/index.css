@@ -4,7 +4,6 @@ body{
 	background-attachment: fixed;
 	overflow-y: scroll;
 	font-family: "Open Sans",sans-serif !important;
-	cursor: context-menu;
 }
 ul, ol{
 	list-style-type: none;
