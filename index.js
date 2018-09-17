@@ -301,7 +301,7 @@ function startDependend(data){
                     app.io.in(response.deleteCountdown.user).emit('change', new message('countdowns:remove', response.deleteCountdown.id));
                 });
             }
-            // Chat message hinzufügen? notwendig?
+            // Chat message hinzufügen? notwendig? Notwendig wenn timer selbige beherschen sollen (denke ich)
 		});
 	});
 }
