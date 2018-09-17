@@ -87,6 +87,17 @@ INSERT INTO `countdowntypen` (`id`, `type`) VALUES
 
 -- --------------------------------------------------------
 
+--
+-- Daten für Tabelle `messagetypen`
+--
+
+INSERT INTO `messagetypen` (`id`, `type`) VALUES
+(1, 'Text'),
+(2, 'Link'),
+(3, 'Foto');
+
+-- --------------------------------------------------------
+
 
 --
 -- Tabellenstruktur für Tabelle `devices`
