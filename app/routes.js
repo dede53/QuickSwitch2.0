@@ -283,13 +283,13 @@ module.exports = function(app, db, plugins, allAlerts){
 
     app.post('/addChatMessage', function(req, res){
         var data = {};
-        data.author = req.body.user;
+        data.author = req.body.author;
         data.message = req.body.message;
-        data.type = 1;
+        data.type = req.body.type || 1;
         data.time = new Date().getTime();
         messageFunctions.saveMessage(data, function(err, savedMessage){
             app.io.emit('change', new message('chatMessages:unshift', savedMessage));
-            res.json(savedMessage);
+            res.json(200);
         });
     });
 
@@ -490,14 +490,15 @@ module.exports = function(app, db, plugins, allAlerts){
 	app.get('/send/:type/:title/:message/:user/:messageType?', function(req, res){
 		var data = {};
 		data.title = req.params.title;
-		data.type = req.params.messageType;
+		data.protocol = req.params.type;
 		data.message = req.params.message;
-		data.user = req.params.user;
+		data.messageType = req.params.messageType;
+		data.receiver = req.params.user;
 		data.date = new Date();
 		data.id = Math.floor((Math.random() * 100) + 1);
 		if(req.params.type.includes(":")){
 			data.switchserver = 0;
-			SwitchServerFunctions.sendto(app, req.params.type, data);
+			SwitchServerFunctions.sendto(app, "nada", data);
 		}else{
 			variableFunctions.replaceVar(data.message, function(message){
 				variableFunctions.replaceVar(data.title, function(title){

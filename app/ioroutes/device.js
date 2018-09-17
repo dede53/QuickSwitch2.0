@@ -235,7 +235,18 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			data.author = req.data.user.name;
 			data.time = new Date().getTime();
 			messageFunctions.saveMessage(data, function(err, savedMessage){
-				app.io.emit('change', new message('chatMessages:unshift', savedMessage));
+				switchServerFunctions.sendto(undefined, "nada", {
+					"type": "object",
+					"protocol": "telegram:send",
+					"message": data.message,
+					"user": data.author,
+					"receiver": undefined,
+					"switchserver": 0,
+					"date": new Date(),
+					"id": Math.floor((Math.random() * 100) + 1)
+				}, function(status){
+					app.io.emit('change', new message('chatMessages:unshift', savedMessage));
+				});
 			});
 		},
 		loadOld: function(req){

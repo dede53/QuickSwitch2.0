@@ -16,41 +16,54 @@ function sendActiveDevices(app, callback){
 	});
 }
 
-function saveStatus(app, action, data, callback){
-	var query = "UPDATE devices SET status = '"+ action +"' WHERE deviceid = "+ data.deviceid +";";
+function saveStatus(app, data, callback){
+	var query = "UPDATE devices SET status = '"+ data.newStatus +"' WHERE deviceid = "+ data.deviceid +";";
 	db.all(query, function(err, response){
 		if(err){
 			log.error(err);
 			callback(404);
 		}else{
-			app.io.emit('change', new helper.message("devices:switch", {"device":data,"status":action}));
-			if(data.showStatus == 1 || data.showStatus == '1'){
-				var query = "INSERT INTO `switch_history` (`deviceid`, `time`, `status`, `place`) VALUES ('" + data.deviceid + "', " + new Date().getTime() + ", '" + action + "', '" + data.name + "(" + data.Raum + ")');";
+			if(data.type == "device" && (data.showStatus == 1 || data.showStatus == '1') ){
+				app.io.emit('change', new helper.message("devices:switch", {"device":data,"status":data.newStatus}));
+				var query = "INSERT INTO `switch_history` (`deviceid`, `time`, `status`, `place`) VALUES ('" + data.deviceid + "', " + new Date().getTime() + ", '" + data.newStatus + "', '" + data.name + "(" + data.Raum + ")');";
 				db.run(query);
+				sendActiveDevices(app, function(res){
+					log.info("Erfolgreich an den SwitchServer gesendet: /switch/device/" + data.deviceid + "/" + data.newStatus);
+					callback(res);
+				});
 			}
-			sendActiveDevices(app, function(res){
-				log.info("Erfolgreich an den SwitchServer gesendet: /switch/device/" + data.deviceid + "/" + action);
-				callback(res);
-			});
 		}
 	});
 }
 module.exports = {
+	/*****************
+	{
+		id: integer
+		protocol: pushbullet:send|connair:send|arduino:send|alert:add
+		type: device|object
+		switchserver: integer
+
+		buttonlabelon: text
+		buttonlabeloff: text
+		showstatus: 0|1
+		Raum
+		roomid
+		oncode
+		offcode
+		message
+		user
+		sendto
+		status
+		newStatus
+		name
+	}
+
+	**************/
 	sendto: function (app, action, data, callback){
-		if(action == "toggle"){
-			if(data.status == "0"){
-				action = 1;
-			}else{
-				action = 0;
-			}
-		}
-		var formData = {
-			status: action,
-			data: data
-		}
+		data.newStatus = action;
 		request.post({
 			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/switch',
-			form: formData
+			form: data
 		},function( err, httpResponse, body){
 			if(err){
 				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
@@ -64,7 +77,7 @@ module.exports = {
                         break;
                     default:
                         if(data.type == "device"){
-                            saveStatus(app, action, data, function(data){
+                            saveStatus(app, data, function(data){
                                 if(callback){
                                     callback(data);
                                 }
