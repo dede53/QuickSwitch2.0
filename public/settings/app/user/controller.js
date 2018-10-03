@@ -1,7 +1,7 @@
 app.controller('userController', function($scope, $rootScope, socket){
 	socket.emit('users:get');
 	$scope.deleteUser = function(data) {
-		socket.emit('user:remove', data.id);	
+		socket.emit('user:remove', {"remove":data.id});	
 	}
 });
 app.controller('editUserController', function($scope, $rootScope, socket, $routeParams){
