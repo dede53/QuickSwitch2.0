@@ -169,10 +169,11 @@ module.exports = {
 				log.error(err);
 				callback(404);
 			}else if(row == ""){
+				log.error(err);
 				callback(404);
 			}else{
-				SwitchServer.sendto(app, status, row[0] ,function(status){
-					callback(status);
+				SwitchServer.sendto(app, status, row[0], function(res){
+					callback(res);
 				});
 			}
 		});
