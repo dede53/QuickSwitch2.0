@@ -77,6 +77,7 @@ module.exports = {
                         break;
                     default:
                         if(data.type == "device"){
+                            log.info("Erfolgreich an den SwitchServer gesendet");
                             saveStatus(app, data, function(data){
                                 if(callback){
                                     callback(data);
