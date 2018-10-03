@@ -1,5 +1,6 @@
 var db 				= require('./database.js');
 var SwitchServer	= require('./SwitchServer.js');
+var deviceFunctions	= require('./device.js');
 var async 			= require("async");
 
 function getRoom(id, callback){
@@ -17,11 +18,12 @@ function getRoom(id, callback){
 
 module.exports = {
 	switchRoom: function (room, status, app, callback){
-		if(status == 'toggle'){
+		if(status == "toggle"){
 			var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff, type, devices.roomid, rooms.name AS Raum, switchserver FROM devices, rooms WHERE devices.roomid = '" + room.id + "' AND devices.roomid = rooms.id AND devices.type = 'device' AND devices.showStatus = '1';";
 		}else{
-			var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff, type, devices.roomid, rooms.name AS Raum, switchserver FROM devices, rooms WHERE devices.roomid = '" + room.id + "' AND devices.roomid = rooms.id AND status != " + status + " AND devices.type = 'device' AND devices.showStatus = '1';";
+			var query = "SELECT deviceid, status, devices.name, protocol, buttonLabelOff, buttonLabelOn, CodeOn, CodeOff, type, devices.roomid, rooms.name AS Raum, switchserver FROM devices, rooms WHERE devices.roomid = '" + room.id + "' AND devices.status != '" + status + "' AND devices.roomid = rooms.id AND devices.type = 'device' AND devices.showStatus = '1';";
 		}
+		var switchTo = status;
 
 		db.all(query , function(err, row) {
 			if (err) {
@@ -30,10 +32,16 @@ module.exports = {
 			} else {
 				var callbackSend = false;
 				row.forEach(function(device){
-					SwitchServer.sendto(app, status, device, function(status){
+					if(status == "toggle"){
+						if(device.status == "1"){
+							switchTo = "0";
+						}else{
+							switchTo = "1";
+						}
+					}
+					deviceFunctions.switchDevice(app, device.deviceid, switchTo, function(err){
 						if(callbackSend === false){
-							callback(200);
-							callbackSend = true;
+							callback(err);
 						}
 					});
 				});
