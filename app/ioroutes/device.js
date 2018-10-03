@@ -74,7 +74,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			});
 		},
 		remove: function(req){
-			roomFunctions.deleteRoom(req.data.remove.id, function(status){
+			roomFunctions.deleteRoom(req.data.remove, function(status){
 				switch(status){
 					case 200:
 						roomFunctions.getRooms('object', function(data){
@@ -196,8 +196,8 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 
 	app.io.route('rooms', {
 		remove: function(req){
-			roomFunctions.deleteRoom(req.data.remove.id, function(err){
-				app.io.emit('change', new message('rooms:remove', req.data.remove.id));
+			roomFunctions.deleteRoom(req.data.remove, function(err){
+				app.io.emit('change', new message('rooms:remove', req.data.remove));
 			});
 		},
 		get: function(req){
@@ -208,6 +208,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		switch: function(req){
 			roomFunctions.switchRoom(req.data.switch.room, req.data.switch.status, app, function(err){
 				if(err != 200){
+					console.log(err);
 					log.error(err + "Raum konnte nicht geschaltet werden");
 				}
 			});
@@ -267,13 +268,13 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			});
 		},
 		remove: function(req){
-			userFunctions.deleteUser(req.data.remove.id, function(status){
+			userFunctions.deleteUser(req.data.remove, function(status){
 				if(status == "200"){
 					userFunctions.getUsers(function(data){
 						app.io.emit('change', new message('users:get', data));
 					});
 				}else{
-					log.error("User mit der ID " + req.data.remove.id + "konnte nicht gelöscht werden!");
+					log.error("User mit der ID " + req.data.remove + "konnte nicht gelöscht werden!");
 				}
 			});
 		},
@@ -377,7 +378,7 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			});
 		},
 		remove:function(req){
-			deviceFunctions.deleteDevice(req.data.remove.id, function(data){
+			deviceFunctions.deleteDevice(req.data.remove, function(data){
 				deviceFunctions.getDevices('object', function(data){
 					app.io.emit('change', new message('devices:get', data));
 				});
@@ -436,9 +437,9 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 			});
 		},
 		remove: function(req){
-			groupFunctions.deleteGroup(req.data.remove.id, function(data){
+			groupFunctions.deleteGroup(req.data.remove, function(data){
 				if(data != 200){
-					log.error( "Die Gruppe mit der ID " + req.data.remove.id + " konnte nicht gelöscht werden!");
+					log.error( "Die Gruppe mit der ID " + req.data.remove + " konnte nicht gelöscht werden!");
 				}else{
 					groupFunctions.getAllGroups(function(data){
 						req.socket.emit("change", new message('groups:get', data));
