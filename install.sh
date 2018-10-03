@@ -106,6 +106,8 @@ echo "Geben Sie bitte das root-password ihrer Datenbank( MySQL - Das von eben :P
 read mysqlpassword
 echo "Danke!"
 echo "CREATE USER 'QuickSwitch'@'localhost' IDENTIFIED BY '"$mysqlpassword"';" | mysql -h localhost -u root -p$mysqlpassword
+echo "CREATE DATABASE IF NOT EXISTS `SmartHome` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;" | mysql -h localhost -u root -p$mysqlpassword
+echo "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON SmartHome.*   TO 'QuickSwitch'@'localhost';" | mysql -h localhost -u root -p$mysqlpassword
 mysql -u QuickSwitch -p$mysqlpassword < SmartHome.sql
 echo "Datenbank angelegt"
 sleep 3
