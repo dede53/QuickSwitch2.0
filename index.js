@@ -69,7 +69,6 @@ if(config.useHTTPS){
 	var app						=	express().http().io();
 }
 
-// app.use(express.logger('dev'));
 app.use(bodyParser.json()); 						// for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
 app.use(cookieParser());							// for parsing cookies
@@ -126,35 +125,10 @@ var allAlerts = {
 }
 
 loadVariables();
-// loadTimers();
 
-// app.get('/pc', function(req, res) {
-// 	res.sendFile(__dirname + '/public/pc/index.html');
-// });
-
-app.get('/settings', function(req, res) {
+app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/settings/index.html');
 });
-
-// app.get('/mobile', function(req, res) {
-// 	res.sendFile(__dirname + '/public/mobile/index.html');
-// });
-
-// app.get('/mobil', function(req, res) {
-// 	res.redirect('/mobile');
-// });
-
-// app.get('/tablet', function(req, res) {
-// 	res.sendFile(__dirname + '/public/tablet/index.html');
-// });
-
-// app.get('/test', function(req, res) {
-// 	res.sendFile(__dirname + '/public/test/mobile.html');
-// });
-
-// app.get('/test1', function(req, res) {
-// 	res.sendFile(__dirname + '/public/test/pc.html');
-// });
 
 app.io.on('connect', function(socket){
 	log.info("Neuer Client verbunden: " + socket.id);
@@ -162,8 +136,6 @@ app.io.on('connect', function(socket){
 		log.info("Client getrennt: " + socket.id);
 	})
 });
-
-/**************/
 
 startServer();
 startDependend([
@@ -206,7 +178,6 @@ function startDependend(data){
 					response.log = response.log.toString();
 				}
 				logFiles[filename].write(datum +": "+response.log + "\n");
-				// log.debug(response.log);
 			}
 			if(response.setVariable){
 				// Workaround, notwendig? Kein Ahnung 04.09.17
@@ -217,7 +188,6 @@ function startDependend(data){
 					variableFunctions.setVariable(response.setVariable, app, function(status){});
 					plugins['timerserver'].send({"setVariable":response.setVariable});
 				}
-				// plugins.timerserver.send({"setVariable":response.setVariable});
 			}
 			if(response.room){
 				roomFunctions.switchRoom(response.room.action, response.room.switchstatus, app, function(err){
@@ -236,7 +206,7 @@ function startDependend(data){
 			if(response.device){
 				deviceFunctions.switchDevice(app, response.device.action.deviceid, response.device.switchstatus, function(err){
 					if(err != 200){
-						// log.debug( "Gerät mit der ID " + response.device.action.deviceid + " konnte nicht geschaltet werden!");
+						log.debug( "Gerät mit der ID " + response.device.action.deviceid + " konnte nicht geschaltet werden!");
 					}
 				});
 			}
@@ -377,7 +347,6 @@ app.io.route('settings', {
 				log.error("Die Einstellungen konnten nicht gespeichert werden!");
 				log.error(err);
 			}else{
-				// db	=	require('./app/functions/database.js');
 				app.io.emit('change', new message('settings:get', req.data));
 				if(req.data.mysql != config.mysql || req.data.QuickSwitch != config.QuickSwitch){
 					log.error("Die Einstellungen wurden geändert! Die Haussteuerung ist nun unter folgender Addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
