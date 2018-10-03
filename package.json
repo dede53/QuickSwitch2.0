@@ -23,6 +23,7 @@
     "daemonize2": "^0.4.2",
     "express.oi": "0.0.21",
     "later": "^1.2.0",
+    "mariadb": "^2.0.0-alpha",
     "mysql": "^2.12.0",
     "request": "^2.78.0",
     "socket.io": "^1.7.3",
