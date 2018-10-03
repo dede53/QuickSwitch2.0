@@ -87,17 +87,6 @@ INSERT INTO `countdowntypen` (`id`, `type`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Daten für Tabelle `messagetypen`
---
-
-INSERT INTO `messagetypen` (`id`, `type`) VALUES
-(1, 'Text'),
-(2, 'Link'),
-(3, 'Foto');
-
--- --------------------------------------------------------
-
 
 --
 -- Tabellenstruktur für Tabelle `devices`
@@ -191,6 +180,17 @@ CREATE TABLE IF NOT EXISTS `messagetypen` (
   `type` varchar(11) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Daten für Tabelle `messagetypen`
+--
+
+INSERT INTO `messagetypen` (`id`, `type`) VALUES
+(1, 'Text'),
+(2, 'Link'),
+(3, 'Foto');
 
 -- --------------------------------------------------------
 
