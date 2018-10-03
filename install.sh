@@ -105,7 +105,8 @@ echo "Als Datenbank Benutzer wird "$mysqluser" verwendet."
 echo "Geben Sie bitte das root-password ihrer Datenbank( MySQL - Das von eben :P ) ein:"
 read mysqlpassword
 echo "Danke!"
-mysql -u root -p$mysqlpassword < SmartHome.sql
+echo "CREATE USER 'QuickSwitch'@'localhost' IDENTIFIED BY '"$mysqlpassword"';" | mysql -h localhost -u root -p$mysqlpassword
+mysql -u QuickSwitch -p$mysqlpassword < SmartHome.sql
 echo "Datenbank angelegt"
 sleep 3
 clear
@@ -119,6 +120,9 @@ echo
 echo 
 echo "Wollen sie den SwitchServer manuell einrichten? (y / n) (default: n)"
 read switchserveranswer
+
+switchserverport="4040"
+switchserverip=$localip
 if [ $switchserveranswer == 'y' ]
 then
 	echo "Geben Sie die IP-Adresse des SwitchServers ein:"
@@ -126,9 +130,6 @@ then
 	echo "Geben Sie den Port des Switchservers ein (default: 4040):"
 	read switchserverport
 	echo "Der SwitchServer ist fertig konfiguriert!"
-else
-	switchserverport="4040"
-	switchserverip=$localip
 fi
 echo
 
