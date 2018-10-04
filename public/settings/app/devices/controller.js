@@ -11,11 +11,8 @@ app.controller('devicesController',  function($scope, $rootScope, socket) {
 
 app.controller('editDeviceController',  function($scope, $rootScope, socket, $routeParams, $location) {
 	socket.emit('rooms:get');
-	socket.emit("switchServer:get");
+	socket.emit("settings:get");
 
-	socket.on("switchServer", function(list){
-		$scope.switchServer = list;
-	});
 	// Maybe in die Datenbank auslagern??
 	$scope.options = 	[
 				{

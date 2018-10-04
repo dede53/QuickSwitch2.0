@@ -148,6 +148,7 @@ echo '{
 	"loglevel": 1,
     "maxLogMessages": 200,
     "QuickSwitch":{
+    	"name":"Standard"
         "ip":"'$localip'",
         "port":'$quickswitchport'
     }

@@ -96,40 +96,6 @@ module.exports = function(app, db, plugins, errors, log, allAlerts){
 		}
 	});
 
-	app.io.route('settings', {
-		get: function(req){
-			req.socket.emit('change', new message('settings:get', config));
-		},
-		save: function(req){
-			fs.writeFile(__dirname + "/config.json", JSON.stringify(req.data), 'utf8', function(err){
-				if(err){
-					log.error("Die Einstellungen konnten nicht gespeichert werden!");
-					log.error(err);
-				}else{
-					// db	=	require('./app/functions/database.js');
-					app.io.emit('change', new message('settings:get', req.data));
-					if(req.data.QuickSwitch.port != config.QuickSwitch.port){
-						log.error("Die Einstellungen wurden geändert! Die aussteuerung ist nun unter folgender addresse zu erreichen: <a href='http://"+req.data.QuickSwitch.ip +":"+req.data.QuickSwitch.port+"'>QuickSwitch</a>");
-						stopServer(function(){
-							startServer(req.data.QuickSwitch.port);
-						});
-					}else{
-						config = req.data;
-					}
-				}
-			});
-		},
-		errors: function(req){
-			req.socket.emit('serverErrors', errors);
-		}
-	});
-
-	app.io.route('switchServer', {
-		get: function(req){
-			req.socket.emit('switchServer', config.switchserver);
-		}
-	});
-
 	app.io.route('variable', {
 		get: function(req){
 			variableFunctions.getVariable(req.data, function(data){

@@ -355,7 +355,6 @@ app.io.route('settings', {
 					});
 				}
 				config = req.data;
-				req.socket.emit('change', new message('settings:get', config));
 			}
 		});
 	},

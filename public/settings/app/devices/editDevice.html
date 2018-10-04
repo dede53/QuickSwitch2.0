@@ -61,7 +61,7 @@
 					<select
 						class="form-control"
 						ng-model="device.switchserver"
-						ng-options="server.id as server.name for server in switchServer"
+						ng-options="server.id as server.name for server in $root.settings.switchserver"
 						aria-describedby="switchserver"
 						>
 					</select>
