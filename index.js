@@ -72,7 +72,7 @@ if(config.useHTTPS){
 app.use(bodyParser.json()); 						// for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
 app.use(cookieParser());							// for parsing cookies
-app.use(express.static(__dirname + '/public'));		// provides static htmls
+app.use(express.static(__dirname + '/public/settings'));		// provides static htmls
 
 var allAlerts = {
 	add: function(alert){
@@ -126,8 +126,8 @@ var allAlerts = {
 
 loadVariables();
 
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/public/settings/index.html');
+app.get('/settings', function(req, res){
+	res.redirect('/');
 });
 
 app.io.on('connect', function(socket){
@@ -360,6 +360,13 @@ app.io.route('settings', {
 	},
 	errors: function(req){
 		req.socket.emit('serverErrors', log.errors);
+	}
+});
+
+
+app.io.route('switchServer', {
+	get: function(req){
+		req.socket.emit('switchServer', config.switchserver);
 	}
 });
 
