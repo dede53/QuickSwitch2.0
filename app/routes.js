@@ -107,6 +107,7 @@ ip:port/
 +	/devices/id				(PUT)		speichert geändertes Gerät anhand der ID
 +	/devices 				(POST)		speichert neues Gerät
 +	/devices/active			(GET)		liefert die aktiven Geräte
+	/devices/favorit/:user  (GET)		Favoritdevices
 
 +	/groups 				(GET)		liefert object der Gruppen
 +		/id 				(GET)		liefert eine Gruppe anhand der ID
@@ -181,30 +182,31 @@ module.exports = function(app, db, plugins, allAlerts){
 	/*******************************************************************************
 	**	Auswahl zwischen Mobile und PC	********************************************
 	*******************************************************************************/
-	app.get('/', function(req, res) {
-		res.sendfile(__dirname + '/public/index.html');
-	});
+	// app.get('/', function(req, res) {
+	// 	res.sendfile(__dirname + '/public/index.html');
+	// });
 	
 	/*******************************************************************************
 	**	Mobile-Oberfläche	********************************************************
 	*******************************************************************************/
-	app.get('/mobile', function(req, res) {
-		res.sendfile(__dirname + '/public/mobile');
-	});
+	// app.get('/mobile', function(req, res) {
+	// 	res.sendfile(__dirname + '/public/mobile');
+	// });
 
 	/*******************************************************************************
 	**	PC-Oberfläche	************************************************************
 	*******************************************************************************/
-	app.get('/pc', function(req, res) {
-		res.sendfile(__dirname + '/public/pc');
-	});
+	// app.get('/pc', function(req, res) {
+	// 	res.sendfile(__dirname + '/public/pc');
+	// });
 
 	/*******************************************************************************
 	**	Einstellungen	************************************************************
 	*******************************************************************************/
-	app.get('/settings', function(req, res) {
-	    res.sendfile(__dirname + '/public/settings');
-	});
+	// app.get('/settings', function(req, res) {
+	//     res.sendfile(__dirname + '/public/settings');
+	// });
+	
 	app.get('/saveSensors', function(req, res){
 		var onewire = {
 			"protocol": "onewire",
@@ -222,9 +224,12 @@ module.exports = function(app, db, plugins, allAlerts){
 			var status = 1;
 		}else if(req.params.status == "off" || req.params.status == 0){
 			var status = 0;
+		}else if(parseFloat(req.params.status)){
+			var status = req.params.status;
 		}else{
-			var status = 'toggle'
+			var status = "toggle";
 		}
+		console.log("Switchdevice!");
 		var type = req.params.type;
 		switch(type){
 			case "device":
@@ -235,10 +240,19 @@ module.exports = function(app, db, plugins, allAlerts){
 						}
 					});
 				}else{
-					deviceFunctions.switchDevice(app, id, status, function(data){
-						if(!res.headersSent){
-							res.json(data);
+					deviceFunctions.getDevice(id, function(device){
+						if(status == "toggle"){
+							if(device.status == 0){
+								status = 1;
+							}else{
+								status = 0;
+							}
 						}
+						deviceFunctions.switchDevice(app, id, status, function(data){
+							if(!res.headersSent){
+								res.json(data);
+							}
+						});
 					});
 				}
 				break;
@@ -309,11 +323,21 @@ module.exports = function(app, db, plugins, allAlerts){
 			}
 		});
 	});
+	// User by ID!
+	app.get('/devices/favorit/:user', function (req, res) {
+		userFunctions.getUser(req.params.user, function(data){
+			deviceFunctions.favoritDevices(data.favoritDevices, function(data){
+				if(!res.headersSent){
+					res.json(data);
+				}
+			});
+		});
+	});
 	
 	/*******************************************************************************
 	**	Gerät anhand der ID	********************************************************
 	*******************************************************************************/
-	app.get('/devices/:id', function (req, res) {
+	app.get('/devices/:id/:attr?', function (req, res) {
 		var id = req.params.id;
 		switch(id){
 			case "active":
@@ -324,12 +348,21 @@ module.exports = function(app, db, plugins, allAlerts){
 			default:
 				deviceFunctions.getDevice(id, function(data){
 					if(!res.headersSent){
-						res.json(data);
+                        if(req.params.attr){
+                            try{
+    						    res.json(data[req.params.attr]);
+                            }catch(e){
+                                res.json(error);                            
+                            }
+                        }else{                        
+						    res.json(data);
+                        }
 					}
 				});
 				break;
 		}
 	});
+
 	
 	/*******************************************************************************
 	**	Gerät löschen	************************************************************
@@ -383,11 +416,21 @@ module.exports = function(app, db, plugins, allAlerts){
 	// 	});
 	// });
 
+      app.get('/getVariableStatus/:id', function(req, res){
+          variableFunctions.getVariable(req.params.id, function(data){
+            res.json(data);
+          });
+      });
+      app.get('/getVariableStatusByName/:name', function(req, res){
+          variableFunctions.getVariable(req.params.name, function(data){
+            res.json(data);
+          });
+      });
 	/*******************************************************************************
 	**	alle Gruppen	************************************************************
 	*******************************************************************************/
-	app.get('/groups', function(req, res){
-		groupFunctions.getGroups(req, res, function(data){
+	app.get('/groups/:user', function(req, res){
+		groupFunctions.getGroups(req.params.user, function(data){
 			res.json(data);
 		});
 	});
@@ -397,7 +440,7 @@ module.exports = function(app, db, plugins, allAlerts){
 	*******************************************************************************/
 	app.get('/groups/:id', function(req, res){
 		var id = req.params.id;
-		groupFunctions.getGroup(id, req, res, function(data){
+		groupFunctions.getGroup(id, function(data){
 			res.json(data);
 		})
 	});
@@ -407,7 +450,7 @@ module.exports = function(app, db, plugins, allAlerts){
 	*******************************************************************************/
 	app.delete('/groups/:id', function(req, res){
 		var id = req.params.id;
-		groupFunctions.deleteGroup(id, req, res, function(data){
+		groupFunctions.deleteGroup(id, function(data){
 			res.json(data);
 		});
 	});
@@ -422,7 +465,7 @@ module.exports = function(app, db, plugins, allAlerts){
 		}
 	*******************************************************************************/
 	app.put('/groups', function(req, res){
-		groupFunctions.saveEditGroup(data, req, res, function(data){
+		groupFunctions.saveEditGroup(data, function(data){
 			res.json(data);
 		});
 	});
@@ -436,24 +479,24 @@ module.exports = function(app, db, plugins, allAlerts){
 		}
 	*******************************************************************************/
 	app.post('/groups', function(req, res){
-		groupFunctions.saveNewGroup(data, req, res, function(data){
+		groupFunctions.saveNewGroup(data, function(data){
 			res.json(data);
 		});
 	});
 
 	app.get('/rooms', function (req, res) {
-		roomFunctions.getRooms(req, res, function(data){
+		roomFunctions.getRooms("object", function(data){
 			res.json(data);
 		});
 	});
 	app.get('/rooms/:id', function (req, res) {
 		var id = req.params.id;
-		deviceFunctions.getRoom(id, req, res, function(data){
+		deviceFunctions.getRoom(id, function(data){
 			res.json(data);
 		});
 	});
 	app.get('/getUsers', function(req,res){
-		userFunctions.getUsers( req, res, function(data){
+		userFunctions.getUsers(function(data){
 			res.json(data);
 		});
 	});
