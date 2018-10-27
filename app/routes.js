@@ -352,7 +352,7 @@ module.exports = function(app, db, plugins, allAlerts){
                             try{
     						    res.json(data[req.params.attr]);
                             }catch(e){
-                                res.json(error);                            
+                                res.send(404);                            
                             }
                         }else{                        
 						    res.json(data);
@@ -418,11 +418,11 @@ module.exports = function(app, db, plugins, allAlerts){
 
       app.get('/getVariableStatus/:id', function(req, res){
           variableFunctions.getVariable(req.params.id, function(data){
-            res.json(data);
+            res.json(data.status);
           });
       });
       app.get('/getVariableStatusByName/:name', function(req, res){
-          variableFunctions.getVariable(req.params.name, function(data){
+          variableFunctions.getVariableByName(req.params.name, function(data){
             res.json(data);
           });
       });
