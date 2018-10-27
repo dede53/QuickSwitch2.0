@@ -3,7 +3,7 @@ var fs                          =   require('fs');
 
 var createDir = function(name){
     if(!fs.existsSync(name)){
-        fs.mkdirSync(name, 0755, function(err){
+        fs.mkdirSync(name, "0755", function(err){
             if(err){
                 adapter.log.error("mkdir " + name + ": failed: " + err);
 			}else{
@@ -122,16 +122,21 @@ log.prototype.warning = function(data){
 
 log.prototype.error = function(data){
         if(typeof data == 'object'){
-            switch(data.code){
-                case "EHOSTUNREACH":
-                    this.newMessage(4, "Ziel nicht erreichbar: " + data.address + ":" + data.port);
-                    break;
-                case "ECONNREFUSED":
-                    this.newMessage(4, "Ziel hat die Anfrage abgelehnt: " + data);
-                    break;
-                default:
-                    this.newMessage(4,data.code + ":" + data.address+ ":" + data.port);
-                    break;
+            try{
+                switch(data.code){
+                    case "EHOSTUNREACH":
+                        this.newMessage(4, "Ziel nicht erreichbar: " + data.address + ":" + data.port);
+                        break;
+                    case "ECONNREFUSED":
+                        this.newMessage(4, "Ziel hat die Anfrage abgelehnt: " + data);
+                        break;
+                    default:
+                        this.newMessage(4,data.code + ":" + data.address+ ":" + data.port);
+                        break;
+                }
+            }catch(e){
+                this.newMessage(4, data);
+
             }
         }else{
             this.newMessage(4,data);
