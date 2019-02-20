@@ -173,7 +173,7 @@ echo '{"switchserver": [{
 	"loglevel":1,
 	"mysql": {
 		"host": "'$mysqlhost'",
-		"user": "'$mysqluser'",
+		"user": "QuickSwitch",
 		"password": "'$mysqlpassword'"
 	},
 	"QuickSwitch": {
