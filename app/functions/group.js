@@ -1,5 +1,6 @@
 var db 				= require('./database.js');
 var deviceFunctions	= require('./device.js');
+var roomFunctions	= require('./room.js');
 var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
 var helper 			= require('./helper.js');
