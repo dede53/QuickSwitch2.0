@@ -99,7 +99,7 @@ function switchaction(type, id, action){
     var data = {};
     data[type] = {
         action: {
-            id: id,
+            deviceid: id,
             name: ""
         },
         switchstatus: action
