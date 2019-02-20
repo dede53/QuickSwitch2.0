@@ -165,6 +165,7 @@ echo
 echo "Die Koniguration wurde erfolgreich abgeschlossen!"
 echo
 echo '{"switchserver": [{
+		"name": "Standard",
 		"id": 0,
 		"ip": "'$switchserverip'",
 		"port": "'$switchserverport'"
