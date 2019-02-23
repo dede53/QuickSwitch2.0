@@ -146,12 +146,12 @@ echo '{
 	"ip":"'$switchserverip'",
 	"name": "Switchserver",
 	"loglevel": 1,
-    "maxLogMessages": 200,
-    "QuickSwitch":{
-    	"name":"Standard"
-        "ip":"'$localip'",
-        "port":'$quickswitchport'
-    }
+	"maxLogMessages": 200,
+	"QuickSwitch":{
+		"name":"Standard",
+		"ip":"'$localip'",
+		"port":'$quickswitchport'
+	}
 }' > SwitchServer/settings/adapter.json
 
 echo
