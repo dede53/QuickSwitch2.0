@@ -17,11 +17,11 @@ app.controller('editDeviceController',  function($scope, $rootScope, socket, $ro
 	$scope.options = 	[
 				{
 					name: "Shell/exec",
-					id: 'send-exec'
+					id: 'exec'
 				},
 				{ 
 					name: "URL/WGET",
-					id: 'send-url'
+					id: 'url'
 				},
 				{ 
 					name: "Fritz!Dect 200",
