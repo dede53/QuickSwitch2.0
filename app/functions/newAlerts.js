@@ -5,7 +5,7 @@ var alerts = function(alert){
 	this.title = alert.title;
 	this.message = alert.message;
 	this.user = alert.user;
-	this.type = alert.type;
+	this.messageType = alert.messageType;
 	this.date = new Date().getTime();
 	this.active = false;
 }
