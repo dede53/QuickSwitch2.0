@@ -536,7 +536,7 @@ module.exports = function(app, db, plugins, allAlerts){
 		data.protocol = req.params.type;
 		data.message = req.params.message;
 		data.messageType = req.params.messageType;
-		data.receiver = req.params.user;
+		data.user = req.params.user;
 		data.date = new Date();
 		data.id = Math.floor((Math.random() * 100) + 1);
 		if(req.params.type.includes(":")){
