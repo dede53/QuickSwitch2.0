@@ -9,27 +9,29 @@ var cookieParser			=	require('cookie-parser');
 var crypto					=	require('crypto');
 var later 					=	require('later');
 var request					=	require('request');
+var events					=	require('events');
+
 
 var config					=	require("./config.json");
-var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
 var db						=	require('./app/functions/database.js');
+// Temperatursensoren
+var switchServerFunctions	=	require('./app/functions/SwitchServer.js');
+// Countdowns nach ausführung löschen | countdownserver.js 
 var countdownFunctions		=	require('./app/functions/countdown.js');
+// Schaltaktionen ausführen
 var deviceFunctions			=	require('./app/functions/device.js');
 var groupFunctions			=	require('./app/functions/group.js');
-var messageFunctions		=	require('./app/functions/message.js');
 var roomFunctions			=	require('./app/functions/room.js');
-var timerFunctions			=	require('./app/functions/timer.js');
-var userFunctions			=	require('./app/functions/user.js');
-var adapterFunctions		=	require('./app/functions/adapter.js');
-var variableFunctions		=	require('./app/functions/variable.js');
-var createVariable			=	require('./app/functions/newVariable.js');
-var createTimer				=	require('./app/functions/newTimer.js');
-var createAlerts 			=  	require('./app/functions/newAlerts.js');
+
+var blu						=	require('./app/functions/newVariable.js');
+var allVariables 			=   new blu();
+
+
+var bla 					=	require("./app/functions/alerts.js");
+var allAlerts 				= 	new bla();
 
 var server;
 var sockets					=	[];
-var allTimers				=	{};
-var allVariables			=	{};
 var logFiles				=	{};
 var plugins 				=	{};
 
@@ -47,6 +49,20 @@ log.on('error', function(data){
 log.on('all', function(data){
     app.io.emit("serverError", data);
 })
+
+allAlerts.on("add", (data) => {
+	console.log("show Alert mit id: " + data.id);
+	app.io.in(data.user).emit('change', new message("alerts:add", data));
+});
+
+allAlerts.on("remove", (alert) => {
+	console.log("remove Alert mit id: " + alert.id);
+	app.io.in(alert.user).emit('change', new message('alerts:remove', alert.id));
+});
+
+allVariables.on("change", (variable) => {
+	// console.log(variable);
+});
 
 var allIntervals			=	{
                                     setInterval: function(id, callback, sched){
@@ -74,55 +90,6 @@ app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x
 app.use(cookieParser());							// for parsing cookies
 app.use(express.static(__dirname + '/public/settings'));		// provides static htmls
 
-var allAlerts = {
-	add: function(alert){
-		alert.id = Math.floor((Math.random() * 100) + 1);
-		if(!this.alerts[alert.user]){
-			this.alerts[alert.user] = {};
-		}
-		this.alerts[alert.user][alert.id] = new createAlerts(alert);
-		this.alerts[alert.user][alert.id].show(app);
-	},
-	remove: function(alert){
-		var that = this;
-		if(this.alerts[alert.user] && this.alerts[alert.user][alert.id]){
-			this.alerts[alert.user][alert.id].remove(app, function(){
-				delete that.alerts[alert.user][alert.id];
-			});
-		}else{
-			app.io.in(alert.user).emit('change', new message('alerts:remove', alert.id));
-		}
-	},
-	removeAll: function(user){
-		var alerts = Object.keys(this.alerts[user] || new Array());
-		var that = this;
-		alerts.forEach(function(alert){
-			if(that.alerts[user] && that.alerts[user][alert]){
-				that.alerts[user][alert].remove(app, function(){
-					delete that.alerts[user][alert];
-				});
-			}else{
-				app.io.in(user).emit('change', new message('alerts:remove', alert));
-			}
-		});
-	},
-	addAll: function(alert){
-		userFunctions.getUsers(function(users){
-			users.forEach(function(user){
-				if(alert.toAdmin){
-					if(user.admin == true || user.admin == "true"){
-						alert.user = user.name;
-						allAlerts.add(alert);
-					}
-				}else{
-					alert.user = user.name;
-					allAlerts.add(alert);
-				}
-			});
-		});
-	},
-	alerts: {}
-}
 
 loadVariables();
 
@@ -144,8 +111,8 @@ startDependend([
 	"timerserver.js"
 ]);
 
-require('./app/routes.js')(app, db, plugins, allAlerts);
-require('./app/ioroutes/device.js')(app, db, plugins, log.errors, log, allAlerts);
+require('./app/routes.js')			(app, db, plugins, log, allAlerts, allVariables);
+require('./app/ioroutes/device.js')	(app, db, plugins, log, allAlerts);
 
 
 function stopDependend(data){
@@ -182,10 +149,10 @@ function startDependend(data){
 			if(response.setVariable){
 				// Workaround, notwendig? Kein Ahnung 04.09.17
 				if(response.setVariable.action){
-					variableFunctions.setVariable(response.setVariable.action, app, function(status){});
+					allVariables.setVariable(response.setVariable.action.id, response.setVariable.action.status, function(status){});
 					plugins['timerserver'].send({"setVariable":response.setVariable.action});
 				}else{
-					variableFunctions.setVariable(response.setVariable, app, function(status){});
+					allVariables.setVariable(response.setVariable.id, response.setVariable.status, function(status){});
 					plugins['timerserver'].send({"setVariable":response.setVariable});
 				}
 			}
@@ -236,8 +203,8 @@ function startDependend(data){
 				if(!data.id){
 					data.id = Math.floor((Math.random() * 100) + 1);
 				}
-				variableFunctions.replaceVar(data.message, function(content){
-					variableFunctions.replaceVar(data.title, function(title){
+				allVariables.replaceVar(data.message, function(content){
+					allVariables.replaceVar(data.title, function(title){
 						data.message = content;
 						data.title = title;
 						if(data.user == "all"){
@@ -322,8 +289,9 @@ function loadVariables(){
 			log.debug(err);
 			return;
 		}
+
 		variables.forEach(function(variable){
-			allVariables[variable.id] = new createVariable(variable, config);
+			allVariables.add(variable);
 		});
 	});
 }
@@ -362,7 +330,6 @@ app.io.route('settings', {
 		req.socket.emit('serverErrors', log.errors);
 	}
 });
-
 
 app.io.route('switchServer', {
 	get: function(req){
