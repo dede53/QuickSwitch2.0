@@ -7,7 +7,6 @@ var groupFunctions			=	require('../functions/group.js');
 var messageFunctions		=	require('../functions/message.js');
 var roomFunctions			=	require('../functions/room.js');
 var timerFunctions			=	require('../functions/timer.js');
-var adapterFunctions		=	require('../functions/adapter.js');
 var userFunctions			=	require('../functions/user.js');
 var variableFunctions		=	require('../functions/variable.js');
 var fs						=	require('fs');
@@ -22,7 +21,7 @@ function message(type, data){
 	return message;
 }
 
-module.exports = function(app, db, plugins, errors, log, allAlerts){
+module.exports = function(app, db, plugins, log, allAlerts){
 	// Setup the ready route, join room and broadcast to room.
 	app.io.route('room', {
 		join: function(req) {
