@@ -1,7 +1,6 @@
 var db 				= require('./database.js');
 var async 			= require("async");
 var deviceFunctions	= require('./device.js');
-var variableFunctions		= require('./variable.js');
 
 module.exports = {
 	/*****************************************
