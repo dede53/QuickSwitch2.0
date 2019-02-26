@@ -1,8 +1,10 @@
 var config						=	require('./config.json');
 var db							=	require('./app/functions/database.js');
 var variableFunctions			=	require('./app/functions/variable.js');
-var timerFunctions				=	require('./app/functions/timer.js');
-var createVariable				=	require('./app/functions/newVariable.js');
+
+var blu							=	require('./app/functions/newVariable.js');
+var allVariables 				=   new blu();
+
 var createTimer					=	require('./app/functions/newTimer.js');
 var later 						=	require('later');
 
@@ -33,7 +35,6 @@ log = {
 }
 
 var allTimers					=	{};
-var allVariables				=	{};
 var allIntervals				=	{
 										setInterval: function(id, callback, sched){
 											this.intervals[id] = later.setInterval(callback, sched);
@@ -53,27 +54,37 @@ process.on('message', function(data){
 		loadVariables();
 	}
 	if(data.setSaveActive){
-		allVariables[data.setSaveActive.id].setSaveActive(data.setSaveActive.status);
+		allVariables.setSaveActive(data.setSaveActive.id, data.setSaveActive.status);
 	}
 	if(data.setVariable){
 		try{
-			allVariables[data.setVariable.id].setVariable(data.setVariable.status, function(id, variable){
-				allTimers[id].checkTimer(variable);
+			allVariables.setVariable(data.setVariable.id, data.setVariable.status, function(statusCode){
+				if(statusCode == 200){
+					for(var id in allVariables.variables[data.setVariable.id].dependendTimer){
+						timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
+						allTimers[timerID].checkTimer(variable);
+					}
+				}
 			});
 		}catch(e){
-			allVariables[data.setVariable.id] = new createVariable(data.setVariable, config);
-			allVariables[data.setVariable.id].setVariable(data.setVariable.status, function(id, variable){
-				allTimers[id].checkTimer(variable);
+			allVariables[data.setVariable.id] = allVariables.add(data.setVariable);
+			allVariables.setVariable(data.setVariable.id, data.setVariable.status, function(statusCode){
+				if(statusCode == 200){
+					for(var id in allVariables.variables[data.setVariable.id].dependendTimer){
+						timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
+						allTimers[timerID].checkTimer(variable);
+					}
+				}
 			});
 		}
 	}
 	if(data.saveVariable){
-		if(allVariables[data.saveVariable.uid]){
-			allVariables[data.saveVariable.id].saveVariable(data.saveVariable);
+		if(allVariables.variables[data.saveVariable.id]){
+			allVariables.saveVariable(data.saveVariable);
 		}else{
-            allVariables[data.saveVariable.id] = new createVariable(data.saveVariable, config);
-			allVariables[data.saveVariable.id].saveVariable(data.saveVariable);
-			allVariables[data.saveVariable.id].setVariable(data.saveVariable.status, function(id, variable){
+            allVariables.variables[data.saveVariable.id] = allVariables.add(data.setVariable);
+			allVariables.saveVariable(data.saveVariable);
+			allVariables.setVariable(data.saveVariable.id, data.saveVariable.status, function(statusCode, id, variable){
 				allTimers[id].checkTimer(variable);
             });
 		}
@@ -84,12 +95,12 @@ process.on('message', function(data){
 			if(data.setTimerActive.active == true || data.setTimerActive.active == "true"){
 				var variables = Object.keys(allTimers[data.setTimerActive.id].timer.variables);
 				variables.forEach(function(variable){
-					allVariables[variable].dependendTimer.push(data.setTimerActive.id);
+					allVariables.variables[variable].dependendTimer.push(data.setTimerActive.id);
 				});
 			}else{
 				var variables = Object.keys(allTimers[data.setTimerActive.id].timer.variables);
 				variables.forEach(function(variable){
-					allVariables[variable].dependendTimer.splice(allVariables[variable].dependendTimer.indexOf(data.setTimerActive.id), 1);
+					allVariables.variables[variable].dependendTimer.splice(allVariables.variables[variable].dependendTimer.indexOf(data.setTimerActive.id), 1);
 				});
 			}
 			var query = "UPDATE timer SET active='" + data.setTimerActive.active + "' WHERE id ='" + data.setTimerActive.id + "';"
@@ -127,13 +138,13 @@ function loadVariables(){
 	var query = "SELECT * FROM variable;";
 	db.all(query, function(err, variables){
 		if(err){
-			log.error(err);
+			log.debug(err);
 			return;
 		}
+
 		variables.forEach(function(variable){
-			allVariables[variable.id] = new createVariable(variable, config);
+			allVariables.add(variable);
 		});
-		log.info("Alle Variablen geladen");
 	});
 }
 
@@ -151,7 +162,7 @@ function loadTimers(){
 						var variables = Object.keys(allTimers[timer.id].timer.variables);
 						variables.forEach(function(variable){
 							try{
-								allVariables[variable].dependendTimer.push(timer.id);
+								allVariables.variables[variable].dependendTimer.push(timer.id);
 							}catch(e){
 								log.error("Variable ist nicht vorhanden!");
 							}
@@ -173,7 +184,7 @@ function unLoadTimers(cb){
 		if(allTimers[timerId].timer.variables){
 			var variables = Object.keys(allTimers[timerId].timer.variables);
 			variables.forEach(function(variable){
-				allVariables[variable].dependendTimer.splice(allVariables[variable].dependendTimer.indexOf(timerId), 1);
+				allVariables.variables[variable].dependendTimer.splice(allVariables.variables[variable].dependendTimer.indexOf(timerId), 1);
 			});
 		}else{
 			allTimers[timerId].stopTimer();
