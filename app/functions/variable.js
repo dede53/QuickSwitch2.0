@@ -2,8 +2,6 @@ var db 				= require('./database.js');
 var SwitchServer	= require('./SwitchServer.js');
 var async 			= require("async");
 var helper 			= require('./helper.js');
-// var timerFunctions 	= require('./timer.js');
-// var client 			= db.client;
 
 function getVariables(callback){
 	var query = "SELECT * FROM variable;";
