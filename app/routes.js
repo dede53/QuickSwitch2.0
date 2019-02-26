@@ -1,11 +1,9 @@
 var deviceFunctions 		= require('./functions/device.js');
 var roomFunctions 			= require('./functions/room.js');
 var groupFunctions 			= require('./functions/group.js');
-var helper		 			= require('./functions/helper.js');
 var userFunctions 			= require('./functions/user.js');
 var messageFunctions 		= require('./functions/message.js');
 var variableFunctions 		= require('./functions/variable.js');
-var timerFunctions 			= require('./functions/timer.js');
 var SwitchServerFunctions 	= require('./functions/SwitchServer.js');
 var countdownFunctions	 	= require('./functions/countdown.js');
 /***********************************************************************************
@@ -177,35 +175,7 @@ ip:port/
 
 
 ***********************************************************************************/
-module.exports = function(app, db, plugins, allAlerts){
-
-	/*******************************************************************************
-	**	Auswahl zwischen Mobile und PC	********************************************
-	*******************************************************************************/
-	// app.get('/', function(req, res) {
-	// 	res.sendfile(__dirname + '/public/index.html');
-	// });
-	
-	/*******************************************************************************
-	**	Mobile-Oberfläche	********************************************************
-	*******************************************************************************/
-	// app.get('/mobile', function(req, res) {
-	// 	res.sendfile(__dirname + '/public/mobile');
-	// });
-
-	/*******************************************************************************
-	**	PC-Oberfläche	************************************************************
-	*******************************************************************************/
-	// app.get('/pc', function(req, res) {
-	// 	res.sendfile(__dirname + '/public/pc');
-	// });
-
-	/*******************************************************************************
-	**	Einstellungen	************************************************************
-	*******************************************************************************/
-	// app.get('/settings', function(req, res) {
-	//     res.sendfile(__dirname + '/public/settings');
-	// });
+module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 	
 	app.get('/saveSensors', function(req, res){
 		var onewire = {
@@ -229,7 +199,6 @@ module.exports = function(app, db, plugins, allAlerts){
 		}else{
 			var status = "toggle";
 		}
-		console.log("Switchdevice!");
 		var type = req.params.type;
 		switch(type){
 			case "device":
@@ -417,13 +386,8 @@ module.exports = function(app, db, plugins, allAlerts){
 	// });
 
       app.get('/getVariableStatus/:id', function(req, res){
-          variableFunctions.getVariable(req.params.id, function(data){
+          allVariables.getVariable(req.params.id, function(data){
             res.json(data.status);
-          });
-      });
-      app.get('/getVariableStatusByName/:name', function(req, res){
-          variableFunctions.getVariableByName(req.params.name, function(data){
-            res.json(data);
           });
       });
 	/*******************************************************************************
@@ -512,22 +476,22 @@ module.exports = function(app, db, plugins, allAlerts){
 		variableFunctions.getStoredVariables("all", function(variable){
 			app.io.emit('storedVariable', variable);
 			if(!res.headersSent){
-				res.json(200);
+				res.status(200).end();
 			}
 		});
 	});
 
 	app.get('/setVariable/:id/:status', function(req, res){
-		variableFunctions.setVariable(req.params, app, function(data){
+		allVariables.setVariable(req.params.id, req.params.status, function(statusCode){
 			plugins['timerserver'].send({"setVariable":req.params});
-			res.json(data);
+			res.status(statusCode).end();
 		});
 	});
 
 	app.post('/setVariable', function(req, res){
-		variableFunctions.setVariable(req.body, app, function(data){
+		allVariables.setVariable(req.body.id, req.body.status, function(statusCode){
 			plugins['timerserver'].send({"setVariable":req.body});
-			res.json(data);
+			res.status(statusCode).end();
 		});
 	});
 	app.get('/send/:type/:title/:message/:user/:messageType?', function(req, res){
@@ -543,8 +507,8 @@ module.exports = function(app, db, plugins, allAlerts){
 			data.switchserver = 0;
 			SwitchServerFunctions.sendto(app, "nada", data);
 		}else{
-			variableFunctions.replaceVar(data.message, function(message){
-				variableFunctions.replaceVar(data.title, function(title){
+			allVariables.replaceVar(data.message, function(message){
+				allVariables.replaceVar(data.title, function(title){
 					data.message = message;
 					data.title = title;
 					if(req.params.user == "all"){
@@ -585,7 +549,7 @@ module.exports = function(app, db, plugins, allAlerts){
 				data.switchstatus = "toggle";
 				break;
 			default:
-				helper.log.error("Countdown konnte nicht gespeichert werden! Falsches Argument zum schalten! (on/off/toggle)");
+				log.error("Countdown konnte nicht gespeichert werden! Falsches Argument zum schalten! (on/off/toggle)");
 				break;
 		}
 
@@ -599,8 +563,8 @@ module.exports = function(app, db, plugins, allAlerts){
 		
 		countdownFunctions.setNewCountdown(data, function(data){
 			if(data != "200"){
-				helper.log.error("Countdown konnte nicht gespeichert werden!");
-				helper.log.error( data );
+				log.error("Countdown konnte nicht gespeichert werden!");
+				log.error( data );
 			}else{	
 				countdownFunctions.getCountdowns(req, res, function(data){
 					app.io.emit('countdowns', data);
