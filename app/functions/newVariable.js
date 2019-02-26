@@ -2,46 +2,35 @@ var db							=	require('./database.js');
 var events						=	require('events');
 
 
-var stopSaveVariable = function(){
-	if (this.interval != undefined){
-		clearInterval(this.interval);
+function variables(){
+	this.variables = {};
+}
+
+variables.prototype = new events.EventEmitter();
+
+variables.prototype.replaceVar = function (string, cb){
+	if( string.includes("§") ){
+		var variable = string.split('§');
+		string = string.replace('§' + variable[1] + '§', this.variables[variable[1]].status);
+		cb(string);
+	}else{
+		cb(string);
 	}
 }
 
-var createVariable = function (variable, config){
-	this.variable = variable;
-	this.dependendTimer = [];
-	this.setSaveActive(this.variable.saveActive);
-	this.log = {
-		"info": function(data){
-			if(config.loglevel == 1 ){
-				process.send({"log":data});
-			}
-		},
-		"debug": function(data){
-			if(config.loglevel <= 2){
-				process.send({"log":data});
-			}
-		},
-		"warning": function(data){
-			if(config.loglevel <= 3){
-				process.send({"log":data});
-			}
-		},
-		"error": function(data){
-			if(config.loglevel <= 4){
-				process.send({"log":data});
-			}
-		},
-		"pure": function(data){
-			process.send({"log":data});
-		}
+variables.prototype.add = function(variable) {
+	this.variables[variable.id] = new createVariable(variable);
+	// this.setSaveActive(variable.id, this.variables[variable.id].saveActive);
+	this.emit("new", this.variables[variable.id]);
+};
+
+variables.prototype.stopSaveVariable = function(id){
+	if (this.variables[id].interval != undefined){
+		clearInterval(this.variables[id].interval);
 	}
 }
 
-createVariable.prototype = new events.EventEmitter();
-
-createVariable.prototype.saveVariable = function(data){
+variables.prototype.saveVariable = function(data){
 	if(data.uid){
 		var query = "UPDATE variable SET "
 					+ "name = '" + ( data.name || data.id ) + "', "
@@ -64,63 +53,105 @@ createVariable.prototype.saveVariable = function(data){
     }
 	this.variable = data;
 	db.run(query);
-	this.setSaveActive(data.saveActive);
+	this.setSaveActive(data.id, data.saveActive);
 }
 
-createVariable.prototype.setVariable = function(status, callback){
-	var that = this;
-	// Nur wenn auch ein neuer Wert vorliegt!
-	if(status != this.variable.status){	
-		var toDatabase = function(variable){
-			that.log.info("Variable speichern(onchange):" + variable.id, variable.status);
+variables.prototype.setVariable = function(id, status, callback){
+	if(status != this.variables[id].status){
+		var toDatabase = (variable) => {
+			console.log("Variable speichern(onchange):" + variable.id, variable.status);
 			var now = Math.floor(Date.parse(new Date));
 			var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + variable.id + "', '" + now + "', '" + variable.status + "');";
 			db.run(query);
 		}
-		if(this.variable.saveActive == true || this.variable.saveActive == 'true'){
-			if(this.variable.saveType == "onchange" && this.variable.status != status){
-				this.variable.status = status;
-				toDatabase(this.variable);
-			}else{
-				this.variable.status = status;
-			}
-		}else{
-			this.variable.status = status;
-		}
-		for(var id in this.dependendTimer){
-			if(callback){
-				callback(this.dependendTimer[id], this.variable);
+		if(this.variables[id].saveActive == true || this.variables[id].saveActive == 'true'){
+			if(this.variables[id].saveType == "onchange" && this.variables[id].status != status){
+				toDatabase(this.variables[id]);
 			}
 		}
-		this.emit('variable', this.variable);
+		this.variables[id].status = status;
+
+		this.emit('change', this.variables[id]);
+
+		callback(200);
+	}else{
+		if (callback) {
+			callback(304);
+		}
 	}
 };
 
-createVariable.prototype.setSaveActive = function(status){
+variables.prototype.getVariable = function(id, callback){
+	callback(this.variables[id]);
+}
+
+variables.prototype.setSaveActive = function(id, status){
 	if(status == true || status == 'true'){
-		this.variable.saveActive = true;
-		if(this.variable.saveType == "interval" && this.interval == undefined){
-			var that = this;
-			this.interval = setInterval(function(variable){
-				console.log("Variable speichern(Interval):" + variable.id, variable.status);
+		this.variables[id].saveActive = true;
+		if(this.variables[id].saveType == "interval" && this.variables[id].interval == undefined){
+			this.variables[id].interval = setInterval(() => {
+				console.log("Variable speichern(Interval):" + id, this.variables[id].status);
 				var now = Math.floor(Date.parse(new Date));
-				var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + variable.id + "', '" + now + "', '" + variable.status + "');";
+				var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + id + "', '" + now + "', '" + status + "');";
 				db.all(query, function(err, row){
 					if(err){
 						helper.log.error(err);
 					}
 				});
-			}, that.variable.saveInterval);
+			}, this.variables[id].saveInterval);
 		}
 	}else{
-		this.variable.saveActive = false;
-		stopSaveVariable();
+		this.variables[id].saveActive = false;
+		this.stopSaveVariable(id);
 	}
 };
 
-createVariable.prototype.removeVariable = function() {
-	clearInterval(this.interval);
-	delete this;
+variables.prototype.removeVariable = function(id) {
+	clearInterval(this.variables[id].interval);
+	this.emit('removed', this.variables[id]);
+	delete this.variables[id];
 };
 
-module.exports = createVariable;
+module.exports = variables;
+
+function createVariable(variable){
+	this.uid 			= variable.uid;
+	this.id 			= variable.id;
+	this.name 			= variable.name;
+	this.status 		= variable.status;
+	this.charttype 		= variable.charttype;
+	this.linetype		= variable.linetype;
+	this.linecolor 		= variable.linecolor;
+	this.suffix 		= variable.suffix;
+	this.error			= variable.error;
+	this.step 			= variable.step 			|| false;
+	this.showall 		= variable.showall 			|| false;
+	this.user 			= variable.user				|| "system";
+	this.saveActive 	= variable.saveActive 		|| false;
+	this.saveType 		= variable.saveType 		|| "onchange";
+	this.saveInterval	= variable.saveInterval 	|| 5;
+	this.lastChange 	= variable.lastChange		|| 0;
+	this.dependendTimer = new Array();
+	this.interval 		= undefined;
+
+	/*
+		{
+			uid: 32,
+			id: 'arduino.switch.analog.1',
+			name: 'arduino.switch.analog.1',
+			status: '12',
+			charttype: '',
+			linetype: '',
+			linecolor: '',
+			suffix: '',
+			error: '',
+			step: 'false',
+			showall: 'false',
+			user: 'system',
+			saveActive: 'false',
+			saveType: 'onchange',
+			saveInterval: 5,
+			lastChange: '1551117683161'
+		}
+	*/
+}
