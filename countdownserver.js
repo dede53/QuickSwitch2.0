@@ -93,8 +93,6 @@ function checkCountdowns(){
 	});
 }
 
-
-// Auf process.send umbauen!!
 function switchaction(type, id, action){
     var data = {};
     data[type] = {
@@ -106,7 +104,6 @@ function switchaction(type, id, action){
     }
     process.send(data);
 }
-
 
 process.on('disconnect', function(error){
 	process.exit();
