@@ -126,13 +126,13 @@ createTimer.prototype.deleteTimer = function(callback){
 };
 
 // Warum nicht this verwendet?? Wozu dann OOP? mit this kann kein Interval mehr doppelt gestartet werden, auch nicht manuell, jetzt schon.
-createTimer.prototype.switchActions = function(timer, status, switchtimer){
+createTimer.prototype.switchActions = function(status, switchtimer){
 	var getRandomInt = function(min, max) {
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
-	if(timer.actions && switchtimer != false){
-		timer.actions.forEach(function(action){
-
+	if(this.timer.actions && switchtimer != false){
+		this.timer.actions.forEach((action) => {
+			// Hier macht die Rheinfolge keinen Sinn:
 			var data = {};
 			data[action.type] = action;
 			if(action.offset == undefined){
@@ -140,7 +140,6 @@ createTimer.prototype.switchActions = function(timer, status, switchtimer){
 					active:false
 				}
 			}
-			var that = this;
 			if(action.activeInterval){
 				action.id = parseInt(action.id) || getRandomInt(0, 600000);
 				if(allIntervals.intervals[action.id] == undefined){
@@ -150,41 +149,40 @@ createTimer.prototype.switchActions = function(timer, status, switchtimer){
 							if(action.offset.random == true || action.offset.random == "true"){
 								action.offset.minutes = getRandomInt(action.offset.min, action.offset.max);
 							}
-							setTimeout(function(){
-								that.log.debug("Aktion ausführen:" + action.type);
+							setTimeout(() => {
+								this.log.debug("Aktion ausführen:" + action.type);
 								process.send(data);
 							}, action.offset.minutes * 60 * 1000);
 						}else{
-							that.log.debug("Aktion ausführen:" + action.type);
+							this.log.debug("Aktion ausführen:" + action.type);
 							process.send(data);
 						}
 					}, sched);
-					that.log.debug("		Neues Interval mit der id: " + action.id + " angelegt: jede " + action.number + ' ' + action.unit);
+					this.log.debug("		Neues Interval mit der id: " + action.id + " angelegt: jede " + action.number + ' ' + action.unit);
 				}else{
-					that.log.info("		Intervall wurde schon gesetzt: " + action.id);
+					this.log.info("		Intervall wurde schon gesetzt: " + action.id);
 				}
 			}else{
 				if(action.offset.active == true || action.offset.active == "true"){
 					if(action.offset.random == true || action.offset.random == "true"){
 						action.offset.minutes = getRandomInt(action.offset.min, action.offset.max);
 					}
-					setTimeout(function(){
-						that.log.debug("Aktion ausführen:" + action.type);
+					setTimeout(() => {
+						this.log.debug("Aktion ausführen:" + action.type);
 						process.send(data);
 					}, action.offset.minutes * 60 * 1000);
 				}else{
-					that.log.debug("Aktion ausführen:" + action.type);
+					this.log.debug("Aktion ausführen:" + action.type);
 					process.send(data);
 				}
 			}
 			
-		}, this);
+		});
 		this.setLastExec(new Date().getTime());
 	}
 }
 
 createTimer.prototype.checkTimer = function(variable){
-	var that = this;
 	var getRandomInt = function(min, max) {
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
@@ -221,7 +219,7 @@ createTimer.prototype.checkTimer = function(variable){
 		}
 	}
 
-	var getSuntime = function (tomorrow, type, offset){
+	var getSuntime = (tomorrow, type, offset) => {
 		if(tomorrow){
 			var suntimes			= SunCalc.getTimes(new Date(new Date().getTime() + 24 * 60 * 60 * 1000), conf.location.lat, conf.location.long);
 		}else{
@@ -229,10 +227,10 @@ createTimer.prototype.checkTimer = function(variable){
 		}
 		if(type == "sunrise"){
 			var suntime 		= new Date(suntimes.sunrise);
-			that.log.info("	Sonnenaufgang:	" + suntime.getHours() + ':' + suntime.getMinutes());
+			this.log.info("	Sonnenaufgang:	" + suntime.getHours() + ':' + suntime.getMinutes());
 		}else{
 			var suntime 		= new Date(suntimes.sunset);
-			that.log.info("	Sonnenuntergang:	" + suntime.getHours() + ':' + suntime.getMinutes());
+			this.log.info("	Sonnenuntergang:	" + suntime.getHours() + ':' + suntime.getMinutes());
 		}
 		
 		if(offset.active == true || offset.active == "true"){
@@ -263,147 +261,147 @@ createTimer.prototype.checkTimer = function(variable){
 			}
 
 			if(offset.unit == true){
-				that.log.info("	Offset: 		" + offset.minutes + " Minuten später");
+				this.log.info("	Offset: 		" + offset.minutes + " Minuten später");
 				var suntime = new Date(suntime.getTime() + (offset.minutes * 60 * 1000));
 			}else{
-				that.log.info("	Offset: 		" + offset.minutes + " Minuten früher");
+				this.log.info("	Offset: 		" + offset.minutes + " Minuten früher");
 				var suntime = new Date(suntime.getTime() - (offset.minutes * 60 * 1000));
 			}
 		}
 		return createTime(suntime.getTime());
 	}
-	var checkVariables = function(timer, variable, that, switchToThis, switchtimer, callback){
+	var checkVariables = (variable, switchToThis, switchtimer, callback) => {
 		if(!variable){
-			callback(timer, switchToThis, switchtimer);
-		}else if(timer.variables[variable.id]){
-			for (var i = timer.variables[variable.id].length - 1; i >= 0; i--) {
-				var condition = timer.variables[variable.id][i];
+			callback(switchToThis, switchtimer);
+		}else if(this.timer.variables[variable.id]){
+			for (var i = this.timer.variables[variable.id].length - 1; i >= 0; i--) {
+				var condition = this.timer.variables[variable.id][i];
 				switch(condition.mode){
 					case 'match':
 						if(condition.value == variable.status.toString()){
-							that.log.info('	Variable ' + condition.id + ' hat sich zu "' + variable.status + '" geändert!');
+							this.log.info('	Variable ' + condition.id + ' hat sich zu "' + variable.status + '" geändert!');
 							switchToThis = 'on';
 						}else{
-							that.log.info('	Variable hat den falschen status');
+							this.log.info('	Variable hat den falschen status');
 							switchtimer = false;
 						}
 						break;
 					case 'onChange':
-						that.log.info('	Variable ' + condition.id + ' hat sich geändert');
+						this.log.info('	Variable ' + condition.id + ' hat sich geändert');
 						break;
 					case "größer":
 						if(condition.value < variable.status){
-							that.log.info(condition.id + " ist größer als " + condition.value);
+							this.log.info(condition.id + " ist größer als " + condition.value);
 						}else{
 							switchtimer = false;
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 						}
 						break;
 					case "kleiner":
 						if(condition.value > variable.status){
-							that.log.info(condition.id + " ist kleiner " + condition.value);
+							this.log.info(condition.id + " ist kleiner " + condition.value);
 						}else{
 							switchtimer = false;
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 						}
 						break;
 					case "gleich":
 						if(condition.value.toString() === variable.status.toString()){
-							that.log.info(condition.id + " ist gleich " + condition.value);
+							this.log.info(condition.id + " ist gleich " + condition.value);
 						}else{
 							switchtimer = false;
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 						}
 						break;
 					case "ungleich":
 						if(condition.value.toString() !== variable.status.toString()){
-							that.log.info(condition.id + "ist ungleich " + condition.value);
+							this.log.info(condition.id + "ist ungleich " + condition.value);
 						}else{
 							switchtimer = false;
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 						}
 						break;										
 					case "größergleich":
 						if(condition.value <= variable.status){
-							that.log.info(condition.id + " ist größer oder gleich " + condition.value);
+							this.log.info(condition.id + " ist größer oder gleich " + condition.value);
 						}else{
 							switchtimer = false;
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 						}
 						break;
 					case "kleinergleich":
 						if(condition.value >= variable.status){
-							that.log.info(condition.id + " ist kleiner oder gleich " + condition.value);
+							this.log.info(condition.id + " ist kleiner oder gleich " + condition.value);
 						}else{
 							switchtimer = false;
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 						}
 						break;
 					default:
-						that.log.error("Error:" + condition.mode);
+						this.log.error("Error:" + condition.mode);
 						switchtimer = false;
 						break;
 				}
 			}
-			callback(timer, switchToThis, switchtimer);
+			callback(switchToThis, switchtimer);
 		}
 	}
 
-	var checkConditions = function(allVariables, that, timer, switchToThis, switchtimer, callback){
+	var checkConditions = (allVariables, switchToThis, switchtimer, callback) => {
 		if(switchtimer == false || switchtimer == "false"){
 			return;
 		}
-		if(!timer.conditions){
-			that.log.info("	Keine Bedingungen für diesen Timer");
-			that.log.info("		Ergebnis: 	stimmt");
-			callback(timer, switchToThis, true);
+		if(!this.timer.conditions){
+			this.log.info("	Keine Bedingungen für diesen Timer");
+			this.log.info("		Ergebnis: 	stimmt");
+			callback(this.timer, switchToThis, true);
 			return;
 		}
 		
 		// Wenn noch nie ausgeführt dann letzte Ausführung auf vor 24 Stunden setzten
-		if(!timer.lastexec){
-			timer.lastexec = new Date().getTime() - 24 * 60 * 60000;
+		if(!this.timer.lastexec){
+			this.timer.lastexec = new Date().getTime() - 24 * 60 * 60000;
 		}else{
-			timer.lastexec = parseInt(timer.lastexec);
+			this.timer.lastexec = parseInt(this.timer.lastexec);
 		}
 
 		var switchNow = null;
-		for (var i = timer.conditions.length - 1; i >= 0; i--) {
-			var condition = timer.conditions[i];
-			// that.log.debug(condition);
+		for (var i = this.timer.conditions.length - 1; i >= 0; i--) {
+			var condition = this.timer.conditions[i];
+			// this.log.debug(condition);
 			switch(condition.type){
 				case "range":
-					that.log.info("	Prüfe Zeitraum...");
-					that.log.info("		" + condition.start + " - " + condition.stop);
+					this.log.info("	Prüfe Zeitraum...");
+					this.log.info("		" + condition.start + " - " + condition.stop);
 					var startTime = createTime(new Date().setHours(condition.start.hour, condition.start.minute));
 					var stopTime = createTime(new Date().setHours(condition.stop.hour, condition.stop.minute));
 				
 					if(isTimeInRange(startTime.timestamp, stopTime.timestamp)){
-						that.log.info("		Ergebnis: 	stimmt");
+						this.log.info("		Ergebnis: 	stimmt");
 					}else{
-						that.log.info("		Ergebnis: 	stimmt nicht");
+						this.log.info("		Ergebnis: 	stimmt nicht");
 						switchtimer = false;
 					}
 					break;
 				case "sun":
 					var now = createTime(new Date().getTime());
-					if(!that.calculatedSunTime){
-						that.calculatedSunTime = getSuntime(false, condition.sun, condition.offset);
-						if(that.calculatedSunTime.timestamp < now.timestamp){
-							that.calculatedSunTime = getSuntime(true, condition.sun, condition.offset);
+					if(!this.calculatedSunTime){
+						this.calculatedSunTime = getSuntime(false, condition.sun, condition.offset);
+						if(this.calculatedSunTime.timestamp < now.timestamp){
+							this.calculatedSunTime = getSuntime(true, condition.sun, condition.offset);
 						}
 					}
-					that.log.info("	Berechnete Zeit:	" + new Date(that.calculatedSunTime.timestamp));
-					// console.log(timer.conditions, that.calculatedSunTime.time);
-					if(timer.lastexec > that.calculatedSunTime.timestamp){
-						that.log.info("		Dieser Timer wurde schon geschaltet");
+					this.log.info("	Berechnete Zeit:	" + new Date(this.calculatedSunTime.timestamp));
+					// console.log(timer.conditions, this.calculatedSunTime.time);
+					if(this.timer.lastexec > this.calculatedSunTime.timestamp){
+						this.log.info("		Dieser Timer wurde schon geschaltet");
 						switchtimer = false;
 					}else{
-						if(now.time == that.calculatedSunTime.time && now.day == that.calculatedSunTime.day){
-							that.calculatedSunTime = getSuntime(true, condition.sun, condition.offset);
-							that.log.info("		Ergebnis:	stimmt");
+						if(now.time == this.calculatedSunTime.time && now.day == this.calculatedSunTime.day){
+							this.calculatedSunTime = getSuntime(true, condition.sun, condition.offset);
+							this.log.info("		Ergebnis:	stimmt");
 						}else{
-							that.log.info("		Ergebnis: 	stimmt nicht");
+							this.log.info("		Ergebnis: 	stimmt nicht");
 							switchtimer = false;
 						}
 					}
@@ -417,108 +415,108 @@ createTimer.prototype.checkTimer = function(variable){
 
 					// Zeitraum prüfen
 					if(startTime.timestamp <= now.timestamp && stopTime.timestamp >= now.timestamp){
-						if(that.timer.lastexec > startTime.timestamp && that.timer.lastexec < stopTime.timestamp){
+						if(this.timer.lastexec > startTime.timestamp && this.timer.lastexec < stopTime.timestamp){
 							// schon ausgeführt!
-							that.log.info("	Timer schon ausgeführt");
-							that.log.info("	Ergebnis: 	stimmt nicht");
+							this.log.info("	Timer schon ausgeführt");
+							this.log.info("	Ergebnis: 	stimmt nicht");
 							switchtimer = false;
 						}else{
 							// Noch nicht ausgeführt!
-							if(!that.calculatedRandomTime){
+							if(!this.calculatedRandomTime){
 								// Timestamp zum Schalten generieren
 								var minutes = getRandomInt(now.timestamp, stopTime.timestamp);
-								// that.log.info(new Date(minutes));
-								that.calculatedRandomTime = createTime(minutes);
-								that.log.info('	Neue Schaltzeit berechnet!');
+								// this.log.info(new Date(minutes));
+								this.calculatedRandomTime = createTime(minutes);
+								this.log.info('	Neue Schaltzeit berechnet!');
 							}
-							that.log.info('	Schaltzeit:' + new Date(that.calculatedRandomTime.timestamp));
-							if(that.calculatedRandomTime.time == now.time){
+							this.log.info('	Schaltzeit:' + new Date(this.calculatedRandomTime.timestamp));
+							if(this.calculatedRandomTime.time == now.time){
 								// Schalten!!
-								that.log.info('	Jetzt schalten!');
-								that.calculatedRandomTime = false;
-								that.log.info("		Ergebnis: 	stimmt");
+								this.log.info('	Jetzt schalten!');
+								this.calculatedRandomTime = false;
+								this.log.info("		Ergebnis: 	stimmt");
 								switchNow = true;
 								switchToThis = condition.action;
 							}else{
-								that.log.info('	Ergebnis: 	stimmt nicht');
+								this.log.info('	Ergebnis: 	stimmt nicht');
 								switchtimer = false;
 							}
 						}
 					}else{
-						that.log.info("	Uhrzeit nicht zwischen " + startTime.time + " und " + stopTime.time);
-						that.log.info("	Ergebnis: 	stimmt nicht");
+						this.log.info("	Uhrzeit nicht zwischen " + startTime.time + " und " + stopTime.time);
+						this.log.info("	Ergebnis: 	stimmt nicht");
 						switchtimer = false;
 					}
 					break;
 				case "variable":
-					if(that.timer.lastexec > allVariables[condition.id].lastChange){
-						that.log.info("		Ergebnis: stimmt nicht: 	bereits ausgeführt");
+					if(this.timer.lastexec > allVariables[condition.id].lastChange){
+						this.log.info("		Ergebnis: stimmt nicht: 	bereits ausgeführt");
 						switchtimer = false;
 					}else{
 						var variable = allVariables[condition.id];
 						switch(condition.mode){
 							case 'match':
 								if(condition.status == variable.status.toString()){
-									that.log.info('	Variable ' + condition.id + ' hat sich zu "' + variable.status + '" geändert!');
+									this.log.info('	Variable ' + condition.id + ' hat sich zu "' + variable.status + '" geändert!');
 									switchToThis = 'on';
 								}else{
-									that.log.info('	Variable hat den falschen status');
+									this.log.info('	Variable hat den falschen status');
 									switchtimer = false;
 								}
 								break;
 							case 'onChange':
-								that.log.info('	Variable ' + condition.id + ' hat sich geändert');
+								this.log.info('	Variable ' + condition.id + ' hat sich geändert');
 								break;
 							case "größer":
 								if(condition.value < variable.status){
-									that.log.info(condition.id + " ist größer als " + condition.value);
+									this.log.info(condition.id + " ist größer als " + condition.value);
 								}else{
 									switchtimer = false;
-									that.log.info("		Ergebnis: 	stimmt nicht");
+									this.log.info("		Ergebnis: 	stimmt nicht");
 								}
 								break;
 							case "kleiner":
 								if(condition.value > variable.status){
-									that.log.info(condition.id + " ist kleiner " + condition.value);
+									this.log.info(condition.id + " ist kleiner " + condition.value);
 								}else{
 									switchtimer = false;
-									that.log.info("		Ergebnis: 	stimmt nicht");
+									this.log.info("		Ergebnis: 	stimmt nicht");
 								}
 								break;
 							case "gleich":
 								if(condition.value.toString() === variable.status.toString()){
-									that.log.info(condition.id + " ist gleich " + condition.value);
+									this.log.info(condition.id + " ist gleich " + condition.value);
 								}else{
 									switchtimer = false;
-									that.log.info("		Ergebnis: 	stimmt nicht");
+									this.log.info("		Ergebnis: 	stimmt nicht");
 								}
 								break;
 							case "ungleich":
 								if(condition.value.toString() !== variable.status.toString()){
-									that.log.info(condition.id + "ist ungleich " + condition.value);
+									this.log.info(condition.id + "ist ungleich " + condition.value);
 								}else{
 									switchtimer = false;
-									that.log.info("		Ergebnis: 	stimmt nicht");
+									this.log.info("		Ergebnis: 	stimmt nicht");
 								}
 								break;										
 							case "größergleich":
 								if(condition.value <= variable.status){
-									that.log.info(condition.id + " ist größer oder gleich " + condition.value);
+									this.log.info(condition.id + " ist größer oder gleich " + condition.value);
 								}else{
 									switchtimer = false;
-									that.log.info("		Ergebnis: 	stimmt nicht");
+									this.log.info("		Ergebnis: 	stimmt nicht");
 								}
 								break;
 							case "kleinergleich":
 								if(condition.value >= variable.status){
-									that.log.info(condition.id + " ist kleiner oder gleich " + condition.value);
+									this.log.info(condition.id + " ist kleiner oder gleich " + condition.value);
 								}else{
 									switchtimer = false;
-									that.log.info("		Ergebnis: 	stimmt nicht");
+									this.log.info("		Ergebnis: 	stimmt nicht");
 								}
 								break;
 							default:
-								that.log.error("Error:" + condition.mode);
+								this.log.error("Error:" + condition.mode);
 								switchtimer = false;
 								break;
 						}
@@ -527,54 +525,53 @@ createTimer.prototype.checkTimer = function(variable){
 				case "time":
 					var time = createTime(new Date().setHours(condition.time.hour, condition.time.minute));
 					var now = createTime( new Date().getTime() );
-					if(timer.lastexec > now.timestamp){
-						that.log.info("		Dieser Timer wurde schon geschaltet");
+					if(this.timer.lastexec > now.timestamp){
+						this.log.info("		Dieser Timer wurde schon geschaltet");
 						switchtimer = false;
 					}else{
 						if(now.time == time.time ){
-							that.log.info("		" + now.time + " == " + time.time); 
-							that.log.info("		Ergebnis:	stimmt");
+							this.log.info("		" + now.time + " == " + time.time); 
+							this.log.info("		Ergebnis:	stimmt");
 						}else{
-							that.log.info("		" + now.time + " != " + time.time); 
-							that.log.info("		Ergebnis:	stimmt nicht");
+							this.log.info("		" + now.time + " != " + time.time); 
+							this.log.info("		Ergebnis:	stimmt nicht");
 							switchtimer = false;
 						}
 					}
 					break;
 				case "weekdays":
 					if(!condition.weekdays[new Date().getDay()]){
-						that.log.info("		Der Wochentag stimmt nicht!");
+						this.log.info("		Der Wochentag stimmt nicht!");
 						switchtimer = false;
 					}else{
-						that.log.info("		Der Wochentag stimmt!");
+						this.log.info("		Der Wochentag stimmt!");
 					}
 					break;
 				default:
-					that.log.error(condition.type);
+					this.log.error(condition.type);
 					break;
 			}
 		}
-		callback(timer, switchToThis, switchtimer);
+		callback(switchToThis, switchtimer);
 	}
 	
-	var that = this;
 	var query = "SELECT * FROM variable;";
-	db.all(query, function(err, variables){
+	db.all(query, (err, variables) => {
 		if(err){
-			that.log.error(err);
+			this.log.error(err);
 		}
 		allVariables = {};
-		variables.forEach(function(variable){
+		variables.forEach((variable) => {
 			allVariables[variable.id] = variable;
 		});
-		if(that.timer.active == true || that.timer.active == 'true'){
-			that.log.info(that.timer.name);
-			if(!that.timer.calculatedTime){
-				that.timer.calculatedTime = new Date();
+		if(this.timer.active == true || this.timer.active == 'true'){
+			this.log.info(this.timer.name);
+			if(!this.timer.calculatedTime){
+				this.timer.calculatedTime = new Date();
 			}
-			checkVariables(that.timer, variable, that, undefined, true, function(timer, switchToThis, switchtimer){
-				checkConditions(allVariables, that, timer, switchToThis, switchtimer, function(timer, switchToThis, switchtimer){
-					that.switchActions(timer, switchToThis, switchtimer);
+			checkVariables(variable, undefined, true, (switchToThis, switchtimer) => {
+				checkConditions(allVariables, switchToThis, switchtimer, (switchToThis, switchtimer) => {
+					this.switchActions(switchToThis, switchtimer);
 				});
 			});
 		}
@@ -584,10 +581,9 @@ createTimer.prototype.checkTimer = function(variable){
 createTimer.prototype.setActive = function(status, callback){
 	if(status == true || status == 'true'){
 		status = true;
-		var that = this;
 		this.timer.active = true;
-		this.interval = setInterval(function(){
-			that.checkTimer();
+		this.interval = setInterval(() => {
+			this.checkTimer();
 		}, 10 * 1000);
 	}else{
 		status = false;
