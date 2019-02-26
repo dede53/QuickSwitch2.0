@@ -7,7 +7,8 @@ var pool			=	mysql.createPool({
 	user			:	conf.mysql.user,
 	password		:	conf.mysql.password,
 	database		:	'SmartHome',
-	debug			:	false
+	debug			:	false,
+	charset			:	'utf8mb4_unicode_ci'
 });
 
 module.exports = {
