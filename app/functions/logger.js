@@ -34,15 +34,7 @@ function log(config){
                     };
 
         var logNow = false;
-        // if(type == '4'){
-        //     logNow = true;
-        // }
-        // if(loglevel == '1'){
-        //     logNow = true;
-        // }
-        // if(loglevel == '2'){
-
-        // }
+        
         switch(type){
             case 1:
                 if(this.loglevel == '1'){
@@ -71,25 +63,6 @@ function log(config){
                 this.emit("error", data);
                 break;
         }
-        
-        // if(this.loglevel == '4' && type == '4'){             // Error
-        //     this.emit("error", data);
-        //     console.log('\x1b[31m' , datum +": "+ message, "\x1b[0m");
-        //     console.log('\x1b[36m', 'sometext' ,'\x1b[0m');
-        //     var logNow = true;
-        // }else if(this.loglevel == '3' && type >= '3'){       // Warning
-        //     console.log('\x1b[31m' ,datum +": "+ message, "\x1b[0m");
-        //     this.emit("warning", data);
-        //     var logNow = true;
-        // }else if(this.loglevel == '2' && type >= '2'){       // Debug
-        //     console.log( '\x1b[31m' ,datum +": "+ message, "\x1b[0m");
-        //     this.emit("debug", data);
-        //     var logNow = true;
-        // }else{                                          // Info
-        //     console.log(datum +": "+ message);
-        //     this.emit("info", data);
-        //     var logNow = true;
-        // }
         this.emit("all", data);
 
         if(logNow){
