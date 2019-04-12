@@ -24,6 +24,14 @@ app.controller('editUserController', function($scope, $rootScope, socket, $route
 		// socket.emit('variables:chart', $routeParams.id);
 	}
 
+	$scope.backgrounds = [{
+			name: "dunkles Holz",
+			file: "./assets/img/hintergrund_holz_dunkel.jpg"
+		},{
+			name: "blaue Dreiecke",
+			file: "./assets/img/14+-+5.png"
+	}];
+
 	socket.emit('devices:devicelist');
 	socket.emit('variables:get');
 	$scope.addDevice = function(test){
