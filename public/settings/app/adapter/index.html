@@ -17,6 +17,7 @@
 		</div>
 		<table class="table" ng-show="switchServer.active">
 			<tr>
+				<th></th>
 				<th>Name</th>
 				<th>Version (installiert/verfügbar)</th>
 				<th>Loglevel</th>
@@ -26,11 +27,24 @@
 				<th>Steuern</th>
 			</tr>
 			<tr ng-repeat="adapter in switchServer.status.adapter">
+				<td>
+					<button
+						type="button" 
+						class="btn btn-xs"
+						title='{{adapter.status.installedVersion == undefined ? "installieren" :  "entfernen"}}' 
+						ng-class='adapter.status.installedVersion == undefined ? "btn-success" :  "btn-danger"'
+						ng-click='controlAdapter(adapter.status.installedVersion == undefined ? "install" : "remove", switchServer, adapter.info.name)' >
+						<span 
+							class="glyphicon"
+							ng-class='adapter.status.installedVersion == undefined ? "glyphicon-cloud-download" :  "glyphicon-trash"'>
+						</span>
+					</button>
+				</td>
 				<td>{{adapter.info.name}}</td>
 				<td>{{adapter.status.installedVersion || "nicht installiert" }} / {{adapter.info.version}}</td>
 				<td>{{adapter.settings.loglevel}}</td>
 				<td>
-					<h3 class="label label-xl glyphicon" ng-show="adapter.status.installedVersion" ng-class='adapter.status.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' aria-hidden="true">
+					<h3 class="label label-xl glyphicon" ng-class='adapter.status.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' aria-hidden="true">
 						<span title="{{adapter.status.statusMessage}}">
 							{{adapter.status.status}}
 						</span>
@@ -41,6 +55,7 @@
 				</td>
 				<td>{{adapter.status.pid}}</td>
 				<td>
+					<uib-progressbar  ng-hide="adapter.status.installedVersion" class="progress-striped active" value="dynamic" type="info">in arbeit</uib-progressbar>
 					<div ng-show="adapter.status.installedVersion">
 						<button type="button" ng-click="controlAdapter('start',switchServer, adapter.info.name)" title="Start" class="btn btn-xs btn-success">
 							<span class="glyphicon glyphicon-play"></span>
@@ -58,16 +73,6 @@
 							<span class="glyphicon glyphicon-list-alt"></span>
 						</button>
 					</div>
-				</td>
-				<td>
-					<h3
-						class="label label-xl glyphicon"
-						ng-class='adapter.status.installedVersion == undefined ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"'
-						aria-hidden="true"
-						ng-click='controlAdapter(adapter.status.installedVersion == undefined ? "install" : "remove", switchServer, adapter.info.name)' 
-						>
-						{{adapter.status.installedVersion == undefined ? "installieren" :  "entfernen"}}
-					</h3>
 				</td>
 			</tr>
 		</table>
