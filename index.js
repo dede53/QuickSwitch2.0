@@ -61,19 +61,21 @@ allAlerts.on("remove", (alert) => {
 });
 
 allVariables.on("change", (variable) => {
-	// console.log(variable);
+	app.io.emit('change', new message('variables:edit',variable));
+	
+	for(var index in config.switchserver){
+		request.post({
+			url:'http://' + config.switchserver[index].ip + ':' + config.switchserver[index].port + '/variable',
+			form: variable
+		},function( err, httpResponse, body){
+			if(err){
+				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
+				return;
+			}
+	        log.info("Erfolgreich an den SwitchServer gesendet");
+		});
+	}
 });
-
-var allIntervals			=	{
-                                    setInterval: function(id, callback, sched){
-                                        this.intervals[id] = later.setInterval(callback, sched);
-                                    },
-                                    clearInterval: function(id){
-                                        this.intervals[id].clear();
-                                        delete this.intervals[id];
-                                    },
-                                    intervals: {}
-                                };
 
 if(config.useHTTPS){
 	var options = {
@@ -89,9 +91,6 @@ app.use(bodyParser.json()); 						// for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));	// for parsing application/x-www-form-urlencoded
 app.use(cookieParser());							// for parsing cookies
 app.use(express.static(__dirname + '/public/settings'));		// provides static htmls
-
-
-loadVariables();
 
 app.get('/settings', function(req, res){
 	res.redirect('/');
@@ -280,20 +279,6 @@ function stopServer(callback){
 			callback(404);
 		}
 	}
-}
-
-function loadVariables(){
-	var query = "SELECT * FROM variable;";
-	db.all(query, function(err, variables){
-		if(err){
-			log.debug(err);
-			return;
-		}
-
-		variables.forEach(function(variable){
-			allVariables.add(variable);
-		});
-	});
 }
 
 function message(type, data){
