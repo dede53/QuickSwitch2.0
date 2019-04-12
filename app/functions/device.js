@@ -36,12 +36,9 @@ function Sensor(id, name, data, charttype, linetype, farbe, valueSuffix, yAxis, 
 }
 
 module.exports = {
+	// Umstellen auf id als key!
 	getDevices: function(type, callback){
-		if(type == "object"){
-			var uff = new Object;
-		}else{
-			var uff = new Object;
-		}
+		var uff = new Object;
 		var query = "SELECT * FROM rooms;";
 		db.all(query, function(err, row){
 			if(err){
@@ -65,6 +62,7 @@ module.exports = {
 										bla.roomdevices[dat.deviceid] = dat;
 									});
 
+									// Umstellen auf room.id =>row.id!!
 									uff[row.name] = bla;
 								}else{
 									data.forEach(function(dat){
@@ -96,29 +94,6 @@ module.exports = {
 		}
 		db.run(query);
 	},
-/*	setDeviceStatusByCode: function(masterDip, slaveDip, status, callback){
-		if(!masterDip && slaveDip){
-			var query2 = " WHERE CodeOn = '" + slaveDip + "'";
-		}
-		if(!slaveDip && masterDip){
-			var query2 = " WHERE CodeOn = '" + masterDip + "'";
-		}
-		if(slaveDip && masterDip){
-			var query2 = " WHERE CodeOn = '" + masterDip + "' AND CodeOff = '" + slaveDip +"'";
-		}
-		db.all("UPDATE devices SET status = '" + status + "' " + query2 + ";", function(err, row){
-			var query = "SELECT devices.*, rooms.name AS Raum FROM devices, rooms " + query2 + " AND devices.roomid = rooms.id;";
-			db.all(query , function(err, row) {
-				if (err) {
-					log.error(err);
-				}else if(row == ""){
-					log.error("Kein Gerät für: SELECT devices.*, rooms.name AS Raum FROM devices, rooms " + query2);
-				}else{
-					callback(row[0]);
-				}
-			});
-		});
-	},*/
 	saveDevice: function (data, callback){
 		if(data.deviceid){
 			var query = "UPDATE devices SET name = '"+ data.name +"', protocol = '"+ data.protocol +"', showStatus = '"+ data.showStatus +"', buttonLabelOn = '"+ data.buttonLabelOn +"', buttonLabelOff = '"+ data.buttonLabelOff +"', CodeOn = '"+ data.CodeOn +"', CodeOff = '"+ data.CodeOff +"', roomid = '"+ data.roomid +"', switchserver = '" + data.switchserver + "' WHERE deviceid = '"+ data.deviceid +"';";

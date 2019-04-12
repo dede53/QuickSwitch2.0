@@ -4,6 +4,17 @@ var events						=	require('events');
 
 function variables(){
 	this.variables = {};
+	var query = "SELECT * FROM variable;";
+	db.all(query, (err, variables) => {
+	        if(err){
+	                console.log(err);
+	                return;
+	        }
+	        variables.forEach((variable) => {
+	                this.add(variable);
+	        });
+	});
+
 }
 
 variables.prototype = new events.EventEmitter();
@@ -53,26 +64,31 @@ variables.prototype.saveVariable = function(data){
     }
 	this.variable = data;
 	db.run(query);
+	// uid!!
 	this.setSaveActive(data.id, data.saveActive);
 }
 
 variables.prototype.setVariable = function(id, status, callback){
+	if(!this.variables[id]){
+		this.add();
+	}
 	if(status != this.variables[id].status){
-		var toDatabase = (variable) => {
-			console.log("Variable speichern(onchange):" + variable.id, variable.status);
-			var now = Math.floor(Date.parse(new Date));
-			var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + variable.id + "', '" + now + "', '" + variable.status + "');";
-			db.run(query);
-		}
+		var now = Math.floor(Date.parse(new Date));
+		this.variables[id].status = status;
 		if(this.variables[id].saveActive == true || this.variables[id].saveActive == 'true'){
-			if(this.variables[id].saveType == "onchange" && this.variables[id].status != status){
-				toDatabase(this.variables[id]);
+			if(this.variables[id].saveType == "onchange"){
+				console.log("Variable speichern(onchange):" + id, status);
+				var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + id + "', '" + now + "', '" + status + "');";
+				db.run(query);
 			}
 		}
 		this.variables[id].status = status;
-
+		this.variables[id].lastChange = now;
+		
+		var query = "UPDATE variable SET status = '" + status + "', lastChange = '" + now + "' WHERE id = '" + id + "';";
+		db.run(query);
+		
 		this.emit('change', this.variables[id]);
-
 		callback(200);
 	}else{
 		if (callback) {
