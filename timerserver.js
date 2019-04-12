@@ -35,16 +35,16 @@ log = {
 }
 
 var allTimers					=	{};
-var allIntervals				=	{
-										setInterval: function(id, callback, sched){
-											this.intervals[id] = later.setInterval(callback, sched);
-										},
-										clearInterval: function(id){
-											this.intervals[id].clear();
-											delete this.intervals[id];
-										},
-										intervals: {}
-									};
+// var allIntervals				=	{
+// 										setInterval: function(id, callback, sched){
+// 											this.intervals[id] = later.setInterval(callback, sched);
+// 										},
+// 										clearInterval: function(id){
+// 											this.intervals[id].clear();
+// 											delete this.intervals[id];
+// 										},
+// 										intervals: {}
+// 									};
 
 process.on('message', function(data){
 	if(data.deaktivateInterval){
@@ -130,23 +130,8 @@ process.on('message', function(data){
 	}
 });
 
-loadVariables();
+
 loadTimers();
-
-
-function loadVariables(){
-	var query = "SELECT * FROM variable;";
-	db.all(query, function(err, variables){
-		if(err){
-			log.debug(err);
-			return;
-		}
-
-		variables.forEach(function(variable){
-			allVariables.add(variable);
-		});
-	});
-}
 
 function loadTimers(){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
