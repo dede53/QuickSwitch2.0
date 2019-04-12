@@ -62,7 +62,7 @@ module.exports = {
 	sendto: function (app, action, data, callback){
 		data.newStatus = action;
 		request.post({
-			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/switch',
+			url:'http://' + conf.switchserver[data.switchserver].ip + ':' + conf.switchserver[data.switchserver].port + '/action',
 			form: data
 		},function( err, httpResponse, body){
 			if(err){
