@@ -11,17 +11,17 @@ if(!conf.location || !conf.location.lat || !conf.location.long){
 	}
 }
 
-var allIntervals				=	{
-										setMyInterval: function(id, callback, sched){
-											this.intervals[id] = later.setInterval(callback, sched);
-										},
-										clearInterval: function(id){
-											this.intervals[id].clear();
-											delete this.intervals[id];
-										},
-										intervals: {}
-									};
-
+function intervals(){
+	this.intervals = {};
+	this.setMyInterval =  (id, callback, sched) => {
+		this.intervals[id] = later.setInterval(callback, sched);
+	}
+	this.clearInterval = (id) => {
+		this.intervals[id].clear();
+		delete this.intervals[id];
+	}
+};
+var allIntervals = new intervals();
 
 var createTimer = function(timer, config){
 	try{
@@ -82,7 +82,7 @@ createTimer.prototype.setLastExec = function(timestamp){
 
 createTimer.prototype.deaktivateInterval = function(){
 	if(this.timer.actions.intervals){
-		this.timer.actions.intervals.forEach(function(interval){
+		this.timer.actions.intervals.forEach((interval) => {
 			this.log.debug("Interval mit der ID:" + interval.id + " deaktiviert");
 			allIntervals.intervals[interval.id].clear();
 			delete allIntervals.intervals[interval.id];
@@ -102,12 +102,12 @@ createTimer.prototype.saveTimer = function(data, callback){
 		callback( undefined, this.timer);
 	}else{
 		var query = "INSERT INTO timer (name, variables, conditions, actions, user, lastexec) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "','" + data.lastexec + "');";
-		db.all(query, function(err, data){
+		db.all(query, (err, data) => {
 			if(err){
 				callback(err, undefined);
 			}else{
 				this.timer.id = data.insertId; 
-				getTimer(data.insertId, function(data){
+				getTimer(data.insertId, (data) => {
 					this.log.info(data);
 					callback( undefined, data);
 				});
@@ -120,14 +120,14 @@ createTimer.prototype.deleteTimer = function(callback){
 	createTimer.prototype.deaktivateInterval();
 	clearInterval(this.interval);
 	var query = "DELETE FROM timer WHERE id = '" + this.timer.id + "';";
-	db.all(query, function(err, data){
+	db.all(query, (err, data) => {
 		callback(err, data);
 	});
 };
 
 // Warum nicht this verwendet?? Wozu dann OOP? mit this kann kein Interval mehr doppelt gestartet werden, auch nicht manuell, jetzt schon.
 createTimer.prototype.switchActions = function(status, switchtimer){
-	var getRandomInt = function(min, max) {
+	var getRandomInt = (min, max) => {
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
 	if(this.timer.actions && switchtimer != false){
@@ -144,7 +144,9 @@ createTimer.prototype.switchActions = function(status, switchtimer){
 				action.id = parseInt(action.id) || getRandomInt(0, 600000);
 				if(allIntervals.intervals[action.id] == undefined){
 					var sched			=	later.parse.text('every ' + action.number + ' ' + action.unit);
-					allIntervals.setMyInterval(action.id, function(){
+
+					console.log(allIntervals);
+					allIntervals.setMyInterval(action.id, () => {
 						if(action.offset.active == true || action.offset.active == "true"){
 							if(action.offset.random == true || action.offset.random == "true"){
 								action.offset.minutes = getRandomInt(action.offset.min, action.offset.max);
@@ -183,15 +185,15 @@ createTimer.prototype.switchActions = function(status, switchtimer){
 }
 
 createTimer.prototype.checkTimer = function(variable){
-	var getRandomInt = function(min, max) {
+	var getRandomInt = (min, max) => {
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
 
-	var parseTime = function(time){
+	var parseTime = (time) => {
 		var time 		= time.split(':');
 		return createTime(new Date().setHours(time[0], time[1]));
 	}
-	var isTimeInRange = function(lower, upper) {
+	var isTimeInRange = (lower, upper) => {
 		var now = new Date();
 		var inRange = false;
 		if (upper > lower) {
@@ -203,7 +205,7 @@ createTimer.prototype.checkTimer = function(variable){
 		}
 		return inRange;
 	}
-	var createTime = function(time){
+	var createTime = (time) => {
 		time = new Date(parseInt(time));
 		time.setMilliseconds(0);
 		time.setSeconds(0);
@@ -604,7 +606,7 @@ createTimer.prototype.stopTimer = function() {
 
 createTimer.prototype.getUserTimers = function(user, callback){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE user = '" + user + "';";
-	db.all(query, function(err, data){
+	db.all(query, (err, data) => {
 		if(err){
 			callback(404);
 			this.log.error(err);
