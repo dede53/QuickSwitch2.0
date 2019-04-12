@@ -276,12 +276,6 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
         });
     });
 
-	app.post('/setDeviceStatusByCode', function(req, res){
-		var id = parseInt(req.body.id);
-		deviceFunctions.setDeviceStatusByCode(req.body.masterDip, req.body.slaveDip, req.body.status, function(device){
-			app.io.emit('change', new message("devices:switch", {"device":device,"status":req.body.status}));
-		});
-	});
 	/*******************************************************************************
 	**	alle Geräte	****************************************************************
 	*******************************************************************************/
