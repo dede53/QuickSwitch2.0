@@ -94,6 +94,14 @@
 			</div>
 		</div>
 		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon">Hintergrund</span>
+				<select class="form-control" ng-model="user.background">
+					<option ng-repeat="background in backgrounds" value="{{background.file}}">{{background.name}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="panel-body">
 			<div class="pull-right">
 				<button class="btn btn-success" ng-click="saveUser()">Speichern</button>
 				<button class="btn btn-danger" ng-click="abort('/user')">Abbrechen</button>
