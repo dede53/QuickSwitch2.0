@@ -93,7 +93,7 @@ module.exports = {
 	* Callback: 201
 	*****************************************/
 	saveNewUser: function (data, callback) {
-		var query = "INSERT INTO user ( name, favoritDevices, favoritVariables, varChart, chartHour, admin ) VALUES ('"+ data.name +"', '"+ JSON.stringify(data.favoritDevices) +"', '"+ JSON.stringify(data.favoritVariables) +"', '"+ JSON.stringify(data.varChart) +"', '"+ data.chartHour +"', '"+ data.admin +"');";
+		var query = "INSERT INTO user ( name, favoritDevices, favoritVariables, varChart, chartHour, admin, background ) VALUES ('"+ data.name +"', '"+ JSON.stringify(data.favoritDevices) +"', '"+ JSON.stringify(data.favoritVariables) +"', '"+ JSON.stringify(data.varChart) +"', '"+ data.chartHour +"', '"+ data.admin +"', '" + data.background + "');";
 		db.run(query);
 		callback(201);
 	},
@@ -101,16 +101,16 @@ module.exports = {
 	* ändert einen schon vorhandenen User
 	*****************************************/
 	saveEditUser: function (data, callback) {
-		var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"' WHERE id = '"+ data.id +"';";
+		var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"', background = '"+ data.background +"' WHERE id = '"+ data.id +"';";
 		db.run(query);
 		callback(201);
 	},
 	saveUser: function(data, callback){
 		console.log(data);
 		if(data.id){
-			var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"' WHERE id = '"+ data.id +"';";
+			var query = "UPDATE user SET name = '"+ data.name +"', favoritDevices = '"+ JSON.stringify(data.favoritDevices) +"', favoritVariables = '"+ JSON.stringify(data.favoritVariables) +"', varChart = '"+ JSON.stringify(data.varChart) +"', chartHour = '"+ data.chartHour +"', admin = '"+ data.admin +"', background = '" + data.background + "' WHERE id = '"+ data.id +"';";
 		}else{
-			var query = "INSERT INTO user ( name, favoritDevices, favoritVariables, varChart, chartHour, admin ) VALUES ('"+ data.name +"', '"+ JSON.stringify(data.favoritDevices) +"', '"+ JSON.stringify(data.favoritVariables) +"', '"+ JSON.stringify(data.varChart) +"', '"+ data.chartHour +"', '"+ data.admin +"');";
+			var query = "INSERT INTO user ( name, favoritDevices, favoritVariables, varChart, chartHour, admin, background ) VALUES ('"+ data.name +"', '"+ JSON.stringify(data.favoritDevices) +"', '"+ JSON.stringify(data.favoritVariables) +"', '"+ JSON.stringify(data.varChart) +"', '"+ data.chartHour +"', '"+ data.admin +"', '" + data.background + "');";
 		}
 		db.run(query);
 		callback(201);
