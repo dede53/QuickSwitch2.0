@@ -7,9 +7,9 @@ function getDevice(id, callback){
 	db.all(query , function(err, row) {
 		if (err) {
 			log.error(err);
-			callback(404);
+			callback(500);
 		}else if(row == ""){
-			callback("Kein Gerät mit der ID " + id);
+			callback(404);
 		}else{
 			callback(row[0]);
 		}

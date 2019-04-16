@@ -310,16 +310,10 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 				break;
 			default:
 				deviceFunctions.getDevice(id, function(data){
-					if(!res.headersSent){
-                        if(req.params.attr){
-                            try{
-    						    res.json(data[req.params.attr]);
-                            }catch(e){
-                                res.send(404);                            
-                            }
-                        }else{                        
-						    res.json(data);
-                        }
+					if(data[req.params.attr] != undefined){
+						res.json(data[req.params.attr]);
+					}else{
+						res.json(data);
 					}
 				});
 				break;

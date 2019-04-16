@@ -98,6 +98,12 @@ variables.prototype.setVariable = function(id, status, callback){
 };
 
 variables.prototype.getVariable = function(id, callback){
+	if(this.variables[id] == undefined){
+		callback({
+			"status": "error"
+		});
+		return;
+	}
 	callback(this.variables[id]);
 }
 
