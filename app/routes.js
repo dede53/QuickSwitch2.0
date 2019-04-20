@@ -510,6 +510,10 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 		}
 		res.status(200).end();
 	});
+	app.delete("/alert/:id", (req, res) => {
+		res.status(200).end();
+		allAlerts.remove(req.params.id);
+	});
 	/*******************************
 		Neuen Countdowntimer anlegen:
 		{
