@@ -53,11 +53,35 @@ log.on('all', function(data){
 allAlerts.on("add", (data) => {
 	console.log("show Alert mit id: " + data.id);
 	app.io.in(data.user).emit('change', new message("alerts:add", data));
+	for(var index in config.switchserver){
+		request.post({
+			url:'http://' + config.switchserver[index].ip + ':' + config.switchserver[index].port + '/alert',
+			form: data
+		},function( err, httpResponse, body){
+			if(err){
+				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
+				return;
+			}
+	        log.info("Erfolgreich an den SwitchServer gesendet");
+		});
+	}
 });
 
 allAlerts.on("remove", (alert) => {
 	console.log("remove Alert mit id: " + alert.id);
 	app.io.in(alert.user).emit('change', new message('alerts:remove', alert.id));
+	for(var index in config.switchserver){
+		request.delete({
+			url:'http://' + config.switchserver[index].ip + ':' + config.switchserver[index].port + '/alert',
+			form: alert
+		},function( err, httpResponse, body){
+			if(err){
+				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
+				return;
+			}
+	        log.info("Erfolgreich an den SwitchServer gesendet");
+		});
+	}
 });
 
 allVariables.on("change", (variable) => {
