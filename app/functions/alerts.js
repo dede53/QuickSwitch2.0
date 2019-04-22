@@ -23,6 +23,7 @@ allAlerts.prototype.remove = function(alert){
 	if(this.alerts[alert.user] && this.alerts[alert.user][alert.id]){
 		delete this.alerts[alert.user][alert.id];
 	}
+	alert.active = false;
 	this.emit("remove", alert);
 }
 allAlerts.prototype.removeAll = function(user){
@@ -55,5 +56,5 @@ function createAlerts(alert){
 	this.user = alert.user;
 	this.messageType = alert.messageType;
 	this.date = new Date().getTime();
-	this.active = false;
+	this.active = true;
 }
