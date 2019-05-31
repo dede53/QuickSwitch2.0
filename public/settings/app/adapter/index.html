@@ -54,8 +54,8 @@
 					{{adapter.status.statusMessage}}
 				</td>
 				<td>{{adapter.status.pid}}</td>
-				<td>
-					<uib-progressbar  ng-hide="adapter.status.installedVersion" class="progress-striped active" value="dynamic" type="info">in arbeit</uib-progressbar>
+				<td style="width: 180px;">
++                   <uib-progressbar  ng-show="adapter.status.inProcess" class="progress-striped active" value="dynamic" type="info"></uib-progressbar>
 					<div ng-show="adapter.status.installedVersion">
 						<button type="button" ng-click="controlAdapter('start',switchServer, adapter.info.name)" title="Start" class="btn btn-xs btn-success">
 							<span class="glyphicon glyphicon-play"></span>
