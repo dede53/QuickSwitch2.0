@@ -155,7 +155,7 @@ function startDependend(data){
 		}
 		var debugFile 				= __dirname + '/log/debug-' + filename + '.log';
 		logFiles[filename]			=	fs.createWriteStream( debugFile, {flags : 'w'});
-		plugins[filename] 			= fork( './' + file);
+		plugins[filename] 			= fork( __dirname + '/' + file);
 
 		plugins[filename].on('message', function(response) {
 			if(response.log){

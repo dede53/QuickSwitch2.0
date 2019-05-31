@@ -13,11 +13,11 @@ var createDir = function(name){
 	}
 }
 
-createDir("./log");
+createDir(__dirname + "/log");
 
 function log(config){
     events.EventEmitter.call(this);
-    this.logFile                     =   fs.createWriteStream( "./log/debug-master.log", {flags : 'w'});
+    this.logFile                     =   fs.createWriteStream( __dirname + "/log/debug-master.log", {flags : 'w'});
     this.loglevel = config.loglevel;
     this.errors   = [];
     this.newMessage = function(type, message){
