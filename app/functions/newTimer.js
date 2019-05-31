@@ -188,11 +188,6 @@ createTimer.prototype.checkTimer = function(variable){
 	var getRandomInt = (min, max) => {
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
-
-	var parseTime = (time) => {
-		var time 		= time.split(':');
-		return createTime(new Date().setHours(time[0], time[1]));
-	}
 	var isTimeInRange = (lower, upper) => {
 		var now = new Date();
 		var inRange = false;
@@ -206,7 +201,18 @@ createTimer.prototype.checkTimer = function(variable){
 		return inRange;
 	}
 	var createTime = (time) => {
-		time = new Date(parseInt(time));
+		try{
+			if(parseInt(time)){
+				time = new Date(parseInt(time));
+			}else if(typeof time == 'object'){
+				// Workaround for mirgration of old versions
+				time = new Date().setHours(time.hour, time.minute);
+			}else{
+				time = new Date(time);
+			}
+		}catch(e){
+			time = new Date();
+		}
 		time.setMilliseconds(0);
 		time.setSeconds(0);
 		var minutes = ("0" + time.getMinutes()).slice(-2);
@@ -375,8 +381,8 @@ createTimer.prototype.checkTimer = function(variable){
 				case "range":
 					this.log.info("	Prüfe Zeitraum...");
 					this.log.info("		" + condition.start + " - " + condition.stop);
-					var startTime = createTime(new Date().setHours(condition.start.hour, condition.start.minute));
-					var stopTime = createTime(new Date().setHours(condition.stop.hour, condition.stop.minute));
+					var startTime = createTime(condition.start);
+					var stopTime = createTime(condition.stop);
 				
 					if(isTimeInRange(startTime.timestamp, stopTime.timestamp)){
 						this.log.info("		Ergebnis: 	stimmt");
@@ -410,10 +416,8 @@ createTimer.prototype.checkTimer = function(variable){
 					break;
 				case "random":
 					var now = createTime(new Date().getTime());
-					// var startTime = parseTime(condition.start);
-					// var stopTime = parseTime(condition.stop);
-					var startTime = createTime(new Date().setHours(condition.start.hour, condition.start.minute));
-					var stopTime = createTime(new Date().setHours(condition.stop.hour, condition.stop.minute));
+					var startTime = createTime(condition.start);
+					var stopTime = createTime(condition.stop);
 
 					// Zeitraum prüfen
 					if(startTime.timestamp <= now.timestamp && stopTime.timestamp >= now.timestamp){
@@ -525,7 +529,7 @@ createTimer.prototype.checkTimer = function(variable){
 					}
 					break;
 				case "time":
-					var time = createTime(new Date().setHours(condition.time.hour, condition.time.minute));
+					var time = createTime(condition.time);
 					var now = createTime( new Date().getTime() );
 					if(this.timer.lastexec > now.timestamp){
 						this.log.info("		Dieser Timer wurde schon geschaltet");
