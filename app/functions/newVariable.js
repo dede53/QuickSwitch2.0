@@ -89,7 +89,9 @@ variables.prototype.setVariable = function(id, status, callback){
 		db.run(query);
 		
 		this.emit('change', this.variables[id]);
-		callback(200);
+		if(callback){
+			callback(200);
+		}
 	}else{
 		if (callback) {
 			callback(304);
