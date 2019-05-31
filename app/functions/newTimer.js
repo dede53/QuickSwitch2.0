@@ -200,15 +200,17 @@ createTimer.prototype.checkTimer = function(variable){
 		}
 		return inRange;
 	}
-	var createTime = (time) => {
+	var createTime = (givenTime) => {
+		var time = new Date();
 		try{
-			if(parseInt(time)){
-				time = new Date(parseInt(time));
-			}else if(typeof time == 'object'){
+			if(typeof givenTime == 'number'){
+				time = new Date(parseInt(givenTime));
+			}else if(typeof givenTime == 'object'){
 				// Workaround for mirgration of old versions
-				time = new Date().setHours(time.hour, time.minute);
+				time = new Date();
+				time.setHours(givenTime.hour || 0, givenTime.minute || 0);
 			}else{
-				time = new Date(time);
+				time = new Date(givenTime);
 			}
 		}catch(e){
 			time = new Date();
