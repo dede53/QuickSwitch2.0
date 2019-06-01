@@ -61,8 +61,8 @@ process.on('message', function(data){
 			allVariables.setVariable(data.setVariable.id, data.setVariable.status, function(statusCode){
 				if(statusCode == 200){
 					for(var id in allVariables.variables[data.setVariable.id].dependendTimer){
-						timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
-						allTimers[timerID].checkTimer(variable);
+						var timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
+						allTimers[timerID].checkTimer(data.setVariable);
 					}
 				}
 			});
@@ -72,7 +72,7 @@ process.on('message', function(data){
 				if(statusCode == 200){
 					for(var id in allVariables.variables[data.setVariable.id].dependendTimer){
 						timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
-						allTimers[timerID].checkTimer(variable);
+						allTimers[timerID].checkTimer(data.setVariable);
 					}
 				}
 			});
