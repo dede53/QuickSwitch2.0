@@ -31,6 +31,7 @@ variables.prototype.replaceVar = function (string, cb){
 
 variables.prototype.add = function(variable) {
 	this.variables[variable.id] = new createVariable(variable);
+	this.saveVariable(this.variables[variable.id]);
 	// this.setSaveActive(variable.id, this.variables[variable.id].saveActive);
 	this.emit("new", this.variables[variable.id]);
 };
@@ -62,7 +63,7 @@ variables.prototype.saveVariable = function(data){
 	}else{
 		var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+(data.name|| data.id)+"', '"+(data.status|| false)+"', '"+(data.charttype|| "line")+"', '"+(data.linetype|| "Solid")+"', '"+(data.linecolor || "#9f4444")+"', '"+(data.error||'')+"', '"+new Date().getTime()+"', '"+(data.suffix|| '')+"', '"+(data.step|| false)+"', '"+(data.showall||false)+"', '"+(data.user||'')+"', '"+(data.saveActive|| false)+"', '"+(data.saveType||"onChange")+"', '" + (data.saveInterval || 5) + "');";
     }
-	this.variable = data;
+	this.variables[data.id] = data;
 	db.run(query);
 	// uid!!
 	this.setSaveActive(data.id, data.saveActive);
@@ -70,7 +71,7 @@ variables.prototype.saveVariable = function(data){
 
 variables.prototype.setVariable = function(id, status, callback){
 	if(!this.variables[id]){
-		this.add();
+		this.add({id: id});
 	}
 	if(status != this.variables[id].status){
 		var now = Math.floor(Date.parse(new Date));
@@ -141,13 +142,13 @@ module.exports = variables;
 function createVariable(variable){
 	this.uid 			= variable.uid;
 	this.id 			= variable.id;
-	this.name 			= variable.name;
-	this.status 		= variable.status;
-	this.charttype 		= variable.charttype;
-	this.linetype		= variable.linetype;
-	this.linecolor 		= variable.linecolor;
-	this.suffix 		= variable.suffix;
-	this.error			= variable.error;
+	this.name 			= variable.name				|| variable.id;
+	this.status 		= variable.status			|| "";
+	this.charttype 		= variable.charttype		|| "spline";
+	this.linetype		= variable.linetype			|| "solid";
+	this.linecolor 		= variable.linecolor		|| "#ff00ff";
+	this.suffix 		= variable.suffix			|| "";
+	this.error			= variable.error			|| undefined;
 	this.step 			= variable.step 			|| false;
 	this.showall 		= variable.showall 			|| false;
 	this.user 			= variable.user				|| "system";
