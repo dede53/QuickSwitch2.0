@@ -16,7 +16,7 @@ function message(type, data){
 	return message;
 }
 
-module.exports = function(app, log, allAlerts, allTimers){
+module.exports = function(app, log, allAlerts, allTimers, allVariables){
 	// Setup the ready route, join room and broadcast to room.
 	app.io.route('room', {
 		join: function(req) {
@@ -136,6 +136,16 @@ module.exports = function(app, log, allAlerts, allTimers){
 					req.socket.emit('change', new message('favoritVariables:get', data));
 				});
 			});
+		},
+		chartNew: function(req){
+			console.log("chartNew");
+			// req.data.user.favoritVariables.forEach(function(variable){
+			console.log(req.data);
+				allVariables.getHistory("arduino.0.onewire.2868035C050000CD", req.data.start, req.data.end, (data) => {
+					console.log(data);
+					req.socket.emit('change', new message('varChartSerie:get', data));
+				});
+			// });
 		},
 		chart: function(req){
 			userFunctions.getUser(req.data.user, function(user){

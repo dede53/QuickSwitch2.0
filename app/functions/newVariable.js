@@ -137,6 +137,33 @@ variables.prototype.removeVariable = function(id) {
 	delete this.variables[id];
 };
 
+variables.prototype.getHistory = function(id, start, end, callback){
+
+	if(end == null){
+		end = new Date().getTime();
+	}
+	if(start == null){
+		start = 0;
+	}
+	var range = end - start;
+	var database = "stored_vars_month";
+	if(range < 2 * 24 * 3600 * 1000){
+		database = "stored_vars";
+	}else if(range < 31 * 24 * 3600 * 1000){
+		database = "stored_vars_hour";
+	}else if(range < 15 * 31 * 24 * 3600 * 1000){
+		database = "stored_vars_day";
+	}
+	var sql = "select CAST(time as signed) as x, CAST(value as signed) as y from " + database + " where id='" + id + "' and time between " + start + " and " + end + " order by time limit 0, 5000;";
+	console.log(sql);
+	db.all(sql, (err, data) => {
+		// Dont want > 1.000.000 points in the ram...
+		var series = this.variables[id];
+		series.data = data;
+		callback(series);
+	});
+}
+
 module.exports = variables;
 
 function createVariable(variable){
