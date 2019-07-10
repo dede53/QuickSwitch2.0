@@ -135,7 +135,7 @@ startDependend([
 ]);
 
 require('./app/routes.js')			(app, db, plugins, log, allAlerts, allVariables);
-require('./app/ioroutes/device.js')	(app, db, plugins, log, allAlerts);
+require('./app/ioroutes/device.js')	(app, db, plugins, log, allAlerts, allVariables);
 
 
 function stopDependend(data){
