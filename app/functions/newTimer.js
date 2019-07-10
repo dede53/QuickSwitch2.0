@@ -1,15 +1,7 @@
 var SunCalc						=	require('suncalc');
-var conf						=	require('../../config.json');
 var db							=	require('./database.js');
 var later 						=	require('later');
-var util						=	require("util");
-
-if(!conf.location || !conf.location.lat || !conf.location.long){
-	conf.location = {
-		lat: 52.5,
-		long: 13.4
-	}
-}
+var events 						=	require('events');
 
 function intervals(){
 	this.intervals = {};
@@ -23,52 +15,58 @@ function intervals(){
 };
 var allIntervals = new intervals();
 
-var createTimer = function(timer, config){
-	try{
-		if(timer.variables != ""){
-			timer.variables = JSON.parse(timer.variables.trim());
-		}else{
-			timer.variables = false;
-		}
-		if(timer.conditions != ""){
-			timer.conditions = JSON.parse(timer.conditions.trim());
-		}else{
-			timer.conditions = false;
-		}
-		if(timer.actions){
-			timer.actions = JSON.parse(timer.actions.trim());
-		}else{
-			timer.actions = false;
-		}
-	}catch(e){
-		throw e;
-	};
-	this.log = {
-		"info": function(data){
-			if(config.loglevel == 1 ){
-				process.send({"log":data});
+class createTimer extends events {
+	constructor(timer, config){
+		super();
+		this.timer 			= timer;
+		this.config 		= config;
+		// needed for the sunset/sunrise condition
+		if(!this.config.location || !this.config.location.lat || !this.config.location.long){
+			this.config.location = {
+				lat: 52.5,
+				long: 13.4
 			}
-		},
-		"debug": function(data){
-			if(config.loglevel <= 2){
-				process.send({"log":data});
-			}
-		},
-		"warning": function(data){
-			if(config.loglevel <= 3){
-				process.send({"log":data});
-			}
-		},
-		"error": function(data){
-			if(config.loglevel <= 4){
-				process.send({"log":data});
-			}
-		},
-		"pure": function(data){
-			process.send({"log":data});
 		}
+		try{
+			if(timer.variables != "" && typeof timer.variables == "string"){
+				timer.variables = JSON.parse(timer.variables.trim());
+			}else if(typeof timer.variables != "object"){
+				timer.variables = false;
+			}
+			if(timer.conditions != "" && typeof timer.conditions == "string"){
+				timer.conditions = JSON.parse(timer.conditions.trim());
+			}else if(typeof timer.conditions != "object"){
+				timer.conditions = false;
+			}
+			if(timer.actions != "" && typeof timer.actions == "string"){
+				timer.actions = JSON.parse(timer.actions.trim());
+			}else if(typeof timer.actions != "object"){
+				timer.actions = false;
+			}
+		}catch(e){
+			throw e;
+		};
+		var logfunction = (type) => {
+			return (message) => {
+				if(this.config.loglevel == 1 ){
+					var data = {
+						"message": message,
+						"type": type
+					}
+					this.emit("log", data);
+				}
+			}
+		}
+		this.log = {
+			"info": logfunction("info"),
+			"debug": logfunction("debug"),
+			"warning": logfunction("warning"),
+			"error": logfunction("error"),
+			"pure": logfunction("pure")
+		}
+		this.log.error("newTimer.constructor");
+		this.log.info("newTimer.constructor");
 	}
-	this.timer = timer;
 }
 
 
@@ -117,7 +115,7 @@ createTimer.prototype.saveTimer = function(data, callback){
 };
 
 createTimer.prototype.deleteTimer = function(callback){
-	createTimer.prototype.deaktivateInterval();
+	this.deaktivateInterval();
 	clearInterval(this.interval);
 	var query = "DELETE FROM timer WHERE id = '" + this.timer.id + "';";
 	db.all(query, (err, data) => {
@@ -132,20 +130,17 @@ createTimer.prototype.switchActions = function(status, switchtimer){
 	}
 	if(this.timer.actions && switchtimer != false){
 		this.timer.actions.forEach((action) => {
-			// Hier macht die Rheinfolge keinen Sinn:
 			var data = {};
-			data[action.type] = action;
 			if(action.offset == undefined){
 				action.offset = {
 					active:false
 				}
 			}
+			data[action.type] = action;
 			if(action.activeInterval){
 				action.id = parseInt(action.id) || getRandomInt(0, 600000);
 				if(allIntervals.intervals[action.id] == undefined){
 					var sched			=	later.parse.text('every ' + action.number + ' ' + action.unit);
-
-					console.log(allIntervals);
 					allIntervals.setMyInterval(action.id, () => {
 						if(action.offset.active == true || action.offset.active == "true"){
 							if(action.offset.random == true || action.offset.random == "true"){
@@ -153,11 +148,11 @@ createTimer.prototype.switchActions = function(status, switchtimer){
 							}
 							setTimeout(() => {
 								this.log.debug("Aktion ausführen:" + action.type);
-								process.send(data);
+								this.emit("switchAction", data);
 							}, action.offset.minutes * 60 * 1000);
 						}else{
 							this.log.debug("Aktion ausführen:" + action.type);
-							process.send(data);
+							this.emit("switchAction", data);
 						}
 					}, sched);
 					this.log.debug("		Neues Interval mit der id: " + action.id + " angelegt: jede " + action.number + ' ' + action.unit);
@@ -171,11 +166,11 @@ createTimer.prototype.switchActions = function(status, switchtimer){
 					}
 					setTimeout(() => {
 						this.log.debug("Aktion ausführen:" + action.type);
-						process.send(data);
+						this.emit("switchAction", data);
 					}, action.offset.minutes * 60 * 1000);
 				}else{
 					this.log.debug("Aktion ausführen:" + action.type);
-					process.send(data);
+					this.emit("switchAction", data);
 				}
 			}
 			
@@ -231,9 +226,9 @@ createTimer.prototype.checkTimer = function(variable){
 
 	var getSuntime = (tomorrow, type, offset) => {
 		if(tomorrow){
-			var suntimes			= SunCalc.getTimes(new Date(new Date().getTime() + 24 * 60 * 60 * 1000), conf.location.lat, conf.location.long);
+			var suntimes			= SunCalc.getTimes(new Date(new Date().getTime() + 24 * 60 * 60 * 1000), this.config.location.lat, this.config.location.long);
 		}else{
-			var suntimes			= SunCalc.getTimes(new Date(), conf.location.lat, conf.location.long);
+			var suntimes			= SunCalc.getTimes(new Date(), this.config.location.lat, this.config.location.long);
 		}
 		if(type == "sunrise"){
 			var suntime 		= new Date(suntimes.sunrise);
@@ -589,13 +584,13 @@ createTimer.prototype.checkTimer = function(variable){
 createTimer.prototype.setActive = function(status, callback){
 	if(status == true || status == 'true'){
 		status = true;
-		this.timer.active = true;
+		this.timer.active = "true";
 		this.interval = setInterval(() => {
 			this.checkTimer();
 		}, 10 * 1000);
 	}else{
 		status = false;
-		this.timer.active = false;
+		this.timer.active = "false";
 		this.deaktivateInterval();
 		clearInterval(this.interval);
 	}
