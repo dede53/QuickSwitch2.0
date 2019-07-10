@@ -175,7 +175,7 @@ ip:port/
 
 
 ***********************************************************************************/
-module.exports = function(app, db, plugins, log, allAlerts, allVariables){
+module.exports = function(app, log, allAlerts, allVariables){
 	
 	app.get('/saveSensors', function(req, res){
 		var onewire = {
@@ -248,7 +248,7 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 				});
 				break;
 			default:
-				console.log(type);
+				log.warning(type);
 				if(!res.headersSent){
 					res.json(type);
 				}
@@ -471,14 +471,12 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 
 	app.get('/setVariable/:id/:status', function(req, res){
 		allVariables.setVariable(req.params.id, req.params.status, function(statusCode){
-			plugins['timerserver'].send({"setVariable":req.params});
 			res.status(statusCode).end();
 		});
 	});
 
 	app.post('/setVariable', function(req, res){
 		allVariables.setVariable(req.body.id, req.body.status, function(statusCode){
-			plugins['timerserver'].send({"setVariable":req.body});
 			res.status(statusCode).end();
 		});
 	});

@@ -1,184 +1,180 @@
+var events 						= 	require('events');
 var config						=	require('./config.json');
 var db							=	require('./app/functions/database.js');
-var variableFunctions			=	require('./app/functions/variable.js');
-
-var blu							=	require('./app/functions/newVariable.js');
-var allVariables 				=   new blu();
-
 var createTimer					=	require('./app/functions/newTimer.js');
-var later 						=	require('later');
 
-log = {
-	"info": function(data){
-		if(config.loglevel == 1 ){
-			process.send({log:data});
-		}
-	},
-	"debug": function(data){
-		if(config.loglevel <= 2){
-			process.send({log:data});
-		}
-	},
-	"warning": function(data){
-		if(config.loglevel <= 3){
-			process.send({log:data});
-		}
-	},
-	"error": function(data){
-		if(config.loglevel <= 4){
-			process.send({log:data});
-		}
-	},
-	"pure": function(data){
-        process.send({log:data});
+class allTimers extends events {
+	constructor(log, allVariables){
+		super();
+		this.log 			= log;
+		this.timer 			= new Array();
+		this.variables 		= new Object;
+		this.loadTimers();
 	}
 }
 
-var allTimers					=	{};
-// var allIntervals				=	{
-// 										setInterval: function(id, callback, sched){
-// 											this.intervals[id] = later.setInterval(callback, sched);
-// 										},
-// 										clearInterval: function(id){
-// 											this.intervals[id].clear();
-// 											delete this.intervals[id];
-// 										},
-// 										intervals: {}
-// 									};
+allTimers.prototype.deaktivateInterval = function(id){
+	this[id].deaktivateInterval();
+}
 
-process.on('message', function(data){
-	if(data.deaktivateInterval){
-		allTimers[data.deaktivateInterval].deaktivateInterval();
-	}
-	if(data.loadVariables){
-		loadVariables();
-	}
-	if(data.setSaveActive){
-		allVariables.setSaveActive(data.setSaveActive.id, data.setSaveActive.status);
-	}
-	if(data.setVariable){
-		try{
-			allVariables.setVariable(data.setVariable.id, data.setVariable.status, function(statusCode){
-				if(statusCode == 200){
-					for(var id in allVariables.variables[data.setVariable.id].dependendTimer){
-						var timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
-						allTimers[timerID].checkTimer(data.setVariable);
-					}
-				}
-			});
-		}catch(e){
-			allVariables[data.setVariable.id] = allVariables.add(data.setVariable);
-			allVariables.setVariable(data.setVariable.id, data.setVariable.status, function(statusCode){
-				if(statusCode == 200){
-					for(var id in allVariables.variables[data.setVariable.id].dependendTimer){
-						timerID = allVariables.variables[data.setVariable.id].dependendTimer[id];
-						allTimers[timerID].checkTimer(data.setVariable);
-					}
-				}
-			});
-		}
-	}
-	if(data.saveVariable){
-		if(allVariables.variables[data.saveVariable.id]){
-			allVariables.saveVariable(data.saveVariable);
+allTimers.prototype.getTimer = function(id){
+	return this[id].timer;
+}
+
+allTimers.prototype.getUserTimers = function(user, callback){
+	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer WHERE user = '" + user + "';";
+	db.all(query, (err, data) => {
+		if(err){
+			callback(404);
+			helper.log.error(err);
 		}else{
-            allVariables.variables[data.saveVariable.id] = allVariables.add(data.setVariable);
-			allVariables.saveVariable(data.saveVariable);
-			allVariables.setVariable(data.saveVariable.id, data.saveVariable.status, function(statusCode, id, variable){
-				allTimers[id].checkTimer(variable);
-            });
-		}
-	}
-
-	if(data.setTimerActive){
-		if(allTimers[data.setTimerActive.id].timer.variables){
-			if(data.setTimerActive.active == true || data.setTimerActive.active == "true"){
-				var variables = Object.keys(allTimers[data.setTimerActive.id].timer.variables);
-				variables.forEach(function(variable){
-					allVariables.variables[variable].dependendTimer.push(data.setTimerActive.id);
-				});
-			}else{
-				var variables = Object.keys(allTimers[data.setTimerActive.id].timer.variables);
-				variables.forEach(function(variable){
-					allVariables.variables[variable].dependendTimer.splice(allVariables.variables[variable].dependendTimer.indexOf(data.setTimerActive.id), 1);
-				});
+			var timers = {};
+			for(var i = 0; i< data.length; i++){
+				timers[data[i].id] = this[data[i].id].timer;
 			}
-			var query = "UPDATE timer SET active='" + data.setTimerActive.active + "' WHERE id ='" + data.setTimerActive.id + "';"
-			db.run(query);
-		}else{ 
-			allTimers[data.setTimerActive.id].setActive(data.setTimerActive.active);
+			callback(timers);
 		}
+	});
+}
+
+allTimers.prototype.setVariable = function(variable){
+	var vars = this.variables[variable.id];
+	for(var id in vars){
+		this[vars[id]].checkTimer(variable);
 	}
-	if(data.deleteTimer){
-		allTimers[data.deleteTimer.id].deleteTimer(function(){});
+}
+
+allTimers.prototype.setActive = function(data){
+	if(this[data.id].timer.variables){
+		if(data.active == true || data.active == "true"){
+			var variables = Object.keys(this[data.id].timer.variables);
+			variables.forEach(variable => {
+				try{
+					this.variables[variable].push(timer.id);
+				}catch(e){
+					this.variables[variable] = new Array();
+					this.variables[variable].push(timer.id);
+				}
+			});
+		}else{
+			var variables = Object.keys(this[data.id].timer.variables);
+			variables.forEach(variable => {
+				try{
+					this.variables[variable].splice(this.variables[variable].indexOf(data.id), 1);
+				}catch(e){}
+			});
+		}
+		var query = "UPDATE timer SET active='" + data.active + "' WHERE id ='" + data.id + "';"
+		db.run(query);
+	}else{ 
+		this[data.id].setActive(data.active);
 	}
-	if(data.switchActions){
-		allTimers[data.switchActions.id].switchActions(data.switchActions, true, true);
+}
+
+allTimers.prototype.deleteTimer = function(id, cb){
+	this[id].deleteTimer(cb);
+}
+
+allTimers.prototype.switchActions = function(data){
+	this[data.id].switchActions(data);
+}
+
+allTimers.prototype.saveTimer = function(data, callback){
+	if(!data.lastexec){
+		data.lastexec = new Date().getTime();
 	}
-	if(data.saveTimer){
-		allTimers[data.saveTimer.id].saveTimer(data.saveTimer, function(){});
-	}
-	if(data.loadTimers){
-		unLoadTimers(function(){
-			loadTimers();
+	if(data.id){
+		this[data.id].saveTimer(data, callback);
+	}else{
+		var query = "INSERT INTO timer (name, variables, conditions, actions, user, lastexec) VALUES ('" + data.name + "', '" + JSON.stringify(data.variables) + "', '" + JSON.stringify(data.conditions) + "', '" + JSON.stringify(data.actions) + "','" + data.user + "','" + data.lastexec + "');";
+		// db.run(query);
+		db.all(query, (err, res) => {
+			if(err){
+				callback(err, undefined);
+			}else{
+				data.id = res.insertId;
+				this[data.id] = new createTimer(data, config);
+				if(data.active == true || data.active == "true" ){
+					if(this[data.id].timer.variables){
+						var variables = Object.keys(this[data.id].timer.variables);
+						variables.forEach(variable => {
+							try{
+								this.variables[variable].push(timer.id);
+							}catch(e){
+								this.variables[variable] = new Array();
+								this.variables[variable].push(timer.id);
+							}
+						});
+						var query = "UPDATE timer SET active='true' WHERE id ='" + data.id + "';"
+						db.run(query);
+					}else{ 
+						this[data.id].setActive(true);
+					}
+				}
+				this[data.id].on("switchAction", (data) => {
+					this.emit("switchAction", data);
+				})
+				this[data.id].on("log", (data) => {
+					this.log[data.type](data.message);
+				})
+				callback( undefined, this[data.insertId]);
+			}
 		});
 	}
-	if(data.getUserTimers){
-		createTimer().getUserTimers(function(timer){
-			process.send({"req": data.req, "getUserTimers": timer});
-		});
-	}
-});
+}
 
-
-loadTimers();
-
-function loadTimers(){
+allTimers.prototype.loadTimers = function(){
 	var query = "SELECT id, name, active, variables, conditions, actions, user, lastexec FROM timer;";
-	db.all(query, function(err, timers){
+	db.all(query, (err, timers) => {
 		if(err){
 			log.error(err);
 			return;
 		}else{
-			timers.forEach(function(timer){
-				allTimers[timer.id] 			= new createTimer(timer, config);
+			timers.forEach((timer) => {
+				this[timer.id] 			= new createTimer(timer, config);
+				this.timer.push(timer.id);
 				if(timer.active == true || timer.active == "true" ){
-					if(allTimers[timer.id].timer.variables){
-						var variables = Object.keys(allTimers[timer.id].timer.variables);
-						variables.forEach(function(variable){
+					if(this[timer.id].timer.variables){
+						var variables = Object.keys(this[timer.id].timer.variables);
+						variables.forEach(variable => {
 							try{
-								allVariables.variables[variable].dependendTimer.push(timer.id);
+								this.variables[variable].push(timer.id);
 							}catch(e){
-								log.error("Variable ist nicht vorhanden!");
+								this.variables[variable] = new Array();
+								this.variables[variable].push(timer.id);
 							}
 						});
 						var query = "UPDATE timer SET active='true' WHERE id ='" + timer.id + "';"
 						db.run(query);
 					}else{ 
-						allTimers[timer.id].setActive(true);
+						this[timer.id].setActive(true);
 					}
 				}
+				this[timer.id].on("switchAction", (data) => {
+					this.emit("switchAction", data);
+				})
+				this[timer.id].on("log", (data) => {
+					this.log[data.type](data.message);
+				})
 			});
 		}
 		log.info("Alle Timer geladen");
 	});
 }
 
-function unLoadTimers(cb){
-	for(var timerId in allTimers){
-		if(allTimers[timerId].timer.variables){
-			var variables = Object.keys(allTimers[timerId].timer.variables);
+allTimers.prototype.unLoadTimers = function(cb){
+	for(var timerId in this.timer){
+		if(this[timerId].timer.variables){
+			var variables = Object.keys(this[timerId].timer.variables);
 			variables.forEach(function(variable){
 				allVariables.variables[variable].dependendTimer.splice(allVariables.variables[variable].dependendTimer.indexOf(timerId), 1);
 			});
 		}else{
-			allTimers[timerId].stopTimer();
+			this[timerId].stopTimer();
 		}
 	}
-	allTimers = {};
+	allTimers = new allTimers();
 	cb();
 }
 
-process.on('disconnect', function(error){
-	process.exit();
-});
+module.exports = allTimers;
