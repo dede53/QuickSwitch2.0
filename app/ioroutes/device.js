@@ -1,16 +1,11 @@
-var config					=	require("./../../config.json");
 var switchServerFunctions	=	require('../functions/SwitchServer.js');
-var db						=	require('../functions/database.js');
 var countdownFunctions		=	require('../functions/countdown.js');
 var deviceFunctions			=	require('../functions/device.js');
 var groupFunctions			=	require('../functions/group.js');
 var messageFunctions		=	require('../functions/message.js');
 var roomFunctions			=	require('../functions/room.js');
-var timerFunctions			=	require('../functions/timer.js');
 var userFunctions			=	require('../functions/user.js');
 var variableFunctions		=	require('../functions/variable.js');
-var fs						=	require('fs');
-var helper					=	require('../functions/helper');
 
 function message(type, data){
 	var message = {};
@@ -21,7 +16,7 @@ function message(type, data){
 	return message;
 }
 
-module.exports = function(app, db, plugins, log, allAlerts, allVariables){
+module.exports = function(app, log, allAlerts, allTimers, allVariables){
 	// Setup the ready route, join room and broadcast to room.
 	app.io.route('room', {
 		join: function(req) {
@@ -41,7 +36,7 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 					req.socket.emit('change', new message('groups:get', data));
 				});
 
-				timerFunctions.getUserTimers(user.name, function(data){
+				allTimers.getUserTimers(user.name, (data) => {
 					req.socket.emit('change', new message('timers:get', data));
 				});
 				if(Array.isArray(user.favoritVariables)){
@@ -107,14 +102,11 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 			});
 		},
 		save: function(req){
-			plugins.timerserver.send({"saveVariable": req.data});
-			// variableFunctions.saveVariable(req.data, function(data, newVariable){
             if(req.data.id){
                 app.io.emit('change', new message('variables:add', req.data));
             }else{
                 app.io.emit('change', new message('variables:edit', req.data));
             }
-			// });
 		}
 	});
 	app.io.route('variables', {
@@ -183,7 +175,7 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 		switch: function(req){
 			roomFunctions.switchRoom(req.data.switch.room, req.data.switch.status, app, function(err){
 				if(err != 200){
-					console.log(err);
+					log.error(err);
 					log.error(err + "Raum konnte nicht geschaltet werden");
 				}
 			});
@@ -278,8 +270,7 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 			countdownFunctions.setNewCountdown(data, function(err, savedCountdown){
 				if(err != "200"){
 					log.error("Countdown konnte nicht gespeichert werden!");
-					console.log("Countdown konnte nicht gespeichert werden!");
-					console.log( err );
+					log.error( err );
 				}else{
 					app.io.in(req.data.user.name).emit('change', new message('countdowns:add', savedCountdown));
 				}
@@ -376,32 +367,34 @@ module.exports = function(app, db, plugins, log, allAlerts, allVariables){
 
 	app.io.route('timers', {
 		save: function(req){
-			timerFunctions.saveTimer(req.data.save, function(err, data){
+			log.debug("io.route.timers.save");
+			allTimers.saveTimer(req.data.save, function(err, data){
 				app.io.in(req.data.save.user).emit('change', new message('timers:add', data));
-				plugins.timerserver.send({"loadTimers":true});
 			});
 		},
 		remove: function(req){
-			// plugins.timerserver.send({deaktivateInterval:req.data.remove});
-			setTimeout(function(){
-				timerFunctions.deleteTimer(req.data.remove.id, function(err, data){
-					app.io.emit("change", new message('timers:remove', req.data.remove.id));
-				});
-			}, 1000);
-		},
-		get: function(req){
-			console.log(req.data.get);
-			timerFunctions.getTimer(req.data.get, function(timer){
-				req.socket.emit('change', new message('timer:get', timer));
+			log.debug("io.route.timers.remove");
+			allTimers.deleteTimer(req.data.remove.id, function(err, data){
+				app.io.emit("change", new message('timers:remove', req.data.remove.id));
 			});
 		},
+		get: function(req){
+			log.debug("io.route.timers.get");
+			req.socket.emit('change', 
+				new message(
+					'timer:get',
+					allTimers.getTimer(req.data.get)
+				)
+			);
+		},
 		switch: function(req){
-			plugins.timerserver.send({setTimerActive: req.data.switch});
+			log.debug("io.route.timers.switch");
+			allTimers.setActive(req.data.switch);
 			app.io.emit('change', new message('timers:edit', req.data.switch));
 		},
 		switchAll: function(req){
-			plugins.timerserver.send({switchActions: req.data.switchAll});
-			// timerFunctions.switchActions(req.data.switchAll, true, true);
+			log.debug("io.route.timers.switchActions");
+			allTimers.switchActions(req.data.switchAll);
 		}
 	});
 

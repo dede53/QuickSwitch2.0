@@ -120,7 +120,7 @@ variables.prototype.setSaveActive = function(id, status){
 				var query = "INSERT INTO stored_vars (id, time, value) VALUES ('" + id + "', '" + now + "', '" + status + "');";
 				db.all(query, function(err, row){
 					if(err){
-						helper.log.error(err);
+						console.log(err);
 					}
 				});
 			}, this.variables[id].saveInterval);

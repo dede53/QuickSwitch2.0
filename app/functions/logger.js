@@ -39,14 +39,14 @@ function log(config){
             case 1:
                 if(this.loglevel == '1'){
                     logNow = true;
-                    console.log(datum +": "+ message);
+                    console.log(  "\x1b[0m",datum +": "+ message);
                     this.emit("info", data);
                 }
                 break;
             case 2:
                 if(this.loglevel <= 2){
                     logNow = true;
-                    console.log(datum +": "+ message);
+                    console.log("\x1b[34m",datum +": "+ message, "\x1b[0m");
                     this.emit("debug", data);
                 }
                 break;

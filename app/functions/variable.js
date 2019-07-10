@@ -113,6 +113,8 @@ function getVariableByName(name, callback){
 	});
 }
 function loadStoredVariable(variable, hours, callback){
+	// SELECT *, AVG(value), from_unixtime(time / 1000) as date, YEAR(from_unixtime(time / 1000)) as Year, MONTH(from_unixtime(time / 1000)) as Month FROM stored_vars GROUP BY id, Year, Month;
+	// SELECT uid, id, ROUND(AVG(value), 2) as value, UNIX_TIMESTAMP( DATE(from_unixtime(time / 1000))) * 1000 as date, YEAR(from_unixtime(time / 1000)) as Year, MONTH(from_unixtime(time / 1000)) as Month FROM stored_vars GROUP BY id, Year, Month;
 	if(variable.showall == 'true'){
 		var query = "SELECT * FROM stored_vars WHERE id = '" + variable.id + "' AND ROUND(time / 1000) <= UNIX_TIMESTAMP() AND ROUND(time / 1000) >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + hours + " hour)) ORDER BY time ASC;";
 	}else{

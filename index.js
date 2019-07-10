@@ -38,10 +38,14 @@ var plugins 				=	{};
 var logging                 =   require('./app/functions/logger.js');
 log                         =   new logging(config);
 
+
+var blu						=	require('./timerserver.js');
+var allTimers 				=   new blu(log, allVariables);
+
 log.on('error', function(data){
     allAlerts.addAll({
         title: "Servererror!",
-        message: data,
+        message: data.message,
         type: "danger",
         toAdmin: true
     });
@@ -51,7 +55,7 @@ log.on('all', function(data){
 })
 
 allAlerts.on("add", (data) => {
-	console.log("show Alert mit id: " + data.id);
+	log.info("allAlerts.on.add." + data.id);
 	app.io.in(data.user).emit('change', new message("alerts:add", data));
 	for(var index in config.switchserver){
 		request.post({
@@ -62,7 +66,7 @@ allAlerts.on("add", (data) => {
 				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
 				return;
 			}
-	        log.info("Erfolgreich an den SwitchServer gesendet");
+	        log.info("Erfolgreich an den SwitchServer (" + config.switchserver[index].ip + ":" + config.switchserver[index].port + ") gesendet");
 		});
 	}
 });
@@ -79,14 +83,14 @@ allAlerts.on("remove", (alert) => {
 				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
 				return;
 			}
-	        log.info("Erfolgreich an den SwitchServer gesendet");
+	        log.info("Erfolgreich an den SwitchServer (" + config.switchserver[index].ip + ":" + config.switchserver[index].port + ") gesendet");
 		});
 	}
 });
 
 allVariables.on("change", (variable) => {
 	app.io.emit('change', new message('variables:edit',variable));
-	
+	allTimers.setVariable(variable);
 	for(var index in config.switchserver){
 		request.post({
 			url:'http://' + config.switchserver[index].ip + ':' + config.switchserver[index].port + '/variable',
@@ -96,8 +100,78 @@ allVariables.on("change", (variable) => {
 				log.error("Der SwitchServer (" + err.address + ":" + err.port + ") ist nicht erreichbar! Schaue in die Einstellungen -> SwitchServer oder frage deinen Admin um Rat.");
 				return;
 			}
-	        log.info("Erfolgreich an den SwitchServer gesendet");
+	        log.info("Erfolgreich an den SwitchServer (" + config.switchserver[index].ip + ":" + config.switchserver[index].port + ") gesendet");
 		});
+	}
+});
+
+allTimers.on("switchAction", (data) => {
+	if(data.room){
+		roomFunctions.switchRoom(data.room.action, data.room.switchstatus, app, function(err){
+			if(err != 200){
+				log.debug(err + "Raum konnte nicht geschaltet werden");
+			}
+		});
+	}
+	if(data.group){
+		groupFunctions.switchGroup(app, data.group.action, data.group.switchstatus, function(err){
+			if(err != 200){
+				log.debug( err + ":Die Gruppe mit der ID " + req.data.switch.group.id + " konnte nicht geschaltet werden!");
+			}
+		});
+	}
+	if(data.device){
+		deviceFunctions.switchDevice(app, data.device.action.deviceid, data.device.switchstatus, function(err){
+			if(err != 200){
+				log.debug( "Gerät mit der ID " + data.device.action.deviceid + " konnte nicht geschaltet werden!");
+			}
+		});
+	}
+	if(data.url){
+		var action = data.url;
+		if(parseInt(action.timeout)){
+			setTimeout(function(){
+				request(action.action.url, function (err, data, body) {
+					if (err) {
+						log.error(err);
+					}
+				});
+			}, action.timeout * 1000);
+		}else{
+			request(action.action.url, function (err, data, body) {
+				if (err) {
+					log.error(err);
+				}
+			});
+		}
+	}
+	if(data.alert){
+		var data = data.alert.action;
+		if(!data.date){
+			data.date = new Date();
+		}
+		if(!data.id){
+			data.id = Math.floor((Math.random() * 100) + 1);
+		}
+		allVariables.replaceVar(data.message, function(content){
+			allVariables.replaceVar(data.title, function(title){
+				data.message = content;
+				data.title = title;
+				if(data.user == "all"){
+					allAlerts.addAll(data);
+				}else{
+					allAlerts.add(data);
+				}
+			});
+		});
+	}
+	if(data.saveSensors){
+		log.debug("Sensoren speichern");
+		var onewire = {
+			"protocol": "onewire",
+			"switchserver":0
+		}
+		switchServerFunctions.sendto(app, "save", onewire);
 	}
 });
 
@@ -129,14 +203,11 @@ app.io.on('connect', function(socket){
 
 startServer();
 startDependend([
-	// "SwitchServer/adapter.js",
-	"countdownserver.js",
-	"timerserver.js"
+	"countdownserver.js"
 ]);
 
-require('./app/routes.js')			(app, db, plugins, log, allAlerts, allVariables);
-require('./app/ioroutes/device.js')	(app, db, plugins, log, allAlerts, allVariables);
-
+require('./app/routes.js')			(app, log, allAlerts, allVariables);
+require('./app/ioroutes/device.js')	(app, log, allAlerts, allTimers, allVariables);
 
 function stopDependend(data){
 	for (var i = 0;	i > data.length; i++) {
@@ -169,16 +240,6 @@ function startDependend(data){
 				}
 				logFiles[filename].write(datum +": "+response.log + "\n");
 			}
-			if(response.setVariable){
-				// Workaround, notwendig? Kein Ahnung 04.09.17
-				if(response.setVariable.action){
-					allVariables.setVariable(response.setVariable.action.id, response.setVariable.action.status, function(status){});
-					plugins['timerserver'].send({"setVariable":response.setVariable.action});
-				}else{
-					allVariables.setVariable(response.setVariable.id, response.setVariable.status, function(status){});
-					plugins['timerserver'].send({"setVariable":response.setVariable});
-				}
-			}
 			if(response.room){
 				roomFunctions.switchRoom(response.room.action, response.room.switchstatus, app, function(err){
 					if(err != 200){
@@ -200,62 +261,6 @@ function startDependend(data){
 					}
 				});
 			}
-			if(response.url){
-				var action = response.url;
-				if(parseInt(action.timeout)){
-					setTimeout(function(){
-						request(action.action.url, function (err, response, body) {
-							if (err) {
-                                log.error(err);
-							}
-						});
-					}, action.timeout * 1000);
-				}else{
-					request(action.action.url, function (err, response, body) {
-						if (err) {
-							log.error(err);
-						}
-					});
-				}
-			}
-			if(response.alert){
-				var data = response.alert.action;
-				if(!data.date){
-					data.date = new Date();
-				}
-				if(!data.id){
-					data.id = Math.floor((Math.random() * 100) + 1);
-				}
-				allVariables.replaceVar(data.message, function(content){
-					allVariables.replaceVar(data.title, function(title){
-						data.message = content;
-						data.title = title;
-						if(data.user == "all"){
-							allAlerts.addAll(data);
-						}else{
-							allAlerts.add(data);
-						}
-					});
-				});
-			}
-			if(response.saveSensors){
-				log.debug("Sensoren speichern");
-				var onewire = {
-					"protocol": "onewire",
-					"switchserver":0
-				}
-				switchServerFunctions.sendto(app, "save", onewire);
-			}
-			if(response.setDeviceStatus){
-				var id = parseInt(response.setDeviceStatus.id);
-				deviceFunctions.setDeviceStatus(id, response.setDeviceStatus.status);
-				deviceFunctions.getDevice(id, function(device){
-					app.io.emit('change', new message("devices:switch", {"device":device,"status":response.setDeviceStatus.status}));
-				});
-            }
-			if (response.getUserTimers){
-				response.req.socket.emit('change', new message('timers:get', response.getUserTimers));
-            }
             if(response.deleteCountdown){
                 countdownFunctions.deleteCountdown(response.deleteCountdown.id, function(){
                     app.io.in(response.deleteCountdown.user).emit('change', new message('countdowns:remove', response.deleteCountdown.id));
