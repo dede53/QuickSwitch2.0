@@ -173,6 +173,10 @@ allTimers.on("switchAction", (data) => {
 		}
 		switchServerFunctions.sendto(app, "save", onewire);
 	}
+	if(data.setVariable){
+		log.debug("Variable setzen");
+		allVariables.setVariable(data.setVariable.action.id, data.setVariable.action.status);
+	}
 });
 
 if(config.useHTTPS){
