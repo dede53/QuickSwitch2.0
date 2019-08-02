@@ -146,7 +146,7 @@ allTimers.on("switchAction", (data) => {
 		}
 	}
 	if(data.alert){
-		var data = data.alert.action;
+		var data = Object.assign({}, data.alert.action);
 		if(!data.date){
 			data.date = new Date();
 		}
