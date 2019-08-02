@@ -139,13 +139,17 @@ module.exports = function(app, log, allAlerts, allTimers, allVariables){
 		},
 		chartNew: function(req){
 			console.log("chartNew");
-			// req.data.user.favoritVariables.forEach(function(variable){
 			console.log(req.data);
-				allVariables.getHistory("arduino.0.onewire.2868035C050000CD", req.data.start, req.data.end, (data) => {
+			if(req.data.user.varChart.length == 0){
+				return;
+			}
+			req.data.user.varChart.forEach(function(variable){
+				console.log(variable);
+				allVariables.getHistory(variable, req.data.start, req.data.end, (data) => {
 					console.log(data);
 					req.socket.emit('change', new message('varChartSerie:get', data));
 				});
-			// });
+			});
 		},
 		chart: function(req){
 			userFunctions.getUser(req.data.user, function(user){
