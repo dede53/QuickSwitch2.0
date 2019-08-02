@@ -28,6 +28,9 @@ class createTimer extends events {
 			}
 		}
 		try{
+			if(this.timer.active == undefined){
+				this.timer.active = true;
+			}
 			if(timer.variables != "" && typeof timer.variables == "string"){
 				timer.variables = JSON.parse(timer.variables.trim());
 			}else if(typeof timer.variables != "object"){

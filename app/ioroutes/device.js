@@ -373,6 +373,10 @@ module.exports = function(app, log, allAlerts, allTimers, allVariables){
 		save: function(req){
 			log.debug("io.route.timers.save");
 			allTimers.saveTimer(req.data.save, function(err, data){
+				if(err){
+					log.error(err);
+					return;
+				}
 				app.io.in(req.data.save.user).emit('change', new message('timers:add', data));
 			});
 		},
