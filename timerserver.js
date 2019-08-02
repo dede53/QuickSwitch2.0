@@ -50,10 +50,10 @@ allTimers.prototype.setActive = function(data){
 			var variables = Object.keys(this[data.id].timer.variables);
 			variables.forEach(variable => {
 				try{
-					this.variables[variable].push(timer.id);
+					this.variables[variable].push(data.id);
 				}catch(e){
 					this.variables[variable] = new Array();
-					this.variables[variable].push(timer.id);
+					this.variables[variable].push(data.id);
 				}
 			});
 		}else{
