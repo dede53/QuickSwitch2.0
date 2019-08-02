@@ -13,14 +13,16 @@ var createDir = function(name){
 	}
 }
 
-createDir(__dirname + "/log");
+createDir("./log");
 
-function log(config){
-    events.EventEmitter.call(this);
-    this.logFile                     =   fs.createWriteStream( __dirname + "/log/debug-master.log", {flags : 'w'});
-    this.loglevel = config.loglevel;
-    this.errors   = [];
-    this.newMessage = function(type, message){
+class log extends events.EventEmitter{
+    constructor(config){
+        super();
+        this.logFile  = fs.createWriteStream("./log/debug-master.log", {flags : 'w'});
+        this.loglevel = config.loglevel;
+        this.errors   = [];
+    }
+    newMessage(type, message){
         if(typeof message === "object"){
             var message = JSON.stringify(message);
         }else{
@@ -73,13 +75,11 @@ function log(config){
             if(this.errors.length > 100){
                 this.errors.splice(0,1);
             }
-        }
-
-        
+        }      
     }
 }
 
-log.prototype.__proto__ = events.EventEmitter.prototype;
+
 
 log.prototype.info = function(data){
     this.newMessage(1,data);
