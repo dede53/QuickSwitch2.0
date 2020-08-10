@@ -92,12 +92,12 @@ module.exports = function(app, log, allAlerts, allTimers, allVariables){
 
 	app.io.route('variable', {
 		get: function(req){
-			variableFunctions.getVariable(req.data, function(data){
+			allVariables.getVariable(req.data, function(data){
 				req.socket.emit('change', new message('variable:get', data));
 			});
 		},
 		remove: function(req){
-			variableFunctions.deleteVariable(req.data.remove.uid, function(data){
+			allVariables.removeVariable(req.data.remove.uid, function(data){
 				app.io.emit('change', new message('variables:remove', req.data.remove.id));
 			});
 		},
@@ -111,22 +111,21 @@ module.exports = function(app, log, allAlerts, allTimers, allVariables){
 	});
 	app.io.route('variables', {
 		add: function(req){
-			variableFunctions.saveNewVariable(req.data.add, function(err, data){
+			allVariables.saveVariable(req.data.add, function(err, data){
 				app.io.emit('change', new message('variables:add', data));
 			});
 		},
 		remove: function(req){
-			variableFunctions.deleteVariable(req.data.remove.id, function(data){
-				app.io.emit('change', new message('variables:remove', req.data.remove.id));
-			});
+			allVariables.removeVariable(req.data.remove.id);
+			app.io.emit('change', new message('variables:remove', req.data.remove.id));
 		},
 		edit: function(req){
-			variableFunctions.saveEditVariable(req.data, function(err, data){
+			allVariables.saveVariable(req.data, function(err, data){
 				app.io.emit('change', new message('variables:edit', data));
 			});
 		},
 		get: function(req){
-			variableFunctions.getVariables(function(data){
+			allVariables.getVariables(function(data){
 				req.socket.emit('change', new message('variables:get', data));
 			});
 		},

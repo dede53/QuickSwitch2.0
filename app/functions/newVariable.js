@@ -42,7 +42,7 @@ variables.prototype.stopSaveVariable = function(id){
 	}
 }
 
-variables.prototype.saveVariable = function(data){
+variables.prototype.saveVariable = function(data, callback){
 	if(data.uid){
 		var query = "UPDATE variable SET "
 					+ "name = '" + ( data.name || data.id ) + "', "
@@ -60,13 +60,27 @@ variables.prototype.saveVariable = function(data){
 					+ "saveType = '" + ( data.saveType  || 'onChange' )+ "', "
 					+ "saveInterval = '" + ( parseInt(data.saveInterval) || 5 ) + "' "
 					+ "WHERE id = '" + data.id + "';";
+		db.run(query);
+		this.variables[data.id] = data;
+		this.setSaveActive(data.id, data.saveActive);	
+		if(callback){
+			callback(undefined, data);
+		}
 	}else{
 		var query = "INSERT INTO variable (id, name, status, charttype, linetype, linecolor, error, lastChange, suffix, step, showall, user, saveActive, saveType, saveInterval) VALUES ('"+data.id+"', '"+(data.name|| data.id)+"', '"+(data.status|| false)+"', '"+(data.charttype|| "line")+"', '"+(data.linetype|| "Solid")+"', '"+(data.linecolor || "#9f4444")+"', '"+(data.error||'')+"', '"+new Date().getTime()+"', '"+(data.suffix|| '')+"', '"+(data.step|| false)+"', '"+(data.showall||false)+"', '"+(data.user||'')+"', '"+(data.saveActive|| false)+"', '"+(data.saveType||"onChange")+"', '" + (data.saveInterval || 5) + "');";
+		db.all(query, (err, row) => {
+			if(err){
+				callback(err, undefined);
+				return;
+			}
+			data.uid = row.insertId;
+			this.variables[data.id] = data;
+			this.setSaveActive(data.id, data.saveActive);	
+			if(callback){
+				callback(undefined, data);
+			}
+		});
     }
-	this.variables[data.id] = data;
-	db.run(query);
-	// uid!!
-	this.setSaveActive(data.id, data.saveActive);
 }
 
 variables.prototype.setVariable = function(id, status, callback){
@@ -108,6 +122,9 @@ variables.prototype.getVariable = function(id, callback){
 		return;
 	}
 	callback(this.variables[id]);
+}
+variables.prototype.getVariables = function(callback){
+	callback(this.variables);
 }
 
 variables.prototype.setSaveActive = function(id, status){
