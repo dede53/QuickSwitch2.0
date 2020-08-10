@@ -25,7 +25,7 @@ app.controller('variableController', function($scope, $rootScope, socket, $uibMo
 	};
 	$scope.saveVariable = function() {
 		if($scope.variable != ""){
-			socket.emit('variable:save', {
+			socket.emit('variables:edit', {
 				"name": $scope.variable,
 				"id": $scope.variable
 			});
@@ -85,7 +85,7 @@ app.controller('editVariableController', function($scope, $rootScope, socket, $r
 
 	$scope.saveVariable = function() {
 		console.log($scope.variable);
-		socket.emit('variable:save', $scope.variable);
+		socket.emit('variables:edit', $scope.variable);
 		$location.url("/variables");
 	};
 	$scope.abortNewVariable = function(){

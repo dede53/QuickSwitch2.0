@@ -44,7 +44,7 @@
 				<td>{{adapter.status.installedVersion || "nicht installiert" }} / {{adapter.info.version}}</td>
 				<td>{{adapter.settings.loglevel}}</td>
 				<td>
-					<h3 class="label label-xl glyphicon" ng-class='adapter.status.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' aria-hidden="true">
+					<h3 class="label label-xl glyphicon" ng-class='adapter.status.status == "gestartet" ? "glyphicon-ok label-success" :  "glyphicon-exclamation-sign label-danger"' ng-show="adapter.status.installedVersion" aria-hidden="true">
 						<span title="{{adapter.status.statusMessage}}">
 							{{adapter.status.status}}
 						</span>
@@ -55,7 +55,7 @@
 				</td>
 				<td>{{adapter.status.pid}}</td>
 				<td style="width: 180px;">
-+                   <uib-progressbar  ng-show="adapter.status.inProcess" class="progress-striped active" value="dynamic" type="info"></uib-progressbar>
+                   <uib-progressbar  ng-show="adapter.status.inProcess" class="progress-striped active" value="dynamic" type="info"></uib-progressbar>
 					<div ng-show="adapter.status.installedVersion">
 						<button type="button" ng-click="controlAdapter('start',switchServer, adapter.info.name)" title="Start" class="btn btn-xs btn-success">
 							<span class="glyphicon glyphicon-play"></span>
