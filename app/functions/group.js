@@ -26,7 +26,7 @@ function switchAction(dev, status, app, callback){
 	}
 }
 var getGroups = function(user, callback){
-	var query = "SELECT id, name, devices as groupDevices, user FROM groups WHERE user = '" + user + "';";
+	var query = "SELECT id, name, devices as groupDevices, user FROM SmartHome.groups WHERE user = '" + user + "';";
 	db.all(query, function(err, data){
 		if(err){
 			callback(404);
@@ -72,7 +72,7 @@ module.exports = {
 		});
 	},
 	getAllGroups: function(callback){
-		var query = "SELECT id, name, devices as groupDevices, user FROM groups;";
+		var query = "SELECT id, name, devices as groupDevices, user FROM SmartHome.groups;";
 		db.all(query, function(err, data){
 			if(err){
 				callback(404);
@@ -93,7 +93,7 @@ module.exports = {
 		});
 	},
 	getGroup: function(id, callback){
-		var query = "SELECT id, name, devices as groupDevices, user FROM groups WHERE id = " + id + ";";
+		var query = "SELECT id, name, devices as groupDevices, user FROM SmartHome.groups WHERE id = " + id + ";";
 		db.all(query, function(err, data){
 			if(err){
 				log.error(err);
@@ -116,9 +116,9 @@ module.exports = {
 	},
 	saveGroup: function(data, callback){
 		if(data.id){
-			var query = "UPDATE groups SET name = '" + data.name + "', devices = '"+ JSON.stringify(data.groupDevices) +"', user = '"+ data.user +"' WHERE id = '" + data.id + "';";
+			var query = "UPDATE SmartHome.groups SET name = '" + data.name + "', devices = '"+ JSON.stringify(data.groupDevices) +"', user = '"+ data.user +"' WHERE id = '" + data.id + "';";
 		}else{
-			var query = "INSERT INTO groups (name, devices, user) VALUES ('" + data.name + "', '"+ JSON.stringify(data.groupDevices) +"', '"+ data.user +"');";
+			var query = "INSERT INTO SmartHome.groups (name, devices, user) VALUES ('" + data.name + "', '"+ JSON.stringify(data.groupDevices) +"', '"+ data.user +"');";
 		}
 		db.run(query);
 		getGroups(data.user, function(groups){
@@ -126,7 +126,7 @@ module.exports = {
 		});
 	},
 	deleteGroup: function(id, callback){
-		var query = "DELETE FROM groups WHERE id = '" + id + "';";
+		var query = "DELETE FROM SmartHome.groups WHERE id = '" + id + "';";
 		db.all(query, function(err, data){
 			if(err){
 				callback(err);
