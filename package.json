@@ -21,7 +21,7 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "daemonize2": "^0.4.2",
-    "express.oi": "0.0.21",
+    "express.oi": "git+https://github.com/dede53/express.oi.git",
     "later": "^1.2.0",
     "mariadb": "^2.4.2",
     "mysql": "^2.18.1",
