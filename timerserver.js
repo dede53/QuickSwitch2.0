@@ -94,6 +94,7 @@ allTimers.prototype.saveTimer = function(data, callback){
 			}else{
 				data.id = res.insertId;
 				this[data.id] = new createTimer(data, config);
+				this.timer.push(data.id);
 				if(data.active == true || data.active == "true" ){
 					if(this[data.id].timer.variables){
 						var variables = Object.keys(this[data.id].timer.variables);
@@ -117,7 +118,7 @@ allTimers.prototype.saveTimer = function(data, callback){
 				this[data.id].on("log", (data) => {
 					this.log[data.type](data.message);
 				})
-				callback( undefined, this[data.insertId]);
+				callback( undefined, this[data.id].timer);
 			}
 		});
 	}
@@ -146,7 +147,7 @@ allTimers.prototype.loadTimers = function(){
 						});
 						var query = "UPDATE timer SET active='true' WHERE id ='" + timer.id + "';"
 						db.run(query);
-					}else{ 
+					}else{
 						this[timer.id].setActive(true);
 					}
 				}

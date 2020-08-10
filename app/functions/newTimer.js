@@ -28,6 +28,9 @@ class createTimer extends events {
 			}
 		}
 		try{
+			if(this.timer.active == undefined){
+				this.timer.active = true;
+			}
 			if(timer.variables != "" && typeof timer.variables == "string"){
 				timer.variables = JSON.parse(timer.variables.trim());
 			}else if(typeof timer.variables != "object"){
@@ -452,8 +455,9 @@ createTimer.prototype.checkTimer = function(variable){
 					}
 					break;
 				case "variable":
+					this.log.info(`		Check Variable: ${condition.id} ${condition.mode} ${condition.value.toString()}`);
 					if(this.timer.lastexec > allVariables[condition.id].lastChange){
-						this.log.info("		Ergebnis: stimmt nicht: 	bereits ausgeführt");
+						this.log.info("		Ergebnis: stimmt nicht: 	seit der letzten Variablenänderung bereits ausgeführt");
 						switchtimer = false;
 					}else{
 						var variable = allVariables[condition.id];
