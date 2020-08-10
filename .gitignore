@@ -61,3 +61,4 @@ todo
 config.json
 SwitchServer
 quickswitch.pid
+/.vscode
